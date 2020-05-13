@@ -14,24 +14,55 @@ CREATE OR REPLACE FUNCTION execute_fonction_specifique(integer, integer, integer
 /*   $3 = fonc_cod : la fonction specifique                  */
 /*************************************************************/
 declare
-	v_perso_cod alias for $1;  -- Le code de la source
-	v_cible_cod alias for $2;  -- Le numéro de la cible
-	v_fonc_cod alias for $3;   -- LA fonction qui c'est déclenchée!
+	v_perso_cod alias for $1;                   -- Le code de la source
+	v_cible_cod alias for $2;                   -- Le numéro de la cible
+	v_fonc_cod alias for $3;                    -- LA fonction qui c'est déclenchée!
 
-	code_retour text;          -- Le retour de la fonction
-	retour_fonction text;      -- Le résultat de l’exécution d’une fonction
-	ligne_fonction record;     -- Les données de la fonction
-	code_fonction text;        -- Le code SQL lançant la fonction
-  v_pos integer;             -- Le code de la position où se déroule l'effet
+	code_retour text;                           -- Le retour de la fonction
+	retour_fonction text;                       -- Le résultat de l’exécution d’une fonction
+	ligne_fonction record;                      -- Les données de la fonction
+	code_fonction text;                         -- Le code SQL lançant la fonction
+  v_pos integer;                              -- Le code de la position où se déroule l'effet
+  v_deda timestamp without time zone;         -- le temps entre 2 actions pour la fonction en cours.
+  v_ddda timestamp without time zone;         -- date de dernière action
+  v_encours integer;                          -- nombre d'action déjà en cours pour cette fonction pour ce perso.
 
 begin
-
-  -- paramètre necessaire pour certaine fonction
-  select into v_pos ppos_pos_cod from perso_position where ppos_perso_cod = v_cible_cod;
 
   -- code de retour par defaut
 	code_retour := '';
 
+  -- ---------------------------------------------------------------------------
+  -- récupérer les infos du dernier declenchment
+  select pfonc_ddda, pfonc_encours into v_ddda,v_encours from fonction_specifique_perso where pfonc_fonc_cod=v_fonc_cod and pfonc_perso_cod=v_perso_cod ;
+  if not found then
+      -- premier déclenchement de cette fonction pour ce perso, on créé une entrée pour les futurs déclenchements
+      insert into fonction_specifique_perso(pfonc_fonc_cod, pfonc_perso_cod, pfonc_ddda, pfonc_encours) VALUES (v_fonc_cod, v_perso_cod, now(), 1);
+  else
+      -- avant toute chose on vérifie le paramètre DEDA (délai entre 2 actions) s'il est définit
+      -- ainsi que les protections de recursivité (une action qui déclenche cette même action directement ou indirectement)
+      if v_encours > 0 then
+          return code_retour;
+      end if;
+
+      select NOW() - (COALESCE(NULLIF(fonc_trigger_param->>'fonc_trig_deda'::text, ''),'0')||' minutes')::interval into v_deda from fonction_specifique where fonc_cod=v_fonc_cod ;
+      if v_deda < v_ddda then
+            return code_retour;
+      end if;
+
+      -- c'est tout bon -- on ajuste les compteurs maintenant!
+      update fonction_specifique_perso set pfonc_ddda=now(), pfonc_encours=pfonc_encours+1 where pfonc_fonc_cod=v_fonc_cod and pfonc_perso_cod=v_perso_cod ;
+
+  end if;
+
+
+  -- ---------------------------------------------------------------------------
+  -- paramètre necessaire pour certaine fonction
+  select into v_pos ppos_pos_cod from perso_position where ppos_perso_cod = v_cible_cod;
+
+
+  -- ---------------------------------------------------------------------------
+  -- déclenchement par lui même !
   select * into ligne_fonction from fonction_specifique where fonc_cod=v_fonc_cod ;
   if found then
 
@@ -112,7 +143,14 @@ begin
 
   end if;
 
+  -- ---------------------------------------------------------------------------
+  -- en fin de déclenchement libération du jeton d'acion en cours
+  update fonction_specifique_perso set pfonc_encours=pfonc_encours-1 where pfonc_fonc_cod=v_fonc_cod and pfonc_perso_cod=v_perso_cod ;
+
+  -- ---------------------------------------------------------------------------
+  -- texte de retour !
 	return code_retour;
+
 end;$_$;
 
 

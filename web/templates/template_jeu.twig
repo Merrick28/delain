@@ -344,8 +344,7 @@
             <br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/detail_compte.php">Détail du compte</a>
             <br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches sur
-            comptes</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches comptes</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions
@@ -364,34 +363,24 @@
         {% endif %}
 
         {% if DROIT.droits == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_gestion_droits.php">Gestion des
-            droits</a><br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_params.php">Gestion des
-            paramètres</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_gestion_droits.php">Gestion des  droits</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_params.php">Modif. paramètres</a><br>
         {% endif %}
 
         {% if DROIT.modif_perso == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a>
-            <br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation
-            perso</a>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation perso</a>
             <br>
         {% endif %}
 
         {% if DROIT.modif_gmon == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_type_monstre_edit.php">Modif. types
-            monstre</a>
-            <br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_repartition_monstres.php">Modif.
-            répart.
-            monstres</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_type_monstre_edit.php">Modif. types monstre</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_repartition_monstres.php">Modif. répart. monstres</a><br>
         {% endif %}
 
 
         {% if DROIT.objet == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_objet_generique_edit.php">Gestion
-            objets
-            generiques</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_objet_generique_edit.php">Objets generiques</a><br>
         {% endif %}
 
         {% if DROIT.carte == 'O' %}
@@ -403,8 +392,8 @@
                 href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enluminure.php">Enluminure</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_magie.php">Modif. sorts</a><br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif.
-            bonus/malus</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif. bonus/malus</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_ea_compteur.php">Modif. EA Générique</a><br>
         {% endif %}
 
         {% if DROIT.potions == 'O' %}

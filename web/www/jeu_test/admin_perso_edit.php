@@ -828,6 +828,13 @@ if ($erreur == 0)
 		from bonus_type
 		order by tonbus_libelle ";
         echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+
+        // Liste des Bonus-malus
+        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
+		from bonus_type
+		order by tonbus_libelle ";
+        echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+
         ?>
         <form method="post" action="#" onsubmit="return Validation.Valide ();">
             <input type="hidden" name="methode" value="add_effet_auto">

@@ -9,22 +9,6 @@ include_once '../includes/tools.php';
 include('variables_menu.php');
 
 
-echo '<link href="/styles/sceditor.min.css" rel="stylesheet">';
-echo '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
-echo '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></script>';
-
-echo '<script>//# sourceURL=admin_quete_auto_edit.js
- $( document ).ready(function() {
-    var textarea = document.getElementById("id-textarea-etape");
-    if (textarea) {
-        sceditor.create(textarea, {
-            format: "xhtml",
-            style: "/style/sceditor.min.css",
-            toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|table,quote,image|maximize|source",
-        });
-    }
-});
-</script>';
 //
 //Contenu de la div de droite
 //
