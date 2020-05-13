@@ -1,4 +1,4 @@
-CREATE FUNCTION public.nv_magie_drain_vie(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION public.nv_magie_drain_vie(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
 $_$/*****************************************************************/

@@ -1,4 +1,4 @@
-CREATE FUNCTION public.nv_magie_mercu_groupe(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION public.nv_magie_mercu_groupe(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
 $_$/*****************************************************************/

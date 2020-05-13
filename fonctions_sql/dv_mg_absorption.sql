@@ -1,4 +1,4 @@
-CREATE FUNCTION public.dv_mg_absorption(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION public.dv_mg_absorption(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
 $_$/*****************************************************************/
