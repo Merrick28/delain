@@ -1,0 +1,1 @@
+ALTER TABLE public.fonction_specifique_perso   OWNER to delain;
