@@ -206,3 +206,4 @@ $_$;
 
 ALTER FUNCTION public.nv_magie_flamme_abysses(integer, integer, integer) OWNER TO delain;
 COMMENT ON FUNCTION public.nv_magie_flamme_abysses(integer, integer, integer) IS 'Lance le sort Flamme des Abysses (réservé aux monstres)
+/!\ Dégâts très supérieurs aux alentours que sur la case... Normal ??';

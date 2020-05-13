@@ -157,4 +157,4 @@ $_$;
 
 
 ALTER FUNCTION public.nv_magie_malediction(integer, integer, integer) OWNER TO delain;
-COMMENT ON FUNCTION public.nv_magie_malediction(integer, integer, integer) IS '
+COMMENT ON FUNCTION public.nv_magie_malediction(integer, integer, integer) IS '';

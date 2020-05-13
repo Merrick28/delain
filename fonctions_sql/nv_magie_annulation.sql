@@ -104,3 +104,4 @@ $_$;
 
 ALTER FUNCTION public.nv_magie_annulation(integer, integer, integer) OWNER TO delain;
 COMMENT ON FUNCTION public.nv_magie_annulation(integer, integer, integer) IS 'Lance le sort Annulation de magie (non accessible aux personnages)
+Sort utilisation la fonction annulation de magie dans un périmètre de 2 cases d’une position';
