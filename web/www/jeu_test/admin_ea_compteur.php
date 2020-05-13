@@ -49,6 +49,9 @@ if ($erreur == 0)
     if(isset($_REQUEST['methode']) && $_REQUEST['methode']=="add_mon_fonction")
     {
         // Traitement des actions
+
+        $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA du compteur numero: $tbonus_cod\n";
+
         // Modification des effets automatiques
         $fonctions_supprimees = explode(',', trim(fonctions::format($_POST['fonctions_supprimees']), ','));
         $fonctions_annulees   = explode(',', trim(fonctions::format($_POST['fonctions_annulees']), ','));
@@ -190,6 +193,7 @@ if ($erreur == 0)
 
         writelog($log . $message, 'monstre_edit');
         echo nl2br($message);
+        echo "<hr>";
 
     }
 
@@ -204,7 +208,13 @@ if ($erreur == 0)
             </script>
             ';
 
-    // Liste des quetes existantes
+    echo "On trouve ici des EA (effets-auto) qui sont attachés à des Bonus/Malus du type compteur.<br>
+          Cela signifie que tout « perso » (qu'il soit monstre ou joueurs) déclenchera ces effets s'il remplit les conditions du déclenchement.<br>
+          <u><strong>ATTENTION</strong></u>: il faut noter que: <br>
+          • Le changement de nom ne sera effectif QUE pour les monstres.<br>
+        <br><br>";
+
+
     echo '  <TABLE width="80%" align="center">
             <TR>
             <TD>
@@ -221,15 +231,25 @@ if ($erreur == 0)
     echo '  </select>
             </form></TD>
             </TR>
-            </TABLE>
-            <HR>';
+            </TABLE>';
+    if ($tbonus_cod>0) {
+        $req = "SELECT * FROM bonus_type WHERE tbonus_cod=:tbonus_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":tbonus_cod" => $tbonus_cod), $stmt);
+
+        if ($result = $stmt->fetch()) {
+            echo "<strong>Compteur #" . $result["tbonus_cod"] ."</strong>: ". $result["tbonus_libc"] . ($result["tbonus_cumulable"]=='O' ? " - <strong>Progressivité:</strong> ".$result["tbonus_degressivite"]."%" : '') . "<br>";
+            echo "<strong>Description de ce Compteur: </strong>" . $result["tbonus_description"] . "<br><br>";
+        }
+    }
+
+    echo "<HR>";
 
     echo '<strong>EFFETS AUTOMATIQUES:</strong><br><br>';
 
     if ($tbonus_cod==0) {
         echo 'Sélectionnez le compteur!';
     } else {
-
 
         // Liste des monstres générique
         $req = 'select gmon_nom, gmon_cod from monstre_generique order by gmon_nom';

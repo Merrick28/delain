@@ -63,6 +63,7 @@ declare
   -- temp pour éviter les erreurs dans les logs
   v_cible_donnee integer;
   v_bonus_texte text;
+  v_source_nom text;
 
 begin
 
@@ -93,8 +94,8 @@ begin
   end if;
 
   -- Position et type perso
-  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source
-    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod
+  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_source_nom
+    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_nom
   from perso_position, positions, perso
   where ppos_perso_cod = v_source
         and pos_cod = ppos_pos_cod
@@ -233,10 +234,12 @@ begin
     end if;
 
     -- On rajoute la ligne d’événements
-    if strpos(v_texte_evt , '[cible]') != 0 then
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
-    else
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+    if v_texte_evt != '' then
+        if strpos(v_texte_evt , '[cible]') != 0 then
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
+        else
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+        end if;
     end if;
   end loop;
 
@@ -460,10 +463,12 @@ begin
     end if;
 
     -- On rajoute la ligne d’événements
-    if strpos(v_texte_evt , '[cible]') != 0 then
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
-    else
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+    if v_texte_evt != '' then
+        if strpos(v_texte_evt , '[cible]') != 0 then
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
+        else
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+        end if;
     end if;
   end loop;
 
@@ -525,6 +530,7 @@ declare
   v_race_source integer; -- La race de la source
   v_position_source integer; -- Le pos_cod de la source
   v_bonus_texte text;
+  v_source_nom text; -- nom du perso source
 
   -- Output and data holders
   ligne record;  -- Une ligne d’enregistrements
@@ -551,8 +557,8 @@ begin
   code_retour := '';
 
   -- Position et type perso
-  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source
-    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod
+  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_source_nom
+    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_nom
   from perso_position, positions, perso
   where ppos_perso_cod = v_source
         and pos_cod = ppos_pos_cod
@@ -631,7 +637,7 @@ begin
       end if;
     end if;
 
-    code_retour := code_retour || '<br />Vous donnez un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
+    code_retour := code_retour || '<br />' || ligne.perso_nom || ' prend un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || ', pendant ' || v_duree::text || ' tours ';
     if v_bloque_magie = 1 then
       code_retour := code_retour || ' (résisté)';
     end if;
@@ -714,6 +720,7 @@ declare
   v_position_source integer;   -- Le pos_cod de la source
   v_cible_du_monstre integer;  -- La cible actuelle du monstre
   v_bonus_texte text;
+  v_source_nom text;           -- nom du perso source
   v_bonus_degressif text;
 
   -- Output and data holders
@@ -744,8 +751,8 @@ begin
   code_retour := '';
 
   -- Position et type perso
-  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre
-    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible
+  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre, v_source_nom
+    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible, perso_nom
   from perso_position, positions, perso
   where ppos_perso_cod = v_source
         and pos_cod = ppos_pos_cod
@@ -826,7 +833,7 @@ begin
       end if;
     end if;
 
-    code_retour := code_retour || '<br />Vous donnez un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || v_bonus_degressif || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
+    code_retour := code_retour || '<br />'|| ligne.perso_nom || ' prend un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || v_bonus_degressif || ', pendant ' || v_duree::text || ' tours' ;
     if v_bloque_magie = 1 then
       code_retour := code_retour || ' (résisté)';
     end if;
@@ -836,10 +843,12 @@ begin
     perform ajoute_bonus(ligne.perso_cod, v_bonus, v_duree, valeur);
 
     -- On rajoute la ligne d’événements
-    if strpos(v_texte_evt , '[cible]') != 0 then
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
-    else
-      perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+    if v_texte_evt != '' then
+        if strpos(v_texte_evt , '[cible]') != 0 then
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
+        else
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+        end if;
     end if;
   end loop;
 

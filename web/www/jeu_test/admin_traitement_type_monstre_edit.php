@@ -20,7 +20,7 @@ if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
     }
 }
 $log =
-    date("d/m/y - H:i") . $perso->perso_nom . " compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: 
+    date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: 
 $gmon_cod\n";
 
 // On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
@@ -404,7 +404,7 @@ switch ($methode)
                             $texteDeclenchement = 'une attaque subie qui touche.';
                             break;
                         case 'BMC':
-                            $texteDeclenchement = 'un Bonus/Mlaus change.';
+                            $texteDeclenchement = 'un Bonus/Malus change.';
                             break;
                     }
                     if (!empty($message))

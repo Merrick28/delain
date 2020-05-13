@@ -442,8 +442,6 @@ EffetAuto.ChampBMCompteur = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += EffetAuto.CopieListe ('liste_bmc_modele', valeur);
 	html += '</select></label><br />';
-	html += "(+) Une valeur <strong>positive</strong> est <strong>bénéfique</strong>, et une valeur <strong>négative</strong> est <strong>délétère</strong><br />";
-	html += "(-) Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong>";
 	return html;
 }
 
