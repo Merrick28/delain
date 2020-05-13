@@ -35,5 +35,5 @@ while IFS= read -r line; do
     echo "$line" >>"${OUTPUTDIR}/${nom_fonction}.sql"
   fi
 
-
-done <"$INFILE"
+done \
+  <"$INFILE"
