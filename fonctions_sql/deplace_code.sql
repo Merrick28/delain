@@ -207,6 +207,11 @@ begin
 		code_retour := code_retour || 'Déplacement effectué !';
 
 ---------------------------
+-- les EA liés au déplacment
+---------------------------
+    code_retour := code_retour || execute_fonctions(num_perso, num_perso, 'DEP') ;
+
+---------------------------
 -- on met un évènement
 ---------------------------
 		texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));

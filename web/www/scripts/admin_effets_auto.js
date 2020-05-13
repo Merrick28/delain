@@ -80,6 +80,13 @@ EffetAuto.Triggers = {
 				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nom de base)'},
 			]
 	},
+	"DEP": {description: "lorsqu’il se déplace.",
+		default:'deb_tour_generique',
+		declencheur:'Se déplace',
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
 }
 
 /*=============================== Definition des EFFETS et de leurs paramètres ===============================*/
@@ -298,7 +305,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
