@@ -1,4 +1,4 @@
-# Les souterrains de Delain
+# Les souterrains de Delain     ![CI](https://github.com/Merrick28/delain/workflows/CI/badge.svg?branch=master)
 
 ## Projet
 Après plus de dix ans d'existence, le jeu de rôle en ligne ["Les souterrains de Delain"](https://www.jdr-delain.net) devient opensource. 

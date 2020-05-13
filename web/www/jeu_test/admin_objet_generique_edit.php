@@ -295,7 +295,7 @@ if ($erreur == 0)
             {
 
                 $stmt2 = $pdo->execute(array(":gobj_obcar_cod" => $result['gobj_obcar_cod']),$stmt2);
-                if ($result2 = $stmt->fetch())
+                if ($result2 = $stmt2->fetch())
                 {
                     $obcar_cod = $result2['obcar_cod'];
                     $obcar = new objets_caracs();
@@ -352,7 +352,7 @@ if ($erreur == 0)
                         <tr>
                             <td class="soustitre2">Dégâts (armes uniquement)</td>
                             <td><input type="text" size="5" name="obcar_des_degats"
-                                       value="<?php echo $obcar->obcar_des_degat; ?>"> D <input type="text" size="5"
+                                       value="<?php echo $obcar->obcar_des_degats; ?>"> D <input type="text" size="5"
                                                                                                     name="obcar_val_des_degats"
                                                                                                     value="<?php echo $obcar->obcar_val_des_degats; ?>">
                                 + <input type="text" size="5" name="obcar_bonus_degats"

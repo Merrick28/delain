@@ -329,10 +329,12 @@ begin
   /*********************************************/
   /* 2018-09-06 - Marlyza - on réalise ici un eventuel changement de cible */
   texte_desorientation := '' ;    -- pour un affichage ultérieur quand on aura des infos sur la cible
-  v_desorientation := valeur_bonus(v_attaquant, 'DES')  ; -- récupération du malus de désorientation (désoriente si positif)
+  v_desorientation := LEAST(100, valeur_bonus(v_attaquant, 'DES')) ; -- récupération du malus de désorientation
+
   if v_desorientation > 0 then
 
-    /* Convertion de la valeur en % */
+    /* Convertion de la valeur en %
+     -- Marlyza - 2020-05-10 : avec l'arrivée des bonus d'équipement, la désorientation passe en procentage plus besoin de conversion!
     if v_desorientation=1 then
       v_desorientation := 33 ;
     elsif v_desorientation=2 then
@@ -340,6 +342,7 @@ begin
     else
        v_desorientation := 100 ;
     end if;
+    */
 
     des := lancer_des(1, 100);
 
@@ -1476,7 +1479,7 @@ begin
     temp_change_cible := change_cible_attaque(nv_cible, v_attaquant);
   end if;
   --
-  code_retour := code_retour || 'Vous portez une attaque de <b>' || trim(to_char(degats_portes, '9999')) || '</b> '; -- pos 11
+  code_retour := code_retour || 'Vous portez une attaque de <b>' || trim(to_char(GREATEST(0,degats_portes), '9999')) || '</b> '; -- pos 11
   /************************************/
   /* DEBUT : esquive de la cible      */
   /************************************/

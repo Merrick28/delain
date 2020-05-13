@@ -15,7 +15,7 @@ $stmt                     = $pdo->prepare($req_malus_desorientation);
 $stmt = $pdo->execute(array(":perso" => $perso_cod),$stmt);
 
 $result                   = $stmt->fetch();
-if ($result['desorientation'] == 0)
+if ($result['desorientation'] <= 0)
 {
     $desorientation = false;
 } else
