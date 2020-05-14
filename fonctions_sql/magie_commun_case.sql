@@ -396,6 +396,11 @@ begin
 		px_gagne := px_gagne + 1;
 	end if;
 
+  ---------------------------
+  -- les EA liés au lancement d'un sort (avec protagoniste null)
+  ---------------------------
+  code_retour := code_retour|| execute_effet_auto_mag(lanceur, null::integer, num_sort, 'L');
+
 	code_retour := code_retour || ';' || to_char(px_gagne, '999999990D99') || ';' || trim(to_char(facteur_reussite, '99999999999'));
 	return code_retour;
 end;
