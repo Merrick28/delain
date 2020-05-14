@@ -19,7 +19,7 @@ $votesRefusee = $votes['votesRefusee'];
 
 
 ?>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script-->
     <script language="javascript">
 
         function AddNewVote() {
@@ -200,6 +200,16 @@ if ((!$compte->is_admin()) && (!$compte->is_admin_monstre()))
                 </div>
             </div>
         </div>
+
+
+        <script>//# sourceURL=_switch.php.js
+            $(document).ready(function () {
+                $(".delain-tooltip").tooltip({
+                    content: function () {
+                        return $(this).prop('title');
+                    }});
+            });
+        </script>
 
         <?php
         echo "<div class='centrer'><br /><em>Date et heure serveur : " . date('d/m/Y H:i:s') . "</em></div>";

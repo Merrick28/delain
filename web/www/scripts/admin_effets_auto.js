@@ -87,6 +87,27 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
 		]
 	},
+	"MAL": {description: "lorsqu’il lance un sort.",
+		default:'deb_tour_generique',
+		declencheur:'Lance un sort',
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
+			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
+			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
+			{ nom: 'trig_effet', type: 'MAGeffet', label: 'Les effets', description: 'Y-a-t-il un effet de l\'EA pour chaque cible ou juste un seul effet. ATTENTION si un effet par cible est sélectionné et qu\'il n\'y a aucune cible alors l\'effet ne sera pas déclenché.' },
+		]
+	},
+	"MAC": {description: "lorsqu’il est ciblé par un sort.",
+		default:'deb_tour_generique',
+		declencheur:'Est la cible d\'un sort',
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
+			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
+			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
+		]
+	},
 }
 
 /*=============================== Definition des EFFETS et de leurs paramètres ===============================*/
@@ -305,7 +326,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -405,6 +426,15 @@ EffetAuto.ChampChoixBMCsens = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus dépasse le seuil</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus retombe en dessous du seuil</option></select></label>';
+	return html;
+}
+
+EffetAuto.ChampChoixMAGeffet = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="1" ' + ((valeur == "1") ? 'selected="selected"' : '' ) + '>Déclencher UN SEUL effet au lancement</option>';
+	html += '<option value="N" ' + ((valeur == "N") ? 'selected="selected"' : '' ) + '>Déclencher un effet POUR CHAQUE cible</option></select></label>';
 	return html;
 }
 
@@ -520,6 +550,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
+			break;
+		case 'MAGeffet':
+			html = pd + EffetAuto.ChampChoixMAGeffet (parametre, numero, valeur) + pf;
 			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;

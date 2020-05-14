@@ -90,6 +90,7 @@ if ($verif_auth)
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';
 
+
             echo '<div class="bordiv">';
             $is_admin = true; ?>
             <style>
