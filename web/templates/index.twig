@@ -22,12 +22,26 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="{{ HTTPS }}{{ URL }}/css/datatables.min.css" rel="stylesheet">
 
+    <!-- Custom delain CSS -->
+    <link rel="stylesheet" type="text/css" href="style.css?v{{ __VERSION }}" title="essai">
+    <link rel="stylesheet" type="text/css" href="/style.php">
+
     {#<!-- Custom CSS -->
     <link href="{{ HTTPS }}{{ URL }}/css/simple-sidebar.css" rel="stylesheet">#}
+    <link href="/css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="/css/delain.css?v{{ __VERSION }}" rel="stylesheet">
 
-    <link href="{{ HTTPS }}{{ URL }}/css/delain.css" rel="stylesheet">
+    <!-- CDN -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 
-    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- JQueryUI a charger après bootstrap pour utiliser son tooltip -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -298,11 +312,7 @@
 </div>
 <!-- /#wrapper -->
 
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <script src="js/advert.js"></script>
 <script src="js/jquery.validate.min.js"></script>

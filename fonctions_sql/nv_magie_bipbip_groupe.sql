@@ -123,6 +123,12 @@ begin
                                       levt_lu, levt_visible, levt_attaquant, levt_cible)
                 values (nextval('seq_levt_cod'), 14, now(), 1, ligne.perso_cod, texte_evt, 'N', 'O', lanceur,
                         ligne.perso_cod);
+
+                ---------------------------
+                -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+                ---------------------------
+                code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
             end loop;
         -- on traite les non maitres des arcanes
     else
@@ -163,10 +169,16 @@ begin
                     values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
                 end if;
 
+                ---------------------------
+                -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+                ---------------------------
+                code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
             end loop;
 
     end if;
     code_retour := code_retour || '<br>Vous gagnez ' || px_gagne || ' PX pour cette action.<br>';
+
     return code_retour;
 end;
 $_$;

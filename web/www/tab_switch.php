@@ -91,6 +91,7 @@ function affiche_perso($perso_cod)
     $list_malus  = $perso->perso_malus();
     if (count($list_malus) > 0)
     {
+        $arr_malus = [] ;
         foreach ($list_malus as $malus)
         {
             $img            = $malus["tbonus_libc"];
@@ -104,7 +105,21 @@ function affiche_perso($perso_cod)
             {
                 $img = '<img src="/../images/interface/bonus/MALUS.png">';
             }
-            $ligne_malus .= '<span title="' . $bonus_libelle . ': ' . $bonus_valeur . ' sur ' . $bonus_nb_tours . '">' . $img . '</span><span class="badge-malus">' . $bonus_valeur . '</span>';
+            if (!isset($arr_malus[$malus["tbonus_libc"]]))
+            {
+                $arr_malus[$malus["tbonus_libc"]] = ["valeur"=>$bonus_valeur,
+                                                    "libelle"=>'<strong>'.$bonus_libelle . '</strong>:<br>' . $bonus_valeur . ' sur ' .$bonus_nb_tours,
+                                                    "img"=>$img ] ;
+            }
+            else
+            {
+                $arr_malus[$malus["tbonus_libc"]]["valeur"]+=$bonus_valeur;
+                $arr_malus[$malus["tbonus_libc"]]["libelle"].='<br>' . $bonus_valeur . ' sur ' . $bonus_nb_tours ;
+            }
+        }
+        foreach ($arr_malus as $malus)
+        {
+            $ligne_malus .= '<span title="' . $malus["libelle"] . '">' . $malus["img"] . '</span><span class="badge-malus">' . $malus["valeur"] . '</span>';
         }
     }
 

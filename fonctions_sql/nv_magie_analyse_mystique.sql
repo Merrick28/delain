@@ -199,6 +199,12 @@ begin
                               levt_visible, levt_attaquant, levt_cible)
         values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
     end if;
+
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+    ---------------------------
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
     return code_retour;
 end;
 $_$;

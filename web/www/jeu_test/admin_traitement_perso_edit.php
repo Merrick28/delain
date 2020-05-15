@@ -841,8 +841,13 @@ switch ($methode)
 
                     $fonc_trigger_param = array() ;
                     foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
                             $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
+                            if (isset($_POST[substr($key, 9)]))
+                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
+                            else
+                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
                         }
                     }
 
@@ -921,8 +926,13 @@ switch ($methode)
 
                     $fonc_trigger_param = array() ;
                     foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
                             $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
+                            if (isset($_POST[substr($key, 9)]))
+                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
+                            else
+                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
                         }
                     }
 

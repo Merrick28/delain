@@ -90,6 +90,7 @@ if ($verif_auth)
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';
 
+
             echo '<div class="bordiv">';
             $is_admin = true; ?>
             <style>
@@ -263,6 +264,7 @@ if ($verif_auth)
             }
             $template     = $twig->load('validation_login2_perso.twig');
             $options_twig = array(
+                '__VERSION'       => $__VERSION,
                 'COMPTE'          => $compte,
                 'DER_NEWS'        => $der_news,
                 'NEWS_COD'        => $news_cod,

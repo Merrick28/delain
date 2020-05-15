@@ -1,5 +1,13 @@
 {% extends 'index.twig' %}
 {% block contenu %}
+    <script>//# sourceURL=_validation_login2.twig.js
+        $(document).ready(function () {
+            $(".delain-tooltip").tooltip({
+                content: function () {
+                    return $(this).prop('title');
+                }});
+        });
+    </script>
     <div class="groupdiv">
         {% if COMPTE.compt_hibernation == 'O' %}
             Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}<br>

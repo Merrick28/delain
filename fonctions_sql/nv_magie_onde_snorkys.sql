@@ -145,6 +145,12 @@ begin
                     update perso set perso_pv = perso_pv - v_degats where perso_cod = ligne.perso_cod;
                 end if;
             end if;
+
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
         end loop;
 -- ensuite on fait les gens à 1 de distance
     for ligne in select perso_cod, perso_nom, perso_pv
@@ -208,12 +214,17 @@ begin
                     update perso set perso_pv = perso_pv - v_degats where perso_cod = ligne.perso_cod;
                 end if;
             end if;
+
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
         end loop;
     code_retour := code_retour || '<br>Vous gagnez ' || trim(to_char(px_gagne, '999')) || ' PX pour cette action.<br>';
+
     return code_retour;
 end;
-
-
 $_$;
 
 

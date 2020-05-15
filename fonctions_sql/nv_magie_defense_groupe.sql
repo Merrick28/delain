@@ -131,9 +131,14 @@ begin
                         ligne.perso_cod);
             end if;
 
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#ZONE#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
 
         end loop;
     code_retour := code_retour || '<br>Vous gagnez ' || px_gagne || ' PX pour cette action.<br>';
+
     return code_retour;
 end;
 $_$;
