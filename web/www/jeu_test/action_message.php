@@ -588,7 +588,7 @@ switch ($methode)
                     {
                         //$request = "select perso_cod,perso_nom, pcompt_compt_cod from perso join perso_compte on pcompt_perso_cod=perso_cod where perso_cod=?;";
                         // le perso ou son familier
-                        $request = "select perso_cod,perso_nom, pcompt_compt_cod from perso join perso_compte on pcompt_perso_cod=perso_cod where perso_cod=:perso_cod
+                        $request = "select perso_cod,perso_nom, COALESCE(pcompt_compt_cod,0) as pcompt_compt_cod from perso left join perso_compte on pcompt_perso_cod=perso_cod where perso_cod=:perso_cod
                                         union all
                                     select perso_cod,perso_nom, pcompt_compt_cod from perso_familier join perso_compte on pcompt_perso_cod=pfam_perso_cod join perso on perso_cod=pfam_familier_cod where pfam_familier_cod=:perso_cod AND perso_actif='O' ";
                         $stmt    = $pdo->prepare($request);
