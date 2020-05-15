@@ -264,6 +264,7 @@ if ($verif_auth)
             }
             $template     = $twig->load('validation_login2_perso.twig');
             $options_twig = array(
+                '__VERSION'       => $__VERSION,
                 'COMPTE'          => $compte,
                 'DER_NEWS'        => $der_news,
                 'NEWS_COD'        => $news_cod,

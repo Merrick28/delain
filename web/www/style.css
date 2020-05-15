@@ -782,12 +782,13 @@ div#colonne1:hover   {
 	color: white;
 	position: relative;
 	font-size: 8px;
-	top: 9px;
-	right: 20px;
+	top: 14px;
+	right: 18px;
 }
 
 .img-malus {
 	 margin-left: -8px;
+	vertical-align: middle;
 }
 
 .groupdiv .persotitre {
