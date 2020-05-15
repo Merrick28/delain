@@ -173,6 +173,12 @@ begin
     insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
                           levt_visible, levt_attaquant, levt_cible)
     values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
+
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#ZONE#
+    ---------------------------
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
     select into pv_cible perso_pv
     from perso
     where perso_cod = cible;
@@ -248,9 +254,17 @@ begin
                 code_retour := code_retour || ligne.perso_nom || ' a survécu à votre attaque<br><br>';
                 update perso set perso_pv = perso_pv - v_degats where perso_cod = ligne.perso_cod;
             end if;
+
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#ZONE#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
         end loop;
+
     code_retour := code_retour || '<br>Vous gagnez ' || trim(to_char(px_gagne, '9999990D99')) ||
                    ' PX pour cette action.<br>';
+
     return code_retour;
 end;
 $_$;

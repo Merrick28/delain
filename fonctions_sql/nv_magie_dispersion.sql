@@ -139,18 +139,20 @@ else
 		code_retour := code_retour||'monstre ';
 		end if;
 		code_retour := code_retour||' <b>'||v_nom_cible||'</b> grace à votre magie<br>';
+
 ----------- calcul de la distance de projection
 		des := lancer_des(1,100);
-                              if des < 50 then
-                                   v_distance := 1;
-                                  else
-                                   v_distance := 2;
-                             end if;
+    if des < 50 then
+        v_distance := 1;
+    else
+        v_distance := 2;
+    end if;
+
 --- impacte de la voie magique sur la distance
-	if v_voie_magique = 4 then
-	v_distance := v_distance + 1;
-code_retour := code_retour||'votre connaissance magique vous permet d''accroitre la distance de projection';
-         end if;
+    if v_voie_magique = 4 then
+        v_distance := v_distance + 1;
+        code_retour := code_retour||'votre connaissance magique vous permet d''accroitre la distance de projection';
+    end if;
 
 /*********************************************/
 /* DEBUT : Lancement projection du perso     */
@@ -166,106 +168,107 @@ code_retour := code_retour||'votre connaissance magique vous permet d''accroitre
 		end if;
 		position_arrivee2 := trajectoire_position(pos_attaquant,position_arrivee);
 		if position_arrivee2 != 2 then
-		update perso_position set ppos_pos_cod = position_arrivee2
-													where ppos_perso_cod = cible;
-		delete from lock_combat where lock_cible =cible;
-		delete from lock_combat where lock_attaquant = cible;
+        update perso_position set ppos_pos_cod = position_arrivee2
+                              where ppos_perso_cod = cible;
+        delete from lock_combat where lock_cible =cible;
+        delete from lock_combat where lock_attaquant = cible;
 
-		select into lien_perso_fam max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
-								and pfam_perso_cod =cible;
-		if found then
-				update perso_position	set ppos_pos_cod = position_arrivee2
-															where ppos_perso_cod = lien_perso_fam;
+        select into lien_perso_fam max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
+                    and pfam_perso_cod =cible;
+        if found then
+            update perso_position	set ppos_pos_cod = position_arrivee2
+                                  where ppos_perso_cod = lien_perso_fam;
 
-		end if;
+        end if;
 		else
-		code_retour := code_retour||'<br>Pb de position ! valeur de position_arrivee : '||to_char(coalesce(position_arrivee,0),'999999999')||',
-								valeur de position_attaquant : '||to_char(coalesce(pos_attaquant,0),'999999999')||',
-								valeur de position_arrivee2 : '||to_char(coalesce(position_arrivee2,0),'999999999');
+        code_retour := code_retour||'<br>Pb de position ! valeur de position_arrivee : '||to_char(coalesce(position_arrivee,0),'999999999')||',
+                    valeur de position_attaquant : '||to_char(coalesce(pos_attaquant,0),'999999999')||',
+                    valeur de position_arrivee2 : '||to_char(coalesce(position_arrivee2,0),'999999999');
 		end if;
 
 
-/*********************************************/
-/* DEBUT : calcul des dégats portes          */
-/*********************************************/
-               des := lancer_des(2,5);
-               degats_portes := des;
-				if presence_mur = 1 then
-		degats_portes := floor(degats_portes * v_distance);
-				end if;
-				code_retour := code_retour||'Vous projetez votre cible, qui subit alors <b>'||trim(to_char(degats_portes,'9999'))||'</b> points de dégâts.';
-				if presence_mur = 1 then
-				code_retour := code_retour||'<br>Elle vient s''écraser contre un mur';
-				end if;
-				etat_armure := f_use_armure(cible,degats_portes);
-				insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee)
-					values (1,lanceur,cible,degats_portes);
-				if etat_armure = 2 then
-				code_retour := code_retour||'Vous avez <b>brisé</b> l''armure de votre adversaire !<br>';
-				end if;
-				nouveau_pv_cible := v_pv_cible - degats_portes;
+    /*********************************************/
+    /* DEBUT : calcul des dégats portes          */
+    /*********************************************/
+    des := lancer_des(2,5);
+    degats_portes := des;
+    if presence_mur = 1 then
+		    degats_portes := floor(degats_portes * v_distance);
+    end if;
+    code_retour := code_retour||'Vous projetez votre cible, qui subit alors <b>'||trim(to_char(degats_portes,'9999'))||'</b> points de dégâts.';
+    if presence_mur = 1 then
+        code_retour := code_retour||'<br>Elle vient s''écraser contre un mur';
+    end if;
+    etat_armure := f_use_armure(cible,degats_portes);
+    insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee)
+      values (1,lanceur,cible,degats_portes);
+    if etat_armure = 2 then
+        code_retour := code_retour||'Vous avez <b>brisé</b> l''armure de votre adversaire !<br>';
+    end if;
+    nouveau_pv_cible := v_pv_cible - degats_portes;
 
-/*****************************************/
-/* DEBUT : coup porté : cible morte      */
-/*****************************************/
-if nouveau_pv_cible <= 0 then -- la cible a été tuée......
+    /*****************************************/
+    /* DEBUT : coup porté : cible morte      */
+    /*****************************************/
+    if nouveau_pv_cible <= 0 then -- la cible a été tuée......
 
-code_retour := code_retour||'Vous avez <b>tué</b> votre adversaire.<br>';
-texte_evt := '[attaquant] a projeté [cible] grace à sa magie lui infligeant '||trim(to_char(degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
+        code_retour := code_retour||'Vous avez <b>tué</b> votre adversaire.<br>';
+        texte_evt := '[attaquant] a projeté [cible] grace à sa magie lui infligeant '||trim(to_char(degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
 
-/* evts pour coup porté */
-insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-												values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);   if (lanceur != cible) then
-    insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-     	values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
-   end if;
+        /* evts pour coup porté */
+        insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+                            values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
+        if (lanceur != cible) then
+            insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+              values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
+        end if;
 
-		texte_mort := tue_perso_final(lanceur,cible);
-/*px_gagne := px_gagne + to_number(split_part(texte_mort,';',1),'9999999D99');*/
-/*code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99999'))||' PX pour cette action.';*/
-		texte_mort_px := split_part(texte_mort,';',2);
-		if (select perso_use_repart_auto from perso where perso_cod = lanceur) != 0 then
-	if trim(texte_mort_px) is not null then
-	code_retour := code_retour||texte_mort_px;
-	end if;
-	end if;
-/*****************************************/
-/* FIN   : coup porté : cible morte      */
-/*****************************************/
+        texte_mort := tue_perso_final(lanceur,cible);
+        /*px_gagne := px_gagne + to_number(split_part(texte_mort,';',1),'9999999D99');*/
+        /*code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99999'))||' PX pour cette action.';*/
+        texte_mort_px := split_part(texte_mort,';',2);
+        if (select perso_use_repart_auto from perso where perso_cod = lanceur) != 0 then
+            if trim(texte_mort_px) is not null then
+                code_retour := code_retour||texte_mort_px;
+            end if;
+        end if;
+    /*****************************************/
+    /* FIN   : coup porté : cible morte      */
+    /*****************************************/
 
-/*****************************************/
-/* DEBUT : coup porté : cible pas morte  */
-/*****************************************/
-	else -- cible pas tuée
-texte_evt := '[attaquant] a projeté [cible] grace a sa magie lui infligeant '||trim(to_char(degats_portes,'9999'))||' points de dégats !';
-	/* evts pour coups portes */
-insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-													values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
-   if (lanceur != cible) then
-    insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-     	values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
-   end if;
+    /*****************************************/
+    /* DEBUT : coup porté : cible pas morte  */
+    /*****************************************/
+	  else -- cible pas tuée
+        texte_evt := '[attaquant] a projeté [cible] grace a sa magie lui infligeant '||trim(to_char(degats_portes,'9999'))||' points de dégats !';
+          /* evts pour coups portes */
+        insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+                                  values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
+           if (lanceur != cible) then
+            insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+              values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
+           end if;
 
-								/*Action pour les PXs */
-insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee)
-	values (4,cible,lanceur,degats_portes);
+                        /*Action pour les PXs */
+        insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee)
+          values (4,cible,lanceur,degats_portes);
 
-	/*MAJ des PV désactivé à retravailler pour cette attaque*/
--- modif azaghal suite à bug..
+          /*MAJ des PV désactivé à retravailler pour cette attaque*/
+        -- modif azaghal suite à bug..
 
-update perso set perso_pv = perso_pv - degats_portes where perso_cod = cible;
+        update perso set perso_pv = perso_pv - degats_portes where perso_cod = cible;
 
-	-- update perso set perso_pv = nouveau_pv_cible where perso_cod = cible;
-code_retour := code_retour||'Votre adversaire a survécu à cette attaque. Il est maintenant <b>'||etat_perso(cible)||'</b>.<br>';
+          -- update perso set perso_pv = nouveau_pv_cible where perso_cod = cible;
+        code_retour := code_retour||'Votre adversaire a survécu à cette attaque. Il est maintenant <b>'||etat_perso(cible)||'</b>.<br>';
 
-/*code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99999'))||' PX pour cette action.';*/
-if code_retour is null then
-code_retour := 'erreur sur code_retour';
-end if;
-/*****************************************/
-/* FIN   : coup porté : cible pas morte  */
-/*****************************************/
-end if;
+        /*code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99999'))||' PX pour cette action.';*/
+        if code_retour is null then
+            code_retour := 'erreur sur code_retour';
+        end if;
+    /*****************************************/
+    /* FIN   : coup porté : cible pas morte  */
+    /*****************************************/
+    end if;
 /*********************************************/
 /* FIN : calcul des dégats portes          */
 /*********************************************/
@@ -336,7 +339,15 @@ end loop;
 /*****************************************/
 
 		-----------      Fin du bloc pour le jeu de troll   -------------------
+
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+    ---------------------------
+    -- cas particulier: on ne déclenche que si le sort n'a pas ciblé un familier, les dommages collatéraux ne compte pas comme cible du sort
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
 end if;
+
 return code_retour;
 end;$_$;
 

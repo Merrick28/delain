@@ -136,6 +136,12 @@ begin
             insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee, act_numero)
             values (2, lanceur, ligne.perso_cod, v_degats, v_act_numero);
             perform ajoute_bonus(ligne.perso_cod, 'POI', 3, 10);
+
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
         end loop;
 -- ensuite on fait les gens à 1 de distance
     for ligne in select perso_cod, perso_nom, perso_pv
@@ -189,13 +195,18 @@ begin
             insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee)
             values (2, lanceur, ligne.perso_cod, v_degats);
             perform ajoute_bonus(ligne.perso_cod, 'POI', 3, 10);
+
+            ---------------------------
+            -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+            ---------------------------
+            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+
         end loop;
     code_retour := code_retour || '<br>Vous gagnez ' || trim(to_char(px_gagne, '9999990D99')) ||
                    ' PX pour cette action.<br>';
+
     return code_retour;
 end;
-
-
 $_$;
 
 

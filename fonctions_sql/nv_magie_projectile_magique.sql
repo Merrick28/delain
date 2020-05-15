@@ -188,7 +188,14 @@ if pv_cible > total_degats then
 		px_gagne := px_gagne + to_number(split_part(texte_mort,';',1),'999999999');
 		code_retour := code_retour||'<p>Vous avez tué votre adversaire.<br>';
 		code_retour := code_retour||split_part(texte_mort,';',2);
-		code_retour := code_retour||'<hr><br>Vous gagnez '||trim(to_char(px_gagne,'9999990D99'))||' PX pour cette action.<br>';	end if;
+		code_retour := code_retour||'<hr><br>Vous gagnez '||trim(to_char(px_gagne,'9999990D99'))||' PX pour cette action.<br>';
+  end if;
+
+  ---------------------------
+  -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+  ---------------------------
+  code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
 	return code_retour;
 end;
 $BODY$

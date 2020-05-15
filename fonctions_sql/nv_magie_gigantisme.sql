@@ -171,6 +171,11 @@ begin
     end if;
     code_retour := code_retour || '<p>' || nom_cible ||
                    ' est bien trop grand pour grandir encore. Votre sort est sans effet<br>';
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+    ---------------------------
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
     return code_retour;
 end;
 $_$;

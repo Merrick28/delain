@@ -203,6 +203,11 @@ begin
                        ' PX pour cette action.<br>';
     end if;
 
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+    ---------------------------
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
     return code_retour;
 end;
 $_$;

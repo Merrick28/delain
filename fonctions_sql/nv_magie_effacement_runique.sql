@@ -125,6 +125,11 @@ begin
 	texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible] ';
 	perform insere_evenement(lanceur, cible, 14, texte_evt, 'O', '[sort_cod]=' || num_sort::text);
 
+    ---------------------------
+    -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
+    ---------------------------
+    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+
 	return code_retour;
 end;$_$;
 

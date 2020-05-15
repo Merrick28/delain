@@ -176,6 +176,7 @@ begin
     insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
                           levt_visible, levt_attaquant)
     values (nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
+
     return code_retour;
 end;
 $_$;
