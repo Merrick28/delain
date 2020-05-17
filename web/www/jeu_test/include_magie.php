@@ -2,6 +2,14 @@
 $sort_cod    = isset($sort_cod) ? $sort_cod : 0;
 $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
 ?>
+<script>//# sourceURL=include_magie.js
+    $(document).ready(function () {
+        $(".delain-tooltip").tooltip({
+            content: function () {
+                return $(this).prop('title');
+            }});
+    });
+</script>
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
     <input type="hidden" name="sort_cod" value="<?php echo $sort_cod; ?>">

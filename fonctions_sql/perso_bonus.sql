@@ -31,7 +31,7 @@ begin
 	end if;
 	code_retour := '';
 	for ligne in
-		select tonbus_libelle,bonus_valeur,bonus_nb_tours
+		select tonbus_libelle,bonus_valeur,bonus_nb_tours, COALESCE(tbonus_description, '') as tbonus_description
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
 		and bonus_tbonus_libc = tbonus_libc
@@ -41,7 +41,7 @@ begin
 			else
 				bonus_signe := '';
 			end if;
-			code_retour := code_retour||'<br>'||ligne.tonbus_libelle||'('||bonus_signe||trim(to_char(ligne.bonus_valeur,'99999999'))||' / '||trim(to_char(ligne.bonus_nb_tours,'999999'))||' tours).';
+			code_retour := code_retour||'<br><span class="delain-tooltip" title="' ||ligne.tbonus_description|| '">'||ligne.tonbus_libelle||'('||bonus_signe||trim(to_char(ligne.bonus_valeur,'99999999'))||' / '||trim(to_char(ligne.bonus_nb_tours,'999999'))||' tours).</span>';
 	end loop;
 
 	/* Marlyza - 11/06/2018 - ajout des bonus de carac */
