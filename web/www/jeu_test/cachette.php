@@ -136,7 +136,7 @@ if ($stmt->rowCount() == 0)
                     }
                 } else
                 {
-                    echo "Aucun objet dans la cachette !";
+                    echo "<tr><td colspan=\"3\" class=\"soustitre\">Aucun objet dans la cachette !</td></tr>";
                 }
                 ?>
 
