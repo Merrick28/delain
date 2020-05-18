@@ -48,51 +48,51 @@ if ($stmt->rowCount() == 0)
 
                 ?>
                 <table width="100%" cellspacing="2" cellapdding="2">
-                    <form name="ramasser" method="post" action="cachette.php">
-                        <input type="hidden" name="methode" value="suite">
+                <form name="ramasser" method="post" action="cachette.php">
+                <input type="hidden" name="methode" value="suite">
 
 
-                        <?php
+                <?php
 
-                        if ($nom != '')
-                        {
-                            echo("<tr><td colspan=\"3\" class=\"titre\"><p class='centrer'>" . $nom . "</p></td></tr>");
-                        }
-                        ?>
-                        <td>
-                            <hr>
-                            <em> Vous venez de tomber sur une cachette encore inviolée. Réjouissez vous, ou méfiez vous.
-                                Certaines trouvailles ne sont pas toujours bonnes à exploiter ...</em><br>
+                if ($nom != '')
+                {
+                    echo("<tr><td colspan=\"3\" class=\"titre\"><p class='centrer'>" . $nom . "</p></td></tr>");
+                }
+                ?>
+                <td>
+                <hr>
+                <em> Vous venez de tomber sur une cachette encore inviolée. Réjouissez vous, ou méfiez vous.
+                    Certaines trouvailles ne sont pas toujours bonnes à exploiter ...</em><br>
 
-                            <?php if ($fonction != '')
-                            {
-                                $fonction = str_replace('[perso]', $perso_cod, $fonction);
-                                $req      = "select $fonction as resultat";
-                                $stmt     = $pdo->query($req);
-                                $result   = $stmt->fetch();
-                                echo '<br>' . $result['resultat'];
-                            }
-                            if ($desc != '')
-                            {
-                                echo("<br><p\">" . $desc . "</p></td><br>");
-                            }
-                            if ($image != '')
-                            {
-                                echo("<td><br><p\"><img src=\"../avatars/" . $image . "\"></p></td>");
-                            }
-                            ?>
-                            <hr>
-                            <tr>
-                                <td colspan="3" class="soustitre"><p class="soustitre">Objets cachés</p></td>
-                            </tr>
+                <?php if ($fonction != '')
+            {
+                $fonction = str_replace('[perso]', $perso_cod, $fonction);
+                $req      = "select $fonction as resultat";
+                $stmt     = $pdo->query($req);
+                $result   = $stmt->fetch();
+                echo '<br>' . $result['resultat'];
+            }
+                if ($desc != '')
+                {
+                    echo("<br><p\">" . $desc . "</p></td><br>");
+                }
+                if ($image != '')
+                {
+                    echo("<td><br><p\"><img src=\"../avatars/" . $image . "\"></p></td>");
+                }
+                ?>
+                <hr>
+                <tr>
+                    <td colspan="3" class="soustitre"><p class="soustitre">Objets cachés</p></td>
+                </tr>
 
 
-                            <?php
-                            //******************************************
-                            //            O B J E T S                 **
-                            //******************************************
-                            // On recherche les objets dans la cachette
-                            $req  = "select obj_nom_generique,tobj_libelle,obj_cod,obj_nom,objcache_cod_cache_cod,objcache_obj_cod 
+                <?php
+                //******************************************
+                //            O B J E T S                 **
+                //******************************************
+                // On recherche les objets dans la cachette
+                $req  = "select obj_nom_generique,tobj_libelle,obj_cod,obj_nom,objcache_cod_cache_cod,objcache_obj_cod 
 															from objet_generique,type_objet,objets,cachettes_objets,cachettes
 															where cache_pos_cod = :position
 															and cache_cod = objcache_cod_cache_cod
@@ -100,41 +100,46 @@ if ($stmt->rowCount() == 0)
 															and obj_gobj_cod = gobj_cod
 															and gobj_tobj_cod = tobj_cod
 															order by tobj_libelle";
-                            $stmt = $pdo->prepare($req);
-                            $stmt = $pdo->execute(array(":position" => $position), $stmt);
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":position" => $position), $stmt);
 
 
-                            // on affiche la ligne d'en tête objets
-                            ?>
-                            <tr>
-                                <td class="soustitre2"><p><strong>Nom</strong></p></td>
-                                <td class="soustitre2"><p><strong>Type objet</strong></p></td>
-                                <td class="soustitre2"></td>
-                            </tr>
+                // on affiche la ligne d'en tête objets
+                ?>
 
-                            <?php
-                            if ($stmt->rowCount() != 0)
-                            {
 
-                                $nb_objets = 1;
-                                // on boucle sur les objets dans la cachette
-                                while ($result = $stmt->fetch())
-                                {
-                                    echo("<tr>");
-                                    $objet = $result['obj_cod'];
-                                    echo "<td class=\"soustitre2\"><p><strong>" . $result['obj_nom_generique'] . "</strong></p></td>";
-                                    echo "<td><p>" . $result['tobj_libelle'] . "</p></td>";
-                                    echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\"></p></td>";
-                                    echo "</tr>";
-                                }
-                            } else
-                            {
-                                echo "Aucun objet dans la cachette !";
-                            }
-                            ?>
-                </table>
-                <input type="submit" class="test centrer" value="Récupérer les objets cochés !">
-                </form>
+                <?php
+                if ($stmt->rowCount() != 0)
+                {
+                    ?>
+                    <tr>
+                        <td class="soustitre2"><p><strong>Nom</strong></p></td>
+                        <td class="soustitre2"><p><strong>Type objet</strong></p></td>
+                        <td class="soustitre2"></td>
+                    </tr>
+                    <?php
+                    $nb_objets = 1;
+                    // on boucle sur les objets dans la cachette
+                    while ($result = $stmt->fetch())
+                    {
+                        echo("<tr>");
+                        $objet = $result['obj_cod'];
+                        echo "<td class=\"soustitre2\"><p><strong>" . $result['obj_nom_generique'] . "</strong></p></td>";
+                        echo "<td><p>" . $result['tobj_libelle'] . "</p></td>";
+                        echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\"></p></td>";
+                        echo "</tr>";
+                        ?>
+                        </table>
+                        <input type="submit" class="test centrer" value="Récupérer les objets cochés !">
+                        </form>
+                        <?php
+                    }
+                } else
+                {
+                    echo "Aucun objet dans la cachette !";
+                }
+                ?>
+
                 <?php
                 break;
 
