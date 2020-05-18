@@ -18,7 +18,7 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
     <input type="hidden" name="type_lance" value="<?php echo $type_lance ?>">
     <?php
     include "../includes/constantes.php";
-    require_once G_CHE . "includes/fonctions.php";
+    require_once G_CHE . "includes/fonctions.php";a
 
     $req_sort  = "select sort_distance from sorts where sort_cod = $sort_cod ";
     $stmt      = $pdo->query($req_sort);

@@ -221,7 +221,8 @@ if ($erreur == 0)
             <form method="post">
             Editer les EA d\'un compteur:<select onchange="this.parentNode.submit();" name="tbonus_cod"><option value="0">Sélectionner le compteur</option>';
 
-    $stmt = $pdo->query("select tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle, tbonus_cod from bonus_type where tbonus_compteur='O' order by tbonus_libc");
+    // sortir les "E3(+)" : Exaltation, Excitation, Embrasement des compteurs configurables dans l'outil.
+    $stmt = $pdo->query("select tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle, tbonus_cod from bonus_type where tbonus_libc not in ('C01', 'C07', 'C08') and tbonus_compteur='O' order by tbonus_libc");
     while ($result = $stmt->fetch())
     {
         echo '<option value="' . $result['tbonus_cod'];

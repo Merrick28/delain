@@ -312,6 +312,26 @@ EffetAuto.Types = [
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (nombre entier).', validation: Validation.Types.Entier }
 		],
 	},
+	{	nom: 'ea_supprime_bm',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Suppression BM',
+		description: 'Supprime les effets d\'un Bonus/Malus.',
+		parametres: [
+			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être supprimé.' },
+			{ nom: 'trig_supp_bm_standard', type: 'checkbox', label: 'Supprimer les BM Standards', description: 'Cocher pour supprimer les BM Standards'},
+			{ nom: 'trig_supp_bm_cumulatif', type: 'checkbox', label: 'Supprimer les BM Cumulatifs', description: 'Cocher pour supprimer les BM Cumulatifs'},
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
 
@@ -642,6 +662,9 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 			case 'portee': valeur = portee; break;
 			case 'nombre': valeur = nombre; break;
 			case 'message': valeur = message; break;
+			default:
+				valeur = trigger_param["fonc_"+donnees.parametres[i].nom] ;
+				break;
 		}
 		html += EffetAuto.EcritLigneFormulaire(donnees.parametres[i], EffetAuto.num_courant, valeur, donnees.modifiable && !heritage);
 	}

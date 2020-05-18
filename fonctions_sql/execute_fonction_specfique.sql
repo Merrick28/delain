@@ -134,6 +134,9 @@ begin
 
     elsif code_fonction = 'resurrection_monstre' then
       select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'ea_supprime_bm' then
+      select into retour_fonction ea_supprime_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, ligne_fonction.fonc_trigger_param);
     end if;
 
     if coalesce(retour_fonction, '') != '' then
