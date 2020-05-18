@@ -100,7 +100,7 @@ if ($stmt->rowCount() == 0)
 															and obj_gobj_cod = gobj_cod
 															and gobj_tobj_cod = tobj_cod
 															order by tobj_libelle";
-                            $stmt = $pdo->prepare($req_cache);
+                            $stmt = $pdo->prepare($req);
                             $stmt = $pdo->execute(array(":position" => $position), $stmt);
 
 
