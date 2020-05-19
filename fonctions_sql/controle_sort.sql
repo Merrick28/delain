@@ -153,7 +153,7 @@ cout_pa := resultat;
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
-	if type_lancer < 0 then
+	if type_lancer < -1 then
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
@@ -257,7 +257,7 @@ cout_pa := resultat;
 -- ajout azaghal le 12/09/2008
 -- les sorts lancés depuis receptacles sont maintenant comptés pour évaluer la limite de 2
 -- 2019-10-01@marlyza idem pour les parchemins, et maintenant les objets magiques
-	if type_lancer != 3 then
+	if type_lancer not in (-1, 3) then
 		if not exists (select 1 from perso_nb_sorts
 			where pnbs_perso_cod = lanceur
 			and pnbs_sort_cod = num_sort) then

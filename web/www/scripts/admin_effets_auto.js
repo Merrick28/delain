@@ -332,6 +332,24 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
 		],
 	},
+	{	nom: 'ea_lance_sort',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Lance un sort',
+		description: 'Lance un sort sur une ou plusieurs cibles, si le sort est un sort de case, il sera lancé sur la case de la ou des cibles.',
+		parametres: [
+			{ nom: 'effet', type: 'Sort', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
 
@@ -502,6 +520,15 @@ EffetAuto.ChampBMCompteur = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampSort = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += EffetAuto.CopieListe ('liste_sort_modele', valeur);
+	html += '</select></label><br />';
+	return html;
+}
+
 
 EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	if (!valeur)
@@ -567,6 +594,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'BMCompteur':
 			html = pd + EffetAuto.ChampBMCompteur(parametre, numero, valeur) + pf;
+			break;
+		case 'Sort':
+			html = pd + EffetAuto.ChampSort(parametre, numero, valeur) + pf;
 			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;

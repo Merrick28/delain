@@ -1036,6 +1036,14 @@ if ($erreur == 0)
 						order by tonbus_libelle ";
                 echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
+                // Liste des sorts
+                $req = "select distinct dsort_dieu_cod, sort_cod, case when dsort_dieu_cod is null then 'Runique - ' else 'Divin - ' end || sort_nom || ' (' || case when sort_case='O' then 'case/' else '' end || case when sort_aggressif='O' then 'agressif)' when sort_soutien='O' then 'soutien)' else 'neutre)' end sort_nom
+                        from sorts
+                        left outer join dieu_sorts ON dsort_sort_cod = sort_cod
+                        order by dsort_dieu_cod desc ,sort_nom
+                                 ";
+                echo '<select id="liste_sort_modele" style="display:none;">' . $html->select_from_query($req, 'sort_cod', 'sort_nom') . '</select>';
+
 
                 ?>
                 <form method="post" onsubmit="return Validation.Valide ();">
