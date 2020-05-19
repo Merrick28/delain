@@ -10,8 +10,13 @@ CREATE OR REPLACE FUNCTION magie_commun_case(integer, integer, integer, integer)
 /*   $1 = lanceur                                                */
 /*   $2 = pos_cod                                                */
 /*   $3 = type lancer                                            */
+/*       -1 = EA                                                 */
 /*        0 = rune                                               */
 /*        1 = mémo                                               */
+/*        2 = réceptacle                                         */
+/*        3 = magie divince                                      */
+/*        4 = parcho                                             */
+/*        5 = objet                                              */
 /*   $4 = numéro du sort lancé                                   */
 /* Le code sortie est une chaine séparée par ;                   */
 /*  1 = sort réussi ?                                            */
@@ -127,7 +132,7 @@ begin
 		and pcomp_pcomp_cod = sort_comp_cod
 		and sort_cod = num_sort
 		and pcomp_pcomp_cod = comp_cod;
-	if not found then
+	if not found and type_lancer != -1 then
 		code_retour := code_retour || '0;<p>Erreur : infos compétence non trouvées !';
 		return code_retour;
 	end if;
@@ -151,6 +156,8 @@ begin
 		code_retour := code_retour || 'en utilisant un parchemin.<br><br>';
 	elsif type_lancer = 5 then
 		code_retour := code_retour||'en utilisant un objet.<br><br>';
+	elsif type_lancer = -1 then
+		code_retour := code_retour||'à l''aide d''un effet-automatique.<br><br>';
 	else
 		code_retour := code_retour || 'en utilisant la compétence <b>' || nom_comp || '</b>.<br><br>';
 	end if;
@@ -158,8 +165,7 @@ begin
 	-- on ajoute la magie à la position
 	update positions
 	set pos_magie = pos_magie + ((niveau_sort - 1) * 10)
-	where pos_cod = v_pos
-		and pos_cod <> 152794;	-- == -6 / -7 dans la Halle Merveilleuse. C’est temporaire, pour le marché de Léno 2013
+	where pos_cod = v_pos ;
 
 -- on rajoute le lancement du sort dans le total
 	select into niveau_religion dper_niveau
@@ -177,7 +183,7 @@ begin
 			values (lanceur, num_sort, 0);
 		end if;
 	end if;
-	if type_lancer not in (2,4,5) then
+	if type_lancer not in (-1,2,4,5) then
 		if niveau_religion < 2 then
 			update perso_nb_sorts_total
 			set pnbst_nombre = pnbst_nombre + 1
@@ -185,216 +191,228 @@ begin
 				and pnbst_perso_cod = lanceur;
 		end if;
 	end if;
-	update perso_nb_sorts_total
-	set pnbst_date_dernier_lancer = now()
-	where pnbst_sort_cod = num_sort
-		and pnbst_perso_cod = lanceur;
 
-	-- on enlève les PA
-	-- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l’affichage dans la page magie_php
-	select into resultat cout_pa_magie(lanceur, num_sort, type_lancer);
-	cout_pa := resultat;
+	if type_lancer = -1 then
+      -- cas d'un effet-auto (toujours réussi, pas de gains de PX, perte de PA, etc...)
+      facteur_reussite:= 100 ;
+      code_retour := '1;0;' || code_retour;
 
-		-- pour les sorts lancés à partir d'objet on met a jour le compteur (et on supprime le sort préparé)
-  facteur_malchance :=0 ;
-  if type_lancer = 5 then
-    select into facteur_malchance objsort_malchance from objets_sorts join objets_sorts_magie on objsortm_objsort_cod=objsort_cod where objsortm_perso_cod = lanceur ;
-		update objets_sorts set objsort_nb_utilisation=objsort_nb_utilisation+1 from objets_sorts_magie where objsortm_perso_cod = lanceur  and objsortm_objsort_cod=objsort_cod;
-		--On fera le ménage en front, on a besoin de connaitre l'objet utilisé pour les option de "relancer"
-		--delete from objets_sorts_magie where objsortm_perso_cod = lanceur ;
-	end if;
+  else
+      -- cas des sots normaux (non-EA)
 
-	-- on regarde s’il y a concentration
-	if type_lancer not in (2, 4, 5) then
-		select into compt concentration_perso_cod from concentrations
-		where concentration_perso_cod = lanceur;
-		if found then
-			v_comp_modifie := v_comp + 20;
-			delete from concentrations where concentration_perso_cod = lanceur;
-		else
-			v_comp_modifie = v_comp;
-		end if;
-	end if;
+      update perso_nb_sorts_total
+      set pnbst_date_dernier_lancer = now()
+      where pnbst_sort_cod = num_sort
+        and pnbst_perso_cod = lanceur;
 
--- modificateurs en fonction du niveau
---
-	if type_lancer = 0 then
-		v_malus_niveau := (2 - niveau_sort) * 10;
-		select into nb_sort_niveau
-			coalesce(sum(pnbst_nombre), 0)
-		from perso_nb_sorts_total, sorts
-		where pnbst_perso_cod = lanceur
-			and pnbst_sort_cod = sort_cod
-			and sort_niveau = niveau_sort;
-		if nb_sort_niveau is null then
-			nb_sort_niveau := 0;
-		end if;
-		v_malus_niveau := v_malus_niveau + floor(nb_sort_niveau/15);
-		if v_malus_niveau > 0 then
-			v_malus_niveau := 0;
-		end if;
-		v_comp_modifie := v_comp_modifie + v_malus_niveau;
-	end if;
---On rajoute les bonus ou malus de lancer impactés par les potions
-	v_comp_modifie := v_comp_modifie + valeur_bonus(lanceur, 'PMA');
---
--- fin modificateurs en fonction du niveau
---
-	if v_comp_modifie < 1 then
-		v_comp_modifie := 1;
-	end if;
-	if type_lancer not in (2, 4, 5) then
-		code_retour := code_retour || 'Votre chance de réussir (en tenant compte des modificateurs) est de <b>' || trim(to_char(v_comp_modifie, '9999')) || '</b> ';
-		-- on regarde si il y a un bonus pour avoir plus de chances de conserver ses runes
-		v_chances_runes := valeur_bonus(lanceur, 'PER');
-		-- on regarde si le sort est lancé
-		v_special := floor(v_comp_modifie/5); --Calcul des spéciaux
-		-- on regarde si la cible est bénie ou maudite
-		bonmal := valeur_bonus(lanceur, 'BEN') + valeur_bonus(lanceur, 'MAU');
-		if bonmal != 0 then
-			des := lancer_des3(1, 100, bonmal);
-		else
-			des := lancer_des(1, 100);
-		end if;
-		code_retour := code_retour || 'et votre lancer de dés est de <b>' || trim(to_char(des, '9999')) || '</b>.<br>';
-		if des > 96 then
-			-- echec critique
-			if type_lancer = 0 then
-				-- on enlève les runes
-				for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
-				loop
-					compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
-				end loop;
-			end if;
-			texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
+      -- on enlève les PA
+      -- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l’affichage dans la page magie_php
+      select into resultat cout_pa_magie(lanceur, num_sort, type_lancer);
+      cout_pa := resultat;
 
-			insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
-			values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
-
-			code_retour := code_retour || 'Il s’agit donc d’un échec automatique.<br><br>';
-			code_retour := '0;' || code_retour;
-			update perso set perso_renommee_magie = perso_renommee_magie - (temp_renommee*2), perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
-			return code_retour;
-		end if;
-
-		if des > v_comp_modifie then
-			-- sort loupé
-			-- renomme magique
-			update perso set perso_renommee_magie = perso_renommee_magie - temp_renommee, perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
-			code_retour := code_retour || 'Vous avez donc <b>échoué</b>.<br><br>';
-			-- on regarde si on améliore la comp
-			if v_comp <= getparm_n(1) then
-				code_retour := code_retour || 'Votre compétence est inférieure à ' || trim(to_char(getparm_n(1), '9999')) || ' %. Vous tentez une amélioration.<br>';
-				temp_ameliore_competence := ameliore_competence_px(lanceur, v_comp_cod, v_comp);
-				code_retour := code_retour || 'Votre lancer de dés est de <b>' || split_part(temp_ameliore_competence, ';', 1) || '</b>, ';
-				if split_part(temp_ameliore_competence, ';', 2) = '1' then
-					code_retour := code_retour || 'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>' || split_part(temp_ameliore_competence, ';', 3) || '</b><br><br>.';
-					px_gagne := px_gagne + 1;
-				else
-					code_retour := code_retour || 'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
-				end if;
-			end if;
-			if type_lancer = 0 then
-				for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
-				loop
-					if lancer_des(1, 100+v_chances_runes) <= getparm_n(33) then
-						compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
-					end if;
-				end loop;
-			end if;
-			texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
-
-			insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
-			values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
-
-			code_retour := '0;' || code_retour;
-			return code_retour;
-		end if;
-
-		-- a partir d’ici on est sur que le sort est porté.
-		if des <= 5 then
-			code_retour := code_retour || 'il s’agit donc d’une <b>réussite critique</b>.<br><br>';
-			cout_pa := floor(cout_pa / 2);
-			px_gagne := px_gagne + 1;
-		else
-			if des <= v_special then
-				code_retour := code_retour || 'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
-				cout_pa := cout_pa - 1;
-			else
-				code_retour := code_retour || 'Vous avez donc <b>réussi</b>.<br><br>';
-			end if;
-		end if;
-		facteur_reussite := v_comp_modifie - des;
-		-- renomme magique
-		update perso set perso_renommee_magie = perso_renommee_magie + temp_renommee where perso_cod = lanceur;
-		-- px
-		if (type_lancer = 0) then
-			px_gagne := px_gagne + niveau_sort - 1;
-		else
-			px_gagne := px_gagne + ((niveau_sort - 1)/3::numeric);
-		end if;
-
-		-- on tente l’amélioration
-		temp_ameliore_competence := ameliore_competence_px(lanceur, v_comp_cod, v_comp);
-		code_retour := code_retour || 'Votre jet d’amélioration est de <b>' || split_part(temp_ameliore_competence, ';', 1) || '</b>, ';
-		if split_part(temp_ameliore_competence, ';', 2) = '1' then
-			code_retour := code_retour || 'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>' || split_part(temp_ameliore_competence, ';', 3) || '</b>.<br><br>';
-		else
-			code_retour := code_retour || 'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
-		end if;
-
-		-- on supprime les runes si besoin est
-		if type_lancer = 0 then
-			for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
-			loop
-				compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
-			end loop;
-		end if;
-		-- on attribue les PX
-		update perso set perso_px = perso_px + px_gagne where perso_cod = lanceur;
-		-- on regarde pour la mémorisation
-		texte_memo := memo_sort(lanceur, num_sort);
-		if split_part(texte_memo, ';', 1) = '-1' then
-			code_retour := code_retour || 'Vous ne pouvez pas mémoriser ce sort car vous avez atteint votre limite de mémorisation.<br>';
-		end if;
-		if split_part(texte_memo, ';', 1) = '-2' then
-			code_retour := code_retour || 'Un familier mineur ne peut pas mémoriser de sorts de niveau 3 ou plus.<br>';
-		end if;
-		if split_part(texte_memo, ';', 1) = '1' then
-			code_retour := code_retour || 'Vous tentez de mémoriser le sort. Votre probabilité de mémorisation est de <b>' || split_part(texte_memo, ';', 2) || '</b>. ';
-			code_retour := code_retour || 'Votre lancer des dés est de <b>' || split_part(texte_memo, ';', 3) || '</b>.<br>';
-			if split_part(texte_memo, ';', 4) = '1' then
-				code_retour := code_retour || 'Vous avez donc <b>mémorisé</b> ce sort.<br><br>';
-				px_gagne := px_gagne + 1;
-			else
-				code_retour := code_retour || 'Vous n’avez pas réussi à mémoriser ce sort.<br><br>';
-			end if;
-		end if;
-	end if; -- fin réceptacle, parcho, objet
-
-  -- Il y a certains objets qui possède un facteur de malchance, faisant échoué le lancement du sort
-	if type_lancer = 5 and facteur_malchance >0 then
-	    des := 100 * lancer_des(1,100);   -- facteur_malchance a une précision à 0.01 %
-	    if des <= 100 * facteur_malchance then
-        code_retour := code_retour||'Vous n''avez pas réussi à utiliser l''objet, le sortilège à <b>échoué</b>.<br><br>';
-
-        texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
-
-        insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
-        values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
-
-		    update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
-        code_retour := '0;'||code_retour;
-        return code_retour;
+        -- pour les sorts lancés à partir d'objet on met a jour le compteur (et on supprime le sort préparé)
+      facteur_malchance :=0 ;
+      if type_lancer = 5 then
+        select into facteur_malchance objsort_malchance from objets_sorts join objets_sorts_magie on objsortm_objsort_cod=objsort_cod where objsortm_perso_cod = lanceur ;
+        update objets_sorts set objsort_nb_utilisation=objsort_nb_utilisation+1 from objets_sorts_magie where objsortm_perso_cod = lanceur  and objsortm_objsort_cod=objsort_cod;
+        --On fera le ménage en front, on a besoin de connaitre l'objet utilisé pour les option de "relancer"
+        --delete from objets_sorts_magie where objsortm_perso_cod = lanceur ;
       end if;
-	end if;
 
-	code_retour := '1;0;' || code_retour;
-	update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+      -- on regarde s’il y a concentration
+      if type_lancer not in (2, 4, 5) then
+        select into compt concentration_perso_cod from concentrations
+        where concentration_perso_cod = lanceur;
+        if found then
+          v_comp_modifie := v_comp + 20;
+          delete from concentrations where concentration_perso_cod = lanceur;
+        else
+          v_comp_modifie = v_comp;
+        end if;
+      end if;
 
-	if split_part(temp_ameliore_competence, ';', 2) = '1' then
-		px_gagne := px_gagne + 1;
-	end if;
+    -- modificateurs en fonction du niveau
+    --
+      if type_lancer = 0 then
+        v_malus_niveau := (2 - niveau_sort) * 10;
+        select into nb_sort_niveau
+          coalesce(sum(pnbst_nombre), 0)
+        from perso_nb_sorts_total, sorts
+        where pnbst_perso_cod = lanceur
+          and pnbst_sort_cod = sort_cod
+          and sort_niveau = niveau_sort;
+        if nb_sort_niveau is null then
+          nb_sort_niveau := 0;
+        end if;
+        v_malus_niveau := v_malus_niveau + floor(nb_sort_niveau/15);
+        if v_malus_niveau > 0 then
+          v_malus_niveau := 0;
+        end if;
+        v_comp_modifie := v_comp_modifie + v_malus_niveau;
+      end if;
+    --On rajoute les bonus ou malus de lancer impactés par les potions
+      v_comp_modifie := v_comp_modifie + valeur_bonus(lanceur, 'PMA');
+    --
+    -- fin modificateurs en fonction du niveau
+    --
+      if v_comp_modifie < 1 then
+        v_comp_modifie := 1;
+      end if;
+      if type_lancer not in (2, 4, 5) then
+        code_retour := code_retour || 'Votre chance de réussir (en tenant compte des modificateurs) est de <b>' || trim(to_char(v_comp_modifie, '9999')) || '</b> ';
+        -- on regarde si il y a un bonus pour avoir plus de chances de conserver ses runes
+        v_chances_runes := valeur_bonus(lanceur, 'PER');
+        -- on regarde si le sort est lancé
+        v_special := floor(v_comp_modifie/5); --Calcul des spéciaux
+        -- on regarde si la cible est bénie ou maudite
+        bonmal := valeur_bonus(lanceur, 'BEN') + valeur_bonus(lanceur, 'MAU');
+        if bonmal != 0 then
+          des := lancer_des3(1, 100, bonmal);
+        else
+          des := lancer_des(1, 100);
+        end if;
+        code_retour := code_retour || 'et votre lancer de dés est de <b>' || trim(to_char(des, '9999')) || '</b>.<br>';
+        if des > 96 then
+          -- echec critique
+          if type_lancer = 0 then
+            -- on enlève les runes
+            for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
+            loop
+              compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
+            end loop;
+          end if;
+          texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
+
+          insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
+          values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
+
+          code_retour := code_retour || 'Il s’agit donc d’un échec automatique.<br><br>';
+          code_retour := '0;' || code_retour;
+          update perso set perso_renommee_magie = perso_renommee_magie - (temp_renommee*2), perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
+          return code_retour;
+        end if;
+
+        if des > v_comp_modifie then
+          -- sort loupé
+          -- renomme magique
+          update perso set perso_renommee_magie = perso_renommee_magie - temp_renommee, perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
+          code_retour := code_retour || 'Vous avez donc <b>échoué</b>.<br><br>';
+          -- on regarde si on améliore la comp
+          if v_comp <= getparm_n(1) then
+            code_retour := code_retour || 'Votre compétence est inférieure à ' || trim(to_char(getparm_n(1), '9999')) || ' %. Vous tentez une amélioration.<br>';
+            temp_ameliore_competence := ameliore_competence_px(lanceur, v_comp_cod, v_comp);
+            code_retour := code_retour || 'Votre lancer de dés est de <b>' || split_part(temp_ameliore_competence, ';', 1) || '</b>, ';
+            if split_part(temp_ameliore_competence, ';', 2) = '1' then
+              code_retour := code_retour || 'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>' || split_part(temp_ameliore_competence, ';', 3) || '</b><br><br>.';
+              px_gagne := px_gagne + 1;
+            else
+              code_retour := code_retour || 'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
+            end if;
+          end if;
+          if type_lancer = 0 then
+            for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
+            loop
+              if lancer_des(1, 100+v_chances_runes) <= getparm_n(33) then
+                compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
+              end if;
+            end loop;
+          end if;
+          texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
+
+          insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
+          values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
+
+          code_retour := '0;' || code_retour;
+          return code_retour;
+        end if;
+
+        -- a partir d’ici on est sur que le sort est porté.
+        if des <= 5 then
+          code_retour := code_retour || 'il s’agit donc d’une <b>réussite critique</b>.<br><br>';
+          cout_pa := floor(cout_pa / 2);
+          px_gagne := px_gagne + 1;
+        else
+          if des <= v_special then
+            code_retour := code_retour || 'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
+            cout_pa := cout_pa - 1;
+          else
+            code_retour := code_retour || 'Vous avez donc <b>réussi</b>.<br><br>';
+          end if;
+        end if;
+        facteur_reussite := v_comp_modifie - des;
+        -- renomme magique
+        update perso set perso_renommee_magie = perso_renommee_magie + temp_renommee where perso_cod = lanceur;
+        -- px
+        if (type_lancer = 0) then
+          px_gagne := px_gagne + niveau_sort - 1;
+        else
+          px_gagne := px_gagne + ((niveau_sort - 1)/3::numeric);
+        end if;
+
+        -- on tente l’amélioration
+        temp_ameliore_competence := ameliore_competence_px(lanceur, v_comp_cod, v_comp);
+        code_retour := code_retour || 'Votre jet d’amélioration est de <b>' || split_part(temp_ameliore_competence, ';', 1) || '</b>, ';
+        if split_part(temp_ameliore_competence, ';', 2) = '1' then
+          code_retour := code_retour || 'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>' || split_part(temp_ameliore_competence, ';', 3) || '</b>.<br><br>';
+        else
+          code_retour := code_retour || 'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
+        end if;
+
+        -- on supprime les runes si besoin est
+        if type_lancer = 0 then
+          for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort
+          loop
+            compt := drop_rune(ligne_rune.srune_gobj_cod, lanceur);
+          end loop;
+        end if;
+        -- on attribue les PX
+        update perso set perso_px = perso_px + px_gagne where perso_cod = lanceur;
+        -- on regarde pour la mémorisation
+        texte_memo := memo_sort(lanceur, num_sort);
+        if split_part(texte_memo, ';', 1) = '-1' then
+          code_retour := code_retour || 'Vous ne pouvez pas mémoriser ce sort car vous avez atteint votre limite de mémorisation.<br>';
+        end if;
+        if split_part(texte_memo, ';', 1) = '-2' then
+          code_retour := code_retour || 'Un familier mineur ne peut pas mémoriser de sorts de niveau 3 ou plus.<br>';
+        end if;
+        if split_part(texte_memo, ';', 1) = '1' then
+          code_retour := code_retour || 'Vous tentez de mémoriser le sort. Votre probabilité de mémorisation est de <b>' || split_part(texte_memo, ';', 2) || '</b>. ';
+          code_retour := code_retour || 'Votre lancer des dés est de <b>' || split_part(texte_memo, ';', 3) || '</b>.<br>';
+          if split_part(texte_memo, ';', 4) = '1' then
+            code_retour := code_retour || 'Vous avez donc <b>mémorisé</b> ce sort.<br><br>';
+            px_gagne := px_gagne + 1;
+          else
+            code_retour := code_retour || 'Vous n’avez pas réussi à mémoriser ce sort.<br><br>';
+          end if;
+        end if;
+      end if; -- fin réceptacle, parcho, objet
+
+      -- Il y a certains objets qui possède un facteur de malchance, faisant échoué le lancement du sort
+      if type_lancer = 5 and facteur_malchance >0 then
+          des := 100 * lancer_des(1,100);   -- facteur_malchance a une précision à 0.01 %
+          if des <= 100 * facteur_malchance then
+            code_retour := code_retour||'Vous n''avez pas réussi à utiliser l''objet, le sortilège à <b>échoué</b>.<br><br>';
+
+            texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
+
+            insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
+            values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
+
+            update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+            code_retour := '0;'||code_retour;
+            return code_retour;
+          end if;
+      end if;
+
+      code_retour := '1;0;' || code_retour;
+      update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+
+      if split_part(temp_ameliore_competence, ';', 2) = '1' then
+        px_gagne := px_gagne + 1;
+      end if;
+
+  end if;
+
 
   ---------------------------
   -- les EA liés au lancement d'un sort (avec protagoniste null)

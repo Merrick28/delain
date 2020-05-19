@@ -802,8 +802,8 @@ begin
     valeur := f_lit_des_roliste(v_valeur);
 
     -- Ajout azaghal on teste un simili resiste magie pour chaque personne cible sauf si la cible est le lanceur
+    v_bloque_magie := 0;
     if v_cibles_type != 'S' then
-      v_bloque_magie := 0;
 
       -- on calcule le seuil de résistance (en fonction de l’int, la con le niv du sort et la marge de réussite
       v_RM1 := (ligne.perso_int * 5) + floor(ligne.perso_con / 10) + floor(ligne.perso_niveau / 2);

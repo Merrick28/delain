@@ -52,12 +52,13 @@ begin
 	code_retour := '0;';
 
 	select into cout_pa sort_cout from sorts where sort_cod = num_sort;
--- on controle les PA
+  -- on controle les PA
 	select into lanceur_pa,pos_lanceur
 		perso_pa,ppos_pos_cod
 		from perso,perso_position
 		where perso_cod = lanceur
 		and ppos_perso_cod = lanceur;
+
 	if num_sort in (56,62,144,151) then
 		select into v_passage_autorise pos_passage_autorise
 			from positions
@@ -74,14 +75,18 @@ begin
 			return code_retour;
 		end if;
 	end if;
-	-- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l'affichage dans la page magie_php
-select into resultat cout_pa_magie(lanceur,num_sort,type_lancer);
-cout_pa := resultat;
 
-	if lanceur_pa < cout_pa then
-		code_retour := 'Erreur : Vous n''avez pas assez de PA pour lancer ce sort !';
-		return code_retour;
-	end if;
+  if type_lancer != -1 then   -- on controle le nombre de PA sauf cas des EA
+        -- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l'affichage dans la page magie_php
+      select into resultat cout_pa_magie(lanceur,num_sort,type_lancer);
+      cout_pa := resultat;
+
+      if lanceur_pa < cout_pa then
+        code_retour := 'Erreur : Vous n''avez pas assez de PA pour lancer ce sort !';
+        return code_retour;
+      end if;
+  end if;
+
 -- on controle les runes si type lancer = 0
 	if type_lancer = 0 then
 		for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort loop
@@ -162,7 +167,7 @@ cout_pa := resultat;
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
-	if type_lancer < 0 then
+	if type_lancer < -1 then
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
@@ -199,8 +204,8 @@ cout_pa := resultat;
 		code_retour := 'Erreur : Vous ne pouvez pas lancer le sort surun mur !';
 		return code_retour;
 	end if;
--- sauf pour la magie divine on vérifie que le sort ait pas déjà été lancé plusieurs fois
-	if type_lancer != 3 then
+-- sauf pour la magie divine (et EA) on vérifie que le sort ait pas déjà été lancé plusieurs fois
+	if type_lancer not in (-1, 3) then
 		if not exists (select 1 from perso_nb_sorts
 			where pnbs_perso_cod = lanceur
 			and pnbs_sort_cod = num_sort) then
@@ -223,10 +228,10 @@ cout_pa := resultat;
 			where recsort_perso_cod = lanceur
 			and recsort_sort_cod = num_sort limit 1;
 		facteur_reussite := compt_rune;
-select into compt_rune recsort_cod from recsort
+    select into compt_rune recsort_cod from recsort
 			where recsort_perso_cod = lanceur
 			and recsort_sort_cod = num_sort limit 1;
-delete from recsort where recsort_cod = compt_rune;
+    delete from recsort where recsort_cod = compt_rune;
 	else
 		facteur_reussite := 0;
 	end if;
