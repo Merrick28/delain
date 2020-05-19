@@ -239,8 +239,7 @@ begin
 -- on ajoute la magie à la position
 	update positions
 	set pos_magie = pos_magie + ((niveau_sort - 1) * 10)
-	where pos_cod = pos_cible
-		and pos_cod <> 152794;	-- == -6 / -7 dans la Halle Merveilleuse. C’est temporaire, pour le marché de Léno 2013
+	where pos_cod = pos_cible ;
 
 -- on rajoute le lancement du sort dans le total
 	select into niveau_religion dper_niveau
@@ -269,7 +268,12 @@ begin
 		end if;
 	end if;
 
-	if type_lancer != -1 then
+	if type_lancer = -1 then
+
+	    -- cas des EA, le sort est toujours réussi (le test de proba de declencehement de l'EA est fait en amont)
+	    facteur_reussite:=100;
+
+  else
 
 	    -- traitement que l'on applique pas aux sorts lancés par les EA: cout en pa, gains de px, chance de réussite, etc.....
 

@@ -54,21 +54,28 @@ declare
 
 begin
 	code_retour := '0;';
-	select into cout_pa sort_cout from sorts where sort_cod = num_sort;
--- on controle les PA
-	select into lanceur_pa,pos_lanceur,v_etage_lanceur
-		perso_pa,ppos_pos_cod,pos_etage
-		from perso,perso_position,positions
-		where perso_cod = lanceur
-		and ppos_perso_cod = lanceur
-		and ppos_pos_cod = pos_cod;
--- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l'affichage dans la page magie_php
-select into resultat cout_pa_magie(lanceur,num_sort,type_lancer);
-cout_pa := resultat;
-	if lanceur_pa < cout_pa then
-		code_retour := 'Erreur : Vous n''avez pas assez de PA pour lancer ce sort !';
-		return code_retour;
-	end if;
+
+  select into cout_pa sort_cout from sorts where sort_cod = num_sort;
+
+  -- on controle les PA
+  select into lanceur_pa,pos_lanceur,v_etage_lanceur
+    perso_pa,ppos_pos_cod,pos_etage
+    from perso,perso_position,positions
+    where perso_cod = lanceur
+    and ppos_perso_cod = lanceur
+    and ppos_pos_cod = pos_cod;
+
+  if type_lancer != -1 then   -- on controle le nombre de PA sauf cas des EA
+      -- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l'affichage dans la page magie_php
+      select into resultat cout_pa_magie(lanceur,num_sort,type_lancer);
+      cout_pa := resultat;
+      if lanceur_pa < cout_pa then
+        code_retour := 'Erreur : Vous n''avez pas assez de PA pour lancer ce sort !';
+        return code_retour;
+      end if;
+
+  end if;
+
 -- on controle les runes si type lancer = 0
 	if type_lancer = 0 then
 		for ligne_rune in select * from sort_rune where srune_sort_cod = num_sort loop

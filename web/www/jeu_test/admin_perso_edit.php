@@ -836,9 +836,10 @@ if ($erreur == 0)
         echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
         // Liste des sorts
-        $req = "select  distinct dsort_dieu_cod, sort_cod, case when dsort_dieu_cod is null then 'Runique - ' else 'Divin - ' end || sort_nom || ' (' || case when sort_case='O' then 'case/' else '' end || case when sort_aggressif='O' then 'agressif)' when sort_soutien='O' then 'soutien)' else 'neutre)' end sort_nom
+        $req = "select  distinct dsort_dieu_cod, sort_cod, case when dsort_dieu_cod is null then '' else 'Divin - ' end || sort_nom || ' (' || case when sort_case='O' then 'case/' else '' end || case when sort_aggressif='O' then 'agressif)' when sort_soutien='O' then 'soutien)' else 'neutre)' end sort_nom
                         from sorts
                         left outer join dieu_sorts ON dsort_sort_cod = sort_cod
+                        where dsort_dieu_cod is null
                         order by dsort_dieu_cod desc ,sort_nom
                                  ";
         echo '<select id="liste_sort_modele" style="display:none;">' . $html->select_from_query($req, 'sort_cod', 'sort_nom') . '</select>';
@@ -1026,8 +1027,8 @@ if ($erreur == 0)
                     $alldieu = $dieu->getAll();
                     foreach ($alldieu as $detaildieu)
                     {
-                        $nom_dieu = $alldieu->dieu_nom;
-                        $cod_dieu = $alldieu->dieu_cod;
+                        $nom_dieu = $detaildieu->dieu_nom;
+                        $cod_dieu = $detaildieu->dieu_cod;
                         echo "<option value=\"$cod_dieu\">$nom_dieu</option>\n";
                     }
                     ?>

@@ -131,9 +131,11 @@ begin
 
       -- lancement du sort !
       execute v_fonction into v_sort_retour;
+      /*
       if v_sort_retour is not null and v_sort_retour <>'' then
           code_retour := code_retour || '<br />'|| v_sort_retour ;
       end if;
+      */
 
       -- On rajoute la ligne d’événements
       if v_texte_evt != '' then
