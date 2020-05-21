@@ -19,10 +19,6 @@ AS $_$/**************************************************/
 /*   $8 = Message d’événement associé             */
 /*   $9 = Paramètre additionnels                  */
 /**************************************************/
-/* Créé le 5 Septembre 2007                       */
-/* Modif le 22 mai 2014 (paramètre Durée)         */
-/* Modif le 10 juil 2014 (paramètre Perso ciblé)  */
-/**************************************************/
 declare
   -- Parameters
   v_source alias for $1;

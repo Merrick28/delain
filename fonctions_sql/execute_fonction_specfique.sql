@@ -1,8 +1,8 @@
 --
--- Name: execute_fonction_specifique(integer, integer, character varying(3)); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: execute_fonction_specifique(integer, integer, character varying(3), json); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION execute_fonction_specifique(integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION execute_fonction_specifique(integer, integer, integer, json) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*************************************************************/
 /* fonction execute_fonction_specifique                                */
@@ -12,11 +12,13 @@ CREATE OR REPLACE FUNCTION execute_fonction_specifique(integer, integer, integer
 /*   $1 = perso_cod : le perso_cod de la source              */
 /*   $2 = cible_cod : si nécessaire, le numéro de la cible   */
 /*   $3 = fonc_cod : la fonction specifique                  */
+/*   $4 = params : divers paramètre (en fonction des besoins)*/
 /*************************************************************/
 declare
 	v_perso_cod alias for $1;                   -- Le code de la source
 	v_cible_cod alias for $2;                   -- Le numéro de la cible
 	v_fonc_cod alias for $3;                    -- LA fonction qui c'est déclenchée!
+	v_param alias for $4;                       -- Les données (si besoin) à injecter pour l'effet de l'EA
 
 	code_retour text;                           -- Le retour de la fonction
 	retour_fonction text;                       -- Le résultat de l’exécution d’une fonction
@@ -33,13 +35,13 @@ begin
 	code_retour := '';
 
   -- ---------------------------------------------------------------------------
-  -- récupérer les infos du dernier declenchment
+  -- récupérer les infos du dernier declenchement
   select pfonc_ddda, pfonc_encours into v_ddda,v_encours from fonction_specifique_perso where pfonc_fonc_cod=v_fonc_cod and pfonc_perso_cod=v_perso_cod ;
   if not found then
       -- premier déclenchement de cette fonction pour ce perso, on créé une entrée pour les futurs déclenchements
       insert into fonction_specifique_perso(pfonc_fonc_cod, pfonc_perso_cod, pfonc_ddda, pfonc_encours) VALUES (v_fonc_cod, v_perso_cod, now(), 1);
   else
-      -- avant toute chose on vérifie le paramètre DEDA (délai entre 2 actions) s'il est définit
+    -- avant toute chose on vérifie le paramètre DEDA (Délai Entre 2 Actions) s'il est définit
       -- ainsi que les protections de recursivité (une action qui déclenche cette même action directement ou indirectement)
       if v_encours > 0 then
           return code_retour;
@@ -140,6 +142,9 @@ begin
 
     elsif code_fonction = 'ea_lance_sort' then
       select into retour_fonction ea_lance_sort(v_perso_cod, v_cible_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message);
+
+    elsif code_fonction = 'ea_projection' then
+      select into retour_fonction ea_projection(v_perso_cod, v_cible_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
     end if;
 
     if coalesce(retour_fonction, '') != '' then
@@ -150,7 +155,7 @@ begin
   end if;
 
   -- ---------------------------------------------------------------------------
-  -- en fin de déclenchement libération du jeton d'acion en cours
+  -- en fin de déclenchement libération du jeton d'action en cours (et d'eventuelles données injectées)
   update fonction_specifique_perso set pfonc_encours=pfonc_encours-1 where pfonc_fonc_cod=v_fonc_cod and pfonc_perso_cod=v_perso_cod ;
 
   -- ---------------------------------------------------------------------------
@@ -160,10 +165,10 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.execute_fonction_specifique(integer, integer, integer) OWNER TO delain;
+ALTER FUNCTION public.execute_fonction_specifique(integer, integer, integer, json) OWNER TO delain;
 
 --
--- Name: FUNCTION execute_fonction_specifique(integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
+-- Name: FUNCTION execute_fonction_specifique(integer, integer, integer, json); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION execute_fonction_specifique(integer, integer, integer) IS 'Exécute une fonction spécifique';
+COMMENT ON FUNCTION execute_fonction_specifique(integer, integer, integer, json) IS 'Exécute une fonction spécifique';

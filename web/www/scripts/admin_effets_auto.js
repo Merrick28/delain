@@ -83,6 +83,7 @@ EffetAuto.Triggers = {
 	"DEP": {description: "lorsqu’il se déplace.",
 		default:'deb_tour_generique',
 		declencheur:'Se déplace',
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 		parametres: [
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
 		]
@@ -350,6 +351,26 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
 		],
 	},
+	{	nom: 'ea_projection',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Projette ou Attire',
+		description: 'Projette ou attire à lui, le ou les cibles.',
+		parametres: [
+			{ nom: 'trig_sens', type: 'sens-projection', label: 'Sens de projection', description: 'Attire la cible à soit ou la repousse.' },
+			{ nom: 'force', type: 'texte', longueur: 5, label: 'Distance de projection/attraction', description: 'C\'est La force de projection/attaction: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts si recontre d\'un obstacle', description: 'Ce sont les dégats si la cible rencontre un obstacle: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
 
@@ -464,6 +485,16 @@ EffetAuto.ChampChoixBMCsens = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus dépasse le seuil</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus retombe en dessous du seuil</option></select></label>';
+	return html;
+}
+
+EffetAuto.ChampChoixSensProjection = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Repousse sur son passage ou éloigne les cibles.</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Attire les cibles à lui.</option></select></label>';
+	html += "<br><strong><u>Nota</u></strong>: la Projection/Attraction n'a aucun effet si le ciblage est  « Soi-même »<br />";
 	return html;
 }
 
@@ -589,6 +620,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 				valeur = parametre.valeur;
 			html = pd + EffetAuto.ChampLecture(parametre, valeur) + pf;
 			break;
+		case 'sens-projection':
+			html = pd + EffetAuto.ChampChoixSensProjection(parametre, numero, valeur) + pf;
+			break;
 		case 'BM':
 			html = pd + EffetAuto.ChampBM(parametre, numero, valeur) + pf;
 			break;
@@ -662,7 +696,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	var trig = EffetAuto.Triggers[declenchement];
 	if ( trig.parametres ) {
 		for (var i = 0; i < trig.parametres.length; i++) {
-			html += EffetAuto.EcritLigneFormulaire(trig.parametres[i], EffetAuto.num_courant, trigger_param["fonc_"+trig.parametres[i].nom], !heritage);
+			html += EffetAuto.EcritLigneFormulaire(trig.parametres[i], EffetAuto.num_courant, trigger_param["fonc_"+trig.parametres[i].nom] ? trigger_param["fonc_"+trig.parametres[i].nom] : '', !heritage);
 		}
 	}
 	if ( trig.remarque ) {

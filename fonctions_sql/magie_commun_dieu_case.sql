@@ -2,7 +2,7 @@
 -- Name: magie_commun_dieu_case(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.magie_commun_dieu_case(integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.magie_commun_dieu_case(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************************/
 /* function magie_commun_dieu : part commune à tous les sorts    */
