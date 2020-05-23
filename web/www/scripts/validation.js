@@ -9,17 +9,18 @@ Validation.Types = {
 	Numerique: /^[\+\-]?\d+[\.,]?\d*$/,
 	Entier: /^[\+\-]?\d+$/,
 	Roliste: /^[\+\-]?\d+([dD]\d+(\s*[\+\-]\s*\d+)?)?$/,
+	EntierOuVide: /^[\+\-]?\d+$|^$/,
 };
 
 // Ajoute à la liste des éléments à valider le champ dont l’id est donné
-Validation.Ajoute = function (id, patron) {
-	Validation.Champs.push({id: id, patron: patron});
+Validation.Ajoute = function (id, patron, type) {
+	Validation.Champs.push({id: id, patron: patron, type:type});
 };
 
 // Enlève de la liste le champ dont l’id est donné
-Validation.Enleve = function (id) {
+Validation.Enleve = function (id, type) {
 	for (var i = 0; i < Validation.Champs.length; i++) {
-		if (Validation.Champs[i].id == id) {
+		if (Validation.Champs[i].id == id && Validation.Champs[i].type == type) {
 			Validation.Champs.splice(i, 1);
 			i--;
 		}

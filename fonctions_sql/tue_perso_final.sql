@@ -151,10 +151,10 @@ if v_attaquant != v_cible then
 	/* on regarde si une fonction doit être exécutée  */
 	/**************************************************/
 	-- on exécute les fonctions déclenchées par le tueur (nécromanciens...)
-	code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'T');
+	code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'T', null);
 
 	-- on exécute les fonctions déclenchées par la mort de la cible (gelées, avatar, etc.)
-	code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'M');
+	code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'M', null);
 end if;
 
 	/**************************************************/

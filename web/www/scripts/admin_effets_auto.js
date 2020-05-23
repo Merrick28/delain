@@ -8,63 +8,63 @@ EffetAuto.Triggers = {
 			default:'deb_tour_generique',
 			declencheur:'Active sa DLT',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"M":   {description: "À sa mort.",
 			default:'deb_tour_generique',
 			declencheur:'Meurt',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"T":   {description: "lorsqu’il tue sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Tue sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"A":   {description: "lorsqu’il attaque sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AE":  {description: "lorsqu’il attaque sa cible qui esquive.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque sa cible qui esquive',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AT":  {description: "lorsqu’il attaque et touche sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque et touche sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AC":  {description: "lorsqu’il est attaqué.",
 			default:'deb_tour_generique',
 			declencheur:'Est attaqué',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"ACE": {description: "lorsqu’il esquive.",
 			default:'deb_tour_generique',
 			declencheur:'Esquive une attaque',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"ACT": {description: "lorsqu’il est touché.",
 			default:'deb_tour_generique',
 			declencheur:'Est touché par une attaque',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
@@ -72,10 +72,10 @@ EffetAuto.Triggers = {
 			declencheur:'Subit un changement de Bonus/Malus',
 			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 				{ nom: 'trig_compteur', type: 'BMCompteur', label: 'Décencheur', description: 'Le compteur.' },
 				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
-				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', validation: Validation.Types.Entier },
+				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', ValidationTrigger:true, validation: Validation.Types.Entier },
 				{ nom: 'trig_raz', type: 'checkbox', label: 'Remise à zéro du BM après déclenchement', description: 'Cocher pour remettre le BM à 0 après déclenchement'},
 				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nom de base)'},
 			]
@@ -85,14 +85,14 @@ EffetAuto.Triggers = {
 		declencheur:'Se déplace',
 		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 		]
 	},
 	"MAL": {description: "lorsqu’il lance un sort.",
 		default:'deb_tour_generique',
 		declencheur:'Lance un sort',
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
 			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
 			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
@@ -103,7 +103,7 @@ EffetAuto.Triggers = {
 		default:'deb_tour_generique',
 		declencheur:'Est la cible d\'un sort',
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
 			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
 			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
@@ -128,6 +128,7 @@ EffetAuto.Types = [
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Valeur', description: 'La force du bonus / malus appliqué : valeur fixe ou de la forme 1d6+2', validation: Validation.Types.Roliste },
 			{ nom: 'duree', type: 'entier', label: 'Durée', description: 'La durée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -158,6 +159,7 @@ EffetAuto.Types = [
 		description: 'Transforme une cible en crapaud. Image changée, messages agrémentés de CROAAAAs. Antidote : se faire embrasser.',
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier uniquement', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 1, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. La valeur 0 est remplacée par 6.' },
 			{ nom: 'proba', type: 'lecture', valeur: 100, label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).' },
@@ -176,6 +178,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'force', type: 'entier', longueur: 2, label: 'Puissance', description: 'Le nombre de PV impactés par l’effet, valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'nombre', type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -193,6 +196,7 @@ EffetAuto.Types = [
 		description: 'Applique des Malus standard de -25 de chances au toucher, -3 dégâts, +2 PA/attaque (proba 50% par cible), +3 PA/déplacements (proba 12% par cible).',
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier ou Familier', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 'Aucune limite', label: 'Nombre de cibles', description: 'Le nombre de cibles.' },
 			{ nom: 'message', type: 'lecture', valeur: '[cible] a été ralenti par [attaquant] et/ou [cible] a été effrayé par [attaquant].', label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »).' }
@@ -256,6 +260,7 @@ EffetAuto.Types = [
 		description: 'Modifie de façon permanente la voie magique des cibles (animation halloween).',
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier uniquement', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de cibles', description: 'Le nombre de cibles.', validation: Validation.Types.Entier },
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Entier },
@@ -308,6 +313,7 @@ EffetAuto.Types = [
 			{ nom: 'effet', type: 'choix_rouille', label: 'Message', description: 'Le message inscrit dans les événements de la cible.' },
 			{ nom: 'force', type: 'entier', longueur: 3, label: 'Usure', description: 'Le nombre de points d’usure soustraits à l’objet (100 -> l’objet, même comme neuf, est instantanément détruit).', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier ou Familier', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 1, label: 'Nombre de cibles', description: 'Le nombre de cibles.' },
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (nombre entier).', validation: Validation.Types.Entier }
@@ -327,6 +333,7 @@ EffetAuto.Types = [
 			{ nom: 'trig_supp_bm_standard', type: 'checkbox', label: 'Supprimer les BM Standards', description: 'Cocher pour supprimer les BM Standards'},
 			{ nom: 'trig_supp_bm_cumulatif', type: 'checkbox', label: 'Supprimer les BM Cumulatifs', description: 'Cocher pour supprimer les BM Cumulatifs'},
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -345,6 +352,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'effet', type: 'Sort', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -363,8 +371,9 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'trig_sens', type: 'sens-projection', label: 'Sens de projection', description: 'Attire la cible à soit ou la repousse.' },
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Distance de projection/attraction', description: 'C\'est La force de projection/attaction: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
-			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts si recontre d\'un obstacle', description: 'Ce sont les dégats si la cible rencontre un obstacle: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts si rencontre d\'un obstacle', description: 'Ce sont les dégats si la cible rencontre un obstacle: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -393,11 +402,11 @@ EffetAuto.remplirListe = function (type, numero) {
 		}
 	}
 
+	EffetAuto.EnleveValidation (numero, 'trigger');
 	document.getElementById('formulaire_declenchement_' + numero).innerHTML = EffetAuto.EcritNouveauDeclencheurAuto(type, numero);
 
-	// on a potentiellement changé le déclencheur, il faur remettre un effet par défaut
+	// on a potentiellement changé le déclencheur, il faut remettre un effet par défaut
 	EffetAuto.ChangeEffetAuto(EffetAuto.Triggers[type].default, numero);
-
 	Validation.Valide ();
 }
 
@@ -408,6 +417,18 @@ EffetAuto.CopieListe = function (listeid, selection) {
 		var opt_v = modele.options[i].value;
 		var opt_t = modele.options[i].text;
 		var selectionne = ((selection == opt_v) ? 'selected="selected"' : '' );
+		options += '<option value="' + opt_v + '" ' + selectionne + '>' + opt_t + '</option>';
+	}
+	return options;
+}
+
+EffetAuto.CopieListeMultiple = function (listeid, selection) {
+	var options = '';
+	var modele = document.getElementById(listeid);
+	for (var i = 0; i < modele.options.length; i++) {
+		var opt_v = modele.options[i].value;
+		var opt_t = modele.options[i].text;
+		var selectionne = ((selection.indexOf(opt_v) >= 0) ? 'selected="selected"' : '' );
 		options += '<option value="' + opt_v + '" ' + selectionne + '>' + opt_t + '</option>';
 	}
 	return options;
@@ -426,7 +447,7 @@ EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 		valeur = "";
 	var nom = "fonc_" + parametre.nom + numero.toString();
 	if (parametre.validation) {
-		Validation.Ajoute (nom, parametre.validation);
+		Validation.Ajoute (nom, parametre.validation, parametre.ValidationTrigger ? 'trigger' : 'effet');
 		EffetAuto.Champs[numero].push(nom);
 	}
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
@@ -442,7 +463,7 @@ EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 	var nom_select = "fonc_" + parametre.nom + "_unite" + numero.toString();
 
 	if (parametre.validation) {
-		Validation.Ajoute (nom, parametre.validation);
+		Validation.Ajoute (nom, parametre.validation, parametre.ValidationTrigger ? 'trigger' : 'effet');
 		EffetAuto.Champs[numero].push(nom);
 	}
 
@@ -507,18 +528,49 @@ EffetAuto.ChampChoixMAGeffet = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChangeCiblage = function (select) {
+	var numero = select.name.substr(10) ;
+	if ($(select).val()=="V") {
+		$('#div_trig_races'+numero).css("display", "");
+	} else {
+		$('#div_trig_races'+numero).css("display", "none");
+		$("select[id^='multi-select-'] option:selected").each(function () {
+			$(this).prop("selected", false);
+		});
+	}
+}
+
+
 EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select onchange="EffetAuto.ChangeCiblage(this);" name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="S" ' + ((valeur == 'S') ? 'selected="selected"' : '' ) + '>Soi-même</option>';
 	html += '<option value="A" ' + ((valeur == 'A') ? 'selected="selected"' : '' ) + '>Les Amis (Familier / Aventurier vs Monstre)</option>';
 	html += '<option value="E" ' + ((valeur == 'E') ? 'selected="selected"' : '' ) + '>Les Ennemis (Familier / Aventurier vs Monstre)</option>';
 	html += '<option value="R" ' + ((valeur == 'R') ? 'selected="selected"' : '' ) + '>Même Race</option>';
+	html += '<option value="V" ' + ((valeur == 'V') ? 'selected="selected"' : '' ) + '>Vorpale (Races Spécifiques)</option>';
 	html += '<option value="P" ' + ((valeur == 'P') ? 'selected="selected"' : '' ) + '>Aventuriers et Familiers (y compris sur un refuge)</option>';
+	html += '<option value="J" ' + ((valeur == 'J') ? 'selected="selected"' : '' ) + '>Aventuriers</option>';
+	html += '<option value="L" ' + ((valeur == 'L') ? 'selected="selected"' : '' ) + '>Son Compagnon (Familier si Aventurier et inversement)</option>';
 	html += '<option value="C" ' + ((valeur == 'C') ? 'selected="selected"' : '' ) + '>La cible actuelle du monstre</option>';
 	html += '<option value="O" ' + ((valeur == 'O') ? 'selected="selected"' : '' ) + '>Le protagoniste (tueur, tué, attaquant...)</option>';
 	html += '<option value="T" ' + ((valeur == 'T') ? 'selected="selected"' : '' ) + '>Tout le monde</option></select></label>';
+	return html;
+}
+
+
+EffetAuto.ChampCibleVorpale = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = "[]";
+	var nom = "fonc_" + parametre.nom + numero.toString();
+	var label = "div_" + parametre.nom + numero.toString();
+	var style = valeur == '[]' ? ' style="display:none;"' : '';
+
+	var html = '<label id="' + label +'"'+style+'><strong>' + parametre.label + '</strong>&nbsp;<select id="multi-select-' + nom + '" multiple name="' + nom + '[]">';
+	html += EffetAuto.CopieListeMultiple ('liste_race_modele', valeur);
+	html += '</select></label>';
+
 	return html;
 }
 
@@ -593,12 +645,13 @@ EffetAuto.Supprime = function (id, numero) {
 			document.getElementById('fonctions_annulees').value += ',' + numero.toString();
 			document.getElementById('fonction_num_' + numero).style.display = 'none';
 		}
-		EffetAuto.EnleveValidation (numero);
+		EffetAuto.EnleveValidation (numero, 'trigger');
+		EffetAuto.EnleveValidation (numero, 'effet');
 	}
 }
 
 EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable) {
-	var pd = '<p style="padding: 0px; margin: 0px;" title="' + parametre.description + '">';
+	var pd = '<p style="padding: 1px; margin: 1px;" title="' + parametre.description + '">';
 	var pf = '</p>';
 	var html = '';
 	var type = parametre.type;
@@ -649,6 +702,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'cible':
 			html = pd + EffetAuto.ChampCible(parametre, numero, valeur) + pf;
+			break;
+		case 'vorpale':
+			html = pd + EffetAuto.ChampCibleVorpale(parametre, numero, valeur) + pf;
 			break;
 		case 'choix_rouille':
 			html = pd + EffetAuto.ChampChoixRouille(parametre, numero, valeur) + pf;
@@ -738,6 +794,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	}
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
+	EffetAuto.setMultiSelect();
 }
 
 EffetAuto.EcritNouvelEffetAuto = function (type, numero) {
@@ -775,14 +832,35 @@ EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
 
 
 EffetAuto.ChangeEffetAuto = function (type, numero) {
-	EffetAuto.EnleveValidation(numero);
+	EffetAuto.EnleveValidation(numero, 'effet');
 	document.getElementById('formulaire_fonction_' + numero).innerHTML = EffetAuto.EcritNouvelEffetAuto(type, numero);
+	EffetAuto.setMultiSelect ();
 	Validation.Valide ();
 }
 
-EffetAuto.EnleveValidation = function (numero) {
+EffetAuto.setMultiSelect = function () {
+	//Enjoliver le selecteur de race multiple
+	$("select[id^='multi-select-']").each(function () {
+		if (! $(this).hasClass("ms-offscreen") ) {
+			$(this).multipleSelect({
+				width: '350px',
+				multiple: true,
+				filter: true,
+				multipleWidth: 150,
+				minimumCountSelected: 6,
+				countSelected: '&nbsp;&nbsp;# races sélectionnées',
+				animate: "slide",
+				selectAll: false,
+				maxHeight: 65,
+				showClear: true,
+			});
+		}
+	});
+}
+
+EffetAuto.EnleveValidation = function (numero, type) {
 	for (var i = 0; i < EffetAuto.Champs[numero].length; i++) {
-		Validation.Enleve (EffetAuto.Champs[numero][i]);
+		Validation.Enleve (EffetAuto.Champs[numero][i], type);
 	}
 };
 

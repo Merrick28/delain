@@ -4,10 +4,13 @@ ob_start();
 $pdo = new bddpdo;
 ?>
     <title>ÉDITION D’UN PERSO / MONSTRE</title>
+    <link href="../css/multiple-select.min.css?<?php echo $__VERSION; ?>" rel="stylesheet">
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
     <script language="javascript" src="../scripts/validation.js"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
-    <script language="javascript" src="../scripts/admin_effets_auto.js?20191130"></script>
+    <script language="javascript" src="../scripts/admin_effets_auto.js?<?php echo $__VERSION; ?>"></script>
+    <script language="javascript" src="../js/multiple-select.min.js?<?php echo $__VERSION; ?>"></script>
+
 <?php
 $erreur = 0;
 
@@ -843,6 +846,11 @@ if ($erreur == 0)
                         order by dsort_dieu_cod desc ,sort_nom
                                  ";
         echo '<select id="liste_sort_modele" style="display:none;">' . $html->select_from_query($req, 'sort_cod', 'sort_nom') . '</select>';
+
+        // Liste des races
+        $req = "select race_cod, race_nom from race order by race ";
+        echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
+
 
         ?>
         <form method="post" action="#" onsubmit="return Validation.Valide ();">

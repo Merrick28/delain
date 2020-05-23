@@ -70,7 +70,7 @@ begin
 	loop
 
       code_fonction := ligne_fonction.fonc_nom;
-      retour_fonction := execute_fonction_specifique(v_perso_cod, COALESCE(v_protagoniste,v_perso_cod), ligne_fonction.fonc_cod) ;
+      retour_fonction := execute_fonction_specifique(v_perso_cod, COALESCE(v_protagoniste,v_perso_cod), ligne_fonction.fonc_cod, null) ;
 
       if coalesce(retour_fonction, '') != '' then
         -- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
