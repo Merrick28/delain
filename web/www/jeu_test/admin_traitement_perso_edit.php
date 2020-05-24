@@ -921,8 +921,6 @@ switch ($methode)
                 {
                     //require "blocks/_block_admin_traitement_type_monstre_edit.php";
                     $fonc_effet  = $_POST['fonc_effet' . $numero];
-                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
                     $fonc_unite_valid  = $_POST['fonc_validite_unite' . $numero];
                     $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
                     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";

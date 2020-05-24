@@ -23,9 +23,20 @@ declare
 
 	code_retour text;          -- Le retour de la fonction
 	retour_fonction text;      -- Le résultat de l’exécution d’une fonction
-	ligne_fonction record;     -- Les données de la fonction
+	row record;                -- Les données de la fonction
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
+  v_gmon_nom text;           -- Le nom du monstre générique
+	v_do_it bool;              -- Executer la fonction
+
+	-- variable specifique au BMC
+	v_perso_nom text;          -- Nom du perso avan modification
+	v_nom text;                -- Racine du nom du monstre (ie sans le N°)
+	v_raz text;                -- Raz du compteur à réaliser?.
+
+	-- variable specifique au MAL / MAC
+	v_sort_aggressif text;     -- sort de agressif
+	v_sort_soutien text;       -- sort de agressif
 
 begin
 
@@ -36,34 +47,98 @@ begin
   --   select into v_cible_cod COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
 	-- end if;
 
+  v_raz := 'N';         -- pas de RAZ du compteur par défaut (pour type EA = BMC)
+
   -- le protagoniste est la cible en cours ou le perso lui même s'il n'y en a pas. --Marlyza - 2020-05-20
   select into v_cible_cod COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
 
-  -- eventuellement les fonction du monstre générique
-	select into v_gmon_cod perso_gmon_cod from perso where perso_cod = v_perso_cod;
+  -- Eventuellement les fonction du monstre générique
+	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
+	if not found then
+      v_gmon_cod:= null ;
+      v_gmon_nom:= null ;
+	end if;
+
 
   -- code de retour
 	code_retour := '';
 
   -- boucle sur toutes les fonctions specifiques sur l'évenement
-	for ligne_fonction in (
+	for row in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod))
 			and fonc_type = v_evenement
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
 		)
 	loop
-		code_fonction := ligne_fonction.fonc_nom;
 
-		-- --------------- dealing with data injection (seulement si pas déjà en cours) !
-    retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, ligne_fonction.fonc_cod, v_param) ;
+    -- par défaut on execute la fonction d'EA trouvée
+    v_do_it := true;
+    
+	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
+	  if v_evenement = 'BMC' then
+        if NOT (
+                (row.fonc_trigger_param->>'fonc_trig_compteur'::text = v_param->>'bonus_type'::text)
+            and (
+                  (       (row.fonc_trigger_param->>'fonc_trig_sens'::text = '1')
+                      and (v_param->>'valeur_avant'::text)::numeric<(row.fonc_trigger_param->>'fonc_trig_seuil'::text)::numeric
+                      and (v_param->>'valeur_apres'::text)::numeric>=(row.fonc_trigger_param->>'fonc_trig_seuil'::text)::numeric
+                  )
+                or
+                  (
+                          (row.fonc_trigger_param->>'fonc_trig_sens'::text = '-1')
+                      and (v_param->>'valeur_avant'::text)::numeric>(row.fonc_trigger_param->>'fonc_trig_seuil'::text)::numeric
+                      and (v_param->>'valeur_apres'::text)::numeric<=(row.fonc_trigger_param->>'fonc_trig_seuil'::text)::numeric
+                  )
+                )
+            )  then
+            
+            v_do_it := false ;    -- type BMC avec des conditions non-remplies pour cet EA (pas le bon compteur ou pas encore le passage de seuil)
 
-		if coalesce(retour_fonction, '') != '' then
-			-- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
-			code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
-		end if;
+        end if;
+	  end if;
+
+    -- seulement si tous les paramètres du triggers sont vérifiés
+    if v_do_it then
+
+        -- certaines EA on des déclencheurs qui font des actions:
+        if v_evenement = 'BMC' then -- changement de nom du perso (si monstre generique)
+            if (coalesce(row.fonc_trigger_param->>'fonc_trig_nom'::text, '') != '') and (v_gmon_nom is not null) then
+
+                v_nom:= substr(v_perso_nom, 1, COALESCE(NULLIF(strpos(v_perso_nom, ' (n°')-1,-1), char_length(v_perso_nom))) ;
+                update perso set perso_nom = replace(replace(row.fonc_trigger_param->>'fonc_trig_nom'::text,'[nom_generique]',v_gmon_nom), '[nom]', v_nom) ||' (n° '||trim(to_char(perso_cod,'99999999'))||')' where perso_cod=v_perso_cod;
+            end if;
+
+            if trim(row.fonc_trigger_param->>'fonc_trig_raz'::text) = 'O' then
+                v_raz := 'O' ;
+            end if;
+        end if;
+
+
+        -- --------------- maintenant executer la fonction de l'EA trouvée !
+        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+
+        if coalesce(retour_fonction, '') != '' then
+          code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+        end if;
+        
+    end if;
+    
 	end loop;
 
+
+  -- Pour les EA du type BMC, Post-traitement du raz (s'il y en a)
+  if  v_evenement = 'BMC' and v_raz = 'O' then
+      -- seulement pour les bonus du type compteur (et pas les bonus equipement)
+      select tbonus_compteur into v_raz from bonus_type where tbonus_libc = v_param->>'bonus_type'::text and tbonus_compteur='O' ;
+      if  v_raz = 'O' then
+          delete from bonus where bonus_perso_cod = v_perso_cod and  bonus_mode != 'E' and  bonus_tbonus_libc =  v_param->>'bonus_type'::text ;
+      end if;
+  end if;
+
+
+  -- gestion du texte de retour
 	if code_retour != '' then
 		code_retour := replace('<br /><b>Effets automatiques :</b><br />' || code_retour, '<br /><br />', '<br />') || '<br />';
 	end if;
