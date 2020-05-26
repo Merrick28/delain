@@ -127,7 +127,7 @@ begin
   -- On vérifie s'il y a un changement de BM, si oui on verifie le déclenchement des EA
   v_valeur_apres := valeur_bonus(v_perso, v_type);
   if v_valeur_apres != v_valeur_avant then
-      perform execute_effet_auto_bmc(v_perso, v_type, v_valeur_avant, v_valeur_apres);
+      perform execute_fonctions(v_perso, null, 'BMC', json_build_object('bonus_type', v_type, 'valeur_avant', v_valeur_avant, 'valeur_apres', v_valeur_apres) );
   end if;
 
   return v_retour;

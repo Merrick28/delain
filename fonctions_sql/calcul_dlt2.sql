@@ -255,7 +255,7 @@ begin
       code_retour2 := code_retour2 || '</p>';
     end if;
     if v_effets_auto = 1 and v_actif = 'O' then
-      code_retour2 := code_retour2 || execute_fonctions(personnage, null, 'D');
+      code_retour2 := code_retour2 || execute_fonctions(personnage, null, 'D', null);
     /*
           select into fonction_debut
             gmon_fonction_debut_dlt

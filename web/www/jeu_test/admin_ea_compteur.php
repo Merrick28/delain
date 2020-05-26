@@ -125,7 +125,11 @@ if ($erreur == 0)
                     $fonc_trigger_param = array() ;
                     foreach($_POST as $key => $val){
                         if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                            if (is_array($val)){
+                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] =  json_encode($val) ;
+                            } else {
+                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = $val ;
+                            }
                         } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
                             if (isset($_POST[substr($key, 9)]))
                                 $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
@@ -276,6 +280,10 @@ if ($erreur == 0)
                         order by dsort_dieu_cod desc ,sort_nom
                                  ";
         echo '<select id="liste_sort_modele" style="display:none;">' . $html->select_from_query($req, 'sort_cod', 'sort_nom') . '</select>';
+
+        // Liste des races
+        $req = "select race_cod, race_nom from race order by race ";
+        echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
 
         // Interface de saisie
         echo '<form method="post" onsubmit="return Validation.Valide ();">

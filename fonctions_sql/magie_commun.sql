@@ -629,7 +629,7 @@ begin
 -------------------------
 -- les EA liés au lancement d'un sort (avec protagoniste null)
 ---------------------------
-  code_retour := code_retour|| execute_effet_auto_mag(lanceur, null::integer, num_sort, 'L');
+  code_retour := code_retour || execute_fonctions(lanceur, null, 'MAL', json_build_object('num_sort', num_sort) );
 
 -- ---------------------------
 	code_retour := code_retour||';'||trim(to_char(px_gagne,'999999990.99'))||';'||trim(to_char(facteur_reussite,'99999999999'));

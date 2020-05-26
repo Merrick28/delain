@@ -1214,8 +1214,8 @@ begin
   /* on regarde si une fonction doit être exécutée  */
   /**************************************************/
   -- on exécute les fonctions déclenchées par l'attaque portée ou recue
-  code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'A');
-  code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'AC');
+  code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'A', null);
+  code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'AC', null);
   /* Fin modif Kahlann */
 
   --
@@ -1509,8 +1509,8 @@ begin
     /* on regarde si un EA doit être exécuté          */
     /**************************************************/
     -- on exécute les fonctions déclenchées par une attaque effectuee esquivee ou une attaque recue esquivee
-    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AE');
-    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACE');
+    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AE', null);
+    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACE', null);
     /* Fin modif Kahlann */
     --code_retour := code_retour || '<hr><b>Informations de débuggage : </b><br><i>' || debug_txt || '</i><br><hr>';
     /*insert into trace2 (trace2_texte) values (debug_txt);*/
@@ -1522,8 +1522,8 @@ begin
     /* on regarde si une fonction doit être exécutée  */
     /**************************************************/
     -- on exécute les fonctions déclenchées par une attaque effectuee qui touche ou une attaque recue qui touche
-    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AT');
-    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACT');
+    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AT', null);
+    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACT', null);
   /* Fin modif Kahlann */
   end if; -- fin esquive
   /************************************/

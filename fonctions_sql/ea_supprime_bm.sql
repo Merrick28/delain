@@ -19,10 +19,6 @@ AS $_$/**************************************************/
 /*   $8 = Message d’événement associé             */
 /*   $9 = Paramètre additionnels                  */
 /**************************************************/
-/* Créé le 5 Septembre 2007                       */
-/* Modif le 22 mai 2014 (paramètre Durée)         */
-/* Modif le 10 juil 2014 (paramètre Perso ciblé)  */
-/**************************************************/
 declare
   -- Parameters
   v_source alias for $1;
@@ -55,6 +51,8 @@ declare
   niveau_attaquant integer;
   code_retour text;
 
+  v_compagnon integer;        -- cod perso du familier si aventurier et de l'aventurier si familier
+
 begin
 
   -- texte du bonus
@@ -79,6 +77,19 @@ begin
   select into niveau_attaquant perso_niveau
   from perso
   where perso_cod = v_source;
+
+  -- on recupère le code de son compagnon (0 si pas de compagnon)
+  if v_type_source=1 then
+  	select into v_compagnon pfam_familier_cod from perso_familier inner join perso on perso_cod = pfam_familier_cod where pfam_perso_cod = v_source and perso_actif = 'O';
+  	if not found then
+  	    v_compagnon:=0;
+    end if;
+  else
+  	select into v_compagnon pfam_perso_cod from perso_familier inner join perso on perso_cod = pfam_perso_cod where pfam_familier_cod = v_source and perso_actif = 'O';
+  	if not found then
+  	    v_compagnon:=0;
+    end if;
+  end if;
 
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
@@ -105,6 +116,9 @@ begin
                        (v_cibles_type = 'A' and perso_type_perso = v_type_source) or
                        (v_cibles_type = 'E' and perso_type_perso != v_type_source) or
                        (v_cibles_type = 'R' and perso_race_cod = v_race_source) or
+                       (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
+                       (v_cibles_type = 'J' and perso_type_perso = 1) or
+                       (v_cibles_type = 'L' and perso_cod = v_compagnon) or
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or
                        (v_cibles_type = 'C' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or

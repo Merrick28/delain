@@ -36,7 +36,7 @@ declare
 ------------------------------------------------
 -- variables concernant la nouvelle position
 ------------------------------------------------
-	position alias for $2; 	-- pos_cod de destination
+	v_pos alias for $2; 	-- pos_cod de destination
 	x integer;					-- X
 	y integer;					-- Y
 	e integer;					-- Etage
@@ -97,7 +97,7 @@ begin
 --------------------------
 	select into x, y, e, f_deplace_arrivee, v_anticip
 		pos_x, pos_y, pos_etage, trim(pos_fonction_arrivee), pos_anticipation
-	from positions where pos_cod = position;
+	from positions where pos_cod = v_pos;
 	if not found then
 		code_retour := code_retour || E'1#Erreur : position de destination non trouvée !';
 		return code_retour;
@@ -116,7 +116,7 @@ begin
 		return code_retour;
 	end if;
 
-	if exists (select 1 from murs where mur_pos_cod = position) then
+	if exists (select 1 from murs where mur_pos_cod = v_pos) then
 		code_retour := code_retour || E'1#Erreur : vous ne pouvez vous rendre sur la destination ciblée. Il s’agit soit d’un mur, soit d’un endroit inaccessible par là...';
 		return code_retour;
 	end if;
@@ -132,11 +132,11 @@ begin
 		return code_retour;
 	end if;
 
-	if ancien_code_pos = position then
+	if ancien_code_pos = v_pos then
 		code_retour := code_retour || E'1#Erreur : position d’arrivée égale à la position de départ.';
 		return code_retour;
 	end if;
-	if distance(ancien_code_pos,position) > 1 then
+	if distance(ancien_code_pos,v_pos) > 1 then
 		code_retour := code_retour || E'1#Erreur : distance trop importante entre la position de départ et d’arrivée.';
 		return code_retour;
 	end if;
@@ -201,7 +201,7 @@ begin
 		pa_deplace := get_pa_dep(num_perso);
 
 		update perso_position
-		set ppos_pos_cod = cast(position as integer)
+		set ppos_pos_cod = cast(v_pos as integer)
 		where ppos_perso_cod = cast(num_perso as integer);
 
 		code_retour := code_retour || 'Déplacement effectué !';
@@ -209,7 +209,7 @@ begin
 ---------------------------
 -- les EA liés au déplacment
 ---------------------------
-    code_retour := code_retour || execute_fonctions(num_perso, num_perso, 'DEP') ;
+    code_retour := code_retour || execute_fonctions(num_perso, num_perso, 'DEP', json_build_object('ea_dep_ancien_pos_cod',ancien_code_pos)) ;
 
 ---------------------------
 -- on met un évènement
@@ -274,7 +274,7 @@ begin
 ---------------------------
 	if trim(f_deplace_arrivee) != '' and v_perso_pnj != 1 and v_type_perso = 1 then
 		f_deplace_arrivee := 'select ' || replace(f_deplace_arrivee, '[perso]', trim(to_char(num_perso, '99999999999999')));
-		f_deplace_arrivee := replace(f_deplace_arrivee, '[position]', trim(to_char(position, '99999999999999')));
+		f_deplace_arrivee := replace(f_deplace_arrivee, '[position]', trim(to_char(v_pos, '99999999999999')));
 
 		if trim(f_deplace_arrivee) is not null then
 			execute f_deplace_arrivee into result_deplace_arrivee;

@@ -46,10 +46,12 @@ function bm_progressivite($fonc_effet, $fonc_force)
 $contenu_page = '';
 ob_start();
 ?>
+    <link href="../css/multiple-select.min.css?<?php echo $__VERSION; ?>" rel="stylesheet">
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
-    <script language="javascript" src="../scripts/validation.js"></script>
+    <script language="javascript" src="../scripts/validation.js?<?php echo $__VERSION; ?>"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
     <script language="javascript" src="../scripts/admin_effets_auto.js?<?php echo $__VERSION; ?>"></script>
+    <script language="javascript" src="../js/multiple-select.min.js"></script>
     <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
         function updatePv() {
             objet = document.getElementById("ChampPvCalcul");
@@ -97,6 +99,7 @@ if ($erreur == 0)
 {
     if (isset($_POST['methode']))
     {
+        //echo"<pre>"; print_r($_POST); echo"</pre>";  die();
         include "admin_traitement_type_monstre_edit.php";
     }
     include "admin_edition_header.php";
@@ -1044,6 +1047,10 @@ if ($erreur == 0)
                         order by dsort_dieu_cod desc ,sort_nom
                                  ";
                 echo '<select id="liste_sort_modele" style="display:none;">' . $html->select_from_query($req, 'sort_cod', 'sort_nom') . '</select>';
+
+                // Liste des races
+                $req = "select race_cod, race_nom from race order by race ";
+                echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
 
 
                 ?>
