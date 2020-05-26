@@ -247,11 +247,11 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer) OWNER TO delain;
+ALTER FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer, json) OWNER TO delain;
 
 --
 -- Name: FUNCTION deb_tour_degats(integer, text, integer, character, text, numeric, text, integer); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer) IS 'Gère un effet automatique de type dégâts (de zone ou pas) au début de chaque tour (ou de type soin si la valeur est négative...)';
+COMMENT ON FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer, json) IS 'Gère un effet automatique de type dégâts (de zone ou pas) au début de chaque tour (ou de type soin si la valeur est négative...)';
 
