@@ -135,7 +135,7 @@ begin
     ---------------------------
     -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
     ---------------------------
-    code_retour := code_retour || execute_effet_auto_mag(lanceur, cible, num_sort, 'L') || execute_effet_auto_mag(cible, lanceur, num_sort, 'C');
+    code_retour := code_retour || execute_fonctions(lanceur, cible, 'MAL', json_build_object('num_sort', num_sort)) || execute_fonctions(cible, lanceur, 'MAC', json_build_object('num_sort', num_sort)) ;
 
     return code_retour;
 end;

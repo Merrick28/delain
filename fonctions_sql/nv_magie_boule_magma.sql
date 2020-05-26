@@ -258,7 +258,7 @@ begin
             ---------------------------
             -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#ZONE#
             ---------------------------
-            code_retour := code_retour || execute_effet_auto_mag(lanceur, ligne.perso_cod, num_sort, 'L') || execute_effet_auto_mag(ligne.perso_cod, lanceur, num_sort, 'C');
+            code_retour := code_retour || execute_fonctions(lanceur, ligne.perso_cod, 'MAL', json_build_object('num_sort', num_sort)) || execute_fonctions(ligne.perso_cod, lanceur, 'MAC', json_build_object('num_sort', num_sort)) ;
 
         end loop;
     code_retour := code_retour || '<br>Vous gagnez ' || trim(to_char(px_gagne, '9999990D99')) ||
