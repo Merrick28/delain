@@ -209,7 +209,7 @@ begin
 ---------------------------
 -- les EA liés au déplacment
 ---------------------------
-    code_retour := code_retour || execute_fonctions(num_perso, num_perso, 'DEP', json_build_object('ea_dep_ancien_pos_cod',ancien_code_pos)) ;
+    code_retour := code_retour || execute_fonctions(num_perso, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
 
 ---------------------------
 -- on met un évènement
