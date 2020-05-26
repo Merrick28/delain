@@ -4,12 +4,12 @@ ob_start();
 $pdo = new bddpdo;
 ?>
     <title>ÉDITION D’UN PERSO / MONSTRE</title>
-    <link href="../css/multiple-select.min.css?<?php echo $__VERSION; ?>" rel="stylesheet">
+    <link href="../css/multiple-select.min.css?v<?php echo $__VERSION; ?>" rel="stylesheet">
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
     <script language="javascript" src="../scripts/validation.js"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
-    <script language="javascript" src="../scripts/admin_effets_auto.js?<?php echo $__VERSION; ?>"></script>
-    <script language="javascript" src="../js/multiple-select.min.js?<?php echo $__VERSION; ?>"></script>
+    <script language="javascript" src="../scripts/admin_effets_auto.js?v<?php echo $__VERSION; ?>"></script>
+    <script language="javascript" src="../js/multiple-select.min.js?v<?php echo $__VERSION; ?>"></script>
 
 <?php
 $erreur = 0;

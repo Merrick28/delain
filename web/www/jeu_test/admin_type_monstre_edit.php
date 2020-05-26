@@ -46,12 +46,12 @@ function bm_progressivite($fonc_effet, $fonc_force)
 $contenu_page = '';
 ob_start();
 ?>
-    <link href="../css/multiple-select.min.css?<?php echo $__VERSION; ?>" rel="stylesheet">
+    <link href="../css/multiple-select.min.css?v<?php echo $__VERSION; ?>" rel="stylesheet">
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
     <script language="javascript" src="../scripts/validation.js?<?php echo $__VERSION; ?>"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
-    <script language="javascript" src="../scripts/admin_effets_auto.js?<?php echo $__VERSION; ?>"></script>
-    <script language="javascript" src="../js/multiple-select.min.js"></script>
+    <script language="javascript" src="../scripts/admin_effets_auto.js?v<?php echo $__VERSION; ?>"></script>
+    <script language="javascript" src="../js/multiple-select.min.js?v<?php echo $__VERSION; ?>"></script>
     <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
         function updatePv() {
             objet = document.getElementById("ChampPvCalcul");

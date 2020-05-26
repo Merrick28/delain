@@ -202,10 +202,12 @@ if ($erreur == 0)
     }
 
     //=======================================================================================
-    echo '  <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
+    echo '  <link href="../css/multiple-select.min.css?v'.$__VERSION.'" rel="stylesheet">
+            <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
             <script language="javascript" src="../scripts/validation.js"></script>
             <script language="javascript" src="../scripts/manip_css.js"></script>
-            <script language="javascript" src="../scripts/admin_effets_auto.js?'.$__VERSION.'"></script>
+            <script language="javascript" src="../scripts/admin_effets_auto.js?v'.$__VERSION.'"></script>
+            <script language="javascript" src="../js/multiple-select.min.js?v'.$__VERSION.'"></script>
             <script language="javascript"> 
                 // Paramètres de déclechement réduite aux BMC pour ces EA
                 $.each(EffetAuto.Triggers, function( d ) {  if (d != "BMC") delete EffetAuto.Triggers[d]; });

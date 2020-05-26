@@ -135,13 +135,13 @@ begin
 
       v_dist_proj := f_lit_des_roliste(v_force);   -- force de projection
 
-      if v_params->>'ea_dep_ancien_pos_cod'::text != '' then
+      if v_params->>'ancien_pos_cod'::text != '' then
 
           -- cas de déplacement, la projection se fait dans le la direction du déplacement
           if (v_params->>'fonc_trig_sens'::text = '1') then
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, (v_params->>'ea_dep_ancien_pos_cod'::text)::integer, v_position_source, v_dist_proj) ;
+              v_pos_projection := trajectoire_projection(ligne.pos_cod, (v_params->>'ancien_pos_cod'::text)::integer, v_position_source, v_dist_proj) ;
           else
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, (v_params->>'ea_dep_ancien_pos_cod'::text)::integer, v_dist_proj) ;
+              v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, (v_params->>'ancien_pos_cod'::text)::integer, v_dist_proj) ;
           end if;
 
       elseif v_position_source = ligne.pos_cod then
