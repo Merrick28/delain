@@ -1,6 +1,8 @@
 <?php
 
 include "blocks/_header_page_jeu.php";
+include_once '../includes/tools.php';
+
 $perso = $verif_connexion->perso;
 
 
@@ -23,22 +25,7 @@ while (false !== ($filename = readdir($rep)))
     }
 }
 
-function bm_progressivite($fonc_effet, $fonc_force)
-{
-    $pdo = new bddpdo;
 
-    $req = "select bonus_progressivite(:bm, :force) as progressivite";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
-    if ($progres = $stmt->fetch())
-    {
-        return $progres["progressivite"];
-    }
-    else
-    {
-        return 'O' ;
-    }
-}
 
 //
 //Contenu de la div de droite

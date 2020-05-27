@@ -380,8 +380,70 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
 		],
 	},
+	{	nom: 'ea_drop_objet',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Laisse tomber un objet',
+		description: 'Laisse tomber un objet au sol.',
+		parametres: [
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' },
+			{ nom: 'trig_objet', type: 'drop', label: 'Liste d’objet', description: 'Liste d’objet et taux de drop de chacun, chaque tirage laissera au sol un seul objet de cette liste.' }
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
+
+EffetAuto.addItem = function (elem, M)
+{
+	if ((elem.parent().find("tr[id^='row-']").length<M) || (M == 0))
+	{
+
+		var row = elem[0].id ;
+		var s = row.split('-') ;
+		var r = (1+1*s[2]);
+		var new_row = s[0]+'-'+s[1]+'-'+r+'-';
+		var new_elem = '<tr id="'+new_row+'" style="display: block;">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+		$(new_elem).insertAfter(elem);
+
+		//Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
+		$('*[id^="'+new_row+'"]').each(function( index ) {
+			if ($( this ).attr("data-entry"))
+			{
+				if ($( this ).attr("data-entry") == "val")
+				{
+					$( this ).val("");
+				}
+				else if ($( this ).attr("data-entry") == "text")
+				{
+					$( this ).text("");
+				}
+			}
+		});
+	}
+	else
+	{
+		alert('Il ne doit pas y avoir plus de '+M+' valeur(s) pour ce paramètre!')
+	}
+}
+
+EffetAuto.delItem = function  (elem, n)
+{
+	var min = (n>0 ? n : 1) ;
+	if ( elem.parent().find("tr[id^='row-']").length > min  )
+	{
+		elem.remove();
+	}
+	else
+	{
+		alert('Il doit rester au moins '+min+' valeur(s) pour ce paramètre!')
+	}
+}
 
 EffetAuto.videListe = function (numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
@@ -561,8 +623,7 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 
 
 EffetAuto.ChampCibleVorpale = function (parametre, numero, valeur) {
-	if (!valeur)
-		valeur = "[]";
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var nom = "fonc_" + parametre.nom + numero.toString();
 	var label = "div_" + parametre.nom + numero.toString();
 	var style = valeur == '[]' ? ' style="display:none;"' : '';
@@ -571,6 +632,30 @@ EffetAuto.ChampCibleVorpale = function (parametre, numero, valeur) {
 	html += EffetAuto.CopieListeMultiple ('liste_race_modele', valeur);
 	html += '</select></label>';
 
+	return html;
+}
+
+EffetAuto.ChampDropObjet = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomObjet = "obj_fonc_" + parametre.nom + numero.toString()+"_gobj_cod";
+	var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select name="' + nomObjet + '[]">';
+		html += EffetAuto.CopieListe ('liste_race_modele',  valeur.length ? valeur[i].gobj_cod : "");
+		html += '</select>&nbsp;<strong>Taux:<strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%&nbsp';
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-0-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
 	return html;
 }
 
@@ -690,6 +775,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'MAGeffet':
 			html = pd + EffetAuto.ChampChoixMAGeffet (parametre, numero, valeur) + pf;
+			break;
+		case 'drop':
+			html = pd + EffetAuto.ChampDropObjet (parametre, numero, valeur) + pf;
 			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;

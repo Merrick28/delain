@@ -838,22 +838,7 @@ switch ($methode)
                     $fonc_unite_valid  = 1 * $_POST['fonc_validite_unite' . $numero];
                     $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
                     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            if (is_array($val)){
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] =  json_encode($val) ;
-                            } else {
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = $val ;
-                            }
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite)
 						VALUES (:fonc_nom, :fonc_perso_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param, {$fonc_validite_sql})";
@@ -925,18 +910,7 @@ switch ($methode)
                     $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
                     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "UPDATE fonction_specifique
 						SET fonc_effet = :fonc_effet,

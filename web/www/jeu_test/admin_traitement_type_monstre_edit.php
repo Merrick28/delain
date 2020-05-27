@@ -342,22 +342,7 @@ switch ($methode)
                     $fonc_nom    = $_POST['fonction_type_' . $numero];
                     $fonc_effet  = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            if (is_array($val)){
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] =  json_encode($val) ;
-                            } else {
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = $val ;
-                            }
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param)
 						VALUES (:fonc_nom, :gmon_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param)";
@@ -430,18 +415,7 @@ switch ($methode)
                     //require "blocks/_block_admin_traitement_type_monstre_edit.php";
                     $fonc_effet  = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "UPDATE fonction_specifique
 						SET fonc_effet = :fonc_effet,
