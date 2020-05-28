@@ -8,63 +8,63 @@ EffetAuto.Triggers = {
 			default:'deb_tour_generique',
 			declencheur:'Active sa DLT',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"M":   {description: "À sa mort.",
 			default:'deb_tour_generique',
 			declencheur:'Meurt',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"T":   {description: "lorsqu’il tue sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Tue sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"A":   {description: "lorsqu’il attaque sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AE":  {description: "lorsqu’il attaque sa cible qui esquive.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque sa cible qui esquive',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AT":  {description: "lorsqu’il attaque et touche sa cible.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque et touche sa cible',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"AC":  {description: "lorsqu’il est attaqué.",
 			default:'deb_tour_generique',
 			declencheur:'Est attaqué',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"ACE": {description: "lorsqu’il esquive.",
 			default:'deb_tour_generique',
 			declencheur:'Esquive une attaque',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"ACT": {description: "lorsqu’il est touché.",
 			default:'deb_tour_generique',
 			declencheur:'Est touché par une attaque',
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			]
 	},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
@@ -72,9 +72,9 @@ EffetAuto.Triggers = {
 			declencheur:'Subit un changement de Bonus/Malus',
 			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 			parametres: [
-				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 				{ nom: 'trig_compteur', type: 'BMCompteur', label: 'Décencheur', description: 'Le compteur.' },
-				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
+				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu’il retombe en dessous.' },
 				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', ValidationTrigger:true, validation: Validation.Types.Entier },
 				{ nom: 'trig_raz', type: 'checkbox', label: 'Remise à zéro du BM après déclenchement', description: 'Cocher pour remettre le BM à 0 après déclenchement'},
 				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nom de base)'},
@@ -85,28 +85,28 @@ EffetAuto.Triggers = {
 		declencheur:'Se déplace',
 		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 		]
 	},
 	"MAL": {description: "lorsqu’il lance un sort.",
 		default:'deb_tour_generique',
 		declencheur:'Lance un sort',
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
-			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
-			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
-			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
-			{ nom: 'trig_effet', type: 'MAGeffet', label: 'Les effets', description: 'Y-a-t-il un effet de l\'EA pour chaque cible ou juste un seul effet. ATTENTION si un effet par cible est sélectionné et qu\'il n\'y a aucune cible alors l\'effet ne sera pas déclenché.' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l’effet sur les sorts Benefiques' },
+			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l’effet sur les sorts Agressifs' },
+			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l’effet sur les sorts Neutres (ni agressif, ni benefique)' },
+			{ nom: 'trig_effet', type: 'MAGeffet', label: 'Les effets', description: 'Y-a-t-il un effet de l’EA pour chaque cible ou juste un seul effet. ATTENTION si un effet par cible est sélectionné et qu’il n’y a aucune cible alors l’effet ne sera pas déclenché.' },
 		]
 	},
 	"MAC": {description: "lorsqu’il est ciblé par un sort.",
 		default:'deb_tour_generique',
-		declencheur:'Est la cible d\'un sort',
+		declencheur:'Est la cible d’un sort',
 		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
-			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l\'effet sur les sorts Benefiques' },
-			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l\'effet sur les sorts Agressifs' },
-			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l\'effet sur les sorts Neutres (ni agressif, ni benefique)' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l’effet sur les sorts Benefiques' },
+			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l’effet sur les sorts Agressifs' },
+			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l’effet sur les sorts Neutres (ni agressif, ni benefique)' },
 		]
 	},
 }
@@ -124,15 +124,16 @@ EffetAuto.Types = [
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
 			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
-			{ nom: 'cumulatif', type: 'cumulatif', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n\'est pas [cumulable].' },
+			{ nom: 'cumulatif', type: 'cumulatif', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n’est pas [cumulable].' },
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Valeur', description: 'La force du bonus / malus appliqué : valeur fixe ou de la forme 1d6+2', validation: Validation.Types.Roliste },
 			{ nom: 'duree', type: 'entier', label: 'Durée', description: 'La durée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.', commentaires:' (<i>mettre -1 pour une portée sur tout l’étage</i>)', validation: Validation.Types.Entier },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
 	{	nom: 'titre',
@@ -160,7 +161,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier uniquement', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 1, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. La valeur 0 est remplacée par 6.' },
 			{ nom: 'proba', type: 'lecture', valeur: 100, label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).' },
 			{ nom: 'message', type: 'lecture', valeur: '[attaquant] a transformé [cible] en crapaud !', label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »).' }
@@ -180,7 +181,8 @@ EffetAuto.Types = [
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'nombre', type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.', commentaires:' (<i>mettre -1 pour une portée sur tout l’étage</i>)', validation: Validation.Types.Entier },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés, suffixé de « causant X dégâts » ou « redonnant X PVs » (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de l’attaquant, [cible] celui de la cible.' }
 		],
@@ -197,7 +199,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier ou Familier', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 'Aucune limite', label: 'Nombre de cibles', description: 'Le nombre de cibles.' },
 			{ nom: 'message', type: 'lecture', valeur: '[cible] a été ralenti par [attaquant] et/ou [cible] a été effrayé par [attaquant].', label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »).' }
 		],
@@ -229,7 +231,7 @@ EffetAuto.Types = [
 		description: 'Invoque plusieurs monstres du type donné. Typiquement, les gelées lors de leur mort.',
 		parametres: [
 			{ nom: 'effet', type: 'monstre', label: 'Type de monstre', description: 'Le type de monstre à invoquer.' },
-			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de monstres invoqués', description: 'Le nombre de monstres invoqués.', validation: Validation.Types.Entier },
 		],
 	},
@@ -245,7 +247,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100.', validation: Validation.Types.Entier },
 			{ nom: 'effet', type: 'monstre', label: 'Type de monstre', description: 'Le type de monstre à invoquer.' },
-			{ nom: 'portee', type: 'lecture', valeur: 'Étage', label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 'Étage', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de monstres invoqués', description: 'Le nombre de monstres invoqués.', validation: Validation.Types.Entier },
 		],
 	},
@@ -261,7 +263,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier uniquement', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de cibles', description: 'Le nombre de cibles.', validation: Validation.Types.Entier },
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Entier },
 			{ nom: 'message', type: 'lecture', valeur: 'La créature d’Haloween a modifié la nature magique de [cible]', label: 'Message', description: 'Le message apparaissant dans les événements.' }
@@ -314,7 +316,7 @@ EffetAuto.Types = [
 			{ nom: 'force', type: 'entier', longueur: 3, label: 'Usure', description: 'Le nombre de points d’usure soustraits à l’objet (100 -> l’objet, même comme neuf, est instantanément détruit).', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'lecture', valeur: 'Aventurier ou Familier', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet.' },
+			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 1, label: 'Nombre de cibles', description: 'Le nombre de cibles.' },
 			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (nombre entier).', validation: Validation.Types.Entier }
 		],
@@ -327,17 +329,18 @@ EffetAuto.Types = [
 		modifiable: true,
 		bm_compteur: true,
 		affichage: 'Suppression BM',
-		description: 'Supprime les effets d\'un Bonus/Malus.',
+		description: 'Supprime les effets d’un Bonus/Malus.',
 		parametres: [
 			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être supprimé.' },
 			{ nom: 'trig_supp_bm_standard', type: 'checkbox', label: 'Supprimer les BM Standards', description: 'Cocher pour supprimer les BM Standards'},
 			{ nom: 'trig_supp_bm_cumulatif', type: 'checkbox', label: 'Supprimer les BM Cumulatifs', description: 'Cocher pour supprimer les BM Cumulatifs'},
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.', commentaires:' (<i>mettre -1 pour une portée sur tout l’étage</i>)', validation: Validation.Types.Entier },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
 	{	nom: 'ea_lance_sort',
@@ -353,10 +356,11 @@ EffetAuto.Types = [
 			{ nom: 'effet', type: 'Sort', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.', commentaires:' (<i>mettre -1 pour une portée sur tout l’étage</i>)', validation: Validation.Types.Entier },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
 	{	nom: 'ea_projection',
@@ -370,14 +374,15 @@ EffetAuto.Types = [
 		description: 'Projette ou attire à lui, le ou les cibles.',
 		parametres: [
 			{ nom: 'trig_sens', type: 'sens-projection', label: 'Sens de projection', description: 'Attire la cible à soit ou la repousse.' },
-			{ nom: 'force', type: 'texte', longueur: 5, label: 'Distance de projection/attraction', description: 'C\'est La force de projection/attaction: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
-			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts si rencontre d\'un obstacle', description: 'Ce sont les dégats si la cible rencontre un obstacle: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'force', type: 'texte', longueur: 5, label: 'Distance de projection/attraction', description: 'C’est La force de projection/attaction: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts si rencontre d’un obstacle', description: 'Ce sont les dégats si la cible rencontre un obstacle: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
-			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
+			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.', commentaires:' (<i>mettre -1 pour une portée sur tout l’étage</i>)', validation: Validation.Types.Entier },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
 	{	nom: 'ea_drop_objet',
@@ -392,7 +397,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_objet', type: 'drop', label: 'Liste d’objet', description: 'Liste d’objet et taux de drop de chacun, chaque tirage laissera au sol un seul objet de cette liste.' }
 		],
 	},
@@ -514,9 +519,13 @@ EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	}
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
-	
-	return '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/></label>';
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>';
+	if (parametre.commentaires) html += parametre.commentaires;
+	html += '</label>';
+	return html;
 }
+
 
 EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 	if (!valeur)
@@ -626,7 +635,7 @@ EffetAuto.ChampCibleVorpale = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var nom = "fonc_" + parametre.nom + numero.toString();
 	var label = "div_" + parametre.nom + numero.toString();
-	var style = valeur == '[]' ? ' style="display:none;"' : '';
+	var style = valeur.length == 0 ? ' style="display:none;"' : '';
 
 	var html = '<label id="' + label +'"'+style+'><strong>' + parametre.label + '</strong>&nbsp;<select id="multi-select-' + nom + '" multiple name="' + nom + '[]">';
 	html += EffetAuto.CopieListeMultiple ('liste_race_modele', valeur);

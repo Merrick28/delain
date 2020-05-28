@@ -111,15 +111,12 @@ begin
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
 
-/*
-select  (('{"fonc_trig_races": "[\"1\",\"2\",\"3\"]"}'::json)->>'fonc_trig_races')::jsonb ,   ('["'||3::text||'"]')::jsonb;
+  -- Si le ciblage est limité par la VUE on ajuste la distance max
+  if (v_params->>'fonc_trig_vue')::text = 'O' then
+      v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
+  end if;
 
 
-select  (('{"fonc_trig_races": ["1","2","3"]}'::json)->>'fonc_trig_races')::jsonb ,   ('["'||3::text||'"]')::jsonb;
-
-
-
- */
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con
                 from perso
@@ -130,10 +127,10 @@ select  (('{"fonc_trig_races": ["1","2","3"]}'::json)->>'fonc_trig_races')::json
                 where perso_actif = 'O'
                       and perso_tangible = 'O'
                       -- À portée
-                      and pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)
-                      and pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)
+                      and ((pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)) or v_distance=-1)
+                      and ((pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)) or v_distance=-1)
                       and pos_etage = v_et_source
-                      and trajectoire_vue(pos_cod, v_position_source) = '1'
+                      and ( trajectoire_vue(pos_cod, v_position_source) = '1' or (v_params->>'fonc_trig_vue')::text != 'O')
                       -- Hors refuge si on le souhaite
                       and (v_cibles_type = 'P' or coalesce(lieu_refuge, 'N') = 'N')
                       -- Parmi les cibles spécifiées
