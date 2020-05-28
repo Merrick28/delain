@@ -648,8 +648,8 @@ EffetAuto.ChampDropObjet = function (parametre, numero, valeur) {
 	{
 		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
 		html += '<input type="hidden" name="' + base + '[]">';
-		html += '<select name="' + nomObjet + '[]">';
-		html += EffetAuto.CopieListe ('liste_race_modele',  valeur.length ? valeur[i].gobj_cod : "");
+		html += '<select style="max-width: 200px;" name="' + nomObjet + '[]">';
+		html += EffetAuto.CopieListe ('liste_objet_modele',  valeur.length ? valeur[i].gobj_cod : "");
 		html += '</select>&nbsp;<strong>Taux:<strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%&nbsp';
 		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
 		html += '</tr>';

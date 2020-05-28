@@ -837,6 +837,10 @@ if ($erreur == 0)
         $req = "select race_cod, race_nom from race order by race ";
         echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
 
+        // Liste des objets generique
+        $req = "select gobj_nom, gobj_cod from objet_generique order by gobj_nom ";
+        echo '<select id="liste_objet_modele" style="display:none;">' . $html->select_from_query($req, 'gobj_cod', 'gobj_nom') . '</select>';
+
 
         ?>
         <form method="post" action="#" onsubmit="return Validation.Valide ();">

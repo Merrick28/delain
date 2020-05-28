@@ -191,7 +191,7 @@ begin
           v_degats_portes := f_lit_des_roliste(v_params->>'fonc_trig_degats'::text);
 
           if v_degats_portes >= ligne.perso_pv then -- la cible a été tuée......
-                code_retour := code_retour || '<br />' || ligne.perso_nom || ' a été projetté sur un mur, subissant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
+                code_retour := code_retour || '<br />' || ligne.perso_nom || ' a été projeté sur un mur, subissant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
 
                 /* evts pour coup porté */
                 v_event_txt := '[attaquant] a projeté [cible] sur un mur lui infligeant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
@@ -200,7 +200,7 @@ begin
                 code_retour := code_retour || tue_perso_final(v_source,ligne.perso_cod);
 
           else
-                code_retour := code_retour|| '<br />' || ligne.perso_nom || ' a été projetté sur un mur, subissant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats.';
+                code_retour := code_retour|| '<br />' || ligne.perso_nom || ' a été projeté sur un mur, subissant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats.';
 
                 /* evts pour coup porté */
                 v_event_txt := '[attaquant] a projeté [cible] sur un mur lui infligeant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats.';
