@@ -49,11 +49,11 @@ declare
   -- Output and data holders
   ligne record;                -- Une ligne d’enregistrements
   i integer;                   -- Compteur de boucle
-  -- Resistance magique
-  niveau_attaquant integer;
+  v_niveau_attaquant integer;  -- Resistance magique
   code_retour text;
 
-  v_compagnon integer;        -- cod perso du familier si aventurier et de l'aventurier si familier
+  v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
+  v_distance_min integer;      -- distance minimum requis pour la cible
 
 begin
 
@@ -65,17 +65,12 @@ begin
   code_retour := '';
 
   -- Position et type perso
-  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre, v_source_nom
-    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible, perso_nom
+  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre, v_source_nom, v_niveau_attaquant
+    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible, perso_nom, perso_niveau
   from perso_position, positions, perso
   where ppos_perso_cod = v_source
         and pos_cod = ppos_pos_cod
         and perso_cod = v_source;
-
-  -- on récupère les données de l’attaquant (utilisé dans le calcul de résistance)
-  select into niveau_attaquant perso_niveau
-  from perso
-  where perso_cod = v_source;
 
   -- on recupère le code de son compagnon (0 si pas de compagnon)
   if v_type_source=1 then
@@ -97,6 +92,7 @@ begin
   if (v_params->>'fonc_trig_vue')::text = 'O' then
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
   end if;
+  v_distance_min := CASE WHEN (v_params->>'fonc_trig_min_portee') IS NULL OR (v_params->>'fonc_trig_min_portee')::text='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv
@@ -110,6 +106,7 @@ begin
                       -- À portée
                       and ((pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)) or v_distance=-1)
                       and ((pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)) or v_distance=-1)
+                      and ((v_distance_min = 0) or (abs(pos_x-v_x_source) >= v_distance_min) or (abs(pos_y-v_y_source) >= v_distance_min))
                       and pos_etage = v_et_source
                       and ( trajectoire_vue(pos_cod, v_position_source) = '1' or (v_params->>'fonc_trig_vue')::text != 'O')
                       -- Hors refuge si on le souhaite
@@ -129,7 +126,6 @@ begin
                        (v_cibles_type = 'T'))
                 -- cas spécifique de la projection:
                       and perso_type_perso!=3       -- on ne projette pas les familiers
-                      and perso_cod!=v_source       -- on ne projette projette pas soi-meme
                 -- Dans les limites autorisées
                 order by random()
                 limit v_cibles_nombre_max)
@@ -140,40 +136,56 @@ begin
 
       v_dist_proj := f_lit_des_roliste(v_force);   -- force de projection
 
-      if v_params->>'ancien_pos_cod'::text != '' then
 
-          -- cas de déplacement, la projection se fait dans le la direction du déplacement
-          if (v_params->>'fonc_trig_sens'::text = '1') then
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, (v_params->>'ancien_pos_cod'::text)::integer, v_position_source, v_dist_proj) ;
+      if v_dist_proj > 0 then
+          if v_params->>'ancien_pos_cod'::text != '' then
+
+              -- cas de déplacement, la projection se fait dans le la direction du déplacement
+              if (v_params->>'fonc_trig_sens'::text = '1') then
+                  v_pos_projection := trajectoire_projection(ligne.pos_cod, (v_params->>'ancien_pos_cod'::text)::integer, v_position_source, v_dist_proj) ;
+              else
+                  v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, (v_params->>'ancien_pos_cod'::text)::integer, v_dist_proj) ;
+              end if;
+
+          elseif v_position_source = ligne.pos_cod then
+              -- ce n'est pas un déplacement, et la cible est sur la case du perso ou il s'agit du perso lui-même (pas d'implosion possible, explosion dans une direction aléatoire)
+               if (v_params->>'fonc_trig_sens'::text = '1') then
+                    -- explosion (on prend une des 8 cases autour de la source pour etablir le sens de la projection)
+                    select into v_pos_projection lancer_position from lancer_position(v_position_source,1) limit 1;
+                    v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, v_pos_projection, v_dist_proj) ;
+              else
+                    -- implosion (pas de changement, le perso reste là où il est)
+                    v_pos_projection := v_position_source ;
+              end if;
+
           else
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, (v_params->>'ancien_pos_cod'::text)::integer, v_dist_proj) ;
-          end if;
+              -- ce n'est pas un déplacement, la direction est celle du perso vers la cible
+              if (v_params->>'fonc_trig_sens'::text = '1') then
+                  -- explosion
+                  v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, ligne.pos_cod, v_dist_proj) ;
+              else
+                  -- implosion (ATTENTION: au max on rapproche sur la cible sur la source)
+                  v_pos_projection := trajectoire_projection(ligne.pos_cod, ligne.pos_cod, v_position_source, LEAST(v_dist_proj, distance(v_position_source, ligne.pos_cod)) ) ;
+              end if;
 
-      elseif v_position_source = ligne.pos_cod then
-          -- ce n'est pas un déplacement, et la cible est sur la case du perso (pas d'implosion possible, explosion aléatoire)
-           if (v_params->>'fonc_trig_sens'::text = '1') then
-                -- explosion (on prend une des 8 cases autour de la source pour etablir le sens de la projection)
-                select into v_pos_projection lancer_position from lancer_position(v_position_source,1) limit 1;
-                v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, v_pos_projection, v_dist_proj) ;
-          else
-                -- implosion (au max on rapproche sur le perso source)
-                v_pos_projection := v_position_source ;
           end if;
-
-      else
-          -- ce n'est pas un déplacement, la direction est celle du perso vers la cible
-          if (v_params->>'fonc_trig_sens'::text = '1') then
-              -- explosion
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, v_position_source, ligne.pos_cod, v_dist_proj) ;
-          else
-              -- implosion (au max on rapproche sur la cible sur la source)
-              v_pos_projection := trajectoire_projection(ligne.pos_cod, ligne.pos_cod, v_position_source, LEAST(v_dist_proj, distance(v_position_source, ligne.pos_cod)) ) ;
-          end if;
-
       end if;
 
-      -- déplacer la cible (et eventuellement son familier avec lui)
-      if abs(v_pos_projection) != ligne.pos_cod then
+      -- la nouvelle position a été calculée, faire le deplacement --
+      if v_dist_proj = 0 then
+          v_pos_projection = ligne.pos_cod ;    -- projection de distance 0, on ne bouge pas la cible mais retire ses locks de combat
+          if ligne.perso_cod=v_source then
+              -- le perso c'est auto-projetté, on lui retire tous ses locks
+              delete from lock_combat where lock_cible = ligne.perso_cod;
+              delete from lock_combat where lock_attaquant = ligne.perso_cod;
+          else
+              -- le perso a  projetté a 0 case, on lui retire juste les locks avec le projetteur
+              delete from lock_combat where lock_cible = ligne.perso_cod and lock_attaquant=v_source;
+              delete from lock_combat where lock_attaquant = ligne.perso_cod and lock_cible=v_source;
+          end if;
+
+      elseif abs(v_pos_projection) != ligne.pos_cod then
+          -- déplacer la cible (et eventuellement son familier avec lui)
           update perso_position set ppos_pos_cod = abs(v_pos_projection) where ppos_perso_cod = ligne.perso_cod;
           delete from lock_combat where lock_cible = ligne.perso_cod;
           delete from lock_combat where lock_attaquant = ligne.perso_cod;
@@ -189,6 +201,7 @@ begin
               delete from transaction	where tran_vendeur = v_perso_fam;
               delete from transaction	where tran_acheteur = v_perso_fam;
           end if;
+
       end if;
 
       -- faire des dégats si projection sur un mur
@@ -238,10 +251,4 @@ end;$_$;
 
 
 ALTER FUNCTION public.ea_projection(integer, integer, text, integer, character, text, numeric, text, json) OWNER TO delain;
-
---
--- Name: FUNCTION ea_projection(integer, integer, text, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ea_projection(integer, integer, text, integer, character, text, numeric, text, json) IS 'Supprimes des Bonus / Malus standards ou cumulatifs en fonction des paramètres donnés.';
 

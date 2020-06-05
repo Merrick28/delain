@@ -41,26 +41,28 @@ declare
 
 begin
 
-  -- préparation des paramètres commun
-  -- if v_protagoniste is null and v_evenement != 'D' then
-	-- 	v_protagoniste := v_perso_cod;     --Marlyza - 2019-03-04 ? deb_tour_invocation n'est jamais déclenché à cause du manque de cible, BUG ?, Je rajoute le cas !
-  -- elsif v_protagoniste is null then
-  --   select into v_protagoniste COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
-	-- end if;
-
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
   v_protagoniste := v_cible_cod ;   -- par défaut le protagoniste est celui fourni en paramètre
 
-  -- s'il n'y a de protagosite en paramètre, alors on prend la cible en cours ou le perso lui même s'il n'y en a pas. --Marlyza - 2020-05-20
-  if v_protagoniste is null then
-      select into v_protagoniste COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
-  end if;
-
-  -- Eventuellement les fonction du monstre générique
+  -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
 	if not found then
+	    -- cas des aventuriers
       v_gmon_cod:= null ;
       v_gmon_nom:= null ;
+  else
+      -- pour les monstres s'il n'y a pas de protagoniste, on prend sa cible actuelle
+      if v_protagoniste is null then
+          select into v_protagoniste perso_cible from perso where perso_cod = v_perso_cod;
+      end if;
+
+      -- s'il n'y a pas de cible, on va en déterminer une, cela sera aussi notre protagoniste !
+      if v_protagoniste is null then
+          v_protagoniste := choix_perso_vue_aleatoire(v_perso_cod, 1);
+          if v_protagoniste is not null then
+              update perso set perso_cible=v_protagoniste where perso_cod = v_perso_cod;
+          end if;
+      end if;
 	end if;
 
 
