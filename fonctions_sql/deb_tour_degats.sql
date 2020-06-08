@@ -101,7 +101,7 @@ begin
   if (v_params->>'fonc_trig_vue')::text = 'O' then
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
   end if;
-  v_distance_min := CASE WHEN (v_params->>'fonc_trig_min_portee') IS NULL OR (v_params->>'fonc_trig_min_portee')::text='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
+  v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
 	-- On compte le nombre de cibles réelles (utilisé pour le calcul futur du gain de PX)
 	select into v_cibles_nombre_reel min(v_cibles_nombre_max, count(*)::integer)

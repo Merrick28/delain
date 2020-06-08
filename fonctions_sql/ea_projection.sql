@@ -15,7 +15,7 @@ AS $_$/**************************************************/
 /*   $4 = distance (-1..n)                        */
 /*   $5 = cibles (Type SAERTPCO)                  */
 /*   $6 = cibles nombre, au format rôliste        */
-/*   $7 = Probabilité d’atteindre chaque cible    */
+/*   $7 = Probabilité de déclenchement            */
 /*   $8 = Message d’événement associé             */
 /*   $9 = Paramètre additionnels                  */
 /**************************************************/
@@ -88,11 +88,14 @@ begin
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
 
+
+  code_retour := code_retour || '<br />pos_cod=' || v_position_source::text  || 'ancien pos_cod= ' ||  coalesce(v_params->>'ancien_pos_cod'::text, '0') || '.' ;
+
   -- Si le ciblage est limité par la VUE on ajuste la distance max
   if (v_params->>'fonc_trig_vue')::text = 'O' then
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
   end if;
-  v_distance_min := CASE WHEN (v_params->>'fonc_trig_min_portee') IS NULL OR (v_params->>'fonc_trig_min_portee')::text='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
+  v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv
@@ -125,7 +128,9 @@ begin
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'T'))
                 -- cas spécifique de la projection:
-                      and perso_type_perso!=3       -- on ne projette pas les familiers
+                      and (perso_cod!= v_source or v_cibles_type = 'S')                                                 -- on ne projette soit même que si c'est la seule cible !!!
+                      and (perso_type_perso!=3)                                                                         -- on ne projette pas les familiers
+                      and (perso_cod!=coalesce(v_cible_du_monstre,0) or (v_params->>'fonc_trig_cible_combat')::text !='O')   -- sauf la cible de combat si demandé
                 -- Dans les limites autorisées
                 order by random()
                 limit v_cibles_nombre_max)
@@ -138,7 +143,8 @@ begin
 
 
       if v_dist_proj > 0 then
-          if v_params->>'ancien_pos_cod'::text != '' then
+
+          if coalesce(v_params->>'ancien_pos_cod'::text, '') != '' then
 
               -- cas de déplacement, la projection se fait dans le la direction du déplacement
               if (v_params->>'fonc_trig_sens'::text = '1') then

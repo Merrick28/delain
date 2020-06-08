@@ -386,6 +386,27 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'trig_cible_combat',type: 'checkbox', label: 'Sauf la cible de combat', description: 'Pour un monstre: si coché, sa cible de combat actuelle ne sera pas projetée/attirée.'},
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
+		],
+	},
+	{	nom: 'ea_saut_sur_cible',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Saute sur une cible',
+		description: 'Saute directement sur une des cibles à portée. Compte comme un déplacement (déclenchement de l’EA « Se déplace »).',
+		parametres: [
+			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts fait par le saut sur la cible',  description: 'Ce sont des dégats directs fait par le bond: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
@@ -651,7 +672,9 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	html += '<option value="L" ' + ((valeur == 'L') ? 'selected="selected"' : '' ) + '>Son Compagnon (Familier si Aventurier et inversement)</option>';
 	html += '<option value="C" ' + ((valeur == 'C') ? 'selected="selected"' : '' ) + '>La cible actuelle du monstre</option>';
 	html += '<option value="O" ' + ((valeur == 'O') ? 'selected="selected"' : '' ) + '>Le protagoniste (tueur, tué, attaquant...)</option>';
-	html += '<option value="T" ' + ((valeur == 'T') ? 'selected="selected"' : '' ) + '>Tout le monde</option></select></label>';
+	html += '<option value="T" ' + ((valeur == 'T') ? 'selected="selected"' : '' ) + '>Tout le monde</option></select>';
+	if (parametre.commentaires) html += parametre.commentaires;
+	html += '</label>';
 	return html;
 }
 
@@ -903,6 +926,7 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			html = 'Type de données ' + type + ' inconnu !';
 			break;
 	}
+
 	return html;
 }
 
@@ -967,7 +991,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 			case 'nombre': valeur = nombre; break;
 			case 'message': valeur = message; break;
 			default:
-				valeur = trigger_param["fonc_"+donnees.parametres[i].nom] ;
+				valeur = trigger_param["fonc_"+donnees.parametres[i].nom] ? trigger_param["fonc_"+donnees.parametres[i].nom] : '' ;
 				break;
 		}
 		html += EffetAuto.EcritLigneFormulaire(donnees.parametres[i], EffetAuto.num_courant, valeur, donnees.modifiable && !heritage);

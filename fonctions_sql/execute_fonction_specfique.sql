@@ -128,6 +128,9 @@ begin
     elsif code_fonction = 'ea_projection' then
       select into retour_fonction ea_projection(v_perso_cod, v_cible_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
 
+    elsif code_fonction = 'ea_saut_sur_cible' then
+      select into retour_fonction ea_saut_sur_cible(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
+
     elsif code_fonction = 'ea_drop_objet' then
       select into retour_fonction ea_drop_objet(v_perso_cod, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
 
