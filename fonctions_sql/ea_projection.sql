@@ -88,9 +88,6 @@ begin
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
 
-
-  code_retour := code_retour || '<br />pos_cod=' || v_position_source::text  || 'ancien pos_cod= ' ||  coalesce(v_params->>'ancien_pos_cod'::text, '0') || '.' ;
-
   -- Si le ciblage est limité par la VUE on ajuste la distance max
   if (v_params->>'fonc_trig_vue')::text = 'O' then
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
@@ -128,7 +125,7 @@ begin
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'T'))
                 -- cas spécifique de la projection:
-                      and (perso_cod!= v_source or v_cibles_type = 'S')                                                 -- on ne projette soit même que si c'est la seule cible !!!
+                      and (perso_cod!= v_source or v_cibles_type = 'S')                                                 -- on ne projette soit même que si c'est la seule cible (ça supprime les locks de combats)) !!!
                       and (perso_type_perso!=3)                                                                         -- on ne projette pas les familiers
                       and (perso_cod!=coalesce(v_cible_du_monstre,0) or (v_params->>'fonc_trig_cible_combat')::text !='O')   -- sauf la cible de combat si demandé
                 -- Dans les limites autorisées
