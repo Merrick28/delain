@@ -59,8 +59,8 @@ begin
 
 
   -- ---------------------------------------------------------------------------
-  -- paramètre necessaire pour certaine fonction
-  select into v_pos ppos_pos_cod from perso_position where ppos_perso_cod = v_cible_cod;
+  -- paramètre necessaire pour fonction inovation, si pas de cible on invoque sur le perso porteur de l'EA
+  select into v_pos ppos_pos_cod from perso_position where ppos_perso_cod = COALESCE(v_cible_cod, v_perso_cod);
 
 
   -- ---------------------------------------------------------------------------

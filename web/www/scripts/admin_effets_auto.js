@@ -70,7 +70,7 @@ EffetAuto.Triggers = {
 	"BMC": {description: "lorsque le Bonus/Malus change.",
 			default:'deb_tour_generique',
 			declencheur:'Subit un changement de Bonus/Malus',
-			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
+			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 				{ nom: 'trig_compteur', type: 'BMCompteur', label: 'Décencheur', description: 'Le compteur.' },
@@ -83,7 +83,7 @@ EffetAuto.Triggers = {
 	"DEP": {description: "lorsqu’il se déplace.",
 		default:'deb_tour_generique',
 		declencheur:'Se déplace',
-		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur (sauf cas d’un saut).",
 		parametres: [
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 		]
@@ -91,6 +91,7 @@ EffetAuto.Triggers = {
 	"MAL": {description: "lorsqu’il lance un sort.",
 		default:'deb_tour_generique',
 		declencheur:'Lance un sort',
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur dans le cas ou l'on choisi un seul effet, et il y aura un effet sur chaque cible dans l'autre cas.",
 		parametres: [
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l’effet sur les sorts Benefiques' },

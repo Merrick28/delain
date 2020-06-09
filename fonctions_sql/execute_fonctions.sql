@@ -21,7 +21,6 @@ declare
 	v_evenement alias for $3;  -- L’événement déclencheur
 	v_param alias for $4;      -- Les données à injecter pour l'éffet de l'EA
 
-	v_protagoniste integer ;   -- Le numéro du protagoniste (cible ou perso lui-même)
 	code_retour text;          -- Le retour de la fonction
 	retour_fonction text;      -- Le résultat de l’exécution d’une fonction
 	row record;                -- Les données de la fonction
@@ -42,7 +41,6 @@ declare
 begin
 
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
-  v_protagoniste := v_cible_cod ;   -- par défaut le protagoniste est celui fourni en paramètre
 
   -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
@@ -50,27 +48,10 @@ begin
 	    -- cas des aventuriers
       v_gmon_cod:= null ;
       v_gmon_nom:= null ;
-  else
-      -- pour les monstres s'il n'y a pas de protagoniste, on prend sa cible actuelle
-      if v_protagoniste is null then
-          select into v_protagoniste perso_cible from perso where perso_cod = v_perso_cod;
-      end if;
-
-      -- s'il n'y a pas de cible, on va en déterminer une, cela sera aussi notre protagoniste !
-      if v_protagoniste is null then
-          v_protagoniste := choix_perso_vue_aleatoire(v_perso_cod, 1);
-          if v_protagoniste is not null then
-              update perso set perso_cible=v_protagoniste where perso_cod = v_perso_cod;
-          end if;
-      end if;
 	end if;
-
 
   -- code de retour
 	code_retour := '';
-
-	-- debug
-	-- code_retour :=  'DEBUG EA('|| v_evenement || '): Perso='||v_perso_cod::text||' cible='||coalesce(v_protagoniste, 0)::text||'<br>' ;
 
   -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for row in (
@@ -161,8 +142,8 @@ begin
 
 
         -- --------------- maintenant executer la fonction de l'EA trouvée !
-        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_protagoniste, row.fonc_cod, v_param) ;
-        retour_fonction := execute_fonction_specifique(v_perso_cod, v_protagoniste, row.fonc_cod, v_param) ;
+        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
 
         if coalesce(retour_fonction, '') != '' then
           code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';

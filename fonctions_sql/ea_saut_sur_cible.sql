@@ -184,7 +184,7 @@ begin
       ---------------------------
       -- les EA liés au déplacement (le saut est considéré comme un déplacement)
       ---------------------------
-      code_retour := code_retour || execute_fonctions(v_source, v_source, 'DEP', json_build_object('ancien_pos_cod',v_position_source)) ;
+      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source)) ;
 
   end loop;
 
