@@ -53,7 +53,7 @@ begin
 	--
   -- appel de la fonction de base avec le type 'H' (nombre d'heure) et non cumulatif (cas standard pour les potions par exemple)
   --
-	temp := f_modif_carac_base(personnage, v_type_carac, 'H', v_temps, v_modificateur, 'S')	;
+	temp := f_modif_carac_base(personnage, v_type_carac, v_type_carac, 'H', v_temps, v_modificateur, 'S')	;
 
   -- on retourn OK, suivi du bonus/malus réellement appliqué
 	return 'OK;' || temp::text ;

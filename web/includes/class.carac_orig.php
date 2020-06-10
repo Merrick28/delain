@@ -168,21 +168,21 @@ class carac_orig
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "select corig_type_carac,
+        $req    = "select corig_type_carac, corig_tbonus_libc, tonbus_libelle,tbonus_gentil_positif::text,
             coalesce(tbonus_description, tonbus_libelle) as tbonus_description,
             sum(corig_valeur) as bonus_carac,
             to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin,
             coalesce(corig_nb_tours, 0) as corig_nb_tours,
             case when corig_mode='E' then 'Equipement' else corig_nb_tours::text end as corig_mode
-        from carac_orig inner join bonus_type on tbonus_libc = corig_type_carac 
+        from carac_orig inner join bonus_type on tbonus_libc = corig_tbonus_libc 
         where corig_perso_cod = :perso_cod
         and corig_mode " . ($equipement ? "=" : "!=") . " 'E'
-        group by corig_type_carac,
+        group by corig_tbonus_libc, corig_type_carac, tonbus_libelle,tbonus_gentil_positif,
             to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'),
             corig_nb_tours,
             corig_mode,
             coalesce(tbonus_description, tonbus_libelle)
-        order by corig_type_carac";
+        order by corig_tbonus_libc, corig_type_carac";
 
 
         $stmt   = $pdo->prepare($req);

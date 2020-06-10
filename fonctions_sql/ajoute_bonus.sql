@@ -22,6 +22,7 @@ declare
   v_valeur alias for $4;
   v_retour integer;
   v_type text;
+  v_carac text;
   v_cumulatif text;
   v_degressivite integer;  -- pour la dégressivité
   v_nb integer;  -- pour la dégressivité
@@ -40,15 +41,16 @@ begin
   else
     v_cumulatif := 'S';
   end if;
+  v_carac := bonus_type_carac(v_type);      -- la vrai carac concerné par le bonus/malus (dans le cas de BM de carac)
 
   -- Pour déclenchement d'EA sur changement de BM, on mémorise la valeur avant modification.
   v_valeur_avant := valeur_bonus(v_perso, v_type);
 
   -- 08/11/2019 - Marlyza - Ajout de bonus de carac (FOR/INT/DEX/CON) à l'aide de f_modif_carac_base
-  IF v_type in ('DEX', 'INT', 'FOR', 'CON')  THEN
+  IF v_carac in ('DEX', 'INT', 'FOR', 'CON')  THEN
 
     -- cas des bonus de carac -------------------------------------------------------------------------
-	  temp := f_modif_carac_base(v_perso, v_type, 'T', v_duree, v_valeur::integer, v_cumulatif)	;
+	  temp := f_modif_carac_base(v_perso, v_carac, v_type, 'T', v_duree, v_valeur::integer, v_cumulatif)	;
 
     -- la fontion ajoute_bonus() doit retourner un boolean 0/1, on va convertir le resultat de f_modif_carac_base()
 	  if temp = 0 then

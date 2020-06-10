@@ -2,7 +2,7 @@
 -- Name: f_modif_carac_base(integer, text, text, integer, integer, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text) RETURNS integer
+CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, text, integer, integer, text) RETURNS integer
     LANGUAGE plpgsql
     AS $_$/*************************************************/
 /* fonction f_modif_carac_base                   */
@@ -12,10 +12,11 @@ CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, inte
 /* $2 = type carac                               */
 /*   possibles : FOR, DEX, INT et CON            */
 /*   attention : majuscules !                    */
-/* $3 = H (pour Heure) ou 'T' (pour tour)        */
-/* $4 = nb d’heure/de tour/ ou code obj si Equip.*/
-/* $5 = modificateur à mettre                    */
-/* $6 = S/C si bonus Standard ou cumulatif       */
+/* $3 = le bonus/malus                           */
+/* $4 = H (pour Heure) ou 'T' (pour tour)        */
+/* $5 = nb d’heure/de tour/ ou code obj si Equip.*/
+/* $6 = modificateur à mettre                    */
+/* $7 = S/C si bonus Standard ou cumulatif       */
 /*-----------------------------------------------*/
 /* code retour : texte                           */
 /*  si tout bon, on sort 'OK'                    */
@@ -27,10 +28,11 @@ declare
 	code_retour text;
 	personnage alias for $1;
 	v_type_carac alias for $2;
-	v_type_delai alias for $3;
-	v_temps alias for $4;
-	v_modificateur alias for $5;
-	v_cumulatif alias for $6;
+	v_type_bonus alias for $3;
+	v_type_delai alias for $4;
+	v_temps alias for $5;
+	v_modificateur alias for $6;
+	v_cumulatif alias for $7;
 
 	temp integer;	-- variable fourre tout
 
@@ -66,12 +68,16 @@ begin
     v_temps_inter := trim(to_char(v_temps,'999999999'))||' hours';
   end if;
 
-
+  -- ATTENTION les bonus dans carac_orig sont toujours gentils si positifs (impératif pour les calculs), on ajustera le signe juste à l'affichage !!!
+	select into v_modificateur case when tbonus_gentil_positif then v_modificateur else -1 * v_modificateur end from bonus_type where tbonus_libc = v_type_bonus;
+	if not found then
+		return 0 ;
+	end if;
 
   --
   -- on regarde s’il y a déjà quelque chose (seulement pour le cas Standard)! En Equipement et en Cumulatif c'est toujours un nouveau bonus/malus!
   --
-  select into v_corig_cod, v_corig_valeur corig_cod, corig_valeur from carac_orig where corig_perso_cod = personnage and corig_type_carac = v_type_carac and corig_mode ='S' and v_cumulatif = 'S';
+  select into v_corig_cod, v_corig_valeur corig_cod, corig_valeur from carac_orig where corig_perso_cod = personnage and corig_tbonus_libc = v_type_bonus and corig_mode ='S' and v_cumulatif = 'S';
   if found then
     -- update d'un bonus (en mode Standard)
 
@@ -85,11 +91,11 @@ begin
     -- insertion du nouveau bonus (mode cumulatif)
 
     if v_type_delai = 'H' then
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode)
-      values (personnage, v_type_carac, f_carac_base(personnage, v_type_carac), now() + v_temps_inter, v_modificateur, v_cumulatif);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_tbonus_libc, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode)
+      values (personnage, v_type_carac, v_type_bonus, f_carac_base(personnage, v_type_carac), now() + v_temps_inter, v_modificateur, v_cumulatif);
     else
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode)
-      values (personnage, v_type_carac, f_carac_base(personnage, v_type_carac), v_temps, v_modificateur, v_cumulatif);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_tbonus_libc, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode)
+      values (personnage, v_type_carac, v_type_bonus, f_carac_base(personnage, v_type_carac), v_temps, v_modificateur, v_cumulatif);
     end if;
 
   end if;
@@ -102,12 +108,12 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.f_modif_carac_base(integer, text, text, integer, integer, text) OWNER TO delain;
+ALTER FUNCTION public.f_modif_carac_base(integer, text, text, text, integer, integer, text) OWNER TO delain;
 
 --
 -- Name: FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text) IS 'Modifie de façon temporaire une caractéristique primaire (CON, FOR, INT, DEX)
+COMMENT ON FUNCTION f_modif_carac_base(integer, text, text, text, integer, integer, text) IS 'Modifie de façon temporaire une caractéristique primaire (CON, FOR, INT, DEX)
 $1 = perso_cod ; $2 IN (''CON'', ''FOR'', ''INT'', ''DEX'') ; $3 = H ou T ; $4 = durée en heures ; $5 = valeur du bonus / malus. ; $6 = S/C (Standard ou Cumulatif)';
 

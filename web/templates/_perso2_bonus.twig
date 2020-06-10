@@ -22,7 +22,7 @@
 Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} dégât(s)</strong><br>
 
 {# BONUS EQUIPEMENT #}
-<div class="titre">Bonus d'équipement</div>
+<div class="titre">Bonus/Malus d'équipement</div>
 <table>
     <tr valign="top">
         <td style="padding:15px;">
@@ -117,7 +117,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                 </div>
                             </td>
                             <td>
-                                <div style='text-align:center;'>{{ malus.img }}</div>
+                                <div style='text-align:center;'><img src="{{ malus.img }}}"></div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -127,7 +127,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
     </tr>
 </table>
 
-<div class="titre">Bonus temporaires</div>
+<div class="titre">Bonus/Malus temporaires</div>
 <table>
     <tr valign="top">
         <td style="padding:15px;">
@@ -220,7 +220,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                 </div>
                             </td>
                             <td>
-                                <div style='text-align:center;'>{{ malus.img }}</div>
+                                <div style='text-align:center;'><img src="{{ malus.img }}"></div>
                             </td>
                         </tr>
                     {% endfor %}

@@ -31,7 +31,7 @@ begin
 	end if;
 	code_retour := '';
 	for ligne in
-		select tonbus_libelle,bonus_valeur,bonus_nb_tours, COALESCE(tbonus_description, '') as tbonus_description
+		select tonbus_libelle,bonus_valeur,bonus_nb_tours, COALESCE(tbonus_description, tonbus_libelle) as tbonus_description
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
 		and bonus_tbonus_libc = tbonus_libc
@@ -46,24 +46,19 @@ begin
 
 	/* Marlyza - 11/06/2018 - ajout des bonus de carac */
 	for ligne in
-		select corig_type_carac,
-			case corig_type_carac
-				when 'FOR' then perso_for - corig_carac_valeur_orig
-				when 'CON' then perso_con - corig_carac_valeur_orig
-				when 'INT' then perso_int - corig_carac_valeur_orig
-				when 'DEX' then perso_dex - corig_carac_valeur_orig
-			end as bonus_carac,
+		select corig_type_carac, tonbus_libelle, corig_tbonus_libc, case when tbonus_gentil_positif then corig_valeur else -corig_valeur end as corig_valeur, COALESCE(tbonus_description, tonbus_libelle) as tbonus_description,
 			case when coalesce(corig_nb_tours, 0)=0 then ' => '||to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss')
 			else ' / '|| trim(to_char(coalesce(corig_nb_tours, 0),'999999')) || ' tours' end as corig_delai
 			from carac_orig
 			inner join perso on perso_cod = corig_perso_cod
+			inner join bonus_type on tbonus_libc = corig_tbonus_libc
 			where perso_cod = v_perso and corig_mode !='E' loop
-			if (ligne.bonus_carac > 0) then
+			if (ligne.corig_valeur > 0) then
 				bonus_signe := '+';
 			else
 				bonus_signe := '';
 			end if;
-			code_retour := code_retour||'<br>'||ligne.corig_type_carac||'('||bonus_signe||trim(to_char(ligne.bonus_carac,'99999999'))||ligne.corig_delai ||').';
+			code_retour := code_retour||'<br><span class="delain-tooltip" title="' ||ligne.tbonus_description|| '">'||ligne.tonbus_libelle||'('||bonus_signe||trim(to_char(ligne.corig_valeur,'99999999'))||ligne.corig_delai ||').</span>';
 	end loop;
 	return substr(code_retour,5);
 end;
