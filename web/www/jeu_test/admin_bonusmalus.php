@@ -95,14 +95,14 @@ if ($erreur == 0)
     if ($resultat)
         echo "<div class='bordiv'>$resultat</div>";
 
-    function ecrire_checkbox($label, $id_unique, $name, $valeur)
+    function ecrire_checkbox($label, $id_unique, $name, $valeur, $disabled=false)
     {
         $checked = ($valeur == 'O' || $valeur == 't') ? 'checked="checked"' : '';
-        return "<label for='$id_unique'>$label&nbsp;</label><input type='checkbox' $checked name='$name' id='$id_unique' />";
+        return "<label for='$id_unique'>$label&nbsp;</label><input ".($disabled ? "disabled " : "")."type='checkbox' $checked name='$name' id='$id_unique' />";
     }
 
     $req = 'SELECT
-			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur
+			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur, bonus_type_carac(tbonus_libc) type_carac
 		FROM bonus_type
 		ORDER BY tbonus_libc';
 
@@ -134,6 +134,7 @@ if ($erreur == 0)
         $tbonus_nettoyable     = $result['tbonus_nettoyable'];
         $tbonus_gentil_positif = $result['tbonus_gentil_positif'];
         $tbonus_libc           = $result['tbonus_libc'];
+        $type_carac            = (in_array($result['type_carac'], ['DEX', 'FOR', 'INT', 'CON']) && ! in_array($result['tbonus_libc'], ['DEX', 'FOR', 'INT', 'CON'])) ? true : false ;
         $tbonus_cumulable      = $result['tbonus_cumulable'];
         $tbonus_compteur       = $result['tbonus_compteur'];
         $tbonus_degressivite   = $result['tbonus_degressivite'];
@@ -144,9 +145,9 @@ if ($erreur == 0)
 			<td class='soustitre2'><input type='text' value='$tonbus_libelle' name='tonbus_libelle' size='30' /></td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_nettoyable_' . $tbonus_cod, 'tbonus_nettoyable', $tbonus_nettoyable) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_gentil_positif_' . $tbonus_cod, 'tbonus_gentil_positif', $tbonus_gentil_positif) . "</td>
-			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable_' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable) . "</td>	
+			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable_' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable, $type_carac) . "</td>	
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_compteur_' . $tbonus_cod, 'tbonus_compteur', $tbonus_compteur) . "</td>	
-			<td class='soustitre2'><input type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />".(in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : "")."</td>					
+			<td class='soustitre2'><input ".($type_carac ? "disabled " : "")."type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />". (in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : ($type_carac ? ' Bonus de carac' : '' ) )."</td>					
 			<td class='soustitre2'><textarea name='tbonus_description'/>$tbonus_description</textarea></td>					
 			<td class='soustitre2'><input type='hidden' value='$tbonus_cod' name='tbonus_cod' />
 				<input type='hidden' value='modif' name='methode' />
