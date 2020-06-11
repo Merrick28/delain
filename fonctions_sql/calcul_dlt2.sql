@@ -438,7 +438,8 @@ begin
       code_retour := code_retour || 'Vous êtes sous l''effet d''un Jus de Chronomètre, votre DLT est raccourcie à <b>' || to_char(valeur_bonus(personnage, 'JDC'),'999999') || '</b> minute(s)<br>';
       nouvelle_dlt := NOW()::timestamp + (to_char(valeur_bonus(personnage, 'JDC'),'999999') || ' minutes')::interval;
     else
-      temps_blessures:= temps_tour + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2 ;
+      -- 2020-06-11 - marlyza - certain arrive a avoir des raccourcis de temps supérieur à leur temps tour,  si c'est négatif la boucle en-dessous ne sort jamais, on va mettre un mini à 10 minutes
+      temps_blessures:= GREATEST(10, temps_tour + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2) ;
       ajout_temps := to_char(temps_blessures,'999999') || ' minutes';
       nouvelle_dlt := ((dlt_actuelle)::timestamp + (ajout_temps)::interval);
       while nouvelle_dlt < now() loop
