@@ -504,10 +504,10 @@ if ($erreur == 0)
                             ?>
                             <?php // LISTE DES BONUS de Caracs
                             $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
-                                          corig_valeur as bonus_valeur,
+                                          case when tbonus_gentil_positif = 't' then corig_valeur else -corig_valeur end as bonus_valeur,
                                           COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
-                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join bonus_type on tbonus_libc = corig_tbonus_libc
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod and corig_valeur >0 and  corig_mode!='E'
                                         order by tbonus_libc";
@@ -564,10 +564,10 @@ if ($erreur == 0)
                             ?>
                             <?php // LISTE DES MALUS de Caracs
                             $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
-                                          corig_valeur as bonus_valeur,
+                                        case when tbonus_gentil_positif = 't' then corig_valeur else -corig_valeur end as bonus_valeur,
                                         COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
-                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join bonus_type on tbonus_libc = corig_tbonus_libc
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod  and corig_valeur <0  and corig_mode!='E'
                                         order by tbonus_libc";
