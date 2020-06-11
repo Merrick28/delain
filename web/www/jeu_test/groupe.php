@@ -816,5 +816,13 @@ switch ($methode)
 } // fin switch methode
 
 $contenu_page .= '<p style="text-align:center;"><a href="' . $_SERVER['PHP_SELF'] . '">Retour à la gestion de la coterie</a></p>';
-
+$contenu_page .= '
+<script>//# sourceURL=_perso2_bonus_twig.js
+$(document).ready(function () {
+    $(".delain-tooltip").tooltip({
+            content: function () {
+        return $(this).prop("title");
+    }});
+});
+</script>';
 include "blocks/_footer_page_jeu.php";

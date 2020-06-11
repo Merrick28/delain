@@ -26,6 +26,7 @@ class message
         $msg->expediteur = $expediteur;
         $msg->sujet      = $sujet;
         $msg->ajouteDestinataire($destinataire);
+
         $msg->envoieMessage($bloque_html);
     }
 
@@ -49,6 +50,10 @@ class message
         if ($bloque_html)
         {
             $corps = htmlspecialchars($this->corps);
+        }
+        else
+        {
+            $corps = $this->corps ;
         }
 
         $expediteur = $this->expediteur;

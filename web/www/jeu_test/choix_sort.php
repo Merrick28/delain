@@ -71,6 +71,10 @@ if ($type_lance == 0) // runes
     if (!$found)
     {
         echo "<p>Vous ne possédez plus l'objet vous permettant de faire ce sort (ou il n'est plus équipé ou encore il n'a plus de charge).";
+        // au passage on supprime son raccourci!
+        $req  = "DELETE from perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod AND pfav_type=:pfav_type AND pfav_misc_cod=:pfav_misc_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":pfav_perso_cod" => $perso_cod, ":pfav_type" => "sort5", "pfav_misc_cod" =>$objsort_cod), $stmt);
         $erreur = 1;
     }
 

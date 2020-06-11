@@ -50,11 +50,11 @@ declare
   -- Output and data holders
   ligne record;                -- Une ligne d’enregistrements
   i integer;                   -- Compteur de boucle
-  -- Resistance magique
-  niveau_attaquant integer;
+  v_niveau_attaquant integer;  -- Resistance magique
   code_retour text;
 
-  v_compagnon integer;        -- cod perso du familier si aventurier et de l'aventurier si familier
+  v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
+  v_distance_min integer;      -- distance minimum requis pour la cible
 
 begin
 
@@ -70,17 +70,12 @@ begin
   code_retour := '';
 
   -- Position et type perso
-  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre, v_source_nom
-    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible, perso_nom
+  select into v_x_source, v_y_source, v_et_source, v_type_source, v_race_source, v_position_source, v_cible_du_monstre, v_source_nom, v_niveau_attaquant
+    pos_x, pos_y, pos_etage, perso_type_perso, perso_race_cod, pos_cod, perso_cible, perso_nom, perso_niveau
   from perso_position, positions, perso
   where ppos_perso_cod = v_source
         and pos_cod = ppos_pos_cod
         and perso_cod = v_source;
-
-  -- on récupère les données de l’attaquant (utilisé dans le calcul de résistance)
-  select into niveau_attaquant perso_niveau
-  from perso
-  where perso_cod = v_source;
 
   -- on recupère le code de son compagnon (0 si pas de compagnon)
   if v_type_source=1 then
@@ -98,6 +93,12 @@ begin
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
 
+  -- Si le ciblage est limité par la VUE on ajuste la distance max
+  if (v_params->>'fonc_trig_vue')::text = 'O' then
+      v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
+  end if;
+  v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
+
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod
                 from perso
@@ -108,10 +109,11 @@ begin
                 where perso_actif = 'O'
                       and perso_tangible = 'O'
                       -- À portée
-                      and pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)
-                      and pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)
+                      and ((pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)) or v_distance=-1)
+                      and ((pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)) or v_distance=-1)
+                      and ((v_distance_min = 0) or (abs(pos_x-v_x_source) >= v_distance_min) or (abs(pos_y-v_y_source) >= v_distance_min))
                       and pos_etage = v_et_source
-                      and trajectoire_vue(pos_cod, v_position_source) = '1'
+                      and ( trajectoire_vue(pos_cod, v_position_source) = '1' or (v_params->>'fonc_trig_vue')::text != 'O')
                       -- Hors refuge si on le souhaite
                       and (v_cibles_type = 'P' or coalesce(lieu_refuge, 'N') = 'N')
                       -- Parmi les cibles spécifiées

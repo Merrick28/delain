@@ -15,25 +15,6 @@ $droit_modif = 'dcompt_enchantements';
 define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
-//=======================================================================================
-// Définition des fonctions
-function bm_progressivite($fonc_effet, $fonc_force)
-{
-    $pdo = new bddpdo;
-
-    $req = "select bonus_progressivite(:bm, :force) as progressivite";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
-    if ($progres = $stmt->fetch())
-    {
-        return $progres["progressivite"];
-    }
-    else
-    {
-        return 'O' ;
-    }
-}
-
 if ($erreur == 0)
 {
     //=======================================================================================
@@ -71,18 +52,7 @@ if ($erreur == 0)
                     $fonc_nom    = $_POST['fonction_type_' . $numero];
                     $fonc_effet  = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param)
 						VALUES (:fonc_nom, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param)";
@@ -121,22 +91,7 @@ if ($erreur == 0)
                     //require "blocks/_block_admin_traitement_type_monstre_edit.php";
                     $fonc_effet  = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-
-                    $fonc_trigger_param = array() ;
-                    foreach($_POST as $key => $val){
-                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero) && !isset($_POST['checkbox_'.$key])) {
-                            if (is_array($val)){
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] =  json_encode($val) ;
-                            } else {
-                                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = $val ;
-                            }
-                        } else if ((substr($key, 0, 19)=="checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)){
-                            if (isset($_POST[substr($key, 9)]))
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-                            else
-                                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
-                        }
-                    }
+                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
 
                     $req       = "UPDATE fonction_specifique
 						SET fonc_effet = :fonc_effet,
@@ -228,7 +183,7 @@ if ($erreur == 0)
             Editer les EA d\'un compteur:<select onchange="this.parentNode.submit();" name="tbonus_cod"><option value="0">Sélectionner le compteur</option>';
 
     // sortir les "E3(+)" : Exaltation, Excitation, Embrasement des compteurs configurables dans l'outil.
-    $stmt = $pdo->query("select tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle, tbonus_cod from bonus_type where tbonus_libc not in ('C01', 'C07', 'C08') and tbonus_compteur='O' order by tbonus_libc");
+    $stmt = $pdo->query("select tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle, tbonus_cod from bonus_type where tbonus_libc not in ('C01', 'C07', 'C08', 'C10', 'C11', 'C12') and tbonus_compteur='O' order by tbonus_libc");
     while ($result = $stmt->fetch())
     {
         echo '<option value="' . $result['tbonus_cod'];
@@ -286,6 +241,10 @@ if ($erreur == 0)
         // Liste des races
         $req = "select race_cod, race_nom from race order by race ";
         echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
+
+        // Liste des objets generique
+        $req = "select gobj_nom, gobj_cod from objet_generique order by gobj_nom ";
+        echo '<select id="liste_objet_modele" style="display:none;">' . $html->select_from_query($req, 'gobj_cod', 'gobj_nom') . '</select>';
 
         // Interface de saisie
         echo '<form method="post" onsubmit="return Validation.Valide ();">

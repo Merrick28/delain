@@ -40,7 +40,8 @@ for ($loop = 0; $loop < 2; $loop++)
     $record             = 0;
     foreach ($tab_carac_orig[$loop] as $detail_carac_orig)
     {
-        $carac                  = $detail_carac_orig['corig_type_carac'];
+        $carac                  = $detail_carac_orig['corig_tbonus_libc'];
+        $lib_carac              = $detail_carac_orig['tonbus_libelle'];
         $bm                     = $detail_carac_orig['bonus_carac'];
         $corig_mode             = $detail_carac_orig['corig_mode'];
         $tbonus_description     = $detail_carac_orig['tbonus_description'];
@@ -52,7 +53,10 @@ for ($loop = 0; $loop < 2; $loop++)
             $duree = ($detail_carac_orig['corig_nb_tours'] == 0) ? $detail_carac_orig['corig_dfin'] :
                 $detail_carac_orig['corig_nb_tours'] . ' tour(s)';
         }
-        if ($detail_carac_orig['bonus_carac'] > 0)
+
+        // dans carac_orig une valaue >0 est toujours benefique et <0 malefique, on gère le signe du bonus/malus à l'affichage!
+        if ($detail_carac_orig['tbonus_gentil_positif'] == 'false')  $bm = -$bm ;
+        if ( $detail_carac_orig['bonus_carac'] > 0 )
         {
             $bonus_carac[$loop][$record]    = array();
             $bonus_carac[$loop][$record][0] = $bm;
@@ -60,6 +64,7 @@ for ($loop = 0; $loop < 2; $loop++)
             $bonus_carac[$loop][$record][2] = $carac;
             $bonus_carac[$loop][$record][3] = $corig_mode;
             $bonus_carac[$loop][$record][4] = $tbonus_description;
+            $bonus_carac[$loop][$record][5] = $lib_carac;
         } else
         {
             $malus_carac[$loop][$record]    = array();
@@ -68,6 +73,7 @@ for ($loop = 0; $loop < 2; $loop++)
             $malus_carac[$loop][$record][2] = $carac;
             $malus_carac[$loop][$record][3] = $corig_mode;
             $malus_carac[$loop][$record][4] = $tbonus_description;
+            $malus_carac[$loop][$record][5] = $lib_carac;
         }
         $record++;
     }
@@ -95,22 +101,8 @@ for ($loop = 0; $loop < 2; $loop++)
             $corig_mode         = $bonus[3];
             $tbonus_description = $bonus[4];
             $signe              = ($valeur >= 0) ? '+' : '';
-            $lib_carac          = '';
-            switch ($carac)
-            {
-                case 'FOR':
-                    $lib_carac = 'Force';
-                    break;
-                case 'INT':
-                    $lib_carac = 'Intelligence';
-                    break;
-                case 'CON':
-                    $lib_carac = 'Constitution';
-                    break;
-                case 'DEX':
-                    $lib_carac = 'Dextérité';
-                    break;
-            }
+            $lib_carac          = $bonus[5];
+
             $bonus_carac[$loop][$key]['lib_carac'] = $lib_carac;
             $bonus_carac[$loop][$key]['tbonus_description'] = $tbonus_description;
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))
@@ -145,22 +137,8 @@ for ($loop = 0; $loop < 2; $loop++)
             $corig_mode         = $malus[3];
             $tbonus_description = $malus[4];
             $signe     = ($valeur >= 0) ? '+' : '';
-            $lib_carac = '';
-            switch ($carac)
-            {
-                case 'FOR':
-                    $lib_carac = 'Force';
-                    break;
-                case 'INT':
-                    $lib_carac = 'Intelligence';
-                    break;
-                case 'CON':
-                    $lib_carac = 'Constitution';
-                    break;
-                case 'DEX':
-                    $lib_carac = 'Dextérité';
-                    break;
-            }
+            $lib_carac          = $malus[5];
+
             $malus_carac[$loop][$key]['lib_carac'] = $lib_carac;
             $malus_carac[$loop][$key]['tbonus_description'] = $tbonus_description;
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))

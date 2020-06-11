@@ -1,35 +1,31 @@
 --
--- Name: ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: ea_saut_sur_cible(integer, integer, integer, character, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json) RETURNS text
+create or replace function ea_saut_sur_cible(integer, integer, integer, character, numeric, text, json) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
-/* ea_supprime_bm                             */
+/* ea_saut_sur_cible                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
 /* On passe en paramètres:                        */
 /*   $1 = source (perso_cod du monstre)           */
-/*   $2 = Perso ciblé                            */
-/*   $3 = bonus (de la table bonus_type)          */
-/*   $4 = distance (-1..n)                        */
-/*   $5 = cibles (Type SAERTPCO)                  */
-/*   $6 = cibles nombre, au format rôliste        */
-/*   $7 = Probabilité d’atteindre chaque cible    */
-/*   $8 = Message d’événement associé             */
-/*   $9 = Paramètre additionnels                  */
+/*   $2 = Perso ciblé                             */
+/*   $3 = distance (-1..n)                        */
+/*   $4 = cibles (Type SAERTPCO)                  */
+/*   $5 = Probabilité de déclenchement            */
+/*   $6 = Message d’événement associé             */
+/*   $7 = Paramètre additionnels                  */
 /**************************************************/
 declare
   -- Parameters
   v_source alias for $1;
   v_cible_donnee alias for $2;
-  v_bonus alias for $3;
-  v_distance alias for $4;
-  v_cibles_type alias for $5;
-  v_cibles_nombre alias for $6;
-  v_proba alias for $7;
-  v_texte_evt alias for $8;
-  v_params alias for $9;
+  v_distance alias for $3;
+  v_cibles_type alias for $4;
+  v_proba alias for $5;
+  v_texte_evt alias for $6;
+  v_params alias for $7;
 
   -- initial data
   v_x_source integer;          -- source X position
@@ -40,10 +36,12 @@ declare
   v_race_source integer;       -- La race de la source
   v_position_source integer;   -- Le pos_cod de la source
   v_cible_du_monstre integer;  -- La cible actuelle du monstre
-  v_bonus_texte text;
   v_source_nom text;           -- nom du perso source
-  v_bonus_degressif text;
-
+  v_dist_proj integer;         -- distance de projection
+  v_pos_projection integer;    -- la case sur laquelle la cible atterrie
+	v_perso_fam integer;		     -- Familier de la cible
+	v_degats_portes integer;		 -- dégat de la projection
+	v_event_txt text;	           -- pour autres evenements
   -- Output and data holders
   ligne record;                -- Une ligne d’enregistrements
   i integer;                   -- Compteur de boucle
@@ -55,12 +53,9 @@ declare
 
 begin
 
-  -- texte du bonus
-  select tonbus_libelle into v_bonus_texte from bonus_type where tbonus_libc = v_bonus ;
-
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
+    return 'Pas d’effet automatique de « saut sur cible ».';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -87,7 +82,7 @@ begin
   end if;
 
   -- Cibles
-  v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
+  v_cibles_nombre_max := 1 ;    -- on ne saut que sur une cible !!!
 
   -- Si le ciblage est limité par la VUE on ajuste la distance max
   if (v_params->>'fonc_trig_vue')::text = 'O' then
@@ -96,7 +91,7 @@ begin
   v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
   -- Et finalement on parcourt les cibles.
-  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con
+  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv
                 from perso
                   inner join perso_position on ppos_perso_cod = perso_cod
                   inner join positions on pos_cod = ppos_pos_cod
@@ -131,16 +126,51 @@ begin
   loop
       -- On peut maintenant appliquer le bonus ou l’action sur une cible unique.
 
-      code_retour := code_retour || '<br />'|| ligne.perso_nom || ' perd son bonus/malus «' || v_bonus_texte || '».' ;
+      code_retour := code_retour || '<br />'|| ' « saut »  sur ' || ligne.perso_nom || '.' ;
 
-      -- Suppression du Bonus/Malus (sauf bonus d'équipement)
-      if v_params->>'fonc_trig_supp_bm_standard'::text = 'O' and  v_params->>'fonc_trig_supp_bm_cumulatif'::text = 'N' then
-          perform retire_bonus(ligne.perso_cod,v_bonus, 'S' );
-      elseif v_params->>'fonc_trig_supp_bm_standard'::text = 'N'  and  v_params->>'fonc_trig_supp_bm_cumulatif'::text = 'O' then
-          perform retire_bonus(ligne.perso_cod,v_bonus, 'C' );
-      elseif v_params->>'fonc_trig_supp_bm_standard'::text = 'O'  and  v_params->>'fonc_trig_supp_bm_cumulatif'::text = 'O' then
-          perform retire_bonus(ligne.perso_cod,v_bonus, 'SC' );
+      -- on réalise le bond sur la cible (pour la source dee l'EA et eventuellement son familier)!
+      update perso_position set ppos_pos_cod = ligne.pos_cod where ppos_perso_cod = v_source ;
+      delete from lock_combat where lock_cible = v_source;
+      delete from lock_combat where lock_attaquant = v_source;
+      delete from riposte where riposte_attaquant = v_source;
+      delete from transaction	where tran_vendeur = v_source;
+      delete from transaction	where tran_acheteur = v_source;
+      select into v_perso_fam max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O' and pfam_perso_cod=v_source;
+      if found then
+          update perso_position	set ppos_pos_cod = ligne.pos_cod where ppos_perso_cod = v_perso_fam;
+          delete from lock_combat where lock_cible = v_perso_fam;
+          delete from lock_combat where lock_attaquant = v_perso_fam;
+          delete from riposte where riposte_attaquant = v_perso_fam;
+          delete from transaction	where tran_vendeur = v_perso_fam;
+          delete from transaction	where tran_acheteur = v_perso_fam;
       end if;
+
+      IF COALESCE(v_params->>'fonc_trig_degats'::text,'') != '' then
+
+          v_degats_portes := f_lit_des_roliste(v_params->>'fonc_trig_degats'::text);
+
+          if v_degats_portes > 0 then
+              if v_degats_portes >= ligne.perso_pv then -- la cible a été tuée......
+                    code_retour := code_retour || '<br />' || v_source_nom || ' a bondi sur ' ||ligne.perso_nom || ' lui faisant subir '||trim(to_char(v_degats_portes,'9999'))||' points de dégats, et le tuant sur le coup !';
+
+                    /* evts pour coup porté */
+                    v_event_txt := '[attaquant] a bondi sur [cible] lui infligeant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats, le tuant sur le coup !';
+                    perform insere_evenement(v_source, ligne.perso_cod, 66, v_event_txt, 'O', 'N', null);
+
+                    code_retour := code_retour || tue_perso_final(v_source,ligne.perso_cod);
+
+              else
+                    code_retour := code_retour|| '<br />' || v_source_nom || ' a bondi sur ' || ligne.perso_nom || ' lui faisant subir '||trim(to_char(v_degats_portes,'9999'))||' points de dégats.';
+
+                    /* evts pour coup porté */
+                    v_event_txt := '[attaquant] a bondi sur [cible] lui infligeant '||trim(to_char(v_degats_portes,'9999'))||' points de dégats.';
+                    perform insere_evenement(v_source, ligne.perso_cod, 66, v_event_txt, 'O', 'N', null);
+
+                    update perso set perso_pv = perso_pv - v_degats_portes where perso_cod = ligne.perso_cod;
+
+              end if;
+          end if;
+      END IF;
 
       -- On rajoute la ligne d’événements
       if v_texte_evt != '' then
@@ -151,21 +181,20 @@ begin
           end if;
       end if;
 
+      ---------------------------
+      -- les EA liés au déplacement (le saut est considéré comme un déplacement)
+      ---------------------------
+      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source)) ;
+
   end loop;
 
   if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour suppression du bonus/malus «' || v_bonus_texte || '»';
+    code_retour := 'Aucune cible éligible pour « saut sur cible »';
   end if;
 
   return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json) OWNER TO delain;
-
---
--- Name: FUNCTION ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json) IS 'Supprimes des Bonus / Malus standards ou cumulatifs en fonction des paramètres donnés.';
+ALTER FUNCTION public.ea_saut_sur_cible(integer, integer, integer, character, numeric, text, json) OWNER TO delain;
 

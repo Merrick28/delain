@@ -33,6 +33,10 @@ begin
 	select into v_perso_vue,v_perso_amelioration_vue perso_vue,perso_amelioration_vue from perso
 		where perso_cod = v_perso;
 	distance_vue := v_perso_vue + v_perso_amelioration_vue + valeur_bonus(v_perso, 'VUE') + valeur_bonus(v_perso, 'PVU') + bonus_art_vue(v_perso);
+	if valeur_bonus(v_perso, 'VU2') != 0 then
+	    -- malus VU2 alter la vue en % de sa valeur!
+	    distance_vue := distance_vue - ( valeur_bonus(v_perso, 'VU2') * distance_vue / 100 );
+  end if;
 
 --if to_char(now(),'DD/MM/YYYY') = '07/02/2011' then
 --		if distance_vue > 3 then

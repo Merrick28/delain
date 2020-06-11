@@ -83,6 +83,7 @@ begin
 	loop
 		perform f_modif_carac_base (ligne_bmcaracs.dbmc_perso_cod,
 			ligne_bmcaracs.dbmc_type_carac,
+			ligne_bmcaracs.dbmc_tbonus_libc,
 			CASE WHEN ligne_bmcaracs.dbmc_nb_tour is null THEN 'H' ELSE 'T' END,
 			CASE WHEN ligne_bmcaracs.dbmc_nb_tour is null THEN floor(extract(epoch from ligne_bmcaracs.dbmc_duree) / 3600)::integer ELSE ligne_bmcaracs.dbmc_nb_tour END,  -- Heures dans un interval... ou nb_tour
 			ligne_bmcaracs.dbmc_valeur,

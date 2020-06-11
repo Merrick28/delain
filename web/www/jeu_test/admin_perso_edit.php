@@ -1,5 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
+include_once '../includes/tools.php';
+
 ob_start();
 $pdo = new bddpdo;
 ?>
@@ -18,23 +20,6 @@ $erreur = 0;
 $droit_modif = 'dcompt_modif_perso';
 define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
-
-function bm_progressivite($fonc_effet, $fonc_force)
-{
-    $pdo = new bddpdo;
-
-    $req = "select bonus_progressivite(:bm, :force) as progressivite";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
-    if ($progres = $stmt->fetch())
-    {
-        return $progres["progressivite"];
-    }
-    else
-    {
-        return 'O' ;
-    }
-}
 
 
 if ($erreur == 0)
@@ -519,10 +504,10 @@ if ($erreur == 0)
                             ?>
                             <?php // LISTE DES BONUS de Caracs
                             $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
-                                          corig_valeur as bonus_valeur,
+                                          case when tbonus_gentil_positif = 't' then corig_valeur else -corig_valeur end as bonus_valeur,
                                           COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
-                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join bonus_type on tbonus_libc = corig_tbonus_libc
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod and corig_valeur >0 and  corig_mode!='E'
                                         order by tbonus_libc";
@@ -579,10 +564,10 @@ if ($erreur == 0)
                             ?>
                             <?php // LISTE DES MALUS de Caracs
                             $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
-                                          corig_valeur as bonus_valeur,
+                                        case when tbonus_gentil_positif = 't' then corig_valeur else -corig_valeur end as bonus_valeur,
                                         COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
-                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join bonus_type on tbonus_libc = corig_tbonus_libc
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod  and corig_valeur <0  and corig_mode!='E'
                                         order by tbonus_libc";
@@ -852,6 +837,10 @@ if ($erreur == 0)
         $req = "select race_cod, race_nom from race order by race ";
         echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
 
+        // Liste des objets generique
+        $req = "select gobj_nom, gobj_cod from objet_generique order by gobj_nom ";
+        echo '<select id="liste_objet_modele" style="display:none;">' . $html->select_from_query($req, 'gobj_cod', 'gobj_nom') . '</select>';
+
 
         ?>
         <form method="post" action="#" onsubmit="return Validation.Valide ();">
@@ -889,7 +878,7 @@ if ($erreur == 0)
                 if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', $fonc_trigger_param, '0', true);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"0\", true);</script>";
             }
 
             $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,fonc_trigger_param,
@@ -917,7 +906,7 @@ if ($erreur == 0)
                 if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', $fonc_trigger_param, '$fonc_validite', false);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", false);</script>";
             }
             ?>
             <div style='clear: both'>

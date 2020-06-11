@@ -86,13 +86,9 @@ begin
 
 	-- Sauvegarde des BM de potions (on stocke la valeur du bonus et le temps restant)
 	delete from defi_bmcaracs where dbmc_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
-	insert into defi_bmcaracs (dbmc_perso_cod, dbmc_type_carac, dbmc_duree, dbmc_nb_tour, dbmc_valeur, dbmc_mode)
-	select corig_perso_cod, corig_type_carac, corig_dfin - now(), corig_nb_tours,
-	case corig_type_carac when 'FOR' then perso_for
-	                      when 'CON' then perso_con
-	                      when 'INT' then perso_int
-	                      when 'DEX' then perso_dex end - corig_carac_valeur_orig, corig_mode
-	from carac_orig inner join perso on perso_cod = corig_perso_cod
+	insert into defi_bmcaracs (dbmc_perso_cod, dbmc_type_carac, dbmc_duree, dbmc_nb_tour, dbmc_valeur, dbmc_mode, dbmc_tbonus_libc)
+	select corig_perso_cod, corig_type_carac, corig_dfin - now(), corig_nb_tours, case when tbonus_gentil_positif = 't' then corig_valeur else -corig_valeur end as corig_valeur, corig_mode, corig_tbonus_libc
+	from carac_orig inner join perso on perso_cod = corig_perso_cod inner join bonus_type on tbonus_libc=corig_tbonus_libc
 	where corig_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod)
 	  and corig_mode != 'E';  -- sauf bonus equipement
 

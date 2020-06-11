@@ -129,7 +129,7 @@ switch ($methode)
         }
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -174,7 +174,7 @@ switch ($methode)
         }
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -232,7 +232,7 @@ switch ($methode)
         }
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -278,7 +278,7 @@ switch ($methode)
         }
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -337,7 +337,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -392,7 +392,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -461,7 +461,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -508,7 +508,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -563,7 +563,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';
@@ -611,7 +611,7 @@ switch ($methode)
         $defi_cod    = fonctions::format($defi_cod, false);
         $params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-        if (!$pdo->get_one_record($params_defi))
+        if (! $result=$pdo->get_one_record($params_defi))
         {
             $erreur         = true;
             $message_erreur .= 'Défi introuvable.';

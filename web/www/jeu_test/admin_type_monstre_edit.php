@@ -1,6 +1,8 @@
 <?php
 
 include "blocks/_header_page_jeu.php";
+include_once '../includes/tools.php';
+
 $perso = $verif_connexion->perso;
 
 
@@ -23,22 +25,7 @@ while (false !== ($filename = readdir($rep)))
     }
 }
 
-function bm_progressivite($fonc_effet, $fonc_force)
-{
-    $pdo = new bddpdo;
 
-    $req = "select bonus_progressivite(:bm, :force) as progressivite";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
-    if ($progres = $stmt->fetch())
-    {
-        return $progres["progressivite"];
-    }
-    else
-    {
-        return 'O' ;
-    }
-}
 
 //
 //Contenu de la div de droite
@@ -1051,6 +1038,10 @@ if ($erreur == 0)
                 // Liste des races
                 $req = "select race_cod, race_nom from race order by race ";
                 echo '<select id="liste_race_modele" style="display:none;">' . $html->select_from_query($req, 'race_cod', 'race_nom') . '</select>';
+
+                // Liste des objets generique
+                $req = "select gobj_nom, gobj_cod from objet_generique order by gobj_nom ";
+                echo '<select id="liste_objet_modele" style="display:none;">' . $html->select_from_query($req, 'gobj_cod', 'gobj_nom') . '</select>';
 
 
                 ?>

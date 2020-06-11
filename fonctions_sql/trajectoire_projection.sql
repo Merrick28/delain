@@ -57,6 +57,9 @@ begin
 	compteur := 0;
 	xx := 0;
 	yy := 0;
+	if distance = 0 then
+		return pos0;  -- toute projection à une distance de 0 ne change pas la position
+	end if;
 	if pos1 = pos2 then
 		return pos0;
 	end if;

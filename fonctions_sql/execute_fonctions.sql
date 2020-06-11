@@ -21,7 +21,6 @@ declare
 	v_evenement alias for $3;  -- L’événement déclencheur
 	v_param alias for $4;      -- Les données à injecter pour l'éffet de l'EA
 
-	v_protagoniste integer ;   -- Le numéro du protagoniste (cible ou perso lui-même)
 	code_retour text;          -- Le retour de la fonction
 	retour_fonction text;      -- Le résultat de l’exécution d’une fonction
 	row record;                -- Les données de la fonction
@@ -41,34 +40,18 @@ declare
 
 begin
 
-  -- préparation des paramètres commun
-  -- if v_protagoniste is null and v_evenement != 'D' then
-	-- 	v_protagoniste := v_perso_cod;     --Marlyza - 2019-03-04 ? deb_tour_invocation n'est jamais déclenché à cause du manque de cible, BUG ?, Je rajoute le cas !
-  -- elsif v_protagoniste is null then
-  --   select into v_protagoniste COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
-	-- end if;
-
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
-  v_protagoniste := v_cible_cod ;   -- par défaut le protagoniste est celui fourni en paramètre
 
-  -- s'il n'y a de protagosite en paramètre, alors on prend la cible en cours ou le perso lui même s'il n'y en a pas. --Marlyza - 2020-05-20
-  if v_protagoniste is null then
-      select into v_protagoniste COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
-  end if;
-
-  -- Eventuellement les fonction du monstre générique
+  -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
 	if not found then
+	    -- cas des aventuriers
       v_gmon_cod:= null ;
       v_gmon_nom:= null ;
 	end if;
 
-
   -- code de retour
 	code_retour := '';
-
-	-- debug
-	-- code_retour :=  'DEBUG EA('|| v_evenement || '): Perso='||v_perso_cod::text||' cible='||coalesce(v_protagoniste, 0)::text||'<br>' ;
 
   -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for row in (
@@ -159,8 +142,8 @@ begin
 
 
         -- --------------- maintenant executer la fonction de l'EA trouvée !
-        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_protagoniste, row.fonc_cod, v_param) ;
-        retour_fonction := execute_fonction_specifique(v_perso_cod, v_protagoniste, row.fonc_cod, v_param) ;
+        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
 
         if coalesce(retour_fonction, '') != '' then
           code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
