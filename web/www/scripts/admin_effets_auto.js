@@ -425,8 +425,8 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Laisse tomber un objet',
-		description: 'Laisse tomber un objet au sol.',
+		affichage: 'Laisse tomber des objets',
+		description: 'Laisse tomber des objets au sol.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -469,6 +469,27 @@ EffetAuto.Types = [
 			{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de métamorphose, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nouveau nom de base)'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et chance de metamorphose en l’un d’eux.' }
+		],
+	},
+	{	nom: 'ea_implantation_ea',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Implante une EA',
+		description: 'Implante une EA à une cible.',
+		parametres: [
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'effet', type: 'ea', label: 'EA à implanter:', description: 'L’EA qui sera implantée sur les cibles.' }
 		],
 	},
 ];
@@ -844,8 +865,23 @@ EffetAuto.ChampCumulatif = function (parametre, numero, valeur) {
 	return html;
 }
 
-EffetAuto.Supprime = function (id, numero) {
-	if (confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?')) {
+
+EffetAuto.ChampEA = function (parametre, numero, valeur) {
+	if (!valeur) valeur = -1;		// par défaut pas de fonc_cod associé
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;';
+	html+= '<input type="hidden" valeur="'+valeur+'" name="fonc_' + parametre.nom + numero.toString() + '">' ;
+	html+= '<div id="ea-container-'+numero+'" data-child-id="'+valeur+'" data-child-numero=""></div>';
+	html += '</label><br />';
+	return html;
+}
+
+
+
+EffetAuto.Supprime = function (id, numero, silence) {
+
+	var ok = silence ? true : confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?');
+	if (ok) {
 		if (id != -1) {
 			document.getElementById('fonctions_supprimees').value += ',' + id.toString();
 			document.getElementById('fonction_id_' + id).style.display = 'none';
@@ -894,6 +930,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			if (typeof parametre.valeur !== "undefined")
 				valeur = parametre.valeur;
 			html = pd + EffetAuto.ChampLecture(parametre, valeur) + pf;
+			break;
+		case 'ea':
+			html = pd + EffetAuto.ChampEA(parametre, numero, valeur) + pf;
 			break;
 		case 'sens-projection':
 			html = pd + EffetAuto.ChampChoixSensProjection(parametre, numero, valeur) + pf;
@@ -956,7 +995,7 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 
 EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 	var texte = (id == -1) ? 'Annuler' : 'Supprimer';
-	return '<a onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
+	return '<a id="del-button-'+numero+'" onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
 }
 
 EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage) {
@@ -1062,10 +1101,35 @@ EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
 	return html;
 }
 
+EffetAuto.SupprimeEAChild = function (container) {
+	if ($('#ea-container-' + $(container).data("child-numero")).length>0) { // s'il avait un enfant on le supprime d'abord
+		EffetAuto.SupprimeEAChild('#ea-container-' + $(container).data("child-numero"));
+	}
+	EffetAuto.Supprime( $(container).data("child-id"), $(container).data("child-numero"), true );
+}
 
 EffetAuto.ChangeEffetAuto = function (type, numero) {
 	EffetAuto.EnleveValidation(numero, 'effet');
+
+	// S'il s'agissait d'une implantation d'EA on lui supprime son EA attachée (et toute la descendance s'il y en a)
+	if ($('#ea-container-' + numero).length>0) {
+		EffetAuto.SupprimeEAChild('#ea-container-' + numero);
+	}
+
 	document.getElementById('formulaire_fonction_' + numero).innerHTML = EffetAuto.EcritNouvelEffetAuto(type, numero);
+
+	$("div[id^='ea-container-']").each(function() {
+		// si on a changé l'effet d'une EA implanté, il faut supprimer son bouton annulé
+		if ( $(this).data("child-numero") == numero) $('#del-button-' + numero).hide();
+	});
+
+	// capture et alimentation des EA définie dans une EA
+	if ($('#ea-container-' + numero).length>0) {
+		EffetAuto.NouvelEffetAuto('ea-container-' + numero);
+		$('#del-button-' + EffetAuto.num_courant).hide();
+		$('#ea-container-' + numero).data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+	}
+
 	EffetAuto.setMultiSelect ();
 	Validation.Valide ();
 }
@@ -1096,12 +1160,12 @@ EffetAuto.EnleveValidation = function (numero, type) {
 	}
 };
 
-EffetAuto.NouvelEffetAuto = function () {
+EffetAuto.NouvelEffetAuto = function (container) {
 	EffetAuto.num_courant += 1;
 	var numero = EffetAuto.num_courant;
 	EffetAuto.Champs[numero] = [];
 
-	var conteneur = document.getElementById("liste_fonctions");
+	var conteneur = container ?  document.getElementById(container)  : document.getElementById("liste_fonctions");
 	var divEA = document.createElement("div");
 	divEA.id = 'fonction_num_' + numero;
 	divEA.className = 'bordiv';
