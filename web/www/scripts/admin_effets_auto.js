@@ -632,9 +632,15 @@ EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
-	
-	var resultat = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
+
+	var resultat = '' ;
+	if (!EffetAuto.MontreValidite) resultat+= '<div style="display:none;">';
+
+	resultat += '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
 	resultat += '<select name="' + nom_select + '"><option value="1">minutes</option><option value="60">heures</option><option value="1440">jours</option><option value="43200">mois</option></select>';
+
+	if (!EffetAuto.MontreValidite) resultat+= '</div>';
+
 	return resultat;
 }
 
@@ -870,7 +876,8 @@ EffetAuto.ChampEA = function (parametre, numero, valeur) {
 	if (!valeur) valeur = -1;		// par défaut pas de fonc_cod associé
 
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;';
-	html+= '<input type="hidden" valeur="'+valeur+'" name="fonc_' + parametre.nom + numero.toString() + '">' ;
+	html+= '<input type="hidden" value="'+valeur+'" name="fonc_' + parametre.nom + numero.toString() + '">' ;
+	html+= '<input id="ea_implantation'+numero+'" type="hidden" value="" name="ea_implantation' + numero.toString() + '">' ;
 	html+= '<div id="ea-container-'+numero+'" data-child-id="'+valeur+'" data-child-numero=""></div>';
 	html += '</label><br />';
 	return html;
@@ -1128,6 +1135,7 @@ EffetAuto.ChangeEffetAuto = function (type, numero) {
 		EffetAuto.NouvelEffetAuto('ea-container-' + numero);
 		$('#del-button-' + EffetAuto.num_courant).hide();
 		$('#ea-container-' + numero).data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+		$('#ea_implantation' + numero).val(EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
 	}
 
 	EffetAuto.setMultiSelect ();

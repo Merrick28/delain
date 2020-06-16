@@ -33,122 +33,8 @@ if ($erreur == 0)
 
         $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA du compteur numero: $tbonus_cod\n";
 
-        // Modification des effets automatiques
-        $fonctions_supprimees = explode(',', trim(fonctions::format($_POST['fonctions_supprimees']), ','));
-        $fonctions_annulees   = explode(',', trim(fonctions::format($_POST['fonctions_annulees']), ','));
-        $fonctions_existantes = explode(',', trim(fonctions::format($_POST['fonctions_existantes']), ','));
-        $fonctions_ajoutees   = explode(',', trim(fonctions::format($_POST['fonctions_ajoutees']), ','));
-
-        $message = '';
-        // Ajout d’effet
-        foreach ($fonctions_ajoutees as $numero)
-        {
-            if (!empty($numero) || $numero === 0)
-            {
-                if (!in_array($numero, $fonctions_annulees))
-                {
-                    //require "blocks/_block_admin_traitement_type_monstre_edit.php";
-                    $fonc_type   = $_POST['declenchement_' . $numero];
-                    $fonc_nom    = $_POST['fonction_type_' . $numero];
-                    $fonc_effet  = $_POST['fonc_effet' . $numero];
-                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
-
-                    $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param)
-						VALUES (:fonc_nom, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param)";
-                    $stmt      = $pdo->prepare($req);
-                    $stmt      = $pdo->execute(array(
-                        ":fonc_nom"              => $fonc_nom,
-                        ":fonc_type"             => $fonc_type,
-                        ":fonc_effet"            => $fonc_effet,
-                        ":fonc_force"            => $_POST['fonc_force' . $numero],
-                        ":fonc_duree"            => $_POST['fonc_duree' . $numero],
-                        ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
-                        ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
-                        ":fonc_portee"           => $_POST['fonc_portee' . $numero],
-                        ":fonc_proba"            => $_POST['fonc_proba' . $numero],
-                        ":fonc_message"          => $_POST['fonc_message' . $numero],
-                        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
-                    ), $stmt);
-
-                    $texteDeclenchement = 'un Bonus/Malus change.';
-                    if (!empty($message)) $message .= "			";
-                    $message .= "Ajout d’un effet de type '$fonc_nom' sur $texteDeclenchement\n";
-
-                }
-            }
-        }
-
-        // Modification d’effet
-        foreach ($fonctions_existantes as $numero)
-        {
-            if (!empty($numero) || $numero === 0)
-            {
-                $fonc_cod = fonctions::format($_POST['fonc_id' . $numero]);
-
-                if (!in_array($fonc_cod, $fonctions_supprimees))
-                {
-                    //require "blocks/_block_admin_traitement_type_monstre_edit.php";
-                    $fonc_effet  = $_POST['fonc_effet' . $numero];
-                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
-                    $fonc_trigger_param = get_ea_trigger_param($_POST, $numero);
-
-                    $req       = "UPDATE fonction_specifique
-						SET fonc_effet = :fonc_effet,
-							fonc_force = :fonc_force,
-							fonc_duree = :fonc_duree,
-							fonc_type_cible = :fonc_type_cible,
-							fonc_nombre_cible = :fonc_nombre_cible,
-							fonc_portee =:fonc_portee,
-							fonc_proba = :fonc_proba,
-							fonc_message = :fonc_message,
-							fonc_trigger_param = :fonc_trigger_param
-						WHERE fonc_cod = :fonc_cod
-						RETURNING fonc_nom, fonc_type";
-                    $stmt      = $pdo->prepare($req);
-                    $stmt      = $pdo->execute(array(
-                        ":fonc_cod"              => $fonc_cod,
-                        ":fonc_effet"            => $fonc_effet,
-                        ":fonc_force"            => $_POST['fonc_force' . $numero],
-                        ":fonc_duree"            => $_POST['fonc_duree' . $numero],
-                        ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
-                        ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
-                        ":fonc_portee"           => $_POST['fonc_portee' . $numero],
-                        ":fonc_proba"            => $_POST['fonc_proba' . $numero],
-                        ":fonc_message"          => $_POST['fonc_message' . $numero],
-                        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
-                    ), $stmt);
-                    $result    = $stmt->fetch();
-                    $fonc_nom  = $result['fonc_nom'];
-                    $fonc_type = $result['fonc_type'];
-
-                    $texteDeclenchement = 'un Bonus/Malus change.';
-                    if (!empty($message)) $message .= "			";
-                    $message .= "Modification d’un effet de type '$fonc_nom' sur $texteDeclenchement\n";
-                }
-            }
-        }
-
-        // Suppression d’effet
-        foreach ($fonctions_supprimees as $id)
-        {
-            if (!empty($id) || $id === 0)
-            {
-                $req  = "SELECT fonc_nom, fonc_type FROM fonction_specifique WHERE fonc_cod = $id";
-                $stmt = $pdo->query($req);
-                if ($result = $stmt->fetch())
-                {
-                    $fonc_type = $result['fonc_type'];
-                    $fonc_nom  = $result['fonc_nom'];
-                    $req       = "DELETE FROM fonction_specifique WHERE fonc_cod = $id";
-                    $stmt      = $pdo->query($req);
-                }
-
-                $texteDeclenchement = 'un Bonus/Malus change.';
-                if (!empty($message)) $message .= "			";
-                $message .= "Suppression d’un effet de type '$fonc_nom' sur $texteDeclenchement\n";
-            }
-        }
+        // Sauvegarder les modifications des effets-auto => save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)
+        $message = save_effet_auto($_POST, null, null) ;
 
         writelog($log . $message, 'monstre_edit');
         echo nl2br($message);
@@ -256,7 +142,7 @@ if ($erreur == 0)
             <input type="hidden" name="fonctions_ajoutees" id="fonctions_ajoutees" value=""/>
             <input type="hidden" name="fonctions_annulees" id="fonctions_annulees" value=""/>
             <input type="hidden" name="fonctions_existantes" id="fonctions_existantes" value=""/>
-            <div id="liste_fonctions"></div>';
+            <div id="liste_fonctions"></div><script>';
 
         // Liste des EA Existantes
         $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param
@@ -264,35 +150,14 @@ if ($erreur == 0)
                         where   fonc_gmon_cod is null 
                             and fonc_perso_cod is null 
                             and fonc_type='BMC'
-                            and tbonus_cod=:tbonus_cod
+                            and tbonus_cod=".((int)$tbonus_cod)."
                             and fonc_trigger_param->>'fonc_trig_compteur'::text = tbonus_libc
                         order by fonc_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":tbonus_cod" => $tbonus_cod), $stmt);
 
-        while ($result = $stmt->fetch()) {
-            $fonc_id = $result['fonc_cod'];
-            $fonc_type = $result['fonc_type'];
-            $fonc_nom = $result['fonc_nom'];
-            $fonc_effet = $result['fonc_effet'];
-            $fonc_cumulatif = $result['fonc_cumulatif'];
-            $fonc_force = $result['fonc_force'];
-            $fonc_duree = $result['fonc_duree'];
-            $fonc_type_cible = $result['fonc_type_cible'];
-            $fonc_nombre_cible = $result['fonc_nombre_cible'];
-            $fonc_portee = $result['fonc_portee'];
-            $fonc_proba = $result['fonc_proba'];
-            $fonc_message = $result['fonc_message'];
-            $fonc_trigger_param = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
+        echo getJS_ea_existant($req, false, false);
 
-            // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
-            if ($fonc_cumulatif == 'O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
-
-            echo "<script>EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param);</script>";
-        }
-
-        echo '    
-            <div style="clear: both;">
+        echo '</script>';
+        echo '<div style="clear: both;">
                 <a onclick="EffetAuto.NouvelEffetAuto (); return false;">Nouvel effet</a><br/><br/>
                 <input type="submit" value="Valider les suppressions / modifications / ajouts d’effets !"  class="test"/>
             </div>
