@@ -124,6 +124,7 @@ function getJS_ea_existant($req, $validite=false, $heritage=false)
 
     $pdo = new bddpdo; // connection à la DB
 
+    $implantation = [] ;
     $stmt = $pdo->query($req);
     while ($result = $stmt->fetch())
     {
@@ -156,7 +157,55 @@ function getJS_ea_existant($req, $validite=false, $heritage=false)
 
         $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage);
                   ";
+        if ( $fonc_nom=="ea_implantation_ea" ) $implantation[] = $fonc_effet ;
     }
+
+    // Ajouter les EA implantées
+    while (sizeof($implantation)>0) {
+
+        $implantation2 = [] ;
+        foreach($implantation as $fonc_cod) {
+            $stmt = $pdo->prepare("select * from fonction_specifique where fonc_cod=:fonc_cod;");
+            $stmt = $pdo->execute(array(":fonc_cod"         => $fonc_cod), $stmt);
+
+            if ($result = $stmt->fetch())
+            {
+                $fonc_id                = $result['fonc_cod'];
+                $fonc_type              = $result['fonc_type'];
+                $fonc_nom               = $result['fonc_nom'];
+                $fonc_effet             = $result['fonc_effet'];
+                $fonc_cumulatif         = $result['fonc_cumulatif'];
+                $fonc_force             = $result['fonc_force'];
+                $fonc_duree             = $result['fonc_duree'];
+                $fonc_type_cible        = $result['fonc_type_cible'];
+                $fonc_nombre_cible      = $result['fonc_nombre_cible'];
+                $fonc_portee            = $result['fonc_portee'];
+                $fonc_proba             = $result['fonc_proba'];
+                $fonc_message           = $result['fonc_message'];
+                $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
+                if ($validite) {
+                    $fonc_validite      = $result['validite'];
+                } else         {
+                    $fonc_validite      ="0";
+                }
+                if ($heritage) {
+                    $fonc_heritage      = "true";
+                } else         {
+                    $fonc_heritage      = "false";
+                }
+
+                // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
+                if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
+
+                $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage, true);
+                  ";
+                if ( $fonc_nom=="ea_implantation_ea" ) $implantation2[] = $fonc_effet ;
+            };
+        }
+
+        $implantation = $implantation2 ;
+    }
+
 
     return $output ;
 }
@@ -286,30 +335,28 @@ function delete_ea($fonc_cod)
     $pdo = new bddpdo; // connection à la DB
 
     $message = "";
-    $fonc_type = "";
-    $fonc_nom = "";
 
-    $req = "SELECT fonc_nom, fonc_type FROM fonction_specifique WHERE fonc_cod = :fonc_cod";
-    $stmt      = $pdo->prepare($req);
-    $stmt      = $pdo->execute(array(  ":fonc_cod"  => $fonc_cod), $stmt);
-
-    $req = "DELETE FROM fonction_specifique WHERE fonc_cod = :fonc_cod";
+    $req = "SELECT fonc_nom, fonc_type, fonc_effet FROM fonction_specifique WHERE fonc_cod = :fonc_cod";
     $stmt      = $pdo->prepare($req);
     $stmt      = $pdo->execute(array(  ":fonc_cod"  => $fonc_cod), $stmt);
 
     if ($result = $stmt->fetch())
     {
-        $fonc_type = $stmt['fonc_type'];
-        $fonc_nom = $stmt['fonc_nom'];
-
         $req = "DELETE FROM fonction_specifique WHERE fonc_cod = :fonc_cod";
         $stmt      = $pdo->prepare($req);
         $stmt      = $pdo->execute(array(  ":fonc_cod"  => $fonc_cod), $stmt);
+
+        $fonc_type = $result['fonc_type'];
+        $fonc_nom = $result['fonc_nom'];
+        $fonc_effet = $result['fonc_effet'];
+
+        // supprimer les enfants s'il y en a
+        if ($fonc_nom == "ea_implantation_ea" ) $message.=delete_ea($fonc_effet);
+
+        $texteDeclenchement = get_texte_declenchement($fonc_type);
+        $message .= "Suppression d’un effet de type '$fonc_nom' sur $texteDeclenchement\n";
+
     }
-
-    $texteDeclenchement = get_texte_declenchement($fonc_type);
-
-    $message .= "Suppression d’un effet de type '$fonc_nom' sur $texteDeclenchement\n";
 
     return $message ;
 }

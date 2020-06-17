@@ -1,6 +1,7 @@
 var EffetAuto = {num_courant: 0};
 EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
+EffetAuto.EditionCompteur = false;
 
 /*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
@@ -489,6 +490,7 @@ EffetAuto.Types = [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_validite', type: 'entier', label: 'Validité de l’implantation (en min.):', description: 'Délai de validité (en minutes) de l’EA après implantation. Laisser vide pour un délai infini.',  validation: Validation.Types.EntierOuVide },
 			{ nom: 'effet', type: 'ea', label: 'EA à implanter:', description: 'L’EA qui sera implantée sur les cibles.' }
 		],
 	},
@@ -552,7 +554,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -633,13 +635,10 @@ EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 
-	var resultat = '' ;
-	if (!EffetAuto.MontreValidite) resultat+= '<div style="display:none;">';
-
+	var resultat =  (!EffetAuto.MontreValidite) ? '<div id="champ-validite-'+numero+'" style="display:none;">' :  '<div id="champ-validite-'+numero+'">' ;
 	resultat += '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
 	resultat += '<select name="' + nom_select + '"><option value="1">minutes</option><option value="60">heures</option><option value="1440">jours</option><option value="43200">mois</option></select>';
-
-	if (!EffetAuto.MontreValidite) resultat+= '</div>';
+	resultat+= '</div>';
 
 	return resultat;
 }
@@ -889,6 +888,12 @@ EffetAuto.Supprime = function (id, numero, silence) {
 
 	var ok = silence ? true : confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?');
 	if (ok) {
+
+		// S'il s'agit d'un EA d'implantation on supprime aussi le ou les fils.
+		if ($('#ea-container-' + numero).length>0) {
+			EffetAuto.SupprimeEAChild('#ea-container-' + numero);
+		}
+
 		if (id != -1) {
 			document.getElementById('fonctions_supprimees').value += ',' + id.toString();
 			document.getElementById('fonction_id_' + id).style.display = 'none';
@@ -1005,12 +1010,21 @@ EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 	return '<a id="del-button-'+numero+'" onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
 }
 
-EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage) {
+EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage, implantation) {
 	console.log('debut function EffetAuto.EcritEffetAutoExistant');
 	EffetAuto.num_courant += 1;
 	EffetAuto.Champs[EffetAuto.num_courant] = [];
 
 	var conteneur = document.getElementById("liste_fonctions");
+	if (implantation) {
+		// en cas d'un EA implanté on va chercher le conteneur cible
+		var container = $("div[id^='ea-container-'][data-child-id="+id+"]") ;
+		conteneur = document.getElementById( container.attr("id") );
+		container.data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+		var numero_pere = container.attr("id").substr(13);
+		$('#ea_implantation' + numero_pere).val(EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+	}
+
 	var divEA = document.createElement("div");
 	divEA.id = 'fonction_id_' + id;
 	divEA.className = 'bordiv';
@@ -1072,6 +1086,12 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	}
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
+	if (implantation) {
+		// en cas d'un EA implanté on supprime le boutton suppression (elle est supprimé à l'aide du pere)
+		$('#del-button-' + EffetAuto.num_courant).hide();
+		$('#champ-validite-' + EffetAuto.num_courant).hide();
+	}
+
 	EffetAuto.setMultiSelect();
 }
 
@@ -1127,13 +1147,17 @@ EffetAuto.ChangeEffetAuto = function (type, numero) {
 
 	$("div[id^='ea-container-']").each(function() {
 		// si on a changé l'effet d'une EA implanté, il faut supprimer son bouton annulé
-		if ( $(this).data("child-numero") == numero) $('#del-button-' + numero).hide();
+		if ( $(this).data("child-numero") == numero) {
+			$('#del-button-' + numero).hide();
+			$('#champ-validite-' + numero).hide();
+		}
 	});
 
 	// capture et alimentation des EA définie dans une EA
 	if ($('#ea-container-' + numero).length>0) {
 		EffetAuto.NouvelEffetAuto('ea-container-' + numero);
 		$('#del-button-' + EffetAuto.num_courant).hide();
+		$('#champ-validite-' + EffetAuto.num_courant).hide();
 		$('#ea-container-' + numero).data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
 		$('#ea_implantation' + numero).val(EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
 	}
