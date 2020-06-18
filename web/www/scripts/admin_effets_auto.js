@@ -1,6 +1,7 @@
 var EffetAuto = {num_courant: 0};
 EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
+EffetAuto.EditionCompteur = false;
 
 /*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
@@ -197,6 +198,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: false,
 		bm_compteur: false,
+		obsolete: true,
 		affichage: 'Esprit Damné (Obsolète)',
 		description: 'Applique des Malus standard de -25 de chances au toucher, -3 dégâts, +2 PA/attaque (proba 50% par cible), +3 PA/déplacements (proba 12% par cible).',
 		parametres: [
@@ -214,6 +216,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		obsolete: true,
 		affichage: 'Invocation de monstre',
 		description: 'Invoque un monstre d’un type donné.',
 		parametres: [
@@ -230,6 +233,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		obsolete: true,
 		affichage: 'Invocations multiples',
 		description: 'Invoque plusieurs monstres du type donné. Typiquement, les gelées lors de leur mort.',
 		parametres: [
@@ -245,6 +249,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		obsolete: true,
 		affichage: 'Invocation sur l’étage',
 		description: 'Invoque plusieurs monstres du type donné, quelque part sur le même étage. Typiquement, les golems lors de leur mort.',
 		parametres: [
@@ -279,6 +284,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		obsolete: true,
 		affichage: 'Nécromancie',
 		description: 'Crée un mort-vivant. Les probabilités sont les suivantes : \n5% Chasseur éternel, \n15% Zombie, \n10% Spectre de L’effroi, \n20% Squelette, \n10% Guerrier squelette, \n5% Poltergeist, \n30% Archer Squelette, \n5% Tourmenteur.',
 		parametres: [],
@@ -290,6 +296,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		obsolete: true,
 		affichage: 'Nécromancie (tueur)',
 		description: 'Crée un mort-vivant lorsqu’une cible est tuée, ou un clone de la victime (15% de chances).',
 		parametres: [],
@@ -399,7 +406,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Saute sur une cible',
+		affichage: 'Bondi sur une cible',
 		description: 'Saute directement sur une des cibles à portée. Compte comme un déplacement (déclenchement de l’EA « Se déplace »).',
 		parametres: [
 			{ nom: 'trig_degats', type: 'texte', longueur: 5, label: 'Dégâts fait par le saut sur la cible',  description: 'Ce sont des dégats directs fait par le bond: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
@@ -419,8 +426,8 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Laisse tomber un objet',
-		description: 'Laisse tomber un objet au sol.',
+		affichage: 'Laisse tomber des objets',
+		description: 'Laisse tomber des objets au sol.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
@@ -446,7 +453,45 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
-			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et taux d’invoation de chacun, chaque tirage invoquera un seul monstre de cette liste.' }
+			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et taux d’invocation de chacun, chaque tirage invoquera un seul monstre de cette liste.' }
+		],
+	},
+	{	nom: 'ea_metamorphe',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Se metamorphose',
+		description: 'Prends les caractéristiques d’un autre monstre générique.',
+		parametres: [
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de métamorphose, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nouveau nom de base)'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et chance de metamorphose en l’un d’eux.' }
+		],
+	},
+	{	nom: 'ea_implantation_ea',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Implante une EA',
+		description: 'Implante une EA à une cible.',
+		parametres: [
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_validite', type: 'entier', label: 'Validité de l’implantation (en min.):', description: 'Délai de validité (en minutes) de l’EA après implantation. Laisser vide pour un délai infini.',  validation: Validation.Types.EntierOuVide },
+			{ nom: 'effet', type: 'ea', label: 'EA à implanter:', description: 'L’EA qui sera implantée sur les cibles.' }
 		],
 	},
 ];
@@ -509,11 +554,12 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
 			liste.options[liste.options.length - 1].title = fct.description;
+			if (fct.obsolete) liste.options[liste.options.length - 1].disabled = "disabled";
 		}
 	}
 
@@ -588,9 +634,12 @@ EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
-	
-	var resultat = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
+
+	var resultat =  (!EffetAuto.MontreValidite) ? '<div id="champ-validite-'+numero+'" style="display:none;">' :  '<div id="champ-validite-'+numero+'">' ;
+	resultat += '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
 	resultat += '<select name="' + nom_select + '"><option value="1">minutes</option><option value="60">heures</option><option value="1440">jours</option><option value="43200">mois</option></select>';
+	resultat+= '</div>';
+
 	return resultat;
 }
 
@@ -821,8 +870,30 @@ EffetAuto.ChampCumulatif = function (parametre, numero, valeur) {
 	return html;
 }
 
-EffetAuto.Supprime = function (id, numero) {
-	if (confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?')) {
+
+EffetAuto.ChampEA = function (parametre, numero, valeur) {
+	if (!valeur) valeur = -1;		// par défaut pas de fonc_cod associé
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;';
+	html+= '<input type="hidden" value="'+valeur+'" name="fonc_' + parametre.nom + numero.toString() + '">' ;
+	html+= '<input id="ea_implantation'+numero+'" type="hidden" value="" name="ea_implantation' + numero.toString() + '">' ;
+	html+= '<div id="ea-container-'+numero+'" data-child-id="'+valeur+'" data-child-numero=""></div>';
+	html += '</label><br />';
+	return html;
+}
+
+
+
+EffetAuto.Supprime = function (id, numero, silence) {
+
+	var ok = silence ? true : confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?');
+	if (ok) {
+
+		// S'il s'agit d'un EA d'implantation on supprime aussi le ou les fils.
+		if ($('#ea-container-' + numero).length>0) {
+			EffetAuto.SupprimeEAChild('#ea-container-' + numero);
+		}
+
 		if (id != -1) {
 			document.getElementById('fonctions_supprimees').value += ',' + id.toString();
 			document.getElementById('fonction_id_' + id).style.display = 'none';
@@ -871,6 +942,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			if (typeof parametre.valeur !== "undefined")
 				valeur = parametre.valeur;
 			html = pd + EffetAuto.ChampLecture(parametre, valeur) + pf;
+			break;
+		case 'ea':
+			html = pd + EffetAuto.ChampEA(parametre, numero, valeur) + pf;
 			break;
 		case 'sens-projection':
 			html = pd + EffetAuto.ChampChoixSensProjection(parametre, numero, valeur) + pf;
@@ -933,15 +1007,24 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 
 EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 	var texte = (id == -1) ? 'Annuler' : 'Supprimer';
-	return '<a onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
+	return '<a id="del-button-'+numero+'" onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
 }
 
-EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage) {
+EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage, implantation) {
 	console.log('debut function EffetAuto.EcritEffetAutoExistant');
 	EffetAuto.num_courant += 1;
 	EffetAuto.Champs[EffetAuto.num_courant] = [];
 
 	var conteneur = document.getElementById("liste_fonctions");
+	if (implantation) {
+		// en cas d'un EA implanté on va chercher le conteneur cible
+		var container = $("div[id^='ea-container-'][data-child-id="+id+"]") ;
+		conteneur = document.getElementById( container.attr("id") );
+		container.data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+		var numero_pere = container.attr("id").substr(13);
+		$('#ea_implantation' + numero_pere).val(EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+	}
+
 	var divEA = document.createElement("div");
 	divEA.id = 'fonction_id_' + id;
 	divEA.className = 'bordiv';
@@ -1003,6 +1086,12 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	}
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
+	if (implantation) {
+		// en cas d'un EA implanté on supprime le boutton suppression (elle est supprimé à l'aide du pere)
+		$('#del-button-' + EffetAuto.num_courant).hide();
+		$('#champ-validite-' + EffetAuto.num_courant).hide();
+	}
+
 	EffetAuto.setMultiSelect();
 }
 
@@ -1039,10 +1128,40 @@ EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
 	return html;
 }
 
+EffetAuto.SupprimeEAChild = function (container) {
+	if ($('#ea-container-' + $(container).data("child-numero")).length>0) { // s'il avait un enfant on le supprime d'abord
+		EffetAuto.SupprimeEAChild('#ea-container-' + $(container).data("child-numero"));
+	}
+	EffetAuto.Supprime( $(container).data("child-id"), $(container).data("child-numero"), true );
+}
 
 EffetAuto.ChangeEffetAuto = function (type, numero) {
 	EffetAuto.EnleveValidation(numero, 'effet');
+
+	// S'il s'agissait d'une implantation d'EA on lui supprime son EA attachée (et toute la descendance s'il y en a)
+	if ($('#ea-container-' + numero).length>0) {
+		EffetAuto.SupprimeEAChild('#ea-container-' + numero);
+	}
+
 	document.getElementById('formulaire_fonction_' + numero).innerHTML = EffetAuto.EcritNouvelEffetAuto(type, numero);
+
+	$("div[id^='ea-container-']").each(function() {
+		// si on a changé l'effet d'une EA implanté, il faut supprimer son bouton annulé
+		if ( $(this).data("child-numero") == numero) {
+			$('#del-button-' + numero).hide();
+			$('#champ-validite-' + numero).hide();
+		}
+	});
+
+	// capture et alimentation des EA définie dans une EA
+	if ($('#ea-container-' + numero).length>0) {
+		EffetAuto.NouvelEffetAuto('ea-container-' + numero);
+		$('#del-button-' + EffetAuto.num_courant).hide();
+		$('#champ-validite-' + EffetAuto.num_courant).hide();
+		$('#ea-container-' + numero).data("child-numero", EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+		$('#ea_implantation' + numero).val(EffetAuto.num_courant) ; //memoriser l'id du fils dans le pere
+	}
+
 	EffetAuto.setMultiSelect ();
 	Validation.Valide ();
 }
@@ -1073,12 +1192,12 @@ EffetAuto.EnleveValidation = function (numero, type) {
 	}
 };
 
-EffetAuto.NouvelEffetAuto = function () {
+EffetAuto.NouvelEffetAuto = function (container) {
 	EffetAuto.num_courant += 1;
 	var numero = EffetAuto.num_courant;
 	EffetAuto.Champs[numero] = [];
 
-	var conteneur = document.getElementById("liste_fonctions");
+	var conteneur = container ?  document.getElementById(container)  : document.getElementById("liste_fonctions");
 	var divEA = document.createElement("div");
 	divEA.id = 'fonction_num_' + numero;
 	divEA.className = 'bordiv';
