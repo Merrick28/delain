@@ -139,6 +139,28 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
+	{	nom: 'ea_ajoute_bm',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		affichage: 'Bonus / Malus Etendu',
+		description: 'Applique des Bonus / Malus, à une ou plusieurs cibles.',
+		parametres: [
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_effet_bm', type: 'listebm', label: 'Liste des Bonus/Malus', description: 'Liste des Bonus/Malus, ils seront tous appliqués si le jet de proba est réussi.' }
+
+		],
+	},
 	{	nom: 'titre',
 		debut: false,
 		tueur: true,
@@ -338,12 +360,9 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Suppression BM',
+		affichage: 'Suppression de Bonus/Malus',
 		description: 'Supprime les effets d’un Bonus/Malus.',
 		parametres: [
-			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être supprimé.' },
-			{ nom: 'trig_supp_bm_standard', type: 'checkbox', label: 'Supprimer les BM Standards', description: 'Cocher pour supprimer les BM Standards'},
-			{ nom: 'trig_supp_bm_cumulatif', type: 'checkbox', label: 'Supprimer les BM Cumulatifs', description: 'Cocher pour supprimer les BM Cumulatifs'},
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
@@ -351,7 +370,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_effet_bm', type: 'listebm2', label: 'Liste des Bonus/Malus à supprimer', description: 'Liste des Bonus/Malus, ils seront tous supprimés si le jet de proba est réussi.' }
 		],
 	},
 	{	nom: 'ea_lance_sort',
@@ -510,7 +530,7 @@ EffetAuto.addItem = function (elem, M)
 		$(new_elem).insertAfter(elem);
 
 		//Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
-		$('*[id^="'+new_row+'"]').each(function( index ) {
+		$('*[id$="'+new_row+'"]').each(function( index ) {
 			if ($( this ).attr("data-entry"))
 			{
 				if ($( this ).attr("data-entry") == "val")
@@ -520,6 +540,18 @@ EffetAuto.addItem = function (elem, M)
 				else if ($( this ).attr("data-entry") == "text")
 				{
 					$( this ).text("");
+				}
+				else if ($( this ).attr("data-entry") == "checked")
+				{
+					$( this ).prop('checked');
+				}
+				else if ($( this ).attr("data-entry") == "unchecked")
+				{
+					$( this ).prop('checked', false);
+				}
+				else
+				{
+					$( this ).val( $( this ).attr("data-entry") );
 				}
 			}
 		});
@@ -809,6 +841,106 @@ EffetAuto.ChampInvocationMonstre = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.CheckBoxChange = function (checkbox, inputbox) {
+	if ($("#" + checkbox).prop('checked')) {
+		$("#" + inputbox).val("O");
+	} else {
+		$("#" + inputbox).val("N");
+	}
+}
+
+EffetAuto.ChampListeBM = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomBM = "obj_fonc_" + parametre.nom + numero.toString()+"_tbonus_libc";
+	var nomForce = "obj_fonc_" + parametre.nom + numero.toString()+"_force";
+	var nomDuree = "obj_fonc_" + parametre.nom + numero.toString()+"_duree";
+	var nomCumulatif = "obj_fonc_" + parametre.nom + numero.toString()+"_cumulatif";
+	var checkboxCumulatif = "obj_check_" + parametre.nom + numero.toString()+"_cumulatif";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		var row='-row-'+numero+'-'+i+'-';
+		var rowCumulatifNom = nomCumulatif+row;
+		var rowCumulatifCheck = checkboxCumulatif+row;
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomBM + '[]">';
+		html += EffetAuto.CopieListe ('liste_bm_modele',  valeur.length ? valeur[i].tbonus_libc : "");
+		html += '</select>&nbsp;' ;
+		html += '<input data-entry="N" id="'+rowCumulatifNom+'"  name="'+nomCumulatif+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].cumulatif : "N")+'">';
+		html += 'Cumulatif: <input data-entry="unckecked" onchange="EffetAuto.CheckBoxChange(\''+rowCumulatifCheck+'\', \''+rowCumulatifNom+'\');" id="'+rowCumulatifCheck+'" name="'+checkboxCumulatif+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].cumulatif =='O' ? ' checked' : '') : '')+'><br>';
+		html += '&nbsp;<strong>Valeur:<strong>&nbsp;<input id="force'+row+'" data-entry="val" name="'+nomForce+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].force : "")+'">';
+		html += '&nbsp;<strong>Durée:<strong>&nbsp;<input id="durre'+row+'" data-entry="val" name="'+nomDuree+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].duree : "")+'"> tour(s)&nbsp';
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
+EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomBM = "obj_fonc_" + parametre.nom + numero.toString()+"_tbonus_libc";
+	var nomStandard = "obj_fonc_" + parametre.nom + numero.toString()+"_standard";
+	var checkboxStandard = "obj_check_" + parametre.nom + numero.toString()+"_standard";
+	var nomCumulatif = "obj_fonc_" + parametre.nom + numero.toString()+"_cumulatif";
+	var checkboxCumulatif = "obj_check_" + parametre.nom + numero.toString()+"_cumulatif";
+	var nomBonus = "obj_fonc_" + parametre.nom + numero.toString()+"_bonus";
+	var checkboxBonus = "obj_check_" + parametre.nom + numero.toString()+"_bonus";
+	var nomMalus = "obj_fonc_" + parametre.nom + numero.toString()+"_malus";
+	var checkboxMalus = "obj_check_" + parametre.nom + numero.toString()+"_malus";
+
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		var row='-row-'+numero+'-'+i+'-';
+		var rowStandardNom = nomStandard+row;
+		var rowStandardCheck = checkboxStandard+row;
+		var rowCumulatifNom = nomCumulatif+row;
+		var rowCumulatifCheck = checkboxCumulatif+row;
+		var rowBonusNom = nomBonus+row;
+		var rowBonusCheck = checkboxBonus+row;
+		var rowMalusNom = nomMalus+row;
+		var rowMalusCheck = checkboxMalus+row;
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomBM + '[]"><optgroup label="Massivement">';
+
+		// Option Spécifique : tous les BM / nettoyables ou non-nettoyables
+		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--1") ? 'selected="selected"' : '' );
+		html += '<option value="--1" ' + selectionne + '>Bonus et Malus Nettoyables</option>';
+		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--2") ? 'selected="selected"' : '' );
+		html += '<option value="--2" ' + selectionne + '>Bonus et Malus Non-Nettoyables</option></optgroup><optgroup label="Standards">';
+
+
+		html += EffetAuto.CopieListe ('liste_bm_modele',  valeur.length ? valeur[i].tbonus_libc : "");
+		html += '</optgroup></select>&nbsp;<br>' ;
+		html += '<input data-entry="O" id="'+rowBonusNom+'"  name="'+nomBonus+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].bonus : "O")+'">';
+		html += 'Bonus:<input data-entry="checked" onchange="EffetAuto.CheckBoxChange(\''+rowBonusCheck+'\', \''+rowBonusNom+'\');" id="'+rowBonusCheck+'" name="'+checkboxBonus+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].bonus =='O' ? ' checked' : '') : 'checked')+'>&nbsp;';
+		html += '<input data-entry="O" id="'+rowMalusNom+'"  name="'+nomMalus+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].malus : "O")+'">';
+		html += 'Malus:<input data-entry="checked" onchange="EffetAuto.CheckBoxChange(\''+rowMalusCheck+'\', \''+rowMalusNom+'\');" id="'+rowMalusCheck+'" name="'+checkboxMalus+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].malus =='O' ? ' checked' : '') : 'checked')+'>&nbsp;';
+		html += '<input data-entry="O" id="'+rowStandardNom+'"  name="'+nomStandard+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].standard : "O")+'">';
+		html += 'Standard:<input data-entry="checked" onchange="EffetAuto.CheckBoxChange(\''+rowStandardCheck+'\', \''+rowStandardNom+'\');" id="'+rowStandardCheck+'" name="'+checkboxStandard+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].standard =='O' ? ' checked' : '') : 'checked')+'>&nbsp;';
+		html += '<input data-entry="N" id="'+rowCumulatifNom+'"  name="'+nomCumulatif+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].cumulatif : "N")+'">';
+		html += 'Cumulatif:<input data-entry="unchecked" onchange="EffetAuto.CheckBoxChange(\''+rowCumulatifCheck+'\', \''+rowCumulatifNom+'\');" id="'+rowCumulatifCheck+'" name="'+checkboxCumulatif+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].cumulatif =='O' ? ' checked' : '') : '')+'><br>';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
 EffetAuto.ChampMonstre = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
@@ -970,6 +1102,12 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'invocation':
 			html = pd + EffetAuto.ChampInvocationMonstre (parametre, numero, valeur) + pf;
 			break;
+		case 'listebm':
+			html = pd + EffetAuto.ChampListeBM (parametre, numero, valeur) + pf;
+			break;
+		case 'listebm2':
+			html = pd + EffetAuto.ChampListeBM2 (parametre, numero, valeur) + pf;
+			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;
 			break;
@@ -1062,7 +1200,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
     html += EffetAuto.EcritLigneFormulaire({ label: 'EffetAuto', type: 'lecture', valeur: donnees.affichage, description: donnees.description }, EffetAuto.num_courant);
     html += EffetAuto.EcritLigneFormulaire({ nom: 'id', type: 'hidden', description: '' }, EffetAuto.num_courant, id);
 
-	for (var i = 0; i < donnees.parametres.length; i++) {
+	if (donnees.parametres) for (var i = 0; i < donnees.parametres.length; i++) {
 		var valeur;
 		switch (donnees.parametres[i].nom) {
 			case 'force': valeur = force; break;

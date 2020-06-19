@@ -1,11 +1,11 @@
 --
--- Name: ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function ea_supprime_bm(integer, integer, integer, character, text, numeric, text, json) RETURNS text
+create or replace function ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
-/* ea_supprime_bm                             */
+/* ea_ajoute_bm                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
 /* On passe en paramètres:                        */
@@ -16,7 +16,9 @@ AS $_$/**************************************************/
 /*   $5 = cibles nombre, au format rôliste        */
 /*   $6 = Probabilité d’atteindre chaque cible    */
 /*   $7 = Message d’événement associé             */
-/*   $8 = Paramètres additionnels                 */
+/*   $8 = autres paramètres au format json       */
+/**************************************************/
+/* Créé le 18 Juin 2020                           */
 /**************************************************/
 declare
   -- Parameters
@@ -38,23 +40,26 @@ declare
   v_race_source integer;       -- La race de la source
   v_position_source integer;   -- Le pos_cod de la source
   v_cible_du_monstre integer;  -- La cible actuelle du monstre
-  v_bonus text;                -- le bonsu à supprimer
   v_bonus_texte text;
   v_source_nom text;           -- nom du perso source
+  v_bonus text;
   v_bonus_degressif text;
-  v_bm_texte text;
-  v_bonus_mode text;
-  v_standard text;
-  v_cumulatif text;
-  v_supp_malus text;
-  v_supp_bonus text;
-  v_bm text;
 
   -- Output and data holders
-  bm record;                -- Une ligne d’enregistrements
+  bm record;                   -- Une ligne d’enregistrements (pour explode json
   ligne record;                -- Une ligne d’enregistrements
   i integer;                   -- Compteur de boucle
-  v_niveau_attaquant integer;  -- Resistance magique
+  ch character;                -- Un caractère tout ce qu’il y a de plus banal
+  v_duree integer;             -- Valeur numérique de durée du BM
+  v_cumulatif varchar(1);      -- O/N
+  v_valeur integer;            -- Valeur numérique de l’impact du bonus ou de l’action
+  valeur integer;              -- Valeur après test de resistance
+  -- Resistance magique
+  v_bloque_magie integer;
+  v_RM1 integer;
+  compt integer;
+  v_niveau_attaquant integer;
+  v_seuil integer;
   code_retour text;
 
   v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
@@ -64,7 +69,7 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de  suppression de « Bonus/Malus ».';
+    return 'Pas d’effet automatique de « ajout de bonus/malus ».';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -133,101 +138,94 @@ begin
                 order by random()
                 limit v_cibles_nombre_max)
   loop
-      -- On peut maintenant appliquer le bonus ou l’action sur une cible unique.
+    -- On peut maintenant appliquer les bonus/malus sur une cible unique.
 
-      -- on bloucle sur les BM de la liste
-      for bm in (select value from json_array_elements( (v_params->>'fonc_trig_effet_bm')::json )  )
-      loop
-          v_bonus := COALESCE(bm.value->>'tbonus_libc'::text, '') ;
-          v_cumulatif := COALESCE(bm.value->>'cumulatif'::text, 'N');
-          v_standard := COALESCE(bm.value->>'standard'::text, 'O');
-          v_supp_bonus := COALESCE(bm.value->>'bonus'::text, 'O');
-          v_supp_malus := COALESCE(bm.value->>'malus'::text, 'O');
+    -- Ajout azaghal on teste un simili resiste magie pour chaque personne cible sauf si la cible est le lanceur
+    v_bloque_magie := 0;
+    if v_cibles_type != 'S' then
 
+      -- on calcule le seuil de résistance (en fonction de l’int, la con le niv du sort et la marge de réussite
+      v_RM1 := (ligne.perso_int * 5) + floor(ligne.perso_con / 10) + floor(ligne.perso_niveau / 2);
+      compt := 30;
+      compt := compt + (2 * v_niveau_attaquant);
 
-          if v_cumulatif='O' and v_standard='N' then
-            v_bonus_degressif = ' (cumulatifs)' ;
-            v_bonus_mode = 'C' ;
-          elseif v_cumulatif='N' and v_standard='O' then
-            v_bonus_degressif = ' (standards)' ;
-            v_bonus_mode = 'S' ;
-          elseif v_cumulatif='O' and v_standard='O' then
-            v_bonus_degressif = '' ;
-            v_bonus_mode = 'SC' ;
-          else
-            v_bonus_degressif = '' ;
-            v_bonus_mode = '' ;
-          end if;
-
-          if v_supp_bonus='O' and v_supp_malus='N' then
-            v_bm_texte = 'Bonus' ;
-            v_bm = 'B' ;
-          elseif v_supp_bonus='N' and v_supp_malus='O' then
-            v_bm_texte = 'Malus' ;
-            v_bm = 'M' ;
-          elseif v_supp_bonus='O' and v_supp_malus='O' then
-            v_bm_texte = 'Bonus/Malus' ;
-            v_bm = 'BM' ;
-          else
-            v_bm_texte = '' ;
-            v_bonus_degressif = '' ;
-            v_bm = '' ;
-          end if;
-
-          if v_bonus_mode != '' and v_bm != '' then
-
-              if v_bonus = '--1' then
-                v_bonus_texte:=' Nettoyables';
-                perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
-                          from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
-                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='O' ;
-
-              elsif v_bonus = '--2' then
-                v_bonus_texte:=' Non-Nettoyables';
-                perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
-                          from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
-                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='N' ;
-
-              else
-                  select  ' «' || tonbus_libelle || '»' into v_bonus_texte from bonus_type where tbonus_libc = v_bonus  ;
-                  if found then
-                      perform retire_bonus(ligne.perso_cod, v_bonus, v_bonus_mode, v_bm);
-                  else
-                      v_bonus_texte:='';
-                  end if;
-              end if;
-
-              if v_bonus_texte != '' then
-                  code_retour := code_retour || '<br />'|| ligne.perso_nom || ' perd ses ' || v_bm_texte || v_bonus_texte || v_bonus_degressif || '.'  ;
-              end if;
-
-          end if;
-      end loop;
-
-      -- On rajoute la ligne d’événements
-      if v_texte_evt != '' then
-          if strpos(v_texte_evt , '[cible]') != 0 then
-            perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
-          else
-            perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
-          end if;
+      -- calcul du seuil effectif
+      v_seuil = v_RM1 - compt;
+      -- on limite une premiere fois le seuil à 15
+      if v_seuil < 15 then
+        v_seuil := 15;
       end if;
+
+      -- le seuil (v_seuil) est maintenant calculé on peut tester
+      if lancer_des(1, 100) > v_seuil then
+        -- resistance ratée
+        v_bloque_magie := 0;
+      else
+        v_bloque_magie := 1;
+      end if;
+
+    end if;
+
+    -- boucle sur la liste des bonus à appliquer
+
+    for bm in (select value from json_array_elements( (v_params->>'fonc_trig_effet_bm')::json )  )
+    loop
+        v_bonus := COALESCE(bm.value->>'tbonus_libc'::text, '') ;
+        v_valeur := f_lit_des_roliste(bm.value->>'force'::text) ;
+        v_duree := f_to_numeric(bm.value->>'duree'::text) ;
+        v_cumulatif := COALESCE(bm.value->>'cumulatif'::text, 'N');
+
+        select  tonbus_libelle || case when v_cumulatif='O' then ' (cumulatif)' else '' end, case when v_cumulatif='O' then ' (dégressif)' else '' end
+            into v_bonus_texte, v_bonus_degressif
+        from bonus_type where tbonus_libc = v_bonus and v_valeur!=0 and v_duree!=0  ;
+
+        if found then
+
+            if v_bloque_magie = 1 then
+                valeur := floor(v_valeur / 2 ) ;
+                if valeur = 0 then
+                    v_valeur = sign(v_valeur) ;
+                end if;
+            else
+                valeur = v_valeur ;
+            end if;
+
+            code_retour := code_retour || '<br />'|| ligne.perso_nom || ' prend un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || v_bonus_degressif || ', pendant ' || v_duree::text || ' tours' ;
+            if v_bloque_magie = 1 then
+              code_retour := code_retour || ' (résisté)';
+            end if;
+            code_retour := code_retour || '.';
+
+            -- Création du Bonus
+            perform ajoute_bonus(ligne.perso_cod, CASE WHEN v_cumulatif='O' THEN v_bonus||'+' ELSE v_bonus END, v_duree, valeur);
+
+        end if;
+    end loop;
+
+    -- On rajoute la ligne d’événements
+    if v_texte_evt != '' then
+        if strpos(v_texte_evt , '[cible]') != 0 then
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
+        else
+          perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
+        end if;
+    end if;
 
   end loop;
 
   if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour suppression de « bonus/malus »';
+    code_retour := 'Aucune cible éligible pour « ajout de bonus/malus »';
   end if;
 
   return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.ea_supprime_bm(integer, integer, integer, character, text, numeric, text, json) OWNER TO delain;
+ALTER FUNCTION public.ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) OWNER TO delain;
 
 --
--- Name: FUNCTION ea_supprime_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
+-- Name: FUNCTION ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION ea_supprime_bm(integer, integer, integer, character, text, numeric, text, json) IS 'Supprimes des Bonus / Malus standards ou cumulatifs en fonction des paramètres donnés.';
+COMMENT ON FUNCTION ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) IS 'Ajoute des Bonus / Malus standards en fonction des paramètres donnés.';
 
