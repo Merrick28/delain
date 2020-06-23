@@ -75,6 +75,9 @@ begin
     if code_fonction = 'deb_tour_generique' then
       select into retour_fonction deb_tour_generique(v_perso_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_duree, ligne_fonction.fonc_message,  v_cible_cod, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
 
+    elseif code_fonction = 'ea_ajoute_bm' then
+      select into retour_fonction ea_ajoute_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
+
     elsif code_fonction = 'deb_tour_degats' then
       select into retour_fonction deb_tour_degats(v_perso_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, v_cible_cod, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
 
@@ -120,7 +123,7 @@ begin
       select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
 
     elsif code_fonction = 'ea_supprime_bm' then
-      select into retour_fonction ea_supprime_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
+      select into retour_fonction ea_supprime_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
 
     elsif code_fonction = 'ea_lance_sort' then
       select into retour_fonction ea_lance_sort(v_perso_cod, v_cible_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
