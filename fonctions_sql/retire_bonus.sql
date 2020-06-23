@@ -20,6 +20,8 @@ declare
   code_retour text;
 begin
 
+
+
   IF v_type in ('DEX', 'INT', 'FOR', 'CON')  THEN
 
       -- pour les caracs on met à 0 et on
@@ -30,7 +32,7 @@ begin
             and corig_type_carac=v_type
             and corig_mode!='E'
             and ( corig_mode=v_mode or v_mode='SC' or v_mode='CS')
-            and (  (v_bm='BM' or v_bm='MB')
+            and (  (v_bm='BM')
                 or (v_bm='B' and (tbonus_gentil_positif = 't' and bonus_valeur > 0 or tbonus_gentil_positif = 'f' and bonus_valeur < 0))
                 or (v_bm='M' and (tbonus_gentil_positif = 't' and bonus_valeur < 0 or tbonus_gentil_positif = 'f' and bonus_valeur > 0))  ) ;
       perform f_remise_caracs(v_perso) ;
@@ -45,7 +47,7 @@ begin
             and bonus_tbonus_libc=v_type
             and bonus_mode!='E'
             and ( bonus_mode=v_mode or v_mode='SC' or v_mode='CS')
-            and (  (v_bm='BM' or v_bm='MB')
+            and (  (v_bm='BM')
                 or (v_bm='B' and (tbonus_gentil_positif = 't' and bonus_valeur > 0 or tbonus_gentil_positif = 'f' and bonus_valeur < 0))
                 or (v_bm='M' and (tbonus_gentil_positif = 't' and bonus_valeur < 0 or tbonus_gentil_positif = 'f' and bonus_valeur > 0))  ) ;
 

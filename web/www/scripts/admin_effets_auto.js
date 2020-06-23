@@ -146,7 +146,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Bonus / Malus Etendu',
+		affichage: 'Bonus / Malus Multiples',
 		description: 'Applique des Bonus / Malus, à une ou plusieurs cibles.',
 		parametres: [
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
@@ -916,10 +916,14 @@ EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
 		html += '<select style="max-width: 200px;" name="' + nomBM + '[]"><optgroup label="Massivement">';
 
 		// Option Spécifique : tous les BM / nettoyables ou non-nettoyables
+		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--0") ? 'selected="selected"' : '' );
+		html += '<option value="--0" ' + selectionne + '>Tous les Bonus et Malus</option>';
 		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--1") ? 'selected="selected"' : '' );
 		html += '<option value="--1" ' + selectionne + '>Bonus et Malus Nettoyables</option>';
 		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--2") ? 'selected="selected"' : '' );
-		html += '<option value="--2" ' + selectionne + '>Bonus et Malus Non-Nettoyables</option></optgroup><optgroup label="Standards">';
+		html += '<option value="--2" ' + selectionne + '>Bonus et Malus Non-Nettoyables</option>';
+		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--3") ? 'selected="selected"' : '' );
+		html += '<option value="--3" ' + selectionne + '>Bonus et Malus Compteurs</option></optgroup><optgroup label="Standards">';
 
 
 		html += EffetAuto.CopieListe ('liste_bm_modele',  valeur.length ? valeur[i].tbonus_libc : "");

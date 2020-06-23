@@ -176,17 +176,29 @@ begin
 
           if v_bonus_mode != '' and v_bm != '' then
 
-              if v_bonus = '--1' then
+              if v_bonus = '--0' then
+                v_bonus_texte:=' (tous)';
+                perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
+                          from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
+                          where perso_cod=ligne.perso_cod ;
+
+              elsif v_bonus = '--1' then
                 v_bonus_texte:=' Nettoyables';
                 perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
                           from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
-                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='O' ;
+                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='O' and tbonus_compteur='N' ;
 
               elsif v_bonus = '--2' then
                 v_bonus_texte:=' Non-Nettoyables';
                 perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
                           from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
-                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='N' ;
+                          where perso_cod=ligne.perso_cod and tbonus_nettoyable='N' and tbonus_compteur='N' ;
+
+              elsif v_bonus = '--3' then
+                v_bonus_texte:=' Compteurs';
+                perform retire_bonus(perso_cod, tbonus_libc, v_bonus_mode, v_bm )
+                          from perso join bonus on bonus_perso_cod=perso_cod join bonus_type on tbonus_libc=bonus_tbonus_libc
+                          where perso_cod=ligne.perso_cod and tbonus_compteur='O' ;
 
               else
                   select  ' «' || tonbus_libelle || '»' into v_bonus_texte from bonus_type where tbonus_libc = v_bonus  ;
