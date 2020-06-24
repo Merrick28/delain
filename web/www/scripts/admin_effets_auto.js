@@ -732,10 +732,10 @@ EffetAuto.ChampChoixSante = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
-	html += '<option value="100-75" ' + ((valeur == "100-75") ? 'selected="selected"' : '' ) + '>Touché</option>';
-	html += '<option value="75-50" ' + ((valeur == "75-50") ? 'selected="selected"' : '' ) + '>Blessé</option>';
-	html += '<option value="50-25" ' + ((valeur == "50-25") ? 'selected="selected"' : '' ) + '>Gravement touché</option>';
-	html += '<option value="25-15" ' + ((valeur == "25-15") ? 'selected="selected"' : '' ) + '>Presque mort</option></select></label>';
+	html += '<option value="75-50" ' + ((valeur == "75-50") ? 'selected="selected"' : '' ) + '>Touché</option>';
+	html += '<option value="50-25" ' + ((valeur == "50-25") ? 'selected="selected"' : '' ) + '>Blessé</option>';
+	html += '<option value="25-15" ' + ((valeur == "25-15") ? 'selected="selected"' : '' ) + '>Gravement touché</option>';
+	html += '<option value="15-0" ' + ((valeur == "15-0") ? 'selected="selected"' : '' ) + '>Presque mort</option></select></label>';
 	return html;
 }
 
