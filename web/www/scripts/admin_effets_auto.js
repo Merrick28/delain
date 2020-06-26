@@ -121,6 +121,16 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_sante', type: 'sante', label: 'Etat de santé', description: 'L’état de santé du déclenchement.' },
 		]
 	},
+	"OTR": {description: "lorsqu’il reçoit une transaction.",
+		default:'deb_tour_generique',
+		declencheur:'Reçoit un objet en transaction',
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_dans_liste', type: 'transac', label: 'Sur objet de la liste', description: 'L’EA va être déclenché, que faire de l’objet reçu s’il fait partie de la liste des objets attendus?' },
+			{ nom: 'trig_hors_liste', type: 'transac', label: 'Sur objet hors liste', description: 'L’EA ne sera pas déclenché, que faire de l’objet reçu s’il ne fait PAS partie de la liste des objets attendus?' },
+			{ nom: 'trig_objet', type: 'objet', label: 'Liste d’objet attendu', description: 'Liste des objets qui déclenchent l’effet s’il sont reçus en transaction.' },
+		]
+	},
 }
 
 /*=============================== Definition des EFFETS et de leurs paramètres ===============================*/
@@ -596,7 +606,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -821,6 +831,40 @@ EffetAuto.ChampCibleVorpale = function (parametre, numero, valeur) {
 	html += EffetAuto.CopieListeMultiple ('liste_race_modele', valeur);
 	html += '</select></label>';
 
+	return html;
+}
+
+EffetAuto.ChampListeObjet = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomObjet = "obj_fonc_" + parametre.nom + numero.toString()+"_gobj_cod";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomObjet + '[]">';
+		html += EffetAuto.CopieListe ('liste_objet_modele',  valeur.length ? valeur[i].gobj_cod : "");
+		html += '</select>&nbsp';
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
+EffetAuto.ChampTransac = function (parametre, numero, valeur) {
+	if (!valeur) valeur = "S";
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="S" ' + ((valeur == 'S') ? 'selected="selected"' : '') + '>Supprimer l’objet reçu</option>';
+	html += '<option value="I" ' + ((valeur == 'I') ? 'selected="selected"' : '') + '>Mettre l’objet reçu dans l’inventaire</option>';
+	html += '<option value="R" ' + ((valeur == 'R') ? 'selected="selected"' : '') + '>Refuser la transaction</select>';
+	if (parametre.commentaires) html += parametre.commentaires;
+	html += '</label>';
 	return html;
 }
 
@@ -1136,6 +1180,12 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'MAGeffet':
 			html = pd + EffetAuto.ChampChoixMAGeffet (parametre, numero, valeur) + pf;
+			break;
+		case 'objet':
+			html = pd + EffetAuto.ChampListeObjet (parametre, numero, valeur) + pf;
+			break;
+		case 'transac':
+			html = pd + EffetAuto.ChampTransac (parametre, numero, valeur) + pf;
 			break;
 		case 'drop':
 			html = pd + EffetAuto.ChampDropObjet (parametre, numero, valeur) + pf;
