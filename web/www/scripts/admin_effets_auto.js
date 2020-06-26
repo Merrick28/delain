@@ -75,7 +75,7 @@ EffetAuto.Triggers = {
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 				{ nom: 'trig_compteur', type: 'BMCompteur', label: 'Décencheur', description: 'Le compteur.' },
-				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu’il retombe en dessous.' },
+				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Déclenchement lorsque le Bonus/Malus dépasse le seuil ou lorsqu’il retombe en dessous.' },
 				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', ValidationTrigger:true, validation: Validation.Types.Entier },
 				{ nom: 'trig_raz', type: 'checkbox', label: 'Remise à zéro du BM après déclenchement', description: 'Cocher pour remettre le BM à 0 après déclenchement'},
 				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nom de base)'},
@@ -109,6 +109,16 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_type_benefique', type: 'checkbox', label: 'Déclencher sur les sorts Bénéfiques?', description: 'Cocher pour déclencher l’effet sur les sorts Benefiques' },
 			{ nom: 'trig_type_agressif', type: 'checkbox', label: 'Déclencher sur les sorts Agressifs?', description: 'Cocher pour déclencher l’effet sur les sorts Agressifs' },
 			{ nom: 'trig_type_neutre', type: 'checkbox', label: 'Déclencher sur les sorts Neutres?', description: 'Cocher pour déclencher l’effet sur les sorts Neutres (ni agressif, ni benefique)' },
+		]
+	},
+	"CES": {description: "lorsqu’il change d'état de santé.",
+		default:'deb_tour_generique',
+		declencheur:'Change d’état de santé',
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas toujours de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_sens', type: 'PVsens', label: 'Sens de déclemement', description: 'Déclenchement lorsque l’état de santé baisse à cet état ou au contraire lorsqu’il remonte à celui-ci.' },
+			{ nom: 'trig_sante', type: 'sante', label: 'Etat de santé', description: 'L’état de santé du déclenchement.' },
 		]
 	},
 }
@@ -586,7 +596,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || fct.attaque && type == 'MAL' || fct.attaque && type == 'MAC' || fct.debut && type == 'DEP' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -706,6 +716,27 @@ EffetAuto.ChampChoixBMCsens = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus dépasse le seuil</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus retombe en dessous du seuil</option></select></label>';
+	return html;
+}
+
+EffetAuto.ChampChoixPVsens = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>L’état de santé baisse ou augmente</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>L’état de santé baisse</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>L’état de Santé augmente</option></select></label>';
+	return html;
+}
+
+EffetAuto.ChampChoixSante = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="75-50" ' + ((valeur == "75-50") ? 'selected="selected"' : '' ) + '>Touché</option>';
+	html += '<option value="50-25" ' + ((valeur == "50-25") ? 'selected="selected"' : '' ) + '>Blessé</option>';
+	html += '<option value="25-15" ' + ((valeur == "25-15") ? 'selected="selected"' : '' ) + '>Gravement touché</option>';
+	html += '<option value="15-0" ' + ((valeur == "15-0") ? 'selected="selected"' : '' ) + '>Presque mort</option></select></label>';
 	return html;
 }
 
@@ -1096,6 +1127,12 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
+			break;
+		case 'PVsens':
+			html = pd + EffetAuto.ChampChoixPVsens (parametre, numero, valeur) + pf;
+			break;
+		case 'sante':
+			html = pd + EffetAuto.ChampChoixSante (parametre, numero, valeur) + pf;
 			break;
 		case 'MAGeffet':
 			html = pd + EffetAuto.ChampChoixMAGeffet (parametre, numero, valeur) + pf;

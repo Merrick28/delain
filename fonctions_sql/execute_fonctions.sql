@@ -27,6 +27,11 @@ declare
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
   v_gmon_nom text;           -- Le nom du monstre générique
+  v_sante_avant integer;     -- % de blessure au passage précédent
+  v_etat_sante integer;      -- % de blessure actuel
+  v_sante_min integer;       -- fourchette basse
+  v_sante_max integer;       -- fourchette haute
+  v_pfonc_param json;        -- Paramètre mémorisé pour cet EA
 	v_do_it bool;              -- Executer la fonction
 
 	-- variable specifique au BMC
@@ -53,11 +58,13 @@ begin
   -- code de retour
 	code_retour := '';
 
+  -- code_retour := code_retour ||  '<br> perso_cod=' || v_perso_cod::text ||  ' événement=' || v_evenement ;   -- DEBUG EA
+
   -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for row in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and v_evenement='BMC'))
-			and fonc_type = v_evenement
+			and (fonc_type = v_evenement OR fonc_type = 'CES' )
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
 		)
 	loop
@@ -66,7 +73,50 @@ begin
     v_do_it := true;
     
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if v_evenement = 'BMC' then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
+	      -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
+
+        -- par défaut on ne déclenceh pas
+        v_do_it := false ;    -- type CES avec des conditions non-remplies pour cet EA (pas encore le passage de seuil ou premier passage)
+
+        select pfonc_param into v_pfonc_param from fonction_specifique_perso where pfonc_fonc_cod=row.fonc_cod and pfonc_perso_cod=v_perso_cod ;
+        if found then
+            -- cet EA a déjà été déclenché on vérifie s'il y a un état de santé connu sinon on l'ajoute.
+
+            -- on commence par récuperer l'état de santé actuel
+            select ((100*perso_pv::numeric)/perso_pv_max)::integer, f_to_numeric(COALESCE(v_pfonc_param->>'etat_sante'::text, '0')) into v_etat_sante, v_sante_avant from perso where perso_cod=v_perso_cod ;
+            if v_sante_avant > 0 then
+
+                -- on connait l'état de santé précédent on verifie s'il y a un changement d'état par rapport à l'état actuel
+                if v_etat_sante != v_sante_avant then
+
+                    -- l'état de santé du perso a changé, on vérifie si cela déclenche l'EA
+                    select f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 2)), f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 1)) into v_sante_min, v_sante_max ;
+
+                    if (    ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '0') and ((v_etat_sante <= v_sante_max  and  v_sante_avant >  v_sante_max) or (v_etat_sante >= v_sante_min and v_sante_avant <  v_sante_min)))
+                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '-1') and (v_etat_sante <= v_sante_max) and (v_sante_avant >  v_sante_max) )
+                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '1') and (v_etat_sante >= v_sante_min) and (v_sante_avant <  v_sante_min) ) ) then
+                        v_do_it := true ;   -- on déclenche le trigger
+                    end if;
+
+                    -- mise à jour de l'état de santé pour les prochains déclenchements
+                    update fonction_specifique_perso set pfonc_param=json_build_object( 'etat_sante' , v_etat_sante) where pfonc_fonc_cod=row.fonc_cod and pfonc_perso_cod=v_perso_cod ;
+                end if;
+            else
+                -- mise à jour de l'état de santé pour les prochains déclenchements (car premier passage)
+                update fonction_specifique_perso set pfonc_param=json_build_object( 'etat_sante' , v_etat_sante) where pfonc_fonc_cod=row.fonc_cod and pfonc_perso_cod=v_perso_cod ;
+            end if;
+
+        else
+
+            -- Première vérification (mais attention ce n'est pas un déclenchement, init des valeurs seulement!)
+            select ((100*perso_pv::numeric)/perso_pv_max)::integer into v_etat_sante from perso where perso_cod=v_perso_cod ;
+            insert into fonction_specifique_perso(pfonc_fonc_cod, pfonc_perso_cod, pfonc_ddda, pfonc_encours, pfonc_param) VALUES (row.fonc_cod, v_perso_cod, '2000-01-01 00:00:00', 0, json_build_object( 'etat_sante' , v_etat_sante));
+
+        end if;
+
+	  elseif v_evenement = 'BMC' then -- -------------------------------------------------------------------------------------
+	      -- compteur globaux indépendant d'un monstre genérique ou d'un perso
         if NOT (
                 (row.fonc_trigger_param->>'fonc_trig_compteur'::text = v_param->>'bonus_type'::text)
             and (

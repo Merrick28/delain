@@ -16,6 +16,7 @@ define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 $methode          = get_request_var('methode', 'debut');
+
 $log = '';
 $resultat = '';
 
@@ -119,7 +120,7 @@ if ($erreur == 0)
 
 		case "modifier_etage":
 			$erreur = 0;
-			if(!$etage_numero)
+			if($etage_numero === false)
 			{
 				$resultat .= "<p><strong>Le numéro de l’étage n’est pas défini !</strong></p>";
 				$erreur = 1;

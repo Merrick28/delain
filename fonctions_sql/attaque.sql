@@ -1675,6 +1675,8 @@ begin
       code_retour := 'erreur sur code_retour';
     end if;
 
+    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'CES', null);    -- Controle Etat de Santé de la cible!
+
     return code_retour;
   /*****************************************/
   /* FIN   : coup porté : cible pas morte  */
