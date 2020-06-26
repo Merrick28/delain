@@ -4,11 +4,11 @@ $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
 $pdo        = new bddpdo();
 
-
+$compt_cod = (int)$verif_connexion->compt_cod ;
 $contenu_page = '';
 $titre_page   = '';
 
-$erreur = empty($_REQUEST['visu_perso']) || empty($compt_cod);
+$erreur = empty($_REQUEST['visu_perso']) || ($compt_cod==0);
 if (!$erreur)
 {
     $req_compte    = "select pcompt_compt_cod from perso_compte
@@ -38,7 +38,7 @@ if (!$erreur)
 if ($erreur)
 {
     $titre_page   = 'Erreur';
-    $contenu_page = 'Erreur d’authentification !';
+    $contenu_page = 'Erreur d’authentification !'.$compt_cod = $verif_connexion->compt_cod;
 }
 
 if (!$erreur && empty($_REQUEST['visu_msg']))
