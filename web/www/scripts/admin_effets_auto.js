@@ -114,6 +114,7 @@ EffetAuto.Triggers = {
 	"CES": {description: "lorsqu’il change d'état de santé.",
 		default:'deb_tour_generique',
 		declencheur:'Change d’état de santé',
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas toujours de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 		parametres: [
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_sens', type: 'PVsens', label: 'Sens de déclemement', description: 'Déclenchement lorsque l’état de santé baisse à cet état ou au contraire lorsqu’il remonte à celui-ci.' },

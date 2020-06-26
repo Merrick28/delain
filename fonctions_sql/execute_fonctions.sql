@@ -58,6 +58,8 @@ begin
   -- code de retour
 	code_retour := '';
 
+  -- code_retour := code_retour ||  '<br> perso_cod=' || v_perso_cod::text ||  ' événement=' || v_evenement ;   -- DEBUG EA
+
   -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for row in (
 		select * from fonction_specifique
@@ -88,10 +90,8 @@ begin
                 -- on connait l'état de santé précédent on verifie s'il y a un changement d'état par rapport à l'état actuel
                 if v_etat_sante != v_sante_avant then
 
-
                     -- l'état de santé du perso a changé, on vérifie si cela déclenche l'EA
                     select f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 2)), f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 1)) into v_sante_min, v_sante_max ;
---    code_retour := code_retour ||  '<br>v_etat_sante= ' ||v_etat_sante::text || ' v_sante_avant= ' ||v_sante_avant::text || 'v_sante_min= ' ||v_sante_min::text || ' v_sante_max= ' ||v_sante_max::text ;
 
                     if (    ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '0') and ((v_etat_sante <= v_sante_max  and  v_sante_avant >  v_sante_max) or (v_etat_sante >= v_sante_min and v_sante_avant <  v_sante_min)))
                          or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '-1') and (v_etat_sante <= v_sante_max) and (v_sante_avant >  v_sante_max) )
@@ -106,6 +106,12 @@ begin
                 -- mise à jour de l'état de santé pour les prochains déclenchements (car premier passage)
                 update fonction_specifique_perso set pfonc_param=json_build_object( 'etat_sante' , v_etat_sante) where pfonc_fonc_cod=row.fonc_cod and pfonc_perso_cod=v_perso_cod ;
             end if;
+
+        else
+
+            -- Première vérification (mais attention ce n'est pas un déclenchement, init des valeurs seulement!)
+            select ((100*perso_pv::numeric)/perso_pv_max)::integer into v_etat_sante from perso where perso_cod=v_perso_cod ;
+            insert into fonction_specifique_perso(pfonc_fonc_cod, pfonc_perso_cod, pfonc_ddda, pfonc_encours, pfonc_param) VALUES (row.fonc_cod, v_perso_cod, '2000-01-01 00:00:00', 0, json_build_object( 'etat_sante' , v_etat_sante));
 
         end if;
 
