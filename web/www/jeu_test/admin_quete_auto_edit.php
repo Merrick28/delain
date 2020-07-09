@@ -682,7 +682,7 @@ if ($erreur == 0)
                         echo   '<td>Valeur :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'">
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="8" value="'.$element->aqelem_param_num_1.'">
                                 </td>';
                         break;
 
