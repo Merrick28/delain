@@ -443,7 +443,20 @@ class aquete_element
             else
             {
                 // On va instancier les valeurs pointées plutôt que le pointeur
-                $req = "select aqelem_cod from quetes.aquete_element 
+                //2 cas possible: on instancie à partir de l'étape  modéle (cas aqelem_param_num_2=1) ou à partir de de l'épae déjà instancié par le perso (cas aqelem_param_num_2=0)
+                if ($element->aqelem_param_num_2 == 1){
+
+                    $req = "select aqelem_cod from quetes.aquete_element 
+                        where aqelem_aqetape_cod=? and aqelem_param_id=? and aqelem_aqperso_cod is null
+                        order by aqelem_cod ";
+                    $stmte = $pdo->prepare($req);
+                    $stmte = $pdo->execute(array(
+                                        $element->aqelem_misc_cod,
+                                        $element->aqelem_param_num_1 ),$stmte);
+
+                } else {
+
+                    $req = "select aqelem_cod from quetes.aquete_element 
                         where aqelem_aqetape_cod=? and aqelem_aqperso_cod = ? and aqelem_param_id=? 
                         and aqelem_quete_step = (
                                   select max(aqelem_quete_step) 
@@ -451,13 +464,16 @@ class aquete_element
                                   where aqelem_aqetape_cod=? and aqelem_aqperso_cod = ? and aqelem_param_id=? 
                                 )
                         order by aqelem_cod ";
-                $stmte = $pdo->prepare($req);
-                $stmte = $pdo->execute(array(   $element->aqelem_misc_cod,
-                                                $aqperso->aqperso_cod,
-                                                $element->aqelem_param_num_1,
-                                                $element->aqelem_misc_cod,
-                                                $aqperso->aqperso_cod,
-                                                $element->aqelem_param_num_1 ),$stmte);
+                    $stmte = $pdo->prepare($req);
+                    $stmte = $pdo->execute(array(
+                                        $element->aqelem_misc_cod,
+                                        $aqperso->aqperso_cod,
+                                        $element->aqelem_param_num_1,
+                                        $element->aqelem_misc_cod,
+                                        $aqperso->aqperso_cod,
+                                        $element->aqelem_param_num_1 ),$stmte);
+                }
+
                 while($result = $stmte->fetch())
                 {
                     $elem = new aquete_element;
