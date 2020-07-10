@@ -33,7 +33,7 @@ if ($erreur == 0)
         // Traitement des actions
         include ("admin_traitement_quete_auto_edit.php");
     }
-    //print_r($_REQUEST);
+    //echo "<pre>"; print_r($_REQUEST); echo "</pre>";
 
     //=======================================================================================
     // == Constantes quete_auto
@@ -373,11 +373,11 @@ if ($erreur == 0)
                                         <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
                                         <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                          #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
-                                         <input name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
+                                         &nbsp'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Perso","1"=>"Quête"), 1*$elements[0]->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                         <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="hidden">
+                                         <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="hidden">
+                                         <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="hidden">
+                                         <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="hidden">
                                         &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                         &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "'.$param['type'].'" ]);\'> 
                                         </td>';
@@ -682,7 +682,7 @@ if ($erreur == 0)
                         echo   '<td>Valeur :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'">
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="8" value="'.$element->aqelem_param_num_1.'">
                                 </td>';
                         break;
 

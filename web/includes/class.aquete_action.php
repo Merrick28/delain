@@ -1078,21 +1078,29 @@ class aquete_action
         $pdo = new bddpdo;
 
         $element = new aquete_element();
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;       // Problème lecture des paramètres
 
         shuffle($p4);                                       // ordre aléatoire pour les objets
 
-        $pnj = new perso();
-        $pnj->charge($p2->aqelem_misc_cod);
+
         $perso = new perso();
         $perso->charge($aqperso->aqperso_perso_cod);
         $nbobj = $p3->aqelem_param_num_1 ;
         $nbgenerique = count ($p4) ;
 
         // Vérification de la position!
-        if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+        //$pnj = new perso();
+        //$pnj->charge($p2->aqelem_misc_cod);
+        //if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+
+        // On peut maintenant avoir 1 parmi plusieurs, on regarde s'il y en a un qui est sur la case du joueur
+        if ( !$aqperso->action->move_perso($aqperso, 2) )  return false;       // Pas en position pour réaliser l'action! (Aucun perso de la liste n'est sur la case du joueur
+
+        // "move_perso" supprime les autres éléments de type perso, et ne garde que le PNJ qui a été choisi, on peut maintant le charger
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
+        $pnj = new perso();
+        $pnj->charge($p2->aqelem_misc_cod);
 
         // Vérification sur le nombre d'objet
         if ($nbobj <= 0) return true;       // etape bizarre !! on ne donne aucun objet
@@ -1201,22 +1209,27 @@ class aquete_action
         $pdo = new bddpdo;
 
         $element = new aquete_element();
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso', 0)) return false ;                             // Problème lecture des paramètres
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
 
         shuffle($p4);                                       // ordre aléatoire pour les objets
-
-        $pnj = new perso();
-        $pnj->charge($p2->aqelem_misc_cod);
 
         $perso = new perso();
         $perso->charge($aqperso->aqperso_perso_cod);
         $nbobj = $p3->aqelem_param_num_1 ;
         $nbgenerique = count ($p4) ;
 
-        // Vérification de la position!
-        if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+        // Vérification de la position: Il y a maintenant plusieur pnj possible p2 est une liste de perso
+        //$pnj = new perso();
+        //$pnj->charge($p2->aqelem_misc_cod);
+        //if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+
+        // on prépare la liste de pnj
+        $pnj_cod = 0 ;
+        $pnj_cod_list = "";
+        foreach ($p2 as $k => $elem) $pnj_cod_list.=$elem->aqelem_misc_cod.",";
+        $pnj_cod_list.= "0";       // on rajoute un code 0 pour être sûr de ne pas avoir une liste vide et une query qui planterai à cause de ça
 
         // Vérification sur le nombre d'objet
         if ($nbobj <= 0) return true;       // etape bizarre !! on n'attend aucun objet
@@ -1230,14 +1243,16 @@ class aquete_action
 
 
         // Recherche des transaction en cours avec le perso qui correspondent aux objets attendus!
-        $req = "select tran_cod, tran_obj_cod, tran_quantite from transaction where tran_acheteur=:tran_acheteur and tran_vendeur=:tran_vendeur and tran_prix=0 ; ";
+        $req = "select tran_cod, tran_obj_cod, tran_quantite, tran_acheteur from transaction where tran_acheteur in ({$pnj_cod_list}) and tran_vendeur=:tran_vendeur and tran_prix=0 ; ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(  ":tran_acheteur"=> $pnj->perso_cod, ":tran_vendeur" => $aqperso->aqperso_perso_cod ), $stmt);
+        $stmt = $pdo->execute(array( ":tran_vendeur" => $aqperso->aqperso_perso_cod ), $stmt);
+
 
         $t = 0; // compteur de transaction
         $poids_transaction = 0 ;
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
+            $pnj_cod = $result["tran_acheteur"]  ;      // on récupère le cod d'un pnj qui fait les transactions
             $tran_quantite = (1*$result["tran_quantite"]) == 0 ? 1 : (1*$result["tran_quantite"])  ;
             $objet = new objets();
             $objet->charge(1*$result["tran_obj_cod"]);
@@ -1280,12 +1295,14 @@ class aquete_action
             }
         }
 
+
         // Si on demande plus d'objet qu'il y a de générique, il faut vérifier si on a un exemplaire de chaque
         if (($nbobj > $nbgenerique) && (count($exemplaires)>0)) return false;        // on a pas un exemplaire de chaque objet!
         if (count($liste_transaction)<$nbobj) return false;                          // tous les objets attendus ne sont pas là!
 
-        // Vérification du poids des ojets à transférer
-        if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
+        // Vérification du poids des ojets à transférer: on ne vérifie plus ça peut causer des blocages de QA et maintenant il peut y avaoit plusieurs pnj
+        //if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array( $pnj_cod ) );
 
         // Il faut maintenant prendre les objets
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
@@ -1336,21 +1353,21 @@ class aquete_action
         $pdo = new bddpdo;
 
         $element = new aquete_element();
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
+        //if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso', 0)) return false ;                                         // Problème lecture des paramètres
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
 
         shuffle($p4);                                       // ordre aléatoire pour les objets
 
-        $pnj = new perso();
-        $pnj->charge($p2->aqelem_misc_cod);
         $perso = new perso();
         $perso->charge($aqperso->aqperso_perso_cod);
         $nbobj = $p3->aqelem_param_num_1 ;
         $nbgenerique = count ($p4) ;
 
-        // Vérification de la position!
-        if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+        // Vérification de la position:: Il y a maintenant une liste de perso et pas un seul PNJ
+        //$pnj = new perso();
+        //$pnj->charge($p2->aqelem_misc_cod);
+        //if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
 
         // Vérification sur le nombre d'objet
         if ($nbobj <= 0) return true;       // etape bizarre !! on n'attend aucun objet
@@ -1409,8 +1426,17 @@ class aquete_action
 
         if (count($liste_echange)<$nbobj) return false;       //il en manque !
 
-        // Vérification du poids des ojets à transférer
-        if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
+        // Vérification du poids des ojets à transférer: on ne vérifie plus ça peut causer des blocages de QA et maintenant il peut y avaoit plusieurs pnj
+        //if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
+
+        // On peut maintenant avoir 1 parmi plusieurs, on regarde s'il y en a un qui est sur la case du joueur
+        if ( !$aqperso->action->move_perso($aqperso, 2) )  return false;       // Pas en position pour réaliser l'action! (Aucun perso de la liste n'est sur la case du joueur
+
+        // "move_perso" supprime les autres éléments de type perso, et ne garde que le PNJ qui a été choisi, on peut maintant le charger
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
+        $pnj = new perso();
+        $pnj->charge($p2->aqelem_misc_cod);
+
 
         // Il faut maintenant prendre les objets
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
@@ -1426,6 +1452,11 @@ class aquete_action
                 $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $objet->obj_cod), $stmt);
+
+                // on supprime aussi les eventuelles toutes les transactions sur cet objet
+                $req = "delete from transaction where tran_obj_cod=:tran_obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array( ":tran_obj_cod" => $objet->obj_cod ), $stmt);
 
                 // on l'ajoute dans l'inventaire du pnj (directement identifié pour lui)
                 $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, 'O') returning perobj_obj_cod as obj_cod  ";
