@@ -121,7 +121,6 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_sante', type: 'sante', label: 'Etat de santé', description: 'L’état de santé du déclenchement.' },
 		]
 	},
-	/* EN COURS DE DEV
 	"OTR": {description: "lorsqu’il reçoit une transaction.",
 		default:'deb_tour_generique',
 		declencheur:'Reçoit un objet en transaction',
@@ -132,7 +131,6 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_objet', type: 'objet', label: 'Liste d’objet attendu', description: 'Liste des objets qui déclenchent l’effet s’il sont reçus en transaction.' },
 		]
 	},
-	*/
 }
 
 /*=============================== Definition des EFFETS et de leurs paramètres ===============================*/

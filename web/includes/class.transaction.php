@@ -155,6 +155,25 @@ class transaction
         return $result['resultat'];
     }
 
+
+    function declenche_ea()
+    {
+        // On ne déclenche le EA de transaction QUE sur les transaction gratuire!
+        if ($this->tran_prix != 0)  return "";
+
+        $pdo          = new bddpdo;
+        $req          = "select execute_fonctions(:acheteur, :vendeur, 'OTR', json_build_object('tran_cod', :tran_cod::integer, 'obj_cod', :obj_cod::integer) ) as resultat";
+        $stmt         = $pdo->prepare($req);
+        $stmt         = $pdo->execute(array(
+                                    ":acheteur" => $this->tran_acheteur,
+                                    ":vendeur" => $this->tran_vendeur,
+                                    ":tran_cod" => $this->tran_cod,
+                                    ":obj_cod" => $this->tran_obj_cod), $stmt);
+        $result       = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
