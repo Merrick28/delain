@@ -328,6 +328,7 @@ class aquete_perso
      */
     function demarre_quete($perso_cod, $aquete_cod, $trigger)
     {
+
         $pdo = new bddpdo;
 
         $quete = new aquete();

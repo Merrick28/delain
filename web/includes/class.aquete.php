@@ -257,12 +257,12 @@ class aquete
         $triggers = array();
 
         $pdo = new bddpdo;
-        $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom from perso
+        $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom, aqelem_cod from perso
                 join perso_position on ppos_perso_cod=perso_cod and perso_cod=? and perso_type_perso=1
                 join
                 (   -- liste des démarrages de quete sur un lieu ou une position specifique
                     select aquete_cod, aquete_etape_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, aqelem_misc_cod as pos_cod, 
-                    COALESCE (lieu_nom, pos_x::text||','||pos_Y::text||' '||etage_libelle::text) as nom 
+                    COALESCE (lieu_nom, pos_x::text||','||pos_Y::text||' '||etage_libelle::text) as nom, aqelem_cod 
                     from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='position' and aqelem_aqperso_cod is null
@@ -274,7 +274,7 @@ class aquete
                     UNION 
                     
                      -- liste des démarrages de quete sur un perso specifique
-                    select aquete_cod, aquete_etape_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, ppos_pos_cod pos_cod, perso_nom as nom 
+                    select aquete_cod, aquete_etape_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, ppos_pos_cod pos_cod, perso_nom as nom, aqelem_cod 
                     from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='perso' and aqelem_aqperso_cod is null
@@ -284,7 +284,7 @@ class aquete
                     UNION
                 
                     -- liste des démarrages de quete sur un type de lieu => transforation du type de lieu en lieu réel!
-                    select aquete_cod, aquete_etape_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  
+                    select aquete_cod, aquete_etape_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom, aqelem_cod  
                     from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu_type' and aqelem_aqperso_cod is null
@@ -302,7 +302,7 @@ class aquete
 
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
-        while ($result = $stmt->fetch())
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
             $temp = new aquete;
             $temp->charge($result["aquete_cod"]);

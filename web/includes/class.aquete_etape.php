@@ -294,8 +294,10 @@ class aquete_etape
      * @param $trigger_nom
      * @return string
      */
-    function get_initial_texte( perso $perso, $trigger_nom )
+    function get_initial_texte( perso $perso, $trigger )
     {
+        $trigger_nom = $trigger["nom"];
+
         $hydrate_texte = "" ;
         $textes = explode("[", $this->aqetape_texte);
 
@@ -331,7 +333,7 @@ class aquete_etape
                         if ($e->aqelem_misc_cod<0)
                             $link = "/jeu_test/frame_vue.php" ;
                         else
-                            $link = "/jeu_test/quete_auto.php?methode=start&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod ;
+                            $link = "/jeu_test/quete_auto.php?methode=start&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod."&trigger=".$trigger["aqelem_cod"] ;
                         $hydrate_texte .= '<br><a href="'.$link.'" style="margin:50px;">'.$e->aqelem_param_txt_1.'</a>';
                     }
                 }

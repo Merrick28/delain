@@ -27,10 +27,16 @@ switch ($methode)
         $tab_quete = $quete->get_debut_quete($perso_cod);
         $aquete_cod = $_REQUEST["quete"];
 
+
+        //echo "<pre>"; print_r($_REQUEST);echo "</pre>";
+        //echo "<pre>"; print_r($tab_quete);echo "</pre>";
+        //die();
+
+
         $trigger = -1;   //index de la quete démarrée dans la liste possible
         foreach ($tab_quete["quetes"] as $k => $quete)
         {
-            if ($quete->aquete_cod == $aquete_cod)
+            if ($quete->aquete_cod == $aquete_cod  && $tab_quete["triggers"][$k][aqelem_cod] == $_REQUEST["trigger"])
             {
                 $trigger = $k;
                 break;  // Inutile de chercher plus loin on a notre champion!
@@ -42,6 +48,7 @@ switch ($methode)
             $contenu_page .= "Malheureusement vous n'est pas ou plus en mesure de démarrer cette quete!";
         } else
         {
+
             // charger le choix fait par l'aventurier pour la nouvelle instance (détermine la première etape)
             $tab_quete["triggers"][$trigger]["aqelem_cod"] = $_REQUEST["choix"];
 
