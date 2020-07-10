@@ -23,6 +23,8 @@ if ($erreur == 0)
     $quete = new aquete;
     $tab_quete = $quete->get_debut_quete($perso_cod);
 
+    //echo "<pre>"; print_r($tab_quete);echo "</pre>";
+    //die();
 
     $contenu_quete_auto = "" ;
     foreach ($tab_quete["quetes"] as $k => $quete)
@@ -37,7 +39,8 @@ if ($erreur == 0)
         $contenu_quete_auto .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$tab_quete["triggers"][$k]["nom"]}</strong></center></div>" ;
         $contenu_quete_auto .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
 
-        $contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]["nom"]);
+        //$contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]["nom"]);
+        $contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]);
         $contenu_quete_auto .= "<br><br><hr><!-- fin $k => $quete->aquete_etape_cod -->";
 
     }
