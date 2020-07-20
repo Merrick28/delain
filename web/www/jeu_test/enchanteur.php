@@ -11,6 +11,7 @@ $contenu_page = '';
 //
 define('APPEL', 1);
 
+$type_appel = get_request_var('type_appel', '0');
 include "blocks/_verif_enchanteur.php";
 $perso = new perso;
 $perso = $verif_connexion->perso;
