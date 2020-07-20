@@ -84,15 +84,7 @@ $contenu_page .= '<p class="titre">Utilisation des PA restants</p><p>' . $util .
 //
 // Début Dispensaires
 //
-$req_temple = "select lieu_nom,pos_x,pos_y,etage_libelle,ptemple_nombre 
-									from perso_temple,positions,lieu_position,lieu,etage 
-									where ptemple_perso_cod = $perso_cod 
-									and ptemple_pos_cod = pos_cod 
-									and lpos_pos_cod = pos_cod 
-									and lpos_lieu_cod = lieu_cod 
-									and pos_etage = etage_numero ";
-$stmt = $pdo->query($req_temple);
-$nb = $stmt->rowCount();
+
 $contenu_page .= '<p class="titre">Dispensaire et résurrection</p>';
 
 // Affichage Sort de résurection
@@ -142,6 +134,16 @@ select etage_libelle, pos_x, pos_y from etage, positions
 	where etage_numero = pos_etage
 and pos_cod = 4538 ;
 */
+
+$req_temple = "select lieu_nom,pos_x,pos_y,etage_libelle,ptemple_nombre 
+									from perso_temple,positions,lieu_position,lieu,etage 
+									where ptemple_perso_cod = $perso_cod 
+									and ptemple_pos_cod = pos_cod 
+									and lpos_pos_cod = pos_cod 
+									and lpos_lieu_cod = lieu_cod 
+									and pos_etage = etage_numero ";
+$stmt = $pdo->query($req_temple);
+$nb = $stmt->rowCount();
 
 if ($nb == 0)
 {
