@@ -301,6 +301,8 @@ switch ($methode)
             $req_exist  = "select tran_cod from transaction where tran_obj_cod = :key ";
             $stmtexists = $pdo->prepare($req_exist);
             //
+
+            $txt_ea = "" ;
             foreach ($_REQUEST['obj'] as $key => $val)
             {
 
@@ -352,6 +354,7 @@ switch ($methode)
                         }
                     } else
                     {
+                        $texte_ea.= $transaction->declenche_ea();
                         $compteur_accept++;
                     }
                 }
@@ -457,6 +460,7 @@ switch ($methode)
                                 }
                             } else
                             {
+                                $texte_ea.= $transaction->declenche_ea();
                                 $compteur_accept++;
                             }
                         }
@@ -516,8 +520,8 @@ switch ($methode)
             $levt->levt_lu         = 'N';
             $levt->stocke(true);
 
-
-            echo $texte_man . $texte_auto;
+            if ($texte_ea != "") $texte_ea = "<p>".$texte_ea."</p><br />";
+            echo $texte_man . $texte_auto . $texte_ea;
         }
         break;
 }

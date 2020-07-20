@@ -27,6 +27,8 @@ declare
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
   v_gmon_nom text;           -- Le nom du monstre générique
+  v_gobj_cod integer;         -- code generique d'un objet
+  v_obj_cod integer;          -- code d'un objet
   v_sante_avant integer;     -- % de blessure au passage précédent
   v_etat_sante integer;      -- % de blessure actuel
   v_sante_min integer;       -- fourchette basse
@@ -170,6 +172,48 @@ begin
             )  then
             v_do_it := false ;    -- type MAC avec des conditions non-remplies pour cet EA (pas le bon type de sort)
         end if;
+
+    elseif v_evenement = 'OTR' then -- ---------------------------------------------------------------------------------
+        -- Reception d'objet en transactio. Vérifier s'il s'agit d'objet attendu!!!
+        v_do_it := false ;    -- par défaut on ne fait rien!
+
+        select obj_cod, obj_gobj_cod into v_obj_cod, v_gobj_cod
+            from objets where obj_cod = f_to_numeric(v_param->>'obj_cod') ;
+
+
+        if ( f_est_dans_la_liste(v_gobj_cod, 'gobj_cod', (row.fonc_trigger_param->>'fonc_trig_objet')::json ) ) then
+
+            -- l'objet est dans la liste on déclenche l'EA
+            v_do_it := true ;
+
+            -- traitement de la transation de l'objet dans la liste
+            -- S=>Supprimer l’objet reçu , I=>Inventaire, L=>Laisser en transaction et R=>Refuser la transaction
+            if row.fonc_trigger_param->>'fonc_trig_dans_liste' = 'S' then
+                -- on récupère (pour les events) d'abord, puis on supprime l'objet
+                perform accepte_transaction( f_to_numeric(v_param->>'tran_cod')::integer ) ;
+                perform f_del_objet( v_obj_cod ) ;
+            elseif row.fonc_trigger_param->>'fonc_trig_dans_liste' = 'I' then
+                perform accepte_transaction( f_to_numeric(v_param->>'tran_cod')::integer ) ;
+            elseif row.fonc_trigger_param->>'fonc_trig_dans_liste' = 'R' then
+                delete from transaction where tran_cod=f_to_numeric(v_param->>'tran_cod') ;
+            end if;
+
+        else
+
+            -- l'objet n'est dans la liste on ne déclenche pas l'EA mais on traite la transaction
+            -- S=>Supprimer l’objet reçu , I=>Inventaire, L=>Laisser en transaction et R=>Refuser la transaction
+            if row.fonc_trigger_param->>'fonc_trig_hors_liste' = 'S' then
+                -- on récupère (pour les events) d'abord, puis on supprime l'objet
+                perform accepte_transaction( f_to_numeric(v_param->>'tran_cod')::integer ) ;
+                perform f_del_objet( v_obj_cod ) ;
+            elseif row.fonc_trigger_param->>'fonc_trig_hors_liste' = 'I' then
+                perform accepte_transaction( f_to_numeric(v_param->>'tran_cod')::integer ) ;
+            elseif row.fonc_trigger_param->>'fonc_trig_hors_liste' = 'R' then
+                delete from transaction where tran_cod=f_to_numeric(v_param->>'tran_cod') ;
+            end if;
+
+        end if;
+
 
 	  end if;
 
