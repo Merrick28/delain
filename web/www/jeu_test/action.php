@@ -938,7 +938,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                         $perso_pos = new perso_position();
                         $perso_pos->getByPerso($perso_cod);
                         $perso_pos->ppos_pos_cod = $ppp->ppp_pos_cod;
-                        $perso_cod->stocke();
+                        $perso_pos->stocke();
 
                         $ppp->delete();
 
