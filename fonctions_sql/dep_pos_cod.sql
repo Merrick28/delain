@@ -83,6 +83,12 @@ begin
   end loop;
   while v_pos != pos_dest loop
     select into v_pos,parent,cout_G louv_pos_cod,louv_parent,louv_cout_g from liste_ouverte where louv_perso_cod = v_monstre order by louv_cout_f asc limit 1;
+    -- Ajout Marlyza: si on ne trouve rien dans la liste ouverte, v_pos devient null et ça plante.. on corrige ça, mais ça cache peut-être une erreur d'algorithme
+    if v_pos is null then
+        -- aucune bonne position trouvée
+        return;
+    end if;
+
     compt := compt +1;
     insert into liste_fermee (lferm_pos_cod,lferm_parent,lferm_compt,lferm_perso_cod) values (v_pos,parent,compt,v_monstre);
     delete from liste_ouverte where louv_pos_cod = v_pos and louv_perso_cod = v_monstre;
