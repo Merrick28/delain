@@ -155,7 +155,7 @@ function validateEmail ($email)
                         // increment our work (code (c)) variable, and null 
                         // out our output variable for a later loop test 
                         // 
-                        if ( ereg ( "^220", $out ) ) 
+                        if ( preg_match  ( "/^220/", $out ) )
                         { 
                             if($debug_==1) { 
                             echo"Service ready on recipient machine.<BR>"; 
@@ -239,7 +239,7 @@ function validateEmail ($email)
                      } 
                     // test the reply code from the mail 
                     // server for the 550 (no recipient) code 
-                    if (ereg("^550",$output)) 
+                    if (preg_match ("/^550/",$output))
                     { 
                       if($debug_==1) { 
                           echo"Recipient doesnt exist<BR>"; 
