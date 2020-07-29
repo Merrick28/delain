@@ -123,8 +123,10 @@ begin
 		-- Parmi les cibles spécifiées
 		and
 			((v_cibles_type = 'S' and perso_cod = v_source) or
-			(v_cibles_type = 'A' and perso_type_perso = v_type_source) or
-			(v_cibles_type = 'E' and perso_type_perso != v_type_source) or
+      (v_cibles_type = 'A' and perso_type_perso!=2 and v_type_source!=2) or
+      (v_cibles_type = 'A' and perso_type_perso=2  and v_type_source=2) or
+      (v_cibles_type = 'E' and perso_type_perso!=2 and v_type_source=2) or
+      (v_cibles_type = 'E' and perso_type_perso=2  and v_type_source!=2) or
 			(v_cibles_type = 'R' and perso_race_cod = v_race_source) or
       (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
       (v_cibles_type = 'J' and perso_type_perso = 1) or
@@ -154,8 +156,10 @@ begin
 			-- Parmi les cibles spécifiées
 			and
 				((v_cibles_type = 'S' and perso_cod = v_source) or
-				(v_cibles_type = 'A' and perso_type_perso = v_type_source) or
-				(v_cibles_type = 'E' and perso_type_perso != v_type_source) or
+        (v_cibles_type = 'A' and perso_type_perso!=2 and v_type_source!=2) or
+        (v_cibles_type = 'A' and perso_type_perso=2  and v_type_source=2) or
+        (v_cibles_type = 'E' and perso_type_perso!=2 and v_type_source=2) or
+        (v_cibles_type = 'E' and perso_type_perso=2  and v_type_source!=2) or
 				(v_cibles_type = 'R' and perso_race_cod = v_race_source) or
         (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
         (v_cibles_type = 'J' and perso_type_perso = 1) or

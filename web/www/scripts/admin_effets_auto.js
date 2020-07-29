@@ -166,8 +166,8 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
-		affichage: 'Bonus / Malus Multiples',
-		description: 'Applique des Bonus / Malus, à une ou plusieurs cibles.',
+		affichage: 'Soins/Dégâts & Multiples Bonus/Malus',
+		description: 'Applique des Soins/Dégâts ainsi que des Bonus/Malus, à une ou plusieurs cibles.',
 		parametres: [
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
@@ -177,6 +177,7 @@ EffetAuto.Types = [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'force', type: 'entier', longueur: 2, label: 'Soins/Dégâts', description: 'Le nombre de PV impactés en plus de l’effet des BM, une valeur positive pour des soins ou négative pour des dégâts. La valeur peut être fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'trig_effet_bm', type: 'listebm', label: 'Liste des Bonus/Malus', description: 'Liste des Bonus/Malus, ils seront tous appliqués si le jet de proba est réussi.' }
 
 		],

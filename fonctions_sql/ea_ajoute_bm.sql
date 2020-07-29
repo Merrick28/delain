@@ -1,8 +1,8 @@
 --
--- Name: ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: ea_ajoute_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) RETURNS text
+create or replace function ea_ajoute_bm(integer, integer, text, integer, character, text, numeric, text, json) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
 /* ea_ajoute_bm                             */
@@ -11,12 +11,13 @@ AS $_$/**************************************************/
 /* On passe en paramètres:                        */
 /*   $1 = source (perso_cod du monstre)           */
 /*   $2 = Perso ciblé                            */
-/*   $3 = distance (-1..n)                        */
-/*   $4 = cibles (Type SAERTPCO)                  */
-/*   $5 = cibles nombre, au format rôliste        */
-/*   $6 = Probabilité d’atteindre chaque cible    */
-/*   $7 = Message d’événement associé             */
-/*   $8 = autres paramètres au format json       */
+/*   $3 = soins/degats (Entier ou +/-nDy)               */
+/*   $4 = distance (-1..n)                        */
+/*   $5 = cibles (Type SAERTPCO)                  */
+/*   $6 = cibles nombre, au format rôliste        */
+/*   $7 = Probabilité d’atteindre chaque cible    */
+/*   $8 = Message d’événement associé             */
+/*   $9 = autres paramètres au format json       */
 /**************************************************/
 /* Créé le 18 Juin 2020                           */
 /**************************************************/
@@ -24,12 +25,13 @@ declare
   -- Parameters
   v_source alias for $1;
   v_cible_donnee alias for $2;
-  v_distance alias for $3;
-  v_cibles_type alias for $4;
-  v_cibles_nombre alias for $5;
-  v_proba alias for $6;
-  v_texte_evt alias for $7;
-  v_params alias for $8;
+  v_force alias for $3;
+  v_distance alias for $4;
+  v_cibles_type alias for $5;
+  v_cibles_nombre alias for $6;
+  v_proba alias for $7;
+  v_texte_evt alias for $8;
+  v_params alias for $9;
 
   -- initial data
   v_x_source integer;          -- source X position
@@ -50,6 +52,7 @@ declare
   ligne record;                -- Une ligne d’enregistrements
   i integer;                   -- Compteur de boucle
   ch character;                -- Un caractère tout ce qu’il y a de plus banal
+  v_pv integer;                -- Perte/Gain de PV (Soins ou Dégats)
   v_duree integer;             -- Valeur numérique de durée du BM
   v_cumulatif varchar(1);      -- O/N
   v_valeur integer;            -- Valeur numérique de l’impact du bonus ou de l’action
@@ -69,7 +72,7 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « ajout de bonus/malus ».';
+    return 'Pas d’effet automatique de « Soins/Dégats et ajout de Bonus/Malus ».';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -105,7 +108,7 @@ begin
   v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
   -- Et finalement on parcourt les cibles.
-  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con
+  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, perso_pv, perso_pv_max
                 from perso
                   inner join perso_position on ppos_perso_cod = perso_cod
                   inner join positions on pos_cod = ppos_pos_cod
@@ -124,8 +127,10 @@ begin
                       -- Parmi les cibles spécifiées
                       and
                       ((v_cibles_type = 'S' and perso_cod = v_source) or
-                       (v_cibles_type = 'A' and perso_type_perso = v_type_source) or
-                       (v_cibles_type = 'E' and perso_type_perso != v_type_source) or
+                       (v_cibles_type = 'A' and perso_type_perso!=2 and v_type_source!=2) or
+                       (v_cibles_type = 'A' and perso_type_perso=2  and v_type_source=2) or
+                       (v_cibles_type = 'E' and perso_type_perso!=2 and v_type_source=2) or
+                       (v_cibles_type = 'E' and perso_type_perso=2  and v_type_source!=2) or
                        (v_cibles_type = 'R' and perso_race_cod = v_race_source) or
                        (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
                        (v_cibles_type = 'J' and perso_type_perso = 1) or
@@ -166,8 +171,43 @@ begin
 
     end if;
 
-    -- boucle sur la liste des bonus à appliquer
+    -- on applique des degats/soins    (en fonction de la force de l'effet et de la pseudo resistance)
+    v_pv := f_lit_des_roliste(v_force);
+    if v_bloque_magie = 1 and v_pv < 0 then
+        v_pv := floor(v_pv / 2 ) ;
+        if v_pv = 0 then
+            v_pv = -1  ;
+        end if;
+    end if;
 
+    if v_pv > 0 then
+    		v_pv := LEAST(v_pv, ligne.perso_pv_max - ligne.perso_pv);
+    		if v_pv > 0 then
+            update perso set perso_pv = LEAST(perso_pv + v_pv, perso_pv_max) where perso_cod = ligne.perso_cod;
+            code_retour := code_retour || '<br />'|| ligne.perso_nom || ' regagne  «' || v_pv::text || '» points de vie.' ;
+        end if;
+    elsif v_pv < 0 then
+        -- attenuer les dégats eventullement en cas de PvP (le porteur de l'EA est un joueur et la cible aussi)
+        v_pv := effectue_degats_perso(ligne.perso_cod, v_pv, v_source) ;
+
+        code_retour := code_retour || '<br />'|| ligne.perso_nom || ' perd  «' || (-v_pv)::text || '» points de vie' ;
+        if v_bloque_magie = 1 then
+          code_retour := code_retour || ' (résisté)';
+        end if;
+        code_retour := code_retour || '.';
+
+        -- On gère les dégâts
+        if ligne.perso_pv + v_pv <= 0 then
+          -- on a tué l’adversaire !!
+          perform tue_perso_final(v_source, ligne.perso_cod);
+          code_retour := code_retour || '<br />'|| ligne.perso_nom || ' a été tué par cette perte de point de vie!' ;
+        else
+          update perso set perso_pv = perso_pv + v_pv where perso_cod = ligne.perso_cod;
+        end if;
+    end if;
+
+
+    -- boucle sur la liste des bonus à appliquer
     for bm in (select value from json_array_elements( (v_params->>'fonc_trig_effet_bm')::json )  )
     loop
         v_bonus := COALESCE(bm.value->>'tbonus_libc'::text, '') ;
@@ -214,18 +254,18 @@ begin
   end loop;
 
   if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « ajout de bonus/malus »';
+    code_retour := 'Aucune cible éligible pour « Soins/Dégats et ajout de Bonus/Malus »';
   end if;
 
   return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) OWNER TO delain;
+ALTER FUNCTION public.ea_ajoute_bm(integer, integer, text, integer, character, text, numeric, text, json) OWNER TO delain;
 
 --
--- Name: FUNCTION ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
+-- Name: FUNCTION ea_ajoute_bm(integer, integer, text, integer, character, text, numeric, text, json); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION ea_ajoute_bm(integer, integer, integer, character, text, numeric, text, json) IS 'Ajoute des Bonus / Malus standards en fonction des paramètres donnés.';
+COMMENT ON FUNCTION ea_ajoute_bm(integer, integer, text, integer, character, text, numeric, text, json) IS 'Applique des Soins/Dégats et ajoute multiple Bonus / Malus en fonction des paramètres donnés.';
 
