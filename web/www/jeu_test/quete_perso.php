@@ -56,6 +56,7 @@ if ($erreur == 0)
             $contenu_page .= "<!-- début $key => $val -->";
             ob_start();
             $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>".ucfirst(str_replace("quete_", "", str_replace(".php", "", $val)))."</strong></center></div>" ;
+            if ($val=="enchanteur.php") $_REQUEST["type_appel"] = 2 ;       // pour l'enchanteur, le même script sert pour un lieu que pour un pnj, on indique ici qu'il s'agit du PNJ
             require_once $val;
             $contenu_page .= ob_get_contents();
             ob_end_clean();
