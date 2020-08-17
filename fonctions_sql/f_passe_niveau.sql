@@ -90,6 +90,11 @@ begin
         perform release('f_modif_carac', personnage);
         return code_retour;
     end if;
+    if amel is null then
+        code_retour := '<p>Erreur ! Vous n''avez pas choisi d''amélioration !';
+        perform release('f_modif_carac', personnage);
+        return code_retour;
+    end if;
 
     --------------------------------------------------
     -- réalise l'amélioration de caracs
