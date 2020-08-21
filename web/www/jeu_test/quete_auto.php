@@ -36,7 +36,7 @@ switch ($methode)
         $trigger = -1;   //index de la quete démarrée dans la liste possible
         foreach ($tab_quete["quetes"] as $k => $quete)
         {
-            if ($quete->aquete_cod == $aquete_cod  && $tab_quete["triggers"][$k][aqelem_cod] == $_REQUEST["trigger"])
+            if ($quete->aquete_cod == $aquete_cod  && $tab_quete["triggers"][$k]["aqelem_cod"] == $_REQUEST["trigger"])
             {
                 $trigger = $k;
                 break;  // Inutile de chercher plus loin on a notre champion!
