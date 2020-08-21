@@ -5,6 +5,8 @@ include_once "delain_header.php";
 include "classes.php";
 $pdo = new bddpdo();
 
+writelog( date("d/m/y - H:i")." : *** Démarrage ***", 'verif_vote' );
+
 $IpReq1 = "SELECT icompt_compt_ip,  compte_vote_compte_cod,compte_vote_cod,compte_vote_ip_compte
             FROM public.compte_ip
             INNER JOIN public.compte_vote_ip ON public.compte_ip.icompt_cod = public.compte_vote_ip.compte_vote_icompt_cod where  public.compte_vote_ip.compte_vote_verifier = FALSE 
@@ -39,6 +41,7 @@ $postdata = http_build_query(
 
 if (count($ips) != 0)
 {
+    writelog( date("d/m/y - H:i")." : call API jeux-alternatifs", 'verif_vote' );
     $opts = array('http' =>
                       array(
                           'method'  => 'POST',
@@ -50,10 +53,16 @@ if (count($ips) != 0)
     $context = stream_context_create($opts);
 
     $result      = file_get_contents('http://www.jeux-alternatifs.com/API.php', false, $context);
+    //echo "<br>Check : Résultat jeux-alternatifs: ".$result;
+    writelog( date("d/m/y - H:i")." : Résultat jeux-alternatifs => {$result}", 'verif_vote' );
+
     $list        = json_decode(substr($result, 3), true);
     $listContenu = $list['contenu'];
     if ($listContenu != null)
     {
+        //echo "<br>Check : Traitement des données de  jeux-alternatifs: ";
+        //echo "<pre>"; print_r($listContenu); echo "</pre>";
+
         foreach ($listContenu as $key => $IPs)
         {
 
@@ -126,7 +135,7 @@ $reqVoteList =
 $stmt        = $pdo->prepare($reqVoteList);
 $stmt        = $pdo->execute(array(":date" => $dateDuMois), $stmt);
 
-// on ne fait quelque chose que s'il n'y a pas de requete sinon cela veut dire qu'on est deja passé ce mois si
+// on ne fait quelque chose que s'il n'y a pas de requete sinon cela veut dire qu'on est deja passé ce mois-ci
 if (!$result = $stmt->fetch())
 {
 
@@ -166,20 +175,24 @@ if (!$result = $stmt->fetch())
 
         $moisAnnee = date('Y-m', mktime(12, 0, 0, date("m") - 1, 1, date("Y")));
         // il faut récuperer dans compte_vote_ip pour le nombre de vote
-        echo "<br>Check : $moisAnnee * $compteCod ";
+        //echo "<br>Check : $moisAnnee * $compteCod ";
+        writelog( date("d/m/y - H:i")." : Check : $moisAnnee * $compteCod", 'verif_vote' );
         $stmt2   = $pdo->execute(array(
                                      ":mois"   => $moisAnnee,
                                      ":compte" => $compteCod
                                  ), $stmt2);
         $result2 = $stmt2->fetch();
         $nbrVote = $result2['nbrvote'];
-        echo "Nbr de Vote : $nbrVote ";
+        //echo "Nbr de Vote : $nbrVote ";
+        writelog( date("d/m/y - H:i")." : Nbr de Vote : $nbrVote", 'verif_vote' );
 
         // il n'y a plus qu'a récuperer l'xp a faire gagner par perso et les perso puis ajouter l'xp gagné
         $stmt3   = $pdo->execute(array(":vote" => $nbrVote), $stmt3);
         $result3 = $stmt3->fetch();
         $GainXp  = 1 * $result3['vote_xp_gain_xp'];
-        echo 'gain: ' . $GainXp;
+        //echo 'gain: ' . $GainXp;
+        writelog( date("d/m/y - H:i")." : gain: : $GainXp", 'verif_vote' );
+
         // pour chacun des perso du comptes, on rajoute  l'xp gagné
         if ($GainXp > 0)
         {
@@ -187,7 +200,8 @@ if (!$result = $stmt->fetch())
             $stmt4 = $pdo->execute(array(":compte" => $compteCod), $stmt4);
             while ($result4 = $stmt4->fetch())
             {
-                echo " Perso={$result4['pcompt_perso_cod']} ";
+                //echo " Perso={$result4['pcompt_perso_cod']} ";
+                writelog( date("d/m/y - H:i")." : Perso={$result4['pcompt_perso_cod']}", 'verif_vote' );
 
                 $codPerso  = $result4['pcompt_perso_cod'];
                 $tempperso = new perso;
@@ -212,7 +226,9 @@ if (!$result = $stmt->fetch())
 
                 if ($result5 = $stmt5->fetch())
                 {
-                    echo " Familier={$result5['pfam_familier_cod']} ";
+                    //echo " Familier={$result5['pfam_familier_cod']} ";
+                    writelog( date("d/m/y - H:i")." :  Familier={$result5['pfam_familier_cod']}", 'verif_vote' );
+
                     $tempperso = new perso;
                     $tempperso->charge($result5['pfam_familier_cod']);
                     $tempperso->perso_px = $tempperso->perso_px + $GainXp;

@@ -28,6 +28,7 @@ if ($erreur != 0)
         "poste" => array("relais_poste.log", "Transactions via les relais de la poste."),
         "comptes" => array("compte_creation.log", "Creation de compte de joueur."),
         "quêtes" => array("quete_auto.log", "Modification des Quête auto."),
+        "vote" => array("verif_vote.log", "Verification des votes sur jeux-alternatifs."),
         "hacking" => array("hacking.log", "Tentative de hack du site."),
     );
     $visu = (isset($_REQUEST['visu'])) ? $_REQUEST['visu'] : "début";
