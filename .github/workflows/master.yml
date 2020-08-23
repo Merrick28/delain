@@ -37,31 +37,17 @@ jobs:
         run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
 
   livraison:
-    runs-on: backenddelain
+    runs-on: rp
     needs: prelivraison
     steps:
-      - name: Git pull
-        run: |
-          cd /home/delain/delain
-          git pull
-      - name: Vider le cache twig
-        run: 'rm -rf /home/delain/delain/cache/*'
-      - name: Vider le cache modspeed
-        run: 'curl "http://localhost/pagespeed_admin/cache?purge=*"'
-      - name: Livraisons sql
-        run: /home/delain/delain/shell/livraisons.sh
-      - name: Generation des docs api
-        run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
+      - name: Lancement awx
+        run: curl --request POST \
+          --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/ \
+          --header 'authorization: Basic ZGVsYWluX2F1dG86dHdsZ29rd3o=' \
+          --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892
+
       - name: Gestion d'erreur
         if: ${{ failure() }}
         run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraison) !!!"
-  notif_fin:
-    runs-on: rp
-    needs: livraison
-    steps:
 
-      - name: Slack notification
-        run: |
-          /home/github/actions/notif_slack.sh "Fin de livraison"
-          /home/github/actions/notif_slack.sh "-----------------"
 
