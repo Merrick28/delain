@@ -41,10 +41,7 @@ jobs:
     needs: prelivraison
     steps:
       - name: Lancement awx
-        run: curl --request POST \
-          --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/ \
-          --header 'authorization: Basic ZGVsYWluX2F1dG86dHdsZ29rd3o=' \
-          --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892
+        run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ZGVsYWluX2F1dG86dHdsZ29rd3o='  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
 
       - name: Gestion d'erreur
         if: ${{ failure() }}
