@@ -5,16 +5,17 @@ include_once "delain_header.php";
 include "classes.php";
 $pdo = new bddpdo();
 
+writelog( "-----" , 'verif_vote');
 writelog( date("d/m/y - H:i")." : *** Démarrage ***", 'verif_vote' );
 
 $IpReq1 = "SELECT icompt_compt_ip,  compte_vote_compte_cod,compte_vote_cod,compte_vote_ip_compte
             FROM public.compte_ip
             INNER JOIN public.compte_vote_ip ON public.compte_ip.icompt_cod = public.compte_vote_ip.compte_vote_icompt_cod where  public.compte_vote_ip.compte_vote_verifier = FALSE 
-            and public.compte_vote_ip.compte_vote_date = current_date  FETCH NEXT 100 ROWS ONLY";
+            and public.compte_vote_ip.compte_vote_date = current_date and compte_vote_ip is not null FETCH NEXT 100 ROWS ONLY";
 $IpReq2 = "SELECT icompt_compt_ip,  compte_vote_compte_cod,compte_vote_cod,compte_vote_ip_compte
             FROM public.compte_ip
             INNER JOIN public.compte_vote_ip ON public.compte_ip.icompt_cod = public.compte_vote_ip.compte_vote_icompt_cod where  public.compte_vote_ip.compte_vote_verifier = FALSE 
-            and public.compte_vote_ip.compte_vote_date = (current_date - 1)  FETCH NEXT 100 ROWS ONLY";
+            and public.compte_vote_ip.compte_vote_date = (current_date - 1) and compte_vote_ip is not null FETCH NEXT 100 ROWS ONLY";
 
 $ips                = array();
 $Compte_code_ips    = array();
@@ -41,7 +42,7 @@ $postdata = http_build_query(
 
 if (count($ips) != 0)
 {
-    writelog( date("d/m/y - H:i")." : call API jeux-alternatifs", 'verif_vote' );
+    writelog( date("d/m/y - H:i")." : call API jeux-alternatifs - Postdata=[{$postdata}]", 'verif_vote' );
     $opts = array('http' =>
                       array(
                           'method'  => 'POST',
