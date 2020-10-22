@@ -14,10 +14,14 @@ class verif_connexion
      */
     var $perso = false;
 
-    function verif()
+    function verif($appel = false)
     {
         global $auth;
         global $type_flux;
+        if ($appel)
+        {
+            $this::verif_appel();
+        }
         /**
          * Permet de setter la variable pdo qui va servir pour les autres pages
          */
