@@ -79,10 +79,10 @@ function validateEmail ($email)
     
     list($user, $domain) = $donnees; 
 
-    if($debug_==1) { 
+    /*if($debug_==1) {
         echo"user: $user<BR>";    
         echo"domain: $domain<BR>";    
-    } 
+    } */
     // split up the domain name into sub-parts 
     $arr=explode(".",$domain); 
 
@@ -104,15 +104,15 @@ function validateEmail ($email)
         // arrays with the correct information 
         // 
         if (getmxrr($domain,$mxhosts,$weight)) 
-        { 
-            if($debug_==1) { 
+        {
+            /*if($debug_==1) {
                 echo "MX LOOKUP RESULTS :<BR>"; 
                 for ( $i = 0; $i < count($mxhosts); $i++ ) { 
                     echo "??????o $weight[$i] $mxhosts[$i]<BR>"; 
                 } 
                 echo "<strong>".count($mxhosts)." mail-servers found for this domain</strong><BR>"; 
 
-            } 
+            } */
 
         // sift through the 'mxhosts' connecting to each host 
             for ( $i=0; $i < count($mxhosts); $i++) 
@@ -123,11 +123,11 @@ function validateEmail ($email)
 
                 // if the 'fp' was set, then goto work 
                 if ($fp) 
-                { 
-                    if($debug_==1) { 
+                {
+                    /*if($debug_==1) {
                     echo"<BR><BR><h2>$mxhosts[$i]</h2>"; 
                     echo"Socket Opened successfully...<BR>"; 
-                       } 
+                       }*/
                 // work variables 
                     $s = 0; 
                     $c = 0; 
@@ -147,19 +147,19 @@ function validateEmail ($email)
                     { 
                         // output of the stream assigned 
                         // to 'out' variable 
-                        $out = fgets ( $fp, 2500 ); 
-                        if($debug_==1) { 
+                        $out = fgets ( $fp, 2500 );
+                        /*if($debug_==1) {
                            if($out != "")  echo"out: $out<BR>"; 
-                        } 
+                        }*/
                         // if we get an "220" code (service ready code (i.e greeting)) 
                         // increment our work (code (c)) variable, and null 
                         // out our output variable for a later loop test 
                         // 
                         if ( preg_match  ( "/^220/", $out ) )
-                        { 
-                            if($debug_==1) { 
+                        {
+                            /*if($debug_==1) {
                             echo"Service ready on recipient machine.<BR>"; 
-                            } 
+                            }*/
                             $s = 0; 
                             $out = ""; 
                             $c++; 
@@ -187,10 +187,10 @@ function validateEmail ($email)
                         // and if 's' is 9999, break, to 
                         // keep from looping 
                         // infinetly 
-                        if ( $s == 9999 ) { 
-                            if($debug_==1) { 
+                        if ( $s == 9999 ) {
+                            /*if($debug_==1) {
                                 echo"Reached maximum 10000 loops, breaking.<BR>"; 
-                            }     
+                            } */
                         break; 
                         } 
                      
@@ -204,46 +204,46 @@ function validateEmail ($email)
 
                     // talk to the MX mail server, 
                     // validating ourself (HELO) 
-                    fputs ( $fp, "HELO ".$SERVER_NAME."\r\n"); 
-                     if($debug_==1) { 
-                        echo"<BR>HELO $SERVER_NAME<BR>"; 
-                    } 
+                    fputs ( $fp, "HELO ".$SERVER_NAME."\r\n");
+                    /*if($debug_==1) {
+                       echo"<BR>HELO $SERVER_NAME<BR>";
+                   } */
                     // get the mail servers reply, assign to 
                     // 'output' (ignored) 
-                    $output = fgets ( $fp, 2000 ); 
-                      if($debug_==1) { 
-                        echo"output : $output<BR>"; 
-                     } 
+                    $output = fgets ( $fp, 2000 );
+                    /* if($debug_==1) {
+                       echo"output : $output<BR>";
+                    } */
                       // give a bogus "MAIL FROM:" header to 
                     // the server 
-                    fputs ($fp,"MAIL FROM: <info@".$domain.">\r\n"); 
-                     if($debug_==1) { 
-                        echo"MAIL FROM: <info@".$domain."><BR>"; 
-                    } 
+                    fputs ($fp,"MAIL FROM: <info@".$domain.">\r\n");
+                    /*if($debug_==1) {
+                       echo"MAIL FROM: <info@".$domain."><BR>";
+                   } */
                     // get output again (ignored) 
-                    $output = fgets ( $fp, 2000 ); 
-                      if($debug_==1) { 
-                        echo"output : $output<BR>"; 
-                     } 
+                    $output = fgets ( $fp, 2000 );
+                    /*if($debug_==1) {
+                      echo"output : $output<BR>";
+                   } */
                     // give RCPT TO: header for the email 
                     // address we are testing 
-                    fputs($fp,"RCPT TO: <".$email.">\r\n");                 
-                    if($debug_==1) { 
+                    fputs($fp,"RCPT TO: <".$email.">\r\n");
+                    /*if($debug_==1) {
                         echo"RCPT TO: <$email><BR>"; 
-                    } 
+                    } */
                     // get final output for validity testing 
                     // (used) 
-                    $output = fgets ($fp, 2000); 
-                      if($debug_==1) { 
-                        echo"output : $output<BR>"; 
-                     } 
+                    $output = fgets ($fp, 2000);
+                    /*if($debug_==1) {
+                      echo"output : $output<BR>";
+                   } */
                     // test the reply code from the mail 
                     // server for the 550 (no recipient) code 
                     if (preg_match ("/^550/",$output))
-                    { 
-                      if($debug_==1) { 
-                          echo"Recipient doesnt exist<BR>"; 
-                        } 
+                    {
+                        /*if($debug_==1) {
+                            echo"Recipient doesnt exist<BR>";
+                          } */
                     // set our true/false(ness) 
                     // array item for testing 
                         $return[0] = false; 
@@ -258,18 +258,18 @@ function validateEmail ($email)
                         // code for user to test if they 
                         // want 
                         $return[0] = true; 
-                        $return[1] = $output; 
-                        if($debug_==1) { 
-                           echo"The recipient exists <BR>"; 
-                        } 
+                        $return[1] = $output;
+                        /* if($debug_==1) {
+                            echo"The recipient exists <BR>";
+                         } */
                     } 
                  
                     // tell the mail server we are done 
                     // talking to it 
-                    fputs ( $fp, "QUIT\r\n"); 
-                     if($debug_==1) { 
-                        echo"Quit"; 
-                    } 
+                    fputs ( $fp, "QUIT\r\n");
+                    /*if($debug_==1) {
+                       echo"Quit";
+                   } */
                     // close the file pointer 
                     fclose($fp); 
 
@@ -278,10 +278,10 @@ function validateEmail ($email)
                     // trying MX records until we get a good 
                     // value, or we 
                     // exhaust our possible MX servers 
-                    if ($return[0] == false) { 
-                        if($debug_==1) { 
-                            echo"Recipient doesnt exist... Breaking"; 
-                        }     
+                    if ($return[0] == false) {
+                        /* if($debug_==1) {
+                             echo"Recipient doesnt exist... Breaking";
+                         }    */
                     break; 
                      } 
                 } 
