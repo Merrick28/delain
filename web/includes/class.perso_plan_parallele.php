@@ -45,8 +45,6 @@ class perso_plan_parallele
         $req  = "delete from perso_plan_parallele where ppp_perso_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->ppp_perso_cod), $stmt);
-
-        $this->ppp_pos_cod   = $result['ppp_pos_cod'];
         return true;
     }
 
@@ -89,8 +87,8 @@ class perso_plan_parallele
 
     /**
      * Retourne un tableau de tous les enregistrements
+     * @return perso_plan_parallele
      * @global bdd_mysql $pdo
-     * @return \perso_plan_parallele
      */
     function getAll()
     {
