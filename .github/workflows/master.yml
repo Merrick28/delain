@@ -32,6 +32,10 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
+      - name: Nettoyage
+        run: |
+          /usr/bin/docker system prune -a -f
+          /usr/bin/docker system prune --volumes -f
       - name: Gestion d'erreur
         if: ${{ failure() }}
         run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
