@@ -64,8 +64,9 @@ class verif_connexion
          */
         global $pdo;
 
-        if (session_status() == PHP_SESSION_NONE) {
-                session_start();
+        if (session_status() == PHP_SESSION_NONE)
+        {
+            session_start();
         }
         $verif_auth = false;
         $compte     = new compte;
@@ -109,19 +110,7 @@ class verif_connexion
                     //-----------------------------------------------------------------------------------//
                     // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
                     //-----------------------------------------------------------------------------------//
-                    $type_perso       = 'joueur';
-                    $is_admin_monstre = false;
-                    $is_admin         = false;
-                    if ($compte->compt_monstre == 'O')
-                    {
-                        $type_perso       = 'monstre';
-                        $is_admin_monstre = true;
-                    }
-                    if ($compte->compt_admin == 'O')
-                    {
-                        $type_perso = 'admin';
-                        $is_admin   = true;
-                    }
+                    require "blocks/_verif_connexion.php";
 
 
                     $perso_nom = $perso->perso_nom;
@@ -149,7 +138,7 @@ class verif_connexion
                 $normal_auth = true;
                 $compt_nom   = $compte->compt_nom;
                 // est-ce qu'on change de perso ?
-               if ($change_perso !== false)
+                if ($change_perso !== false)
                 {
                     if (!empty($change_perso))
                     {
@@ -169,19 +158,7 @@ class verif_connexion
                 // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
                 //-----------------------------------------------------------------------------------//
                 // compte
-                $type_perso       = 'joueur';
-                $is_admin_monstre = false;
-                $is_admin         = false;
-                if ($compte->compt_monstre == 'O')
-                {
-                    $type_perso       = 'monstre';
-                    $is_admin_monstre = true;
-                }
-                if ($compte->compt_admin == 'O')
-                {
-                    $type_perso = 'admin';
-                    $is_admin   = true;
-                }
+                require "blocks/_verif_connexion.php";
                 $perso->getByComptDerPerso($compte->compt_cod);
 
                 $perso_nom = $perso->perso_nom;
