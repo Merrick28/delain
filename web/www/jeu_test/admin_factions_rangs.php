@@ -1,6 +1,6 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<script type="text/javascript">
@@ -121,26 +121,17 @@ if ($fac_cod > -1)
 	$i = 1;
 
 	while($result = $stmt->fetch())
-	{
-		// Récupération des données
-		$rfac_seuil = $result['rfac_seuil'];
-		$rfac_nom = $result['rfac_nom'];
-		$rfac_description = $result['rfac_description'];
-		$rfac_intro = $result['rfac_intro'];
+    {
+        // Récupération des données
+        $rfac_seuil       = $result['rfac_seuil'];
+        $rfac_nom         = $result['rfac_nom'];
+        $rfac_description = $result['rfac_description'];
+        $rfac_intro       = $result['rfac_intro'];
 
-		echo "<form action='#' method='POST' onsubmit='if (this.methode == \"rang_supprime\") return confirm(\"Êtes-vous sûr de vouloir supprimer ce rang ?\");'><tr>
-			<td class='soustitre2'>$i. <input type='text' value='$rfac_nom' name='rfac_nom' size='20' /></td>
-			<td class='soustitre2'><input type='text' value='$rfac_seuil' name='rfac_seuil' size='7' /></td>
-            <td class='soustitre2'><textarea cols='40' rows='3' name='rfac_description'>$rfac_description</textarea></td>
-        	<td class='soustitre2'><textarea cols='40' rows='3' name='rfac_intro'>$rfac_intro</textarea></td>
-			<td class='soustitre2'><input type='hidden' value='$rfac_seuil' name='rfac_seuil_prec' />
-				<input type='hidden' value='$fac_cod' name='fac_cod' />
-				<input type='hidden' value='rang_modif' name='methode' id='methode$rfac_seuil' />
-				<input type='submit' class='test' value='Modifier' onclick='changeMethode($rfac_seuil, \"rang_modif\");'/>
-				<input type='submit' class='test' value='Supprimer' onclick='changeMethode($rfac_seuil, \"rang_supprime\");'/>
+        echo ")'/>
 			</td></tr></form>";
-		$i++;
-	}
+        $i++;
+    }
 
 	echo "<form action='#' method='POST'><tr>
 		<td class='soustitre2'><input type='text' value='' name='rfac_nom' size='20' /></td>

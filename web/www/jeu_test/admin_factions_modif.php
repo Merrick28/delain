@@ -1,6 +1,6 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Modification / suppression / création d’une faction</div><br />';

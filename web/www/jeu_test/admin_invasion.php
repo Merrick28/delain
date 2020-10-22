@@ -1,13 +1,13 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; max-height:20px; overflow:hidden;" id="cadre_invasion">';
 echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);">Invasion de monstre</div><br />';
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'cree_invasion':    // Crée une invasion de monstre
+    case 'cree_invasion':    // Crée une invasion de monstre
         require "blocks/_admin_invasion.php";
 
 

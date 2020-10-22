@@ -1,13 +1,13 @@
 <?php // gestion des quêtes sur les auberges.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
-$methode2          = get_request_var('methode2', 'debut');
+$methode2 = get_request_var('methode2', 'debut');
 
-switch($methode2)
+switch ($methode2)
 {
-	case "debut":
+case "debut":
 //Utilisation des points de prestige pour donner un peu de contenu.
 $prestige  = $perso->perso_prestige;
 $nom       = $perso->perso_nom;

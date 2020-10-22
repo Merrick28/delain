@@ -1,6 +1,6 @@
 <?php
-if (!defined("APPEL"))
-    die("Erreur d'appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 // contenu de la page
 //
 // On regarde s'il n'y a pas un probleme de toxicite quelconque

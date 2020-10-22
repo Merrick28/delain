@@ -1,7 +1,7 @@
 <?php // gestion des quêtes sur les temples.
 
-if (!defined("APPEL"))
-    die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 $methode2 = get_request_var('methode2', 'debut');
 

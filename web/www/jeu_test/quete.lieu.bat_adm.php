@@ -1,17 +1,17 @@
-<?php 
+<?php
 // gestion des quêtes sur les bâtiments administratifs.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo "<hr><br>";
-$methode2          = get_request_var('methode2', 'debut');
+$methode2     = get_request_var('methode2', 'debut');
 
-switch($methode2)
+switch ($methode2)
 {
-	case "debut":
-		// Quête n°11 : contrats de chasse
-		$req = "select pquete_cod, pquete_nombre, pquete_date_debut, pquete_date_fin, pquete_termine, pquete_param
+    case "debut":
+        // Quête n°11 : contrats de chasse
+        $req = "select pquete_cod, pquete_nombre, pquete_date_debut, pquete_date_fin, pquete_termine, pquete_param
 			from quete_perso
 			where pquete_quete_cod = 11
 				and pquete_perso_cod = $perso_cod

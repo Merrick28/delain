@@ -1,16 +1,16 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d'appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; max-height:20px; overflow:hidden;" id="cadre_pochettes">';
 echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);">Pochettes surprises</div><br />';
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'pochette_suppression':	// Suppression des pochettes existantes
-		$req_sup = 'select f_del_objet(obj_cod) as nombre from objets where obj_gobj_cod = 642';
-		$stmt = $pdo->query($req_sup);
-		echo '<p>Suppression des pochettes effectuée. ' . $stmt->rowCount() . ' pochettes supprimées.</p>';
+    case 'pochette_suppression':    // Suppression des pochettes existantes
+        $req_sup = 'select f_del_objet(obj_cod) as nombre from objets where obj_gobj_cod = 642';
+        $stmt    = $pdo->query($req_sup);
+        echo '<p>Suppression des pochettes effectuée. ' . $stmt->rowCount() . ' pochettes supprimées.</p>';
 	break;
 	case 'pochette_distribution':	// Réinitialisation des compteurs et distribution de nouvelles pochettes
 		$req = 'select cree_pochette_surprise() as resultat';

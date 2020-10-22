@@ -1,6 +1,7 @@
 <?php
 // Un minimum de sécurité la page admin_traitement_quete_auto_edit.php pourrait être appelée en directe (sans vérification de compte)
-if (!defined("APPEL")) die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 
 // Préparation du log
