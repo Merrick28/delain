@@ -17,7 +17,7 @@ jobs:
       - name: Gestion d'erreur
         if: ${{ failure() }}
         uri:
-          url: ${{ secrets.SLACK_WEBHOOK2 }}
+          url: "${{ secrets.SLACK_WEBHOOK2 }}"
           method: POST
           body_format: json
           body: "{\"text\":\" Anomalie sur la livraison (job livraison) \"}"
