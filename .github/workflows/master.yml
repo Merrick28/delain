@@ -39,14 +39,7 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
-      - name: Gestion d'erreur
-        if: ${{ failure() }}
-        run: echo test
-        uri:
-          url: "${{ secrets.SLACK_WEBHOOK2 }}"
-          method: POST
-          body_format: json
-          body: "{\"text\":\"Anomalie sur la livraison (job prelivraison) \"}"
+
 
   livraison:
     runs-on: ubuntu-latest
@@ -55,13 +48,6 @@ jobs:
       - name: Lancement awx
         run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX }}'  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
 
-      - name: Gestion d'erreur
-        if: ${{ failure() }}
-        run: echo test
-        uri:
-          url: "${{ secrets.SLACK_WEBHOOK2 }}"
-          method: POST
-          body_format: json
-          body: "{\"text\":\" Anomalie sur la livraison (job livraison) \"}"
+
 
 
