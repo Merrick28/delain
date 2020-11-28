@@ -13,9 +13,8 @@ jobs:
       - uses: actions/checkout@v2
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
-        run: |
-          cd ${GITHUB_WORKSPACE}/shell
-          ./notif_slack.sh "Debut de livraison" ${{ secrets.MESSAGE_DEB_LIVRAISON }} SLACK_WEBHOOK2
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Debut de livraison" ${{ secrets.SLACK_WEBHOOK2 }}
+
 
 
       - name: Resume des infos
