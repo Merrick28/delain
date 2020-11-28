@@ -7,16 +7,11 @@ on:
 
 jobs:
   prelivraison:
-    runs-on: ubuntu-latest
+    runs-on: rp
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
-        run: echo test
-        uri:
-          url: ${{ secrets.SLACK_WEBHOOK2 }}
-          method: POST
-          body_format: json
-          body: "{\"text\":\"Début de livraison (${GITHUB_ACTOR})\"}"
+        run: "curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$Début de livraison (${GITHUB_ACTOR})\"}" ${{ secrets.SLACK_WEBHOOK2 }}"
 
       - name: Resume des infos
         if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -26,11 +21,8 @@ jobs:
 
       - uses: actions/checkout@v2
       - name: lance les tests unitaires
-
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
           /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
@@ -40,15 +32,19 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
-
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
 
   livraison:
-    runs-on: ubuntu-latest
+    runs-on: rp
     needs: prelivraison
     steps:
       - name: Lancement awx
         run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX }}'  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
 
-
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraison) !!!"
 
 
