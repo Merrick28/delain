@@ -7,11 +7,15 @@ on:
 
 jobs:
   prelivraison:
-    runs-on: rp
+    runs-on: ubuntu-latest
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
-        run: /home/github/actions/notif_slack.sh "Début de livraison (${GITHUB_ACTOR})"
+        uri:
+          url: ${{ secrets.SLACK_WEBHOOK2 }}
+          method: POST
+          body_format: json
+          body: "{\"text\":\"Début de livraison (${GITHUB_ACTOR})\"}"
 
       - name: Resume des infos
         if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -23,6 +27,8 @@ jobs:
       - name: lance les tests unitaires
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
           /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
@@ -32,16 +38,16 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
-      - name: Nettoyage
-        run: |
-          /usr/bin/docker system prune -a -f
-          /usr/bin/docker system prune --volumes -f
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
+        uri:
+          url: ${{ secrets.SLACK_WEBHOOK2 }}
+          method: POST
+          body_format: json
+          body: "{\"text\":\"!!! Anomalie sur la livraison (job prelivraison) !!!\"}"
 
   livraison:
-    runs-on: rp
+    runs-on: ubuntu-latest
     needs: prelivraison
     steps:
       - name: Lancement awx
@@ -49,6 +55,10 @@ jobs:
 
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraison) !!!"
+        uri:
+          url: ${{ secrets.SLACK_WEBHOOK2 }}
+          method: POST
+          body_format: json
+          body: "{\"text\":\"!!! Anomalie sur la livraison (job livraison) !!!\"}"
 
 
