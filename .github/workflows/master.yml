@@ -11,6 +11,7 @@ jobs:
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
+        run: echo test
         uri:
           url: ${{ secrets.SLACK_WEBHOOK2 }}
           method: POST
