@@ -27,11 +27,10 @@ jobs:
       - name: lance les tests unitaires
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o ${GITHUB_WORKSPACE}/shell/docker-compose
-          chmod +x ${GITHUB_WORKSPACE}/shell/docker-compose
+
           cd ${GITHUB_WORKSPACE}
-          ${GITHUB_WORKSPACE}/shell/docker-compose -f docker-compose-tu.yml pull
-          ${GITHUB_WORKSPACE}/shell/docker-compose -f docker-compose-tu.yml up -d
+          docker-compose -f docker-compose-tu.yml pull
+          docker-compose -f docker-compose-tu.yml up -d
           echo "Wait for postgres to be up"
           /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
