@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # todo : transformer l'appel à slack qui est un peu long
+      - name: test ?
+        run: echo test
       - name: Slack notification
         uri:
           url: ${{ secrets.SLACK_WEBHOOK2 }}
