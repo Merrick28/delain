@@ -6,47 +6,20 @@ on:
 #    branches: [ master ]
 
 jobs:
-  prelivraison:
+
+
+  livraison:
     runs-on: ubuntu-latest
     steps:
-      # todo : transformer l'appel à slack qui est un peu long
-      - name: Slack notification
-        uri:
-          url: ${{ secrets.SLACK_WEBHOOK2 }}
-          method: POST
-          body_format: json
-          body: "{\"text\":\"Début de livraison (${GITHUB_ACTOR})\"}"
+      - name: Lancement awx
+        run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX }}'  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
 
-      - name: Resume des infos
-        if: "!contains(github.event.head_commit.message, 'ci skip')"
-        run: |
-          echo "Lancement des tests unitaires"
-          echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
-
-
-      - name: lance les tests unitaires
-        uses: actions/checkout@v2
-        if: "!contains(github.event.head_commit.message, 'ci skip')"
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
-          cd ${GITHUB_WORKSPACE}
-          /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
-          /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
-          echo "Wait for postgres to be up"
-          /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
-          echo 'PHP Unit tests'
-          ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
-          cd ${GITHUB_WORKSPACE}
-          /usr/local/bin/docker-compose -f docker-compose-tu.yml down
       - name: Gestion d'erreur
         if: ${{ failure() }}
         uri:
           url: ${{ secrets.SLACK_WEBHOOK2 }}
           method: POST
           body_format: json
-          body: "{\"text\":\"Anomalie sur la livraison (job prelivraison) \"}"
-
-
+          body: "{\"text\":\" Anomalie sur la livraison (job livraison) \"}"
 
 
