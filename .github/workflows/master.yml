@@ -7,7 +7,7 @@ on:
 
 jobs:
   prelivraison:
-    runs-on: rp
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -27,6 +27,8 @@ jobs:
       - name: lance les tests unitaires
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
           cd ${GITHUB_WORKSPACE}
           /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
           /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
@@ -38,10 +40,11 @@ jobs:
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job prelivraison)" ${{ secrets.SLACK_WEBHOOK2 }}
+
 
   livraison:
-    runs-on: rp
+    runs-on: ubuntu-latest
     needs: prelivraison
     steps:
       - name: Lancement awx
@@ -49,6 +52,7 @@ jobs:
 
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraison) !!!"
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job livraison)" ${{ secrets.SLACK_WEBHOOK2 }}
+
 
 
