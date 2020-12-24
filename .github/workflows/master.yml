@@ -39,7 +39,7 @@ jobs:
           /usr/local/bin/docker-compose -f docker-compose-tu.yml down
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job prelivraison)" ${{ secrets.SLACK_WEBHOOK2 }}
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job prelivraison)" ${{ secrets.WEBHOOK_ROCKETCHAT }}
 
 
   livraison:
@@ -51,7 +51,7 @@ jobs:
 
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job livraison)" ${{ secrets.SLACK_WEBHOOK2 }}
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job livraison)" ${{ secrets.WEBHOOK_ROCKETCHAT }}
 
 
 
