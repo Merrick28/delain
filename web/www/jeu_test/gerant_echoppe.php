@@ -5,8 +5,8 @@ ob_start();
     <script language="javascript" src="javascripts/changestyles.js"></script>
 
 <?php
-include "blocks/_test_admin_echoppe.php";
 define('APPEL', 1);
+include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0) {
     //
     // en premier on liste les magasins et leur gérant éventuel
