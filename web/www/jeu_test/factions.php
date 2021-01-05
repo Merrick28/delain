@@ -317,6 +317,12 @@ if ($erreur)
 					WHERE pfac_fac_cod = $faction AND pfac_perso_cod = $perso_cod";
                 $stmt        = $pdo->query($req_promo);
 
+                // 2021-01-05 - Marlyza : le nombre de po/px du perso n pu evolué entre le moment ou on a chargé les valeur du perso et maintenant
+                //  "select mission_valider($missionCode)" => va potentielement ajouter po/px au record en base, mais pas à l'objet $perso
+                // Il faut recharger le dernier état du perso avant de faire les modification
+                $perso->charge( $perso_cod );
+                //# Fin modif Marlyza #//
+
                 $perso->perso_po = $perso->perso_po + $brouzoufs;
                 $perso->perso_px = $perso->perso_px + $pxs;
                 $perso->stocke();
