@@ -1,6 +1,6 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 
@@ -8,9 +8,9 @@ $resultat = '';
 
 if (!isset($fac_cod))
 {
-	$fac_cod = -1;
-	$fac_nom = '';
-	echo '<div class="barrTitle">Les lieux servant de base aux factions</div><br />';
+    $fac_cod = -1;
+    $fac_nom = '';
+    echo '<div class="barrTitle">Les lieux servant de base aux factions</div><br />';
 }
 else
 {

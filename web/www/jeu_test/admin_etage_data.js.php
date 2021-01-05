@@ -29,7 +29,11 @@ Etage.numero = <?php echo $num_etage; ?>;
 // Type d’étage
 $req_style = "select etage_affichage from etage where etage_numero = $num_etage";
 $etage = new etage();
-$etage->charge($num_etage);
+
+if (!$etage->getByNumero($num_etage))
+{
+    die("Erreur sur chargement étage");
+}
 $style = $etage->etage_affichage;
 ?>
 Etage.style = "<?php echo $style; ?>";

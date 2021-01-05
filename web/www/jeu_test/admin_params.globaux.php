@@ -1,16 +1,16 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Paramètres globaux</div><br />';
 
-$erreur = false;
+$erreur         = false;
 $message_erreur = '';
-$methode = $_REQUEST['methode'];
+$methode        = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'glob_modif':    // Modifie un paramètre global
+    case 'glob_modif':    // Modifie un paramètre global
 		$erreur = !isset($parm_cod) || !isset($parm_type) || !isset($parm_desc) || !isset($parm_valeur)
 			|| !is_numeric($parm_cod);
 		$message_erreur = '';

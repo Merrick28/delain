@@ -1,8 +1,9 @@
 <?php
-if (!defined("APPEL"))
-	die("Erreur d'appel de page !");
+
 
 $verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
+
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
@@ -15,17 +16,17 @@ $erreur = 0;
 
 if (!$perso->is_lieu())
 {
-	echo("<p>Erreur ! Vous n'êtes pas sur un poste d'entrée !!!");
-	$erreur = 1;
+    echo "<p>Erreur ! Vous n'êtes pas sur un poste d'entrée !!!";
+    $erreur = 1;
 }
 if ($erreur == 0)
 {
     $tab_lieu = $perso->get_lieu();
     if ($tab_lieu['lieu']->lieu_tlieu_cod != 23 and $tab_lieu['lieu']->lieu_tlieu_cod != 27)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur poste d'entrée !!!");
-	}
+    {
+        $erreur = 1;
+        echo "<p>Erreur ! Vous n'êtes pas sur poste d'entrée !!!";
+    }
 }
 if ($erreur == 0)
 {

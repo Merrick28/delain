@@ -1,8 +1,6 @@
 <?php
-if (!defined("APPEL"))
-{
-    die("Erreur d'appel de page !");
-}
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 $pdo = new bddpdo();
 
 

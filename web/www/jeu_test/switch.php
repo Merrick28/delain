@@ -161,7 +161,7 @@ if ((!$compte->is_admin()) && (!$compte->is_admin_monstre()))
                         <tr>
                             <td>
                                 <a href="http://www.jeux-alternatifs.com/Les-Souterrains-de-Delain-jeu715_hit-parade_1_1.html"
-                                   onclick="AddNewVote()" target="_blank"><img
+                                   onclick="AddNewVote()" target="_blank" rel="noopener noreferrer"><img
                                             src="https://www.jeux-alternatifs.com/im/bandeau/hitP_88x31_v1.gif"
                                             border="0" alt="Jeux alternatifs"/></a>
                             </td>

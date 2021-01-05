@@ -1,9 +1,7 @@
 <?php
-$pdo = new bddpdo;
-if (!defined("APPEL"))
-{
-    die("Erreur d’appel de page !");
-}
+$pdo             = new bddpdo;
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; ">';

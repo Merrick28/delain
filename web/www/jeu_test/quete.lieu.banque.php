@@ -1,17 +1,17 @@
 <?php // gestion des quêtes sur les banques.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
-$methode2          = get_request_var('methode2', 'debut');
+$methode2 = get_request_var('methode2', 'debut');
 
-$perso = new perso;
-$perso = $verif_connexion->perso;
+$perso        = new perso;
+$perso        = $verif_connexion->perso;
 
-switch($methode2)
+switch ($methode2)
 {
-	case "debut":
-		// gobj_cod = 380 <=> caisses de minerais
+    case "debut":
+        // gobj_cod = 380 <=> caisses de minerais
 		//Quête du forgeron Trelmar Mogresh ayant perdu ses caisses de minerais volées par des brigands
 		$req = "select distinct obj_gobj_cod, perobj_obj_cod
 			from objets, perso_objets

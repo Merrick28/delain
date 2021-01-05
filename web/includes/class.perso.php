@@ -2797,7 +2797,7 @@ class perso
         return $result['bonus'];
     }
 
-    public function prepare_get_vue($compte)
+    public function prepare_get_vue()
     {
         $ppos  = new perso_position();
         $pos   = new positions();
@@ -2830,7 +2830,7 @@ class perso
 
     public function get_vue_non_lock($compte)
     {
-        $this->prepare_get_vue($compte);
+        $this->prepare_get_vue();
 
         $pdo            = new bddpdo();
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
@@ -2892,7 +2892,7 @@ class perso
     public function get_vue_lock($compte)
     {
         // position
-        $this->prepare_get_vue($compte);
+        $this->prepare_get_vue();
 
 
         $pdo            = new bddpdo();

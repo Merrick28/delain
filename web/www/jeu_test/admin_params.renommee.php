@@ -1,11 +1,11 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Renommées et Karma</div><br />';
 
-$erreur = false;
+$erreur         = false;
 $message_erreur = '';
 
 // Pour factoriser le code, on commence par récupérer le nom des tables et colonnes pour le type de renommée sur lequel on travaille

@@ -1188,20 +1188,7 @@ class aquete_perso
         $perso_journal = new aquete_perso_journal();
         $perso_journaux = $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
 
-        foreach ($perso_journaux as $k => $journal)
-        {
-            // Seulement les pages non-lues
-            if (($journal->aqpersoj_lu == 'N'))
-            {
-                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
-            }
-
-            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
-            {
-                $journal->aqpersoj_lu = 'O';
-                $journal->stocke();
-            }
-        }
+        require "blocks/_aquete_perso.php";
 
         return $journal_quete;
     }
@@ -1221,20 +1208,7 @@ class aquete_perso
         $perso_journal = new aquete_perso_journal();
         $perso_journal->chargeDernierePage();
 
-        foreach ($perso_journaux as $k => $journal)
-        {
-            // Seulement les pages non-lues
-            if (($journal->aqpersoj_lu == 'N'))
-            {
-                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
-            }
-
-            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
-            {
-                $journal->aqpersoj_lu = 'O';
-                $journal->stocke();
-            }
-        }
+        require "blocks/_aquete_perso.php";
 
         return $journal_quete;
     }
@@ -1285,8 +1259,8 @@ class aquete_perso
 
     /**
      * Retourne un tableau de tous les enregistrements
+     * @return aquete_perso
      * @global bdd_mysql $pdo
-     * @return \aquete_perso
      */
     function getAll()
     {
