@@ -162,7 +162,16 @@
                 <strong>{{ POSITION.pos_y }}</strong>
                 {% if not PERSO.is_fam %}
 
-                    {% if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
+                    {% if PERSO.perso_monture %}&nbsp;
+
+                        {%  if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
+                                                            src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">:
+                                                          <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {%  else %}&nbsp;<img src="{{ G_IMAGES }}horse.png" title="Déplacement"
+                                                      alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% endif %}
+
+                    {% elseif PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
                             src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">:
                         <strong>{{ PERSO.get_pa_dep() }}</strong>
                     {% else %}
@@ -298,6 +307,12 @@
 
         {% if PERSO.has_competence(83) %}
             <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/objets/pioche.php">Creuser</a><br>
+        {% endif %}
+
+        {% if PERSO.perso_monture %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/action.php?methode=dechevaucher">Pied à terre (4 PA)</a><br>
+        {%  elseif PERSO.monture_chevauchable()|length > 0 %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/monture_chevaucher.php">Chevaucher (4 PA)</a><br>
         {% endif %}
 
         {% if PERSO.is_enlumineur %}

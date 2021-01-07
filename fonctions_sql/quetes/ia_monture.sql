@@ -79,7 +79,7 @@ declare
 
 begin
 	doit_jouer := 0;
-	code_retour := 'IA pacifique<br>Mosntre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
+	code_retour := 'IA monture<br>Monstre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
 	limite_surcharge := 1;
 /***********************************/
 /* Etape 1 : on récupère les infos */
@@ -143,6 +143,16 @@ begin
 	distance_limite := portee_attaque(v_monstre);
 	if distance_limite > v_vue then
 		distance_limite := v_vue;
+	end if;
+
+/***********************************/
+/* Etape 1 : on regarde si monture */
+/*  est chevauché                  */
+/***********************************/
+	select perso_cod into temp from perso where perso_monture = v_monstre ;
+	if found then
+	    code_retour := code_retour||'Pas, d''action, le monstre est chevauché par perso #' ||trim(to_char(temp,'999999999999'))|| '.<br>';
+      return code_retour;
 	end if;
 
 /***********************************/

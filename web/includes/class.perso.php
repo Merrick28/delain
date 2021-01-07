@@ -113,6 +113,7 @@ class perso
     public $perso_monstre_attaque_monstre;
     public $perso_mortel               = null;
     public $alterego                   = 0;
+    public $perso_monture ;
     //
     public $position;
     public $guilde;
@@ -249,7 +250,8 @@ class perso
             perso_etage_origine,
             perso_monstre_attaque_monstre,
             perso_mortel,
-            alterego                        )
+            alterego,
+            perso_monture                        )
                     values
                     (
                         nextval('seq_perso'),
@@ -354,7 +356,8 @@ class perso
                         :perso_etage_origine,
                         :perso_monstre_attaque_monstre,
                         :perso_mortel,
-                        :alterego                        )
+                        :alterego,
+                        :perso_monture                        )
     returning perso_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -460,6 +463,7 @@ class perso
                                       ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
                                       ":perso_mortel"                  => $this->perso_mortel,
                                       ":alterego"                      => $this->alterego,
+                                      ":perso_monture"                 => $this->perso_monture,
                                   ), $stmt);
 
 
@@ -571,7 +575,8 @@ class perso
             perso_etage_origine = :perso_etage_origine,
             perso_monstre_attaque_monstre = :perso_monstre_attaque_monstre,
             perso_mortel = :perso_mortel,
-            alterego = :alterego                        where perso_cod = :perso_cod ";
+            alterego = :alterego,
+            perso_monture = :perso_monture                        where perso_cod = :perso_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                                       ":perso_cod"                     => $this->perso_cod,
@@ -677,6 +682,7 @@ class perso
                                       ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
                                       ":perso_mortel"                  => $this->perso_mortel,
                                       ":alterego"                      => $this->alterego,
+                                      ":perso_monture"                 => $this->perso_monture,
                                   ), $stmt);
         }
     }
@@ -800,6 +806,7 @@ class perso
         $this->perso_monstre_attaque_monstre = $result['perso_monstre_attaque_monstre'];
         $this->perso_mortel                  = $result['perso_mortel'];
         $this->alterego                      = $result['alterego'];
+        $this->perso_monture                 = $result['perso_monture'];
         return true;
     }
 
@@ -3237,6 +3244,54 @@ class perso
         $req  = "select efface_perso(:perso)";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+    }
+
+    /**
+     *regarde si une monture est disponible pour être montée?
+     */
+    public function monture_chevauchable()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select m.perso_cod, m.perso_nom 
+                    from perso p 
+                    join perso_position pp on p.perso_cod=pp.ppos_perso_cod
+                    join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 
+                    join monstre_generique on gmon_cod = m.perso_gmon_cod
+                    where p.perso_cod=:perso and gmon_monture = 'O' and not exists (select * from perso where perso_monture = m.perso_cod )";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
+    /**
+     *regarde si une monture est disponible pour être montée?
+     */
+    public function monture_chevaucher($monture)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_chevaucher(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $monture), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    /**
+     *regarde si une monture est disponible pour être montée?
+     */
+    public function monture_dechevaucher()
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_dechevaucher(:perso) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
     }
 
 
