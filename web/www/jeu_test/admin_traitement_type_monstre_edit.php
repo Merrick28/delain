@@ -118,7 +118,8 @@ switch ($methode)
                         "gmon_duree_vie",
                         "gmon_avatar",
                         "gmon_voie_magique",
-                        "gmon_sex");
+                        "gmon_sex",
+                        "gmon_monture");
         // SELECT POUR LES VALEURS PRECEDENTES
         $req_sel_mon = "select gmon_cod";
         foreach ($fields as $i => $value)
@@ -156,7 +157,7 @@ switch ($methode)
                         . ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
                         . ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
                         . ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
-                        . "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) . "', gmon_voie_magique=$gmon_voie_magique, gmon_sex='" . pg_escape_string($gmon_sex) . "' where gmon_cod = $gmon_cod";
+                        . "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) . "', gmon_voie_magique=$gmon_voie_magique, gmon_sex='" . pg_escape_string($gmon_sex) . "', gmon_monture='$gmon_monture' where gmon_cod = $gmon_cod";
         //echo $req_cre_gmon;
         $pdo->query($req_cre_gmon);
         echo "MAJ modèle<br>";
@@ -183,6 +184,38 @@ switch ($methode)
         writelog($log . "Ajout d'un sort : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
         $req_upd_mon =
             "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
+        $stmt        = $pdo->query($req_upd_mon);
+        echo "Ajout d'un sort";
+        break;
+
+    case "delete_mon_terrain":
+        $ter_cod    = $_REQUEST['ter_cod'];
+        $req_upd_mon = "select ter_nom from terrain where ter_cod = $ter_cod";
+        $stmt        = $pdo->query($req_upd_mon);
+        $result      = $stmt->fetch();
+        writelog($log . "Suppression d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
+
+        $req_upd_mon =
+            "delete from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = $ter_cod";
+        $stmt        = $pdo->query($req_upd_mon);
+        echo "Suppression d'un sort";
+        break;
+
+    case "add_mon_terrain":
+        $ter_cod    = $_REQUEST['ter_cod'];
+        $req_upd_mon = "select ter_nom from terrain where ter_cod = $ter_cod";
+        $stmt        = $pdo->query($req_upd_mon);
+        $result      = $stmt->fetch();
+        writelog($log . "Ajout d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
+
+        $tmon_accessible = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
+        $tmon_terrain_pa = $_POST['tmon_terrain_pa'] ;
+        $tmon_event_chance = $_POST['tmon_event_chance'] ;
+        $tmon_event_pa = $_POST['tmon_event_pa'] ;
+        $tmon_message = str_replace("'", "''", $_POST['tmon_message'] );
+
+        $req_upd_mon =
+            "insert into monstre_terrain (tmon_gmon_cod,tmon_ter_cod, tmon_accessible, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message) values ($gmon_cod,$ter_cod, '$tmon_accessible', '$tmon_terrain_pa', '$tmon_event_chance', '$tmon_event_pa', '$tmon_message')";
         $stmt        = $pdo->query($req_upd_mon);
         echo "Ajout d'un sort";
         break;

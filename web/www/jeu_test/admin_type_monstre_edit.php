@@ -334,7 +334,7 @@ if ($erreur == 0)
                                . ",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
                                . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description"
                                . ",gmon_pv,gmon_pourcentage_aleatoire,gmon_serie_arme_cod,gmon_serie_armure_cod"
-                               . ",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique,gmon_sex"
+                               . ",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique,gmon_sex, gmon_monture"
                                . " from monstre_generique where gmon_cod = $gmon_cod";
                 $stmt        = $pdo->query($req_gmon);
                 $result      = $stmt->fetch();
@@ -709,6 +709,15 @@ if ($erreur == 0)
                                     }
                                     ?>
                                 </SELECT>
+                            </TD>
+                        </TR>
+                        <TR>
+                            <TD>Le monstre est une monture (O ou N)?</TD>
+                            <TD>
+                                <INPUT type="text" name="gmon_monture" value="<?php echo $result['gmon_monture']; ?>">
+                            </TD>
+                            <TD colspan="2">
+                                Si le monstre est une monture, pensez à lui mettre un type d'IA spécique aux montures !
                             </TD>
                         </TR>
                         <TR>
@@ -1152,6 +1161,89 @@ if ($erreur == 0)
                         </form>
                     </tr>
                 </TABLE>
+
+                <hr>
+                MONTURE
+                <TABLE width="80%" align="center">
+                    <tr>
+                        <th align="left">Terrain</th>
+                        <th align="left">Accessible?</th>
+                        <th align="left">Gain/Perte de PA</th>
+                        <th align="left">Proba Evt (%)</th>
+                        <th align="left">Evt PA (dé rolliste)</th>
+                        <th align="left">Message si Evenement</th>
+                        <th>--</th>
+                    </tr>
+                    <?php $req_m_terrain =
+                        "select tmon_ter_cod,ter_nom,tmon_gmon_cod,tmon_accessible,tmon_terrain_pa,tmon_event_chance,tmon_event_pa,tmon_message from monstre_terrain,terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod";
+
+                    $stmt_m_terrain = $pdo->query($req_m_terrain);
+                    while ($result_m_terrain = $stmt_m_terrain->fetch())
+                    {
+                        $ter_nom           = $result_m_terrain['ter_nom'];
+                        $sgmon_chance      = $result_m_terrain['sgmon_chance'];
+                        $tmon_accessible   = $result_m_terrain['tmon_accessible'];
+                        $tmon_terrain_pa   = $result_m_terrain['tmon_terrain_pa'];
+                        $tmon_event_chance = $result_m_terrain['tmon_event_chance'];
+                        $tmon_event_pa     = $result_m_terrain['tmon_event_pa'];
+                        $tmon_message      = $result_m_terrain['tmon_message'];
+
+                        ?>
+                        <TR>
+                            <TD><?php echo $ter_nom ?></TD>
+                            <TD><?php echo $tmon_accessible ?></TD>
+                            <TD><?php echo $tmon_terrain_pa ?></TD>
+                            <TD><?php echo $tmon_event_chance ?></TD>
+                            <TD><?php echo $tmon_event_pa ?></TD>
+                            <TD><?php echo $tmon_message ?></TD>
+                            <TD>
+                                <form method="post">
+                                    <input type="hidden" name="methode2" value="edit">
+                                    <input type="hidden" name="sel_method" value="edit">
+                                    <input type="hidden" name="methode" value="delete_mon_terrain">
+                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+                                    <input type="hidden" name="ter_cod"
+                                           value="<?php echo $result_m_terrain['tmon_ter_cod'] ?>">
+                                    <input type="submit" value="Supprimer">
+                                </form>
+                            </TD>
+                        </TR>
+                    <?php
+                    }
+                    ?>
+                    <TR>
+                        <form method="post">
+                            <input type="hidden" name="methode2" value="edit">
+                            <input type="hidden" name="sel_method" value="edit">
+                            <input type="hidden" name="methode" value="add_mon_terrain">
+                            <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+                            <TD>
+                                <select name="ter_cod">
+                                        <?php
+
+                                    $req_m_terrain= "select ter_cod, ter_nom 
+                                                                from terrain 
+                                                                where not exists(select 1 from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod) order by ter_nom";
+                                    $stmt_m_terrain      = $pdo->query($req_m_terrain);
+                                    while ($result_m_terrain = $stmt_m_terrain->fetch())
+                                    {
+                                        ?>
+                                        <option value="<?php echo $result_m_terrain['ter_cod'] ?>"><?php echo $result_m_terrain['ter_nom'] ?></option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </TD>
+                            <TD><input type="checkbox" checked name="tmon_accessible" value="O"/></TD>
+                            <TD><input type="text" size=6 name="tmon_terrain_pa" value="0"></TD>
+                            <TD><input type="text" size=4 name="tmon_event_chance" value="0"></TD>
+                            <TD><input type="text" size=6 name="tmon_event_pa" value="0"></TD>
+                            <TD><input type="text" size=60 name="tmon_message" value=""></TD>
+                            <TD><input type="submit" value="Ajouter"></TD>
+                        </form>
+                    </TR>
+                </TABLE>
+
             <?php }
             } else
             {
