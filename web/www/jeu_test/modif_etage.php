@@ -66,7 +66,9 @@ $menus = '<p>Choisissez l’étage à modifier :</p>
 	<hr />
 	<a href='modif_etage2.php'>Mines, changement des décors et modification du nombre de PA des déplacements (genre routes)</a><br />
 	<a href='modif_etage4.php'>Positionnement des composants de potion</a> / <a href='Composants_positions.php'>Modif en masse des Positions des composants de potion</a><br />
-	<a href='modif_etage5.php'>Mines, murs tangibles ou non et Interdiction du sort passage</a><br /></p>";
+	<a href='modif_etage5.php'>Mines, murs tangibles ou non et Interdiction du sort passage</a><br />
+	<a href='modif_etage7.php'>Créer / Modifier les conditions de terrain d'un étage</a><br />
+	</p>";
 
 // Récupération des images existantes
 // On y va à la bourrin : on regarde quels fichiers existent entre 0 et 999 pour chaque type.
