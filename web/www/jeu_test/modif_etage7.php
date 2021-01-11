@@ -201,7 +201,7 @@ if ( isset($_REQUEST["pos_etage"]) )
             $ter_cod = 0 ;
             $mpa = 0 ;
 
-            $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM public.positions where pos_etage=:etage_numero  and pos_decor=:pos_decor group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc";
+            $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM public.positions where pos_etage=:etage_numero and pos_decor=:pos_decor and pos_ter_cod is not null group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute([":etage_numero"=> $pos_etage, ":pos_decor" => $type], $stmt);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC) ;

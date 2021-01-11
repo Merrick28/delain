@@ -121,6 +121,15 @@
                             <td><strong>{{ DIEU_NIVEAU.dniv_libelle }} de {{ DIEU.dieu_nom }}</strong></td>
                         </tr>
                     {% endif %}
+                    {% if VISU_PERSO.perso_monture %}
+                        <tr>
+                            <td colspan="3" class="titre">Monture</td>
+                        </tr>
+                        <tr>
+                            <td>{{ MONTURE.perso_nom }}</td>
+                            <td colspan="2" style="text-align:left" class="soustitre2"> <img height="60px" src="{{ MONTURE_IMG }}" alt="Avatar de {{ MONTURE.perso_nom|raw }}"></td>
+                        </tr>
+                    {% endif %}
                     {% if TITRES|length > 0 %}
 
                                 <tr>
