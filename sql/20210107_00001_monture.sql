@@ -63,3 +63,6 @@ ALTER TABLE monstre_terrain ADD CONSTRAINT tmon_gmon_cod_fk  FOREIGN KEY (tmon_g
 ALTER TABLE monstre_terrain ADD CONSTRAINT tmon_ter_cod_fk  FOREIGN KEY (tmon_ter_cod) REFERENCES terrain(ter_cod) ON DELETE CASCADE;
 
 INSERT INTO public.type_ia( ia_type, ia_nom, ia_fonction) VALUES ( 17, 'Monture', 'ia_monture([perso])');
+
+
+ALTER TABLE positions   ADD COLUMN pos_ter_cod integer DEFAULT NULL;

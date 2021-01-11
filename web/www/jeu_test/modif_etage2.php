@@ -109,8 +109,8 @@ if ($erreur == 0) {
     <hr>
     <?php
     $sel_etage = $perso_pos_etage;
-    if (isset($_POST['pos_etage'])) {
-        $sel_etage = $_POST['pos_etage'];
+    if (isset($_REQUEST['pos_etage'])) {
+        $sel_etage = $_REQUEST['pos_etage'];
     }
     ?>
     Ajouter des murs dans un étage

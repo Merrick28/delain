@@ -155,6 +155,8 @@ switch ($methode) {
             <input type="hidden" name="modifs" value=""/>
             <center><input type="submit" class="test" value="Modifier !"></center>
         </form>
+    <hr>
+    <b><u>IMPORTANT</u></b>: En cas de modification, s'il y a des spécifications liées aux types de terrain, elles doivent-être ré-appliquées manuellement (<a target="_blank" href="/jeu_test/modif_etage7.php?pos_etage=<?php echo $admin_etage; ?>">Type de terrain</a>)!
         <?php break;
 
     case "valide":
