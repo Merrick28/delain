@@ -50,7 +50,7 @@ begin
   if valeur > 0 then
       code_retour := code_retour || ' vous faisant regagner <b>' || trim(to_char(valeur,'99')) || 'PA </b> (plafonné à 12)' ;
   else
-      code_retour := code_retour || ' vous faisant perdre <b>' || trim(to_char(valeur,'99')) || 'PA</b>' ;
+      code_retour := code_retour || ' vous faisant perdre <b>' || trim(to_char(abs(valeur),'99')) || 'PA</b>' ;
   end if;
 
 
