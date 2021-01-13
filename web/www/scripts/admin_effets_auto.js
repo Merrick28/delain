@@ -84,7 +84,7 @@ EffetAuto.Triggers = {
 	"DEP": {description: "lorsqu’il se déplace.",
 		default:'deb_tour_generique',
 		declencheur:'Se déplace',
-		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur (sauf cas d’un saut).",
+		remarque: "<br><strong><u>ATTENTION</u></strong>: Il n’y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur (sauf cas d’un saut ou d'un dépacement de monture).",
 		parametres: [
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 		]

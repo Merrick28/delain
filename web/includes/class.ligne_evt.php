@@ -371,7 +371,7 @@ class ligne_evt
                                            $lien_apres . $strong_apres, $texte);
             unset($perso_attaquant);
             $perso_cible = new perso;
-            $perso_cible->charge($val->levt_attaquant);
+            $perso_cible->charge($val->levt_cible);
             if ($lien)
             {
                 $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' .

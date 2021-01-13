@@ -84,7 +84,6 @@ if ($compte->is_admin())
 }
 $tab_evt = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20, $withvisible);
 
-
 $moins20      = 0;
 if ($pevt_start != 0)
 {

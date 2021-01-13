@@ -87,6 +87,7 @@ declare
 	temp integer;
 	v_anticip integer;
 	pa_deplace integer;			-- Coût du déplacement
+	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
 
 begin
 	force_affichage := 0;
@@ -213,9 +214,20 @@ begin
 		code_retour := code_retour || 'Déplacement effectué !';
 
 ---------------------------
--- les EA liés au déplacment
+-- les EA liés au déplacement du perso
 ---------------------------
     code_retour := code_retour || execute_fonctions(num_perso, null, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+
+---------------------------
+-- les EA liés au déplacement de la monture
+---------------------------
+  select m.perso_cod into v_monture
+      from perso as p
+      join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
+      where p.perso_cod=num_perso and p.perso_type_perso=1 ;
+  if found then
+      code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+	end if;
 
 ---------------------------
 -- on met un évènement
@@ -231,6 +243,12 @@ begin
 	update perso
 	set perso_pa = pa - pa_deplace
 	where perso_cod = num_perso;
+
+---------------------------
+-- si on se déplace avec une monture, traiter le comportement particulier de la monture sur certain terrain
+---------------------------
+  code_retour := code_retour || monture_comportement(num_perso) ;
+
 
 ---------------------------
 -- on enlève les transactions

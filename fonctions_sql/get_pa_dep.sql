@@ -18,6 +18,7 @@ declare
 	v_type_perso integer;
 	v_pos_modif_pa_dep integer;
 	v_monture integer;
+	v_monture_pa integer;
 
 begin
 
@@ -38,6 +39,8 @@ begin
 		from positions,perso_position
 		where ppos_perso_cod = personnage
 		and ppos_pos_cod = pos_cod;
+
+	-- cas de l'étage de l'araigné, un malus de deplacement sur tous l'étage pour les joueurs
 	if v_etage = 16 then
 		select into v_type_perso perso_type_perso
 			from perso
@@ -47,13 +50,31 @@ begin
 		end if;
 	end if;
 	code_retour := code_retour + v_pos_modif_pa_dep;
+
+	-- cas particulier d'un objet qui donne un malus !
 	if exists (select 1 from perso_objets, objets where perobj_obj_cod = obj_cod and perobj_perso_cod = personnage and obj_gobj_cod = 860 and perobj_equipe = 'O') then
 		-- Attelle. Malus de 1 au déplacement
 		code_retour := code_retour + 1;
 	end if;
+
+  -- s'il y a un terrain specifique a cette position, on regarde si c'est une monture avec des caracs speciales sur ce terrain
+  select tmon_terrain_pa into v_monture_pa
+      from perso
+      join perso_position on ppos_perso_cod=perso_cod
+      join positions on pos_cod=ppos_pos_cod
+      join monstre_terrain on tmon_gmon_cod = perso_gmon_cod and tmon_ter_cod=pos_ter_cod
+      where perso_cod=personnage and perso_type_perso=2 limit 1;
+  if found then
+      -- cas d'une monture sur un terrain où la monture a une capacité spéciales (bonus ou malus)!
+      code_retour := code_retour + v_monture_pa ;
+  end if;
+
+  -- seuil minimum de 2 pour les déplacements!
 	if code_retour < 2 then
 		code_retour := 2;
 	end if;
+
+	-- fin de traitement, retourner le nombre de PA
 	return code_retour;
 end;
 	$_$;
