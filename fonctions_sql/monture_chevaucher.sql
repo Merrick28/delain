@@ -9,6 +9,7 @@ AS $_$declare
   v_monture alias for $2;
   code_retour text;
   v_perso_pa integer;
+  v_perso_cod integer;
   v_monture_pos_cod integer;
   v_monture_nom text;
   v_perso_pos_cod integer;
@@ -41,6 +42,10 @@ begin
     return '<p>Erreur ! Votre monture est trop loin !';
   end if;
 
+  select perso_cod into v_perso_cod from perso where perso_monture=v_monture ;
+  if found then
+    return '<p>Erreur ! Cette monture a déjà un cavalier !';
+  end if;
 
   -- Réaliser les actions du chevauchement !!!
   update perso set perso_pa = perso_pa - 4, perso_monture=v_monture where perso_cod=v_perso ;

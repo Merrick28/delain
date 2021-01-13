@@ -126,7 +126,7 @@
                             <td colspan="3" class="titre">Monture</td>
                         </tr>
                         <tr>
-                            <td>{{ MONTURE.perso_nom }}</td>
+                            <td><a href="visu_desc_perso.php?visu={{ MONTURE.perso_cod }}">{{ MONTURE.perso_nom }}</a></td>
                             <td colspan="2" style="text-align:left" class="soustitre2"> <img height="60px" src="{{ MONTURE_IMG }}" alt="Avatar de {{ MONTURE.perso_nom|raw }}"></td>
                         </tr>
                     {% endif %}

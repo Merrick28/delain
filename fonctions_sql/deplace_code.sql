@@ -141,6 +141,12 @@ begin
 		return code_retour;
 	end if;
 
+	if get_pa_dep_terrain(num_perso, v_pos) > 14 then
+		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu''il est préférable de ne pas s''y rendre!!';
+		return code_retour;
+	end if;
+
+
 ---------------------------
 -- on regarde si lock
 ---------------------------
