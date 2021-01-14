@@ -42,8 +42,11 @@ if ($stmt->rowCount())
                 });
 
             }
+            else
+            {
+                voirList(document.forms['destdroite'], document.forms['destdroite'].action.value + '?position=' + pos_cod + '&t_frdr=<?php echo $t_frdr; ?>', document.forms['destdroite'].destcadre.value);
+            }
 
-            voirList(document.forms['destdroite'], document.forms['destdroite'].action.value + '?position=' + pos_cod + '&t_frdr=<?php echo $t_frdr; ?>', document.forms['destdroite'].destcadre.value);
             document.getElementById("cell" + pos_cod).className = 'vu';
             if (document.forms['destdroite'].action.value == 'action.php')
                 clignoter("cell" + pos_cod, 10);	// clic pour déplacement
@@ -55,6 +58,7 @@ if ($stmt->rowCount())
 
     function clignoter(cell, nombre) {
         nombre--;
+        if (!document.getElementById(cell)) return ;
         if (document.getElementById(cell).style.opacity == '0.5') {
             document.getElementById(cell).style.opacity = '1';
             document.getElementById(cell).style.backgroundColor = 'transparent';
