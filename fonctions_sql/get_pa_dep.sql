@@ -69,9 +69,10 @@ begin
       code_retour := code_retour + v_monture_pa ;
   end if;
 
-  -- seuil minimum de 2 pour les déplacements!
-	if code_retour < 2 then
-		code_retour := 2;
+  -- Marlyza le 14/01/2021 : modification du seuil minimal (en accord avec phenix et pnarcade)
+  -- seuil minimum de 1 pour les déplacements!
+	if code_retour < 1 then
+		code_retour := 1;
 	end if;
 
 	-- fin de traitement, retourner le nombre de PA

@@ -88,6 +88,7 @@ declare
 	v_anticip integer;
 	pa_deplace integer;			-- Coût du déplacement
 	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
+	v_pa_terrain integer;			-- si c'est un perso joueur qui chevauche une monture
 
 begin
 	force_affichage := 0;
@@ -142,8 +143,12 @@ begin
 		return code_retour;
 	end if;
 
-	if get_pa_dep_terrain(num_perso, v_pos) > 14 then
-		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu''il est préférable de ne pas s''y rendre!!';
+  v_pa_terrain = get_pa_dep_terrain(num_perso, v_pos) ;
+	if v_pa_terrain > 14 then
+		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu’il est préférable de ne pas s’y rendre!!';
+		return code_retour;
+  elsif v_pa_terrain < 0 then
+		code_retour := code_retour || E'1#Votre monture ne peut aller sur ce terrain là!!';
 		return code_retour;
 	end if;
 

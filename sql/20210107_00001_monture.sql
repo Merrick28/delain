@@ -45,14 +45,18 @@ ALTER TABLE monstre_terrain  OWNER TO delain;
 
 
 INSERT INTO terrain (ter_nom, ter_desc) values
-  ('eau', 'eau'),
+  ('clôture', 'clôture'),
   ('feu', 'feu'),
   ('boue', 'boue'),
-  ('caillou', 'caillou'),
+  ('caillou', 'caillou/montagne'),
   ('vent', 'vent'),
-  ('glace', 'glace'),
-  ('herbe', 'herbe'),
-  ('foret', 'foret');
+  ('glace', 'glace/artique'),
+  ('herbe', 'herbe/plaine'),
+  ('eau', 'eau'),
+  ('foret', 'foret'),
+  ('marais', 'marais'),
+  ('désert', 'désert'),
+  ('obscur ', 'obscur ')  ;
 
 ALTER TABLE monstre_generique   ADD COLUMN gmon_monture character varying(1) NOT NULL DEFAULT 'N';
 

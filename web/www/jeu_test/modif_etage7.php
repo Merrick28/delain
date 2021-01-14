@@ -162,15 +162,18 @@ if ( isset($_REQUEST["pos_etage"]) )
                 $ter_cod = 0 ;
                 $mpa = 0 ;
 
-                $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM public.positions where pos_etage=:etage_numero  and pos_type_aff=:pos_type_aff group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc limit 1";
+                $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM positions where pos_etage=:etage_numero  and pos_type_aff=:pos_type_aff group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute([":etage_numero"=> $pos_etage, ":pos_type_aff" => $type], $stmt);
-                $result = $stmt->fetch() ;
-                if ($result)
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC) ;
+                if (count($result)>0)
                 {
-                    $ter_cod = $result["pos_ter_cod"] ;
-                    $mpa = $result["pos_modif_pa_dep"] ;
+                    if (count($result) == 1)
+                    {
+                        $ter_cod = $result[0]["pos_ter_cod"] ;
+                        $mpa = $result[0]["pos_modif_pa_dep"] ;
 
+                    }
                     $bgcolor = ($ter_cod != 0) ? "style='background-color: gold'" : "";
                     echo "<img height=\"20px;\" src=\"{$chemin}{$fichier}\">&nbsp;-<span {$bgcolor}>&nbsp;#{$type}&nbsp;</span>:&nbsp;";
 
@@ -201,7 +204,7 @@ if ( isset($_REQUEST["pos_etage"]) )
             $ter_cod = 0 ;
             $mpa = 0 ;
 
-            $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM public.positions where pos_etage=:etage_numero and pos_decor=:pos_decor and pos_ter_cod is not null group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc";
+            $req = "SELECT pos_ter_cod, pos_modif_pa_dep, count(*) count FROM positions where pos_etage=:etage_numero and pos_decor=:pos_decor group by pos_ter_cod, pos_modif_pa_dep ORDER BY count desc";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute([":etage_numero"=> $pos_etage, ":pos_decor" => $type], $stmt);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC) ;

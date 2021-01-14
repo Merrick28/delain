@@ -17,7 +17,9 @@ declare
 	personnage alias for $1;
 	v_pos alias for $2; 	-- pos_cod de destination
 	v_ter_cod integer;    -- terrain de la case
+	v_gmon_cod integer;  -- monstre générique de la monture
 	v_monture_pa integer;  -- modificateur de pa de la monture
+	v_accessible character varying (1) ;  -- terrain accessible ?
 
 begin
 
@@ -26,14 +28,21 @@ begin
 
   -- s'il y a un terrain specifique a cette position, on regarde si c'est une monture avec des caracs speciales sur ce terrain
   if v_ter_cod is not null then
-      select tmon_terrain_pa into v_monture_pa
+
+      select m.perso_gmon_cod into v_gmon_cod
           from perso as p
           join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
-          join monstre_terrain on tmon_gmon_cod = m.perso_gmon_cod and tmon_ter_cod=v_ter_cod
           where p.perso_cod=personnage and p.perso_type_perso=1 limit 1;
       if found then
-          -- cas d'un joueur qui se déplace avec une monture sur un terrain où la monture a une capacité spéciales !
-          code_retour := code_retour + v_monture_pa ;
+          -- cas d'un joueur qui se déplace avec une monture sur un terrain avec une monture !
+          select tmon_accessible, tmon_terrain_pa into v_accessible, v_monture_pa from monstre_terrain where tmon_gmon_cod = v_gmon_cod and tmon_ter_cod = v_ter_cod limit 1 ;
+          if found then
+              -- la monture a un comportement spécial sur ce terrain.
+              if v_accessible = 'N' then
+                  return -1;    -- terrain innacessible !
+              end if;
+              code_retour := code_retour + v_monture_pa ;
+          end if;
       end if;
   end if;
 
