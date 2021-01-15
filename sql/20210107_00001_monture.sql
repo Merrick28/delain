@@ -31,7 +31,8 @@ CREATE TABLE monstre_terrain
   tmon_cod integer NOT NULL DEFAULT nextval(('seq_tmon_cod'::text)::regclass),
   tmon_gmon_cod integer, -- mosntre generique
   tmon_ter_cod integer, -- son comportement sur ce terrain
-  tmon_accessible character varying(1) NOT NULL  DEFAULT 'O', -- peux-t-il aller dessus ?
+  tmon_accessible character varying(1) NOT NULL  DEFAULT 'O', -- peux-t-il aller dessus seul?
+  tmon_chevauchable character varying(1) NOT NULL  DEFAULT 'O', -- peux-t-il aller dessus avec son cavalier ?
   tmon_terrain_pa integer, -- bous/malus de PA sur ce terrain
   tmon_event_chance decimal(10,2), -- chance d'évenement sur se terrain
   tmon_event_pa character varying(24) NOT NULL  DEFAULT '0', -- gain/perte de PA (format dé rolliste)
@@ -46,6 +47,7 @@ ALTER TABLE monstre_terrain  OWNER TO delain;
 
 INSERT INTO terrain (ter_nom, ter_desc) values
   ('clôture', 'clôture'),
+  ('barrière', 'barrière'),
   ('feu', 'feu'),
   ('boue', 'boue'),
   ('caillou', 'caillou/montagne'),

@@ -778,6 +778,11 @@ class aquete_action
                           values(18, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $p3->aqelem_misc_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(18, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":levt_perso_cod1" => $p3->aqelem_misc_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $p3->aqelem_misc_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
             }
 
             if ($po>0)
@@ -787,6 +792,11 @@ class aquete_action
                           values(40, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $p3->aqelem_misc_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(40, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":levt_perso_cod1" =>  $p3->aqelem_misc_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $p3->aqelem_misc_cod, ":levt_cible" =>  $aqperso->aqperso_perso_cod ), $stmt);
             }
         }
         else
@@ -1183,6 +1193,16 @@ class aquete_action
                                                     ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
                                                     ":levt_cible" => $pnj->perso_cod ,
                                                     ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+
+                    $texte_evt = '[attaquant] a donné un objet à [cible] <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $pnj->perso_cod ,
+                                                    ":texte_evt"=> $texte_evt,
+                                                    ":levt_attaquant" => $pnj->perso_cod ,
+                                                    ":levt_cible" => $aqperso->aqperso_perso_cod ,
+                                                    ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
                     // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
                     $elem->aqelem_type = 'objet';
                     $elem->aqelem_misc_cod =  $objet->obj_cod ;
@@ -1205,7 +1225,7 @@ class aquete_action
     * @return bool
     */
     function remettre_objet(aquete_perso $aqperso)
-    {
+    {   //echo "<pre>"; print_r($aqperso);echo "<pre>"; die();
         $pdo = new bddpdo;
 
         $element = new aquete_element();
@@ -1300,13 +1320,10 @@ class aquete_action
         if (($nbobj > $nbgenerique) && (count($exemplaires)>0)) return false;        // on a pas un exemplaire de chaque objet!
         if (count($liste_transaction)<$nbobj) return false;                          // tous les objets attendus ne sont pas là!
 
+        // Il faut maintenant prendre les objets
         // Vérification du poids des ojets à transférer: on ne vérifie plus ça peut causer des blocages de QA et maintenant il peut y avaoit plusieurs pnj
         //if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array( $pnj_cod ) );
 
-        // Il faut maintenant prendre les objets
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
-        $param_ordre = 0 ;
         foreach ($liste_transaction as $k => $transac)
         {
             // Gestion de la transaction
@@ -1325,18 +1342,24 @@ class aquete_action
             {
                 return false; // un problème lors du transfert, le perso est peut-$etre trop chargé pour prendre plus d'objet
             }
-
-            // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
-            $elem = $transac["element"];
-            $elem->aqelem_type = 'objet';
-            $elem->aqelem_misc_cod =  $objet->obj_cod ;
-            $elem->aqelem_param_ordre =  $param_ordre ;         // On ordonne correctement !
-            $param_ordre ++ ;
-            $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
-
             // si l'objet ne sert plus on le supprime //$objet->supprime();
         }
 
+        // netoyyer l'étape de cette quete et mettre les objets réel
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array( $pnj_cod ) );
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
+
+        // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
+        $param_ordre = 0 ;
+        foreach ($liste_transaction as $k => $transac)
+        {
+            $elem = $transac["element"];
+            $elem->aqelem_type = 'objet';
+            $elem->aqelem_misc_cod = $objet->obj_cod;
+            $elem->aqelem_param_ordre = $param_ordre;         // On ordonne correctement !
+            $param_ordre++;
+            $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+        }
         return true;
     }
 

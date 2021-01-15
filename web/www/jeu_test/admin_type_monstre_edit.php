@@ -1168,6 +1168,7 @@ if ($erreur == 0)
                     <tr>
                         <th align="left">Terrain</th>
                         <th align="left">Accessible?</th>
+                        <th align="left">Chevauchable?</th>
                         <th align="left">Gain/Perte de PA</th>
                         <th align="left">Proba Evt (%)</th>
                         <th align="left">Evt PA (dé rolliste)</th>
@@ -1175,7 +1176,7 @@ if ($erreur == 0)
                         <th>--</th>
                     </tr>
                     <?php $req_m_terrain =
-                        "select tmon_ter_cod,ter_nom,tmon_gmon_cod,tmon_accessible,tmon_terrain_pa,tmon_event_chance,tmon_event_pa,tmon_message from monstre_terrain,terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod";
+                        "select tmon_ter_cod,ter_nom,tmon_gmon_cod,tmon_accessible,tmon_chevauchable,tmon_terrain_pa,tmon_event_chance,tmon_event_pa,tmon_message from monstre_terrain,terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod";
 
                     $stmt_m_terrain = $pdo->query($req_m_terrain);
                     while ($result_m_terrain = $stmt_m_terrain->fetch())
@@ -1183,6 +1184,7 @@ if ($erreur == 0)
                         $ter_nom           = $result_m_terrain['ter_nom'];
                         $sgmon_chance      = $result_m_terrain['sgmon_chance'];
                         $tmon_accessible   = $result_m_terrain['tmon_accessible'];
+                        $tmon_chevauchable = $result_m_terrain['tmon_chevauchable'];
                         $tmon_terrain_pa   = $result_m_terrain['tmon_terrain_pa'];
                         $tmon_event_chance = $result_m_terrain['tmon_event_chance'];
                         $tmon_event_pa     = $result_m_terrain['tmon_event_pa'];
@@ -1192,6 +1194,7 @@ if ($erreur == 0)
                         <TR>
                             <TD><?php echo $ter_nom ?></TD>
                             <TD><?php echo $tmon_accessible ?></TD>
+                            <TD><?php echo $tmon_chevauchable ?></TD>
                             <TD><?php echo $tmon_terrain_pa ?></TD>
                             <TD><?php echo $tmon_event_chance ?></TD>
                             <TD><?php echo $tmon_event_pa ?></TD>
@@ -1235,6 +1238,7 @@ if ($erreur == 0)
                                 </select>
                             </TD>
                             <TD><input type="checkbox" checked name="tmon_accessible" value="O"/></TD>
+                            <TD><input type="checkbox" checked name="tmon_chevauchable" value="O"/></TD>
                             <TD><input type="text" size=6 name="tmon_terrain_pa" value="0"></TD>
                             <TD><input type="text" size=4 name="tmon_event_chance" value="0"></TD>
                             <TD><input type="text" size=6 name="tmon_event_pa" value="0"></TD>

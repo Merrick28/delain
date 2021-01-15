@@ -209,13 +209,14 @@ switch ($methode)
         writelog($log . "Ajout d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
 
         $tmon_accessible = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
+        $tmon_chevauchable = (isset($_POST['tmon_chevauchable'])) ? 'O' : 'N';
         $tmon_terrain_pa = $_POST['tmon_terrain_pa'] ;
         $tmon_event_chance = $_POST['tmon_event_chance'] ;
         $tmon_event_pa = $_POST['tmon_event_pa'] ;
         $tmon_message = str_replace("'", "''", $_POST['tmon_message'] );
 
         $req_upd_mon =
-            "insert into monstre_terrain (tmon_gmon_cod,tmon_ter_cod, tmon_accessible, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message) values ($gmon_cod,$ter_cod, '$tmon_accessible', '$tmon_terrain_pa', '$tmon_event_chance', '$tmon_event_pa', '$tmon_message')";
+            "insert into monstre_terrain (tmon_gmon_cod,tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message) values ($gmon_cod,$ter_cod, '$tmon_accessible', '$tmon_chevauchable', '$tmon_terrain_pa', '$tmon_event_chance', '$tmon_event_pa', '$tmon_message')";
         $stmt        = $pdo->query($req_upd_mon);
         echo "Ajout d'un sort";
         break;
