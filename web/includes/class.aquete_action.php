@@ -1323,7 +1323,7 @@ class aquete_action
         // Il faut maintenant prendre les objets
         // Vérification du poids des ojets à transférer: on ne vérifie plus ça peut causer des blocages de QA et maintenant il peut y avaoit plusieurs pnj
         //if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
-
+        $obj_cod_liste = array();
         foreach ($liste_transaction as $k => $transac)
         {
             // Gestion de la transaction
@@ -1342,6 +1342,7 @@ class aquete_action
             {
                 return false; // un problème lors du transfert, le perso est peut-$etre trop chargé pour prendre plus d'objet
             }
+            $obj_cod_liste[$k] = $objet->obj_cod;
             // si l'objet ne sert plus on le supprime //$objet->supprime();
         }
 
@@ -1355,7 +1356,7 @@ class aquete_action
         {
             $elem = $transac["element"];
             $elem->aqelem_type = 'objet';
-            $elem->aqelem_misc_cod = $objet->obj_cod;
+            $elem->aqelem_misc_cod = $obj_cod_liste[$k] ;
             $elem->aqelem_param_ordre = $param_ordre;         // On ordonne correctement !
             $param_ordre++;
             $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
