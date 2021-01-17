@@ -88,6 +88,7 @@ declare
 	v_anticip integer;
 	pa_deplace integer;			-- Coût du déplacement
 	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
+	v_cavalier integer;			-- si c'est une monture qui emène un joueur
 	v_pa_terrain integer;			-- si c'est un perso joueur qui chevauche une monture
 
 begin
@@ -237,10 +238,25 @@ begin
 ---------------------------
 -- on met un évènement
 ---------------------------
-		texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
-		insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
-		values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
+    -- cas normal montre seul ou joueur avec ou sans monture
+    texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+    insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
+    values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
+
+    select p.perso_cod into v_cavalier
+          from perso as m
+          join monstre_generique on gmon_cod=m.perso_gmon_cod and gmon_monture='O'
+          join perso as p on p.perso_monture=m.perso_cod and p.perso_actif = 'O' and p.perso_type_perso=1
+          where m.perso_cod=num_perso and m.perso_type_perso=2 limit 1;
+      if found then
+
+          -- cas particulier d'un monstre qui se déplace avec un joueur sur le dos. (event=54 effet auto)
+          texte := '[attaquant] c’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+          perform insere_evenement(num_perso, v_cavalier, 54, texte, 'O', 'N', null);
+
+      end if;
 	end if;
+
 
 ---------------------------
 -- on enlève les PA
