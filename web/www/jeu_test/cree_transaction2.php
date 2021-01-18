@@ -57,6 +57,7 @@ $identifie['N'] = "(non identifié)";
 // 12 = féves (osselets merveilleux)
 // 42 = Grisbi
 $types_ventes_gros = "(5, 11, 12, 17, 18, 19, 21, 22, 28, 30, 34, 42)";
+$texte_ea = "" ;
 
 /************************/
 /* recherche des objets */
