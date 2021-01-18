@@ -1009,6 +1009,15 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         /* Fin modif pour la quête de Balgur */
 
+
+        case 'chevaucher':
+            $contenu_page .= $perso->monture_chevaucher($_REQUEST['monture']);
+            break;
+
+        case 'dechevaucher':
+            $contenu_page .= $perso->monture_dechevaucher();
+            break;
+
         default :
             /* si aucune methode n'est passée..... */
             $contenu_page .= '<p>Erreur : action non définie !';

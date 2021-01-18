@@ -89,6 +89,15 @@ $titres      = $perso_titre->getByPerso($visu_perso->perso_cod);
 $perso_louche = new perso_louche();
 $plouche      = $perso_louche->getByPerso($visu_perso->perso_cod);
 
+$visu_monture = new perso();
+$monture_avatar = "" ;
+if ($visu_perso->perso_monture > 0)
+{
+    $visu_monture->charge($visu_perso->perso_monture);
+    $monture_avatar = $chemin . $visu_monture->perso_avatar ;
+}
+
+
 
 $template     = $twig->load('_perso2_description.twig');
 $options_twig = array(
@@ -107,7 +116,9 @@ $options_twig = array(
     'DIEU_NIVEAU'   => $dieu_niveau,
     'TITRES'        => $titres,
     'PLOUCHE'       => $plouche,
-    'ISGUILDE'      => $isguilde
+    'ISGUILDE'      => $isguilde,
+    'MONTURE'       => $visu_monture,
+    'MONTURE_IMG'   => $monture_avatar
 
 
 );

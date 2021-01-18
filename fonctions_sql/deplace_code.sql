@@ -87,6 +87,9 @@ declare
 	temp integer;
 	v_anticip integer;
 	pa_deplace integer;			-- Coût du déplacement
+	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
+	v_cavalier integer;			-- si c'est une monture qui emène un joueur
+	v_pa_terrain integer;			-- si c'est un perso joueur qui chevauche une monture
 
 begin
 	force_affichage := 0;
@@ -140,6 +143,16 @@ begin
 		code_retour := code_retour || E'1#Erreur : distance trop importante entre la position de départ et d’arrivée.';
 		return code_retour;
 	end if;
+
+  v_pa_terrain = get_pa_dep_terrain(num_perso, v_pos) ;
+	if v_pa_terrain > 14 then
+		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu’il est préférable de ne pas s’y rendre!!';
+		return code_retour;
+  elsif v_pa_terrain < 0 then
+		code_retour := code_retour || E'1#Votre monture ne peut aller sur ce terrain là!!';
+		return code_retour;
+	end if;
+
 
 ---------------------------
 -- on regarde si lock
@@ -207,17 +220,43 @@ begin
 		code_retour := code_retour || 'Déplacement effectué !';
 
 ---------------------------
--- les EA liés au déplacment
+-- les EA liés au déplacement du perso
 ---------------------------
     code_retour := code_retour || execute_fonctions(num_perso, null, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
 
 ---------------------------
+-- les EA liés au déplacement de la monture
+---------------------------
+  select m.perso_cod into v_monture
+      from perso as p
+      join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
+      where p.perso_cod=num_perso and p.perso_type_perso=1 ;
+  if found then
+      code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+	end if;
+
+---------------------------
 -- on met un évènement
 ---------------------------
-		texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
-		insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
-		values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
+    -- cas normal montre seul ou joueur avec ou sans monture
+    texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+    insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
+    values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
+
+    select p.perso_cod into v_cavalier
+          from perso as m
+          join monstre_generique on gmon_cod=m.perso_gmon_cod and gmon_monture='O'
+          join perso as p on p.perso_monture=m.perso_cod and p.perso_actif = 'O' and p.perso_type_perso=1
+          where m.perso_cod=num_perso and m.perso_type_perso=2 limit 1;
+      if found then
+
+          -- cas particulier d'un monstre qui se déplace avec un joueur sur le dos. (event=54 effet auto)
+          texte := '[attaquant] c’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+          perform insere_evenement(num_perso, v_cavalier, 54, texte, 'O', 'N', null);
+
+      end if;
 	end if;
+
 
 ---------------------------
 -- on enlève les PA
@@ -225,6 +264,12 @@ begin
 	update perso
 	set perso_pa = pa - pa_deplace
 	where perso_cod = num_perso;
+
+---------------------------
+-- si on se déplace avec une monture, traiter le comportement particulier de la monture sur certain terrain
+---------------------------
+  code_retour := code_retour || monture_comportement(num_perso) ;
+
 
 ---------------------------
 -- on enlève les transactions
