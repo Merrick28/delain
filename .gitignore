@@ -4,3 +4,4 @@ doc
 /.phpunit.result.cache
 .c9
 .codetasty
+.diff_to_apply

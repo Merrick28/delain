@@ -10,6 +10,8 @@ export shellroot=/home/delain/delain/shell
 export livroot=/home/delain/delain/sql
 # Racine des fonctions sql
 export livfunc=/home/delain/delain/fonctions_sql
+# racine du projet
+export root_project=/home/delain/delain
 # serveur BDD
 
 export PGHOST=`grep SERVER_HOST /home/delain/delain/web/www/includes/conf.php |awk -F"'" '{print $4}'`
