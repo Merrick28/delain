@@ -52,7 +52,7 @@ $contenu_page .= '
 		<td colspan="' . $nb . '" class="reste_onglet"><center>';
 $auth_mes     = 0;
 $message      = new messages();
-$mid          = $_REQUEST['mid'];
+$mid          = isset($_REQUEST['mid']) ? $_REQUEST['mid'] : 0 ;
 $message->charge($mid);
 if ($message->is_auth_msg($perso_cod))
 {

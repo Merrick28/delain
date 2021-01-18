@@ -280,7 +280,7 @@ class aquete_action
         $retour->etape = 0 ;
 
         // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
-        if ($_REQUEST["dialogue"] == "")
+        if (!isset($_REQUEST["dialogue"]) || $_REQUEST["dialogue"] == "")
         {
             return $retour;     // on ne compte pas ça comme une tentative!
         }
@@ -390,7 +390,7 @@ class aquete_action
         $retour->etape = 0 ;
 
         // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
-        if ($_REQUEST["dialogue"] == "")
+        if (!isset($_REQUEST["dialogue"]) || $_REQUEST["dialogue"] == "")
         {
             return $retour;     // on ne compte pas ça comme une tentative!
         }
