@@ -300,7 +300,7 @@ if ($erreur == 0)
                 "</TD><TD>", $result['gmon_dex'],
                 "</TD><TD>", $result['gmon_int'],
                 "</TD><TD>", $result['gmon_con'],
-                "</TD><TD>", $result['gmon_nb_des_degats'], "D", $result['gmon_val_des_degats'], "(+", $result²['gmon_amelioration_degats'], ")",
+                "</TD><TD>", $result['gmon_nb_des_degats'], "D", $result['gmon_val_des_degats'], "(+", $result['gmon_amelioration_degats'], ")",
                 "</TD><TD>", $result['gmon_des_regen'], "D", $result['gmon_valeur_regen'], "(+", $result['gmon_amelioration_regen'], ")",
                 "</TD><TD>", $result['gmon_vue'],
                 "</TD><TD>", $result['gmon_temps_tour'],
