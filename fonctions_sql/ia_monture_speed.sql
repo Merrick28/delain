@@ -132,7 +132,7 @@ begin
   if v_pa = 0 then
     code_retour := code_retour||'Perso non joué (pa de PA).';
     return code_retour;
-  end if;	
+  end if;
 
 	i_temps_tour := trim(to_char(v_temps_tour,'999999999'))||' minutes';
 	if v_dlt + i_temps_tour - '10 minutes'::interval >= now() then
