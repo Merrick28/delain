@@ -114,6 +114,7 @@ class perso
     public $perso_mortel               = null;
     public $alterego                   = 0;
     public $perso_monture ;
+    public $perso_misc_param ;
     //
     public $position;
     public $guilde;
@@ -251,7 +252,8 @@ class perso
             perso_monstre_attaque_monstre,
             perso_mortel,
             alterego,
-            perso_monture                        )
+            perso_monture,
+            perso_misc_param                        )
                     values
                     (
                         nextval('seq_perso'),
@@ -357,7 +359,8 @@ class perso
                         :perso_monstre_attaque_monstre,
                         :perso_mortel,
                         :alterego,
-                        :perso_monture                        )
+                        :perso_monture ,
+                        :perso_misc_param                        )
     returning perso_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -464,6 +467,7 @@ class perso
                                       ":perso_mortel"                  => $this->perso_mortel,
                                       ":alterego"                      => $this->alterego,
                                       ":perso_monture"                 => $this->perso_monture,
+                                      ":perso_misc_param"              => $this->perso_misc_param,
                                   ), $stmt);
 
 
@@ -576,7 +580,8 @@ class perso
             perso_monstre_attaque_monstre = :perso_monstre_attaque_monstre,
             perso_mortel = :perso_mortel,
             alterego = :alterego,
-            perso_monture = :perso_monture                        where perso_cod = :perso_cod ";
+            perso_monture = :perso_monture  ,
+            perso_misc_param = :perso_misc_param                        where perso_cod = :perso_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                                       ":perso_cod"                     => $this->perso_cod,
@@ -683,6 +688,7 @@ class perso
                                       ":perso_mortel"                  => $this->perso_mortel,
                                       ":alterego"                      => $this->alterego,
                                       ":perso_monture"                 => $this->perso_monture,
+                                      ":perso_misc_param"              => $this->perso_misc_param,
                                   ), $stmt);
         }
     }
@@ -807,6 +813,7 @@ class perso
         $this->perso_mortel                  = $result['perso_mortel'];
         $this->alterego                      = $result['alterego'];
         $this->perso_monture                 = $result['perso_monture'];
+        $this->perso_misc_param              = $result['perso_misc_param'];
         return true;
     }
 

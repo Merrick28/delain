@@ -63,7 +63,7 @@ if ($autorise == 1)
         $enchantable = $result['obj_enchantable'];
         $niveau_min  = $result['obj_niveau_min'];
         $Recup_image = $result['gobj_image'];
-        $image       = 'http://www.jdr-delain.net/images/' . $Recup_image;
+        $image       = G_IMAGES . $Recup_image;
         $t_etat      = 0;
         $comp        = $result['gobj_comp_cod'];
         $desc        = $result['obj_description'];

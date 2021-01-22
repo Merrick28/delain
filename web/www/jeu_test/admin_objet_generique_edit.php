@@ -4,6 +4,39 @@ ob_start();
 
 ?>
 
+  <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
+
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+                $("#type-img-objet").val("upload");
+                $("#id-gobj_image").val("defaut.png");     // en cas de mauvais upload de l'image
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function open_imglist() {
+            if ($("#images-container").css("display") == "none") {
+                $("#images-container").css("width", $("#images-container").parent().width());
+                $("#images-container").css("white-space", "nowrap");
+                $("#images-container").css("display", "");
+            } else {
+                $("#images-container").css("display", "none");
+            }
+        }
+
+        function select_imglist(img) {
+            $("#output_image")[0].src = $("#img-serveur-" + img)[0].src;
+            $("#images-container").css("display", "none");
+            $("#type-img-objet").val("server");
+            var path_image = $("#img-serveur-" + img)[0].src.split("/");
+            var file_image = path_image[path_image.length - 1];
+            $("#id-gobj_image").val('objets/'+file_image);
+        }
+    </script>
+
     <p class="titre">Édition d’un objet générique</p>
 <?php
 $erreur          = 0;
@@ -13,6 +46,47 @@ include "blocks/_test_droit_modif_generique.php";
 $methode = $_REQUEST['methode'];
 if ($erreur == 0)
 {
+    //	Préparer la liste des images d'avatar déjà présete sur le serveur.
+    $baseimage   = "../images/objets";
+    $rep         = opendir($baseimage);
+    $images_list = "";
+    $img         = 0;
+    while (false !== ($filename = readdir($rep)))
+    {
+        $imagesize = @getimagesize($baseimage . '/' . $filename);
+        if (($imagesize[0] > 28) && ($imagesize[1] > 28))
+        {     // on ne prend que des images de taille raisonnable
+            $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
+            $img++;
+        }
+    }
+
+    // On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
+    if (($_POST["type-img-objet"] == "upload") && ($_FILES["image_file"]["tmp_name"] != ""))
+    {
+        $filename  = $_FILES["image_file"]["name"];
+        $imagesize = @getimagesize($_FILES["image_file"]["tmp_name"]);
+        if (($imagesize[0] <= 28) || ($imagesize[1] <= 28))
+        {
+            echo "<strong>Impossible d'ajouter l'image de l'objet, elle est trop petite.</strong><br>";
+            $_POST["gobj_image"] = "defaut.png";
+            $gobj_image          = "defaut.png";
+        } else if (file_exists($baseimage . '/' . $filename))
+        {
+            echo "<strong>Impossible d'ajouter de l'objet, le nom existe déjà sur le serveur.</strong><br>";
+            $_POST["gobj_image"] = "defaut.png";
+            $gobj_image          = "defaut.png";
+        } else
+        {
+            $baseimage = "../images/objets";
+            move_uploaded_file($_FILES["image_file"]["tmp_name"], $baseimage . '/' . $filename);
+            $log                  =
+                $log . "Ajout/Modification de l'image sur le serveur : /images/objets/" . $filename . "\n";
+            $_POST["gobj_image"] = "objets/".$filename;
+            $gobj_image          = "objets/".$filename;
+        }
+    }
+
     if (($methode == "mod3" && ISSET($_POST["cancel"])) || ($methode == "cre2" && ISSET($_POST["cancel"])))
     {
         $methode = "mod";
@@ -312,7 +386,7 @@ if ($erreur == 0)
                 $obcar_cod = 0;
             }
             ?>
-            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <form name="cre" method="post" enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="mod3">
                 <input type="hidden" name="objet" value="<?php echo $gobj_cod; ?>">
                 <input type="hidden" name="objet_car" value="<?php echo $obcar_cod; ?>">
@@ -440,6 +514,25 @@ if ($erreur == 0)
                         <tr>
                             <td class="soustitre2">Description</td>
                             <td><textarea name="gobj_description"><?php echo $result['gobj_description']; ?></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Image</td>
+                            <td>
+                            <img alt="pas d'image" onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px"  src="/images/<?php echo $result['gobj_image'] ?>">
+
+                                <div style="display:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="file" name="image_file" accept="image/*" onchange="preview_image(event);"><br>
+                                    <strong>ou</strong><br>
+                                    <input type="button" style="margin-top: 5px;" class="test"  name="nouvel_image"  value="Sélectionner une image existante sur le serveur"  onclick="open_imglist();">                                    
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input id="id-gobj_image" type="hidden" name="gobj_image" value="<?php echo $result['gobj_image'] ?>">
+                                <input id="type-img-objet" type="hidden" name="type-img-objet" value="">
+                                <div id="images-container"  style="display:none; height:80px; width: 100%; overflow-x:scroll;"><?php echo $images_list; ?></div>
                             </td>
                         </tr>
                         <tr>
@@ -803,7 +896,8 @@ if ($erreur == 0)
                 'gobj_chance_enchant',
                 'gobj_desequipable',
                 'gobj_stabilite',
-                'gobj_niveau_min'
+                'gobj_niveau_min',
+                'gobj_image'
             );
             foreach ($fields as $i => $value)
             {
@@ -824,7 +918,7 @@ if ($erreur == 0)
 				gobj_nb_mains = " . $_POST['gobj_nb_mains'] . ",gobj_regen = " . $_POST['gobj_regen'] . ",gobj_aura_feu = " . $_POST['gobj_aura_feu'] . ",
 				gobj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",gobj_critique = " . $_POST['gobj_critique'] . ",gobj_bonus_armure = " . $_POST['gobj_bonus_armure'] . ",
 				gobj_chance_drop = " . $_POST['gobj_chance_drop'] . ", gobj_chance_drop_monstre = " . $_POST['gobj_chance_drop_monstre'] . ", gobj_chance_enchant = " . $_POST['gobj_chance_enchant'] . ", gobj_desequipable = '$gobj_desequipable', gobj_stabilite = " . $_POST['gobj_stabilite'] . ", 
-				gobj_niveau_min = " . $_POST['gobj_niveau_min'] . " where gobj_cod = " . $_REQUEST['objet'];
+				gobj_niveau_min = " . $_POST['gobj_niveau_min'] . ", gobj_image = '" . $_POST['gobj_image'] . "' where gobj_cod = " . $_REQUEST['objet'];
             $stmt = $pdo->query($req);
             echo "<p>L’insertion s’est bien déroulée.";
             //MAJ des objets individuels déjà existants. ATTENTION, certains champs ne sont bizarrement pas présents !
