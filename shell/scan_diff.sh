@@ -1,4 +1,5 @@
 #!/bin/bash
+# test diff
 source $(dirname $0)/env
 CURRENT_SCRIPT=$(readlink -f "$0")
 export SCRIPTPATH=$(dirname "$CURRENT_SCRIPT")
