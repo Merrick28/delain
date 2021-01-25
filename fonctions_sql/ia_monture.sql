@@ -9,10 +9,11 @@ CREATE or REPLACE FUNCTION ia_monture(integer, integer) RETURNS text
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
 /* $2 = type d'IA                                    */
-/*    => 0 : docile n'utilise pas les PA             */
-/*    =>  1 : course avance dans le sens du cavalier */
-/*    => -1 : indompté déplacement aléatoire         */
-/*    => -2 : bourrique avance en sens inverse       */
+/*    =>  2 : course avance dans le sens du cavalier */
+/*    =>  1 : docile n'utilise pas les PA            */
+/*    =>  0 : indompté déplacement aléatoire         */
+/*    => -1 : bourrique avance 6PA en sens inverse   */
+/*    => -2 : bornée avance 12PA en sens inverse     */
 /*    retourne en sortie en entier non lu            */
 /*    les évènements importants seront mis dans la   */
 /*    table des evenemts admins                      */
@@ -80,6 +81,7 @@ declare
 	v_posm integer;				-- derniere position de la monture
 	v_posp integer;				-- derniere position ciblé par le perso
 	v_posc integer;				-- derniere position ou c'est déplacé la monture
+	v_dist integer;				-- calcul de distance
   v_param json;   -- parametre divers du perso (permet de sauvegarder des données pour l'IA)
 
 begin
@@ -140,7 +142,7 @@ begin
     return code_retour;
   end if;
 
-  if v_pa = 12 and v_type_ia = -2 then
+  if v_pa = 12 and v_type_ia = -1 then
       -- on utilise seulement la moitié des PA pour les bourriques
       update perso set perso_pa=6 where perso_cod = v_monstre ;
   end if;
@@ -194,14 +196,14 @@ begin
 
 /***********************************/
 /* Etape 4 : on regarde si monture */
-/*  est chevauché et dompté        */
+/*  est chevauché sauf indompté    */
 /***********************************/
-  if v_type_ia != -1 then
+  if v_type_ia != 0 then
 
       select perso_cod into temp from perso where perso_monture = v_monstre ;
       if found  then
 
-          if v_type_ia = 0 then
+          if v_type_ia = 1 then
               code_retour := code_retour||'Pas, d''action, le monstre (docile) est chevauché par perso #' ||trim(to_char(temp,'999999999999'))|| '.<br>';
               return code_retour;
           end if;
@@ -218,13 +220,15 @@ begin
           end if;
 
           if v_posm != v_posp then
+              --v_dist :=  distance(v_posp, pos_actuelle)+1 ;
+
               -- bouger suivant le dernier axe de déplacement connu!
-              if v_type_ia < -1 then
-                  v_posc := trajectoire_projection(pos_actuelle, v_posp, v_posm, 1) ;   -- monture bourique, bouge dans l'autre sens
-                  -- v_posc := trajectoire_projection(v_posm, v_posp, v_posm, distance(v_posp, v_posm)+1 ) ;   -- monture bourique, bouge dans l'autre sens
+              if v_type_ia < 0 then
+                  --v_posc := trajectoire_projection(v_posp, v_posp, v_posm, v_dist ) ;   -- monture bourique, bouge dans l'autre sens
+                  v_posc := trajectoire_projection(pos_actuelle, v_posp, v_posm, 1) ;   -- monture bourique ou bornée, bouge dans l'autre sens
               else
+                 --v_posc := trajectoire_projection(v_posp, v_posm, v_posp, v_dist ) ;  -- monture course, bouge dans le même sen sque le cavalier
                  v_posc := trajectoire_projection(pos_actuelle, v_posm, v_posp, 1) ;  -- monture course, bouge dans le même sen sque le cavalier
-                 -- v_posc := trajectoire_projection(v_posm, v_posm, v_posp, distance(v_posp, v_posm)+1 ) ;  -- monture course, bouge dans le même sen sque le cavalier
               end if;
 
               if v_posc < 0 then
