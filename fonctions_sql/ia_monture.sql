@@ -220,15 +220,15 @@ begin
           end if;
 
           if v_posm != v_posp then
-              --v_dist :=  distance(v_posp, pos_actuelle)+1 ;
+              v_dist :=  distance(v_posp, pos_actuelle)+1 ;
 
               -- bouger suivant le dernier axe de déplacement connu!
               if v_type_ia < 0 then
-                  --v_posc := trajectoire_projection(v_posp, v_posp, v_posm, v_dist ) ;   -- monture bourique, bouge dans l'autre sens
-                  v_posc := trajectoire_projection(pos_actuelle, v_posp, v_posm, 1) ;   -- monture bourique ou bornée, bouge dans l'autre sens
+                  -- v_posc := trajectoire_projection(pos_actuelle, v_posp, v_posm, 1) ;   -- monture bourique ou bornée, bouge dans l'autre sens
+                  v_posc := trajectoire_projection(v_posp, v_posp, v_posm, v_dist ) ;   -- monture bourique ou bornée, bouge dans l'autre sens
               else
-                 --v_posc := trajectoire_projection(v_posp, v_posm, v_posp, v_dist ) ;  -- monture course, bouge dans le même sen sque le cavalier
-                 v_posc := trajectoire_projection(pos_actuelle, v_posm, v_posp, 1) ;  -- monture course, bouge dans le même sen sque le cavalier
+                 -- v_posc := trajectoire_projection(pos_actuelle, v_posm, v_posp, 1) ;  -- monture course, bouge dans le même sens que le cavalier
+                 v_posc := trajectoire_projection(v_posp, v_posm, v_posp, v_dist ) ;  -- monture course, bouge dans le même sens que le cavalier
               end if;
 
               if v_posc < 0 then
