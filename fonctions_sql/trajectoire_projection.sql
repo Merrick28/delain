@@ -52,6 +52,7 @@ proc_pos integer;
 	x_calcul integer;
 	y_calcul integer;
 	compteur integer;
+	v_dist integer;   -- calcul de la distance entre 2 points
 
 begin
 	compteur := 0;
@@ -118,6 +119,9 @@ loop
 	x_calcul := x0+(xx*signe_x);
 	y_calcul := y0+(yy*signe_y);
 
+  /* calcul de la distance entre la case départ et la case calculée */
+  v_dist :=  greatest( xx, yy ) ;
+
 	select into proc_pos
 	      mur_pos_cod
 	      from positions,murs
@@ -126,13 +130,11 @@ loop
 	      and pos_etage = etage1
 	      and mur_pos_cod = pos_cod;
 	  /* Si on tombe sur un mur, on renvoie la dernière position trouvée, sinon on continue */
-   	if found or compteur=distance then
+   	if found then
         if compteur = 0 then
             return -pos0;
-        elseif compteur = distance then
-            return v_pos;
         else
-            return -v_pos;
+            return -v_pos;    -- derniere position trouvée avant le mur !
         end if;
    	else
    		select into v_pos
@@ -146,9 +148,15 @@ loop
           if compteur = 0 then
               return -pos0;
           else
-              return -v_pos;
+              return -v_pos;   -- derniere position trouvée avant la sortie de map !
           end if;
       end if;
+
+      -- on a trouvé la case à la distance demandée !
+      if v_dist=distance then
+          return v_pos ;
+      end if;
+
       compteur := compteur + 1 ;
 
 		end if;
