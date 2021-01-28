@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION public.mission_renoncer(integer, integer) RETURNS tex
 /*************************************************************/
 declare
 	personnage alias for $1; -- Le personnage pour lequel on renonce a la missions en cours
-  fac_cod alias for $2;    -- faction de la mission
+  v_fac_cod alias for $2;    -- faction de la mission
 
 	v_mission record;             -- Les infos de la mission
 	v_avancement integer;         -- Le %age de réussite de la mission.
@@ -26,7 +26,7 @@ declare
 begin
 	resultat := '';
 	-- On récupère les informations de la mission
-	select into v_mission * from mission_perso_faction_lieu	where mpf_perso_cod = 7 and mpf_fac_cod=3 and mpf_statut <20 limit 1;
+	select into v_mission * from mission_perso_faction_lieu	where mpf_perso_cod = personnage and mpf_fac_cod=v_fac_cod and mpf_statut <20 limit 1;
 
   if not found then
     return resultat || 'Erreur ! Cette mission, acune mission a renoncer pour cette faction !';
