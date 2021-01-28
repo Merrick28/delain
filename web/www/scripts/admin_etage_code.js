@@ -312,6 +312,8 @@ Etage.changeCase = function (objet, idx, nvlleValeur) {
 	if (divCourante && (nvlleValeur != 0 || !objet.enlevable)) {
 		var styleDecorCourant = objet.getClass(valeurCourante);
 		var styleNouveauDecor = objet.getClass(nvlleValeur);
+		//Patch marlyza: switch on/off sur les type spéciaux
+		if (objet.type=="Speciaux" && styleNouveauDecor==styleDecorCourant) styleDecorCourant = styleNouveauDecor=="pinceauOn"  ? "pinceauOff" : "pinceauOn";
 		ManipCss.remplaceClasse(divCourante, styleDecorCourant, styleNouveauDecor);
 	}
 
