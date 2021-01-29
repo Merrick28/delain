@@ -29,7 +29,7 @@ begin
 	select into v_mission * from mission_perso_faction_lieu	where mpf_perso_cod = personnage and mpf_fac_cod=v_fac_cod and mpf_statut <20 limit 1;
 
   if not found then
-    return resultat || 'Erreur ! Cette mission, acune mission a renoncer pour cette faction !';
+    return resultat || 'Erreur ! Aucune mission à renoncer pour cette faction !';
   end if;
 
 	v_gain_points := 2 * max(1, v_mission.mpf_recompense / 500);

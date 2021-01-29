@@ -80,28 +80,41 @@ switch ($methode) {
                                       onclick="Etage.ModeVisu.Change (Etage.ModeVisu.Murs);" type="radio"/>ou murs
                             seuls.</label>
                         <hr/>
-                        Passages <label><input name="special" value="passageOK"
+                        Passages:
+                        <label><input name="special" value="passageTOGGLE"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)"
+                                      type="radio"/>bascule</label>
+                        <label><input name="special" value="passageOK"
                                                onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>autorisés</label>
                         <label><input name="special" value="passageNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>interdits.</label><br/>
-                        PVP <label><input name="special" value="pvpOK"
+                        PVP: <label><input name="special" value="pvpTOGGLE"
+                                          onclick="Pinceau.miseAJour ('Speciaux', this.value)"
+                                          type="radio"/>bascule</label>
+                        <label><input name="special" value="pvpOK"
                                           onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                           type="radio"/>autorisé</label>
                         <label><input name="special" value="pvpNOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>interdit.</label><br/>
-                        Mur creusable <label><input name="special" value="creusableOK"
+                        Mur creusable: <label><input name="special" value="creusableTOGGLE"
+                                                    onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>bascule</label>
+                        <label><input name="special" value="creusableOK"
                                                     onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>oui</label>
                         <label><input name="special" value="creusableNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>non.</label><br/>
                         <span title="Un mur non tangible permet de voir / tirer au travers, mais empêche de passer">Mur tangible (*)</span>
+                        <label><input name="special" value="tangibleTOGGLE"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>bascule</label>
                         <label><input name="special" value="tangibleOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>oui</label>
                         <label><input name="special" value="tangibleNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>non.</label><br/>
                         <span title="Position d'entrée pour les etage du type arène.">Entrée d'arène</span>
+                        <label><input name="special" value="areneTOGGLE"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>bascule</label>
                         <label><input name="special" value="areneOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>oui</label>
                         <label><input name="special" value="areneNOK"
@@ -187,7 +200,6 @@ switch ($methode) {
             }
         }
 
-
         // validation des modifs, de la forme 1234|d=1,f=2,m=0;1235|d=0,m=999;
         //$schema = "/(\d+\|([dmsfpvct]=\d+,)+;)*/i";
         //if (!preg_match($schema, $modifs)) {
@@ -217,6 +229,7 @@ switch ($methode) {
                 $stmt = $pdo->prepare($req_case);
                 $stmt = $pdo->execute(array(":case" => $case,
                     ":admin_etage" => $admin_etage), $stmt);
+
                 if ($result = $stmt->fetch()) {
                     $mur_ancien = $result['mur_type'];
                     $modifs_case = explode(',', $tab_infos_case[1]);
