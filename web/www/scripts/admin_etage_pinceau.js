@@ -52,21 +52,21 @@ DecorsDessus.getSousType = function (id) { return true; }
 
 var Speciaux = {};
 Speciaux.donnees = [
-	{id: 'passageTOGGLE', valeur: true, nom: 'Change Passage', type: 'passage', url: '', css: 'pinceauOn'},
-	{id: 'passageOK', valeur: true, nom: 'Passage autorisé', type: 'passage', url: '', css: 'pinceauOn'},
-	{id: 'passageNOK', valeur: false, nom: 'Passage interdit', type: 'passage', url: '', css: 'pinceauOff'},
-	{id: 'pvpTOGGLE', valeur: true, nom: 'Change PVP', type: 'pvp', url: '', css: 'pinceauOn'},
-	{id: 'pvpOK', valeur: true, nom: 'PVP autorisé', type: 'pvp', url: '', css: 'pinceauOn'},
-	{id: 'pvpNOK', valeur: false, nom: 'PVP interdit', type: 'pvp', url: '', css: 'pinceauOff'},
-	{id: 'creusableTOGGLE', valeur: true, nom: 'Change mur creusabilité', type: 'creusable', url: '', css: 'pinceauOn'},
-	{id: 'creusableOK', valeur: true, nom: 'Mur creusable', type: 'creusable', url: '', css: 'pinceauOn'},
-	{id: 'creusableNOK', valeur: false, nom: 'Mur non creusable', type: 'creusable', url: '', css: 'pinceauOff'},
-	{id: 'tangibleTOGGLE', valeur: true, nom: 'Change mur tangibilité', type: 'tangible', url: '', css: 'pinceauOn'},
-	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: '', css: 'pinceauOn'},
-	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: '', css: 'pinceauOff'},
-	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOn'},
-	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOn'},
-	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOff'},
+	{id: 'passageTOGGLE', valeur: true, nom: 'Change Passage', type: 'passage', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'passageOK', valeur: true, nom: 'Passage autorisé', type: 'passage', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'passageNOK', valeur: false, nom: 'Passage interdit', type: 'passage', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'pvpTOGGLE', valeur: true, nom: 'Change PVP', type: 'pvp', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'pvpOK', valeur: true, nom: 'PVP autorisé', type: 'pvp', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'pvpNOK', valeur: false, nom: 'PVP interdit', type: 'pvp', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'creusableTOGGLE', valeur: true, nom: 'Change mur creusabilité', type: 'creusable', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'creusableOK', valeur: true, nom: 'Mur creusable', type: 'creusable', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'creusableNOK', valeur: false, nom: 'Mur non creusable', type: 'creusable', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'tangibleTOGGLE', valeur: true, nom: 'Change mur tangibilité', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOff'},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
