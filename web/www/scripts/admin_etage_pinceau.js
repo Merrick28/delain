@@ -52,16 +52,21 @@ DecorsDessus.getSousType = function (id) { return true; }
 
 var Speciaux = {};
 Speciaux.donnees = [
-	{id: 'passageOK', valeur: true, nom: 'Passage autorisé', type: 'passage', url: '', css: 'pinceauOn'},
-	{id: 'passageNOK', valeur: false, nom: 'Passage interdit', type: 'passage', url: '', css: 'pinceauOff'},
-	{id: 'pvpOK', valeur: true, nom: 'PVP autorisé', type: 'pvp', url: '', css: 'pinceauOn'},
-	{id: 'pvpNOK', valeur: false, nom: 'PVP interdit', type: 'pvp', url: '', css: 'pinceauOff'},
-	{id: 'creusableOK', valeur: true, nom: 'Mur creusable', type: 'creusable', url: '', css: 'pinceauOn'},
-	{id: 'creusableNOK', valeur: false, nom: 'Mur non creusable', type: 'creusable', url: '', css: 'pinceauOff'},
-	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: '', css: 'pinceauOn'},
-	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: '', css: 'pinceauOff'},
-	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOn'},
-	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOff'},
+	{id: 'passageTOGGLE', valeur: true, nom: 'Change Passage', type: 'passage', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'passageOK', valeur: true, nom: 'Passage autorisé', type: 'passage', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'passageNOK', valeur: false, nom: 'Passage interdit', type: 'passage', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'pvpTOGGLE', valeur: true, nom: 'Change PVP', type: 'pvp', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'pvpOK', valeur: true, nom: 'PVP autorisé', type: 'pvp', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'pvpNOK', valeur: false, nom: 'PVP interdit', type: 'pvp', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'creusableTOGGLE', valeur: true, nom: 'Change mur creusabilité', type: 'creusable', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'creusableOK', valeur: true, nom: 'Mur creusable', type: 'creusable', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'creusableNOK', valeur: false, nom: 'Mur non creusable', type: 'creusable', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'tangibleTOGGLE', valeur: true, nom: 'Change mur tangibilité', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOff'},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -163,14 +168,25 @@ Pinceau.appliqueCase = function (idx) {
 			nvlleCase.mur = Pinceau.element;
 			break;
 		case Speciaux.type:
-			Etage.changeCase (Speciaux, idx, Pinceau.element);
+
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
-			switch (pinceauSpecial.type) {
-				case 'passage': nvlleCase.passage = pinceauSpecial.valeur; break;
-				case 'pvp': nvlleCase.pvp = pinceauSpecial.valeur; break;
-				case 'creusable': nvlleCase.creusable = pinceauSpecial.valeur; break;
-				case 'tangible': nvlleCase.tangible = pinceauSpecial.valeur; break;
-				case 'entree_arene': nvlleCase.entree_arene = pinceauSpecial.valeur; break;
+			if (pinceauSpecial.id=="passageTOGGLE" || pinceauSpecial.id=="pvpTOGGLE" || pinceauSpecial.id=="creusableTOGGLE" || pinceauSpecial.id=="tangibleTOGGLE" || pinceauSpecial.id=="areneTOGGLE") {
+				switch (pinceauSpecial.type) {
+					case 'passage': nvlleCase.passage = !nvlleCase.passage; Etage.changeCase (Speciaux, idx, nvlleCase.passage ? "passageOK":"passageNOK");break;
+					case 'pvp': nvlleCase.pvp = !nvlleCase.pvp; Etage.changeCase (Speciaux, idx, nvlleCase.pvp ? "pvpOK":"pvpNOK");break;
+					case 'creusable': nvlleCase.creusable = !nvlleCase.creusable; Etage.changeCase (Speciaux, idx, nvlleCase.creusable ? "creusableOK":"creusableNOK");break;
+					case 'tangible': nvlleCase.tangible = !nvlleCase.tangible; Etage.changeCase (Speciaux, idx, nvlleCase.tangible ? "tangibleOK":"tangibleNOK");break;
+					case 'entree_arene': nvlleCase.entree_arene = !nvlleCase.entree_arene; Etage.changeCase (Speciaux, idx, nvlleCase.entree_arene ? "areneOK":"areneNOK");break;
+				}
+			} else {
+				Etage.changeCase (Speciaux, idx, Pinceau.element);
+				switch (pinceauSpecial.type) {
+					case 'passage': nvlleCase.passage = pinceauSpecial.valeur; break;
+					case 'pvp': nvlleCase.pvp = pinceauSpecial.valeur; break;
+					case 'creusable': nvlleCase.creusable = pinceauSpecial.valeur; break;
+					case 'tangible': nvlleCase.tangible = pinceauSpecial.valeur; break;
+					case 'entree_arene': nvlleCase.entree_arene = pinceauSpecial.valeur; break;
+				}
 			}
 			break;
 	}

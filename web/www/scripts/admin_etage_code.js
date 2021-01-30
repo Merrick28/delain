@@ -312,7 +312,7 @@ Etage.changeCase = function (objet, idx, nvlleValeur) {
 	if (divCourante && (nvlleValeur != 0 || !objet.enlevable)) {
 		var styleDecorCourant = objet.getClass(valeurCourante);
 		var styleNouveauDecor = objet.getClass(nvlleValeur);
-		//Patch marlyza: switch on/off sur les type spéciaux
+		//Patch marlyza: switch on/off sur les types spéciaux
 		if (objet.type=="Speciaux" && styleNouveauDecor==styleDecorCourant) styleDecorCourant = styleNouveauDecor=="pinceauOn"  ? "pinceauOff" : "pinceauOn";
 		ManipCss.remplaceClasse(divCourante, styleDecorCourant, styleNouveauDecor);
 	}
@@ -373,8 +373,8 @@ Etage.ecrireModifs = function () {
 			if (modif_fon) valeur += "f=" + c.fond + ",";
 			if (modif_psg) valeur += "p=" + ((c.passage) ? "1" : "0") + ",";
 			if (modif_pvp) valeur += "v=" + ((c.pvp) ? "1" : "0") + ",";
-			if (modif_pio) valeur += "c=" + ((c.pio) ? "1" : "0") + ",";
-			if (modif_tan) valeur += "t=" + ((c.tan) ? "1" : "0") + ",";
+			if (modif_pio) valeur += "c=" + ((c.creusable) ? "1" : "0") + ",";
+			if (modif_tan) valeur += "t=" + ((c.tangible) ? "1" : "0") + ",";
 			if (modif_arn) valeur += "a=" + ((c.entree_arene) ? "1" : "0") + ",";
 			valeur += ";";
 		}
