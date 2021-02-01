@@ -21,8 +21,8 @@ class perso_compte
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -42,16 +42,15 @@ class perso_compte
     RETURNING pcompt_cod AS id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pcompt_compt_cod" => $this->pcompt_compt_cod,
-                ":pcompt_perso_cod" => $this->pcompt_perso_cod,
-                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
-            ), $stmt);
+                                      ":pcompt_compt_cod"        => $this->pcompt_compt_cod,
+                                      ":pcompt_perso_cod"        => $this->pcompt_perso_cod,
+                                      ":pcompt_date_attachement" => $this->pcompt_date_attachement,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req
                   = "UPDATE perso_compte
@@ -61,19 +60,19 @@ class perso_compte
             pcompt_date_attachement = :pcompt_date_attachement                        WHERE pcompt_cod = :pcompt_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pcompt_cod" => $this->pcompt_cod,
-                ":pcompt_compt_cod" => $this->pcompt_compt_cod,
-                ":pcompt_perso_cod" => $this->pcompt_perso_cod,
-                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
-            ), $stmt);
+                                      ":pcompt_cod"              => $this->pcompt_cod,
+                                      ":pcompt_compt_cod"        => $this->pcompt_compt_cod,
+                                      ":pcompt_perso_cod"        => $this->pcompt_perso_cod,
+                                      ":pcompt_date_attachement" => $this->pcompt_date_attachement,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de perso_compte
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -94,8 +93,8 @@ class perso_compte
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \perso_compte
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -113,6 +112,72 @@ class perso_compte
         return $retour;
     }
 
+    function get_by_perso($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = 'SELECT pcompt_cod  FROM perso_compte where pcompt_perso_cod = :perso ';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":perso" => $perso_cod
+                              ), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        if (!$this->charge($result['pcompt_cod']))
+        {
+            return false;
+        }
+        return $this;
+
+
+    }
+
+    function get_by_compte($compte)
+    {
+        $pdo  = new bddpdo;
+        $req  = 'SELECT pcompt_cod  FROM perso_compte where pcompt_compt_cod = :compte ';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":compte" => $compte
+                              ), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        if (!$this->charge($result['pcompt_cod']))
+        {
+            return false;
+        }
+        return $this;
+
+
+    }
+
+    function get_by_perso_fam($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = 'SELECT pcompt_cod  FROM perso_compte where pcompt_perso_cod = (
+          select pfam_perso_cod
+          from perso_familier
+          where pfam_familier_cod = :perso
+        ) ';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":perso" => $perso_cod
+                              ), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        if (!$this->charge($result['pcompt_cod']))
+        {
+            return false;
+        }
+        return $this;
+
+
+    }
 
 
     public function __call($name, $arguments)
@@ -124,9 +189,11 @@ class perso_compte
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "SELECT pcompt_cod  FROM perso_compte WHERE " . substr($name, 6) . " = ? ORDER BY pcompt_cod";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    $req    =
+                        "SELECT pcompt_cod  FROM perso_compte WHERE " . substr($name, 6) . " = ? ORDER BY pcompt_cod";
+
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
                         $temp = new perso_compte;
@@ -139,14 +206,17 @@ class perso_compte
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6) . ' in table perso_compte');
                 }
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

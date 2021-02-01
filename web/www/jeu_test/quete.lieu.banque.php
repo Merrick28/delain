@@ -1,15 +1,17 @@
 <?php // gestion des quêtes sur les banques.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
-if(!isset($methode2))
-	$methode2 = "debut";
+$methode2 = get_request_var('methode2', 'debut');
 
-switch($methode2)
+$perso        = new perso;
+$perso        = $verif_connexion->perso;
+
+switch ($methode2)
 {
-	case "debut":
-		// gobj_cod = 380 <=> caisses de minerais
+    case "debut":
+        // gobj_cod = 380 <=> caisses de minerais
 		//Quête du forgeron Trelmar Mogresh ayant perdu ses caisses de minerais volées par des brigands
 		$req = "select distinct obj_gobj_cod, perobj_obj_cod
 			from objets, perso_objets
@@ -18,26 +20,28 @@ switch($methode2)
 				and perobj_identifie = 'O' 
 				and obj_gobj_cod in ('380')
 			order by obj_gobj_cod ";
-		$db->query($req);
-		while($db->next_record())
+		$stmt = $pdo->query($req);
+		while($result = $stmt->fetch())
 		{
-			$obj_gen_quete = $db->f("obj_gobj_cod");
-			$obj_quete = $db->f("perobj_obj_cod");
+			$obj_gen_quete = $result['obj_gobj_cod'];
+			$obj_quete = $result['perobj_obj_cod'];
 			if ($obj_gen_quete == 380)
 			{
-				$nb_caisses = $db->compte_objet($perso_cod, 380);
-			?>
-				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
-					<p><i>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?
-					<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ?
-					(Vous êtes en possession de <?php  echo $nb_caisses; ?> caisses)
-					<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire.
-					<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</i>
-					<input type="hidden" name="methode2" value="cede_objet1">
-					<table>
-						<tr>
-							<td class="soustitre2"><p>Poser les caisses à la banque</p></td>
-							<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
+				$nb_caisses = $perso->compte_objet(380);
+				?>
+				<form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+					<p><em>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?
+							<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ?
+							(Vous êtes en possession de <?php echo $nb_caisses; ?> caisses)
+							<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur
+							propriétaire.
+							<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</em>
+						<input type="hidden" name="methode2" value="cede_objet1">
+						<table>
+							<tr>
+								<td class="soustitre2">
+					<p>Poser les caisses à la banque</p></td>
+					<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
 						</tr>
 						<tr>
 							<td class="soustitre2"><p>Non, finalement, je vais les garder.
@@ -61,10 +65,10 @@ switch($methode2)
 		?>
 			<br>Nous vous remercions.
 			<br>Votre dépôt a été signalé au propriétaire de ces objets.
-			Une dépêche est partie de votre part (<i>message visible dans votre boîte d’envoi</i>)
-			<br>Nous avons pris la liberté de vous fournir directement la récompense (<i>visible dans votre inventaire</i>).
+			Une dépêche est partie de votre part (<em>message visible dans votre boîte d’envoi</em>)
+			<br>Nous avons pris la liberté de vous fournir directement la récompense (<em>visible dans votre inventaire</em>).
 		<?php 			$req = "select vente_caisses($perso_cod, $obj_gen_quete)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			// Envoi de message
 			$msg = new message;

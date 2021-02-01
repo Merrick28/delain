@@ -195,6 +195,41 @@ class positions
         return $retour;
     }
 
+    function get_indice()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select indice_lieu(:position) as indice";
+
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+            ':position'   => $this->pos_cod,
+
+        ), $stmt);
+        $result = $stmt->fetch();
+        return $result['indice'];
+    }
+
+    function lieu_arrive($poste_garde)
+    {
+        $pdo    = new bddpdo;
+        if($poste_garde == 'H')
+        {
+            $req = "select lieu_arrive(:param) as resultat";
+        }
+        else
+        {
+            $req = "select lieu_arrive2(:param) as resultat";
+        }
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+                                            ':param'   => 0,
+
+                                        ), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
@@ -227,6 +262,10 @@ class positions
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

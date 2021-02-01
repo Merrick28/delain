@@ -1,30 +1,12 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
-if(!isset($db))
-	include_once "verif_connexion.php";
-$param = new parametres();
-$erreur = 0;
-// on regarde si le joueur est bien sur un escalier
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-	$erreur = 1;
-}
-$tab_lieu = $db->get_lieu($perso_cod);
-if ($erreur == 0)
-{
-	if ($tab_lieu['type_lieu'] != 16)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-	}
-	else if ($db->compte_objet($perso_cod, 86) + $db->compte_objet($perso_cod, 87) + $db->compte_objet($perso_cod, 88) > 0)
-	{
-		echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
-		$erreur = 1;
-	}
-}
+<?php
+
+$type_lieu = 16;
+$nom_lieu = 'un escalier';
+
+define('APPEL', 1);
+include "blocks/_test_lieu.php";
+include "blocks/_test_passage_medaillon.php";
+
 
 if ($erreur == 0)
 {
@@ -32,7 +14,7 @@ if ($erreur == 0)
 	$desc_lieu = $tab_lieu['description'];
 	$lieu = $tab_lieu['lieu_cod'];
 
-	echo("<p><b>$nom_lieu</b></p><p>$desc_lieu</p>");
+	echo("<p><strong>$nom_lieu</strong></p><p>$desc_lieu</p>");
 
 	// Animation ponctuelle : désactivation du GE du -3 / -8 pour janvier 2013
 	$jour = getdate();
@@ -64,8 +46,8 @@ if ($erreur == 0)
 		// on active pour le retour
 		$req = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
 		$req = $req . "and pge_lieu_cod = $lieu ";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			echo "<p>Il vous est impossible de prendre cet escalier dans ce sens. Vous devez d'abord le prendre en remontant.</p>";
 			$erreur = 1;

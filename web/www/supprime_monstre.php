@@ -1,56 +1,52 @@
+<!DOCTYPE html>
 <html>
-<?php 
-include 'jeu/verif_connexion.php';
-page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+$compte    = $verif_connexion->compte;
+
 ?>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">
 <head>
+    <title>Suppression de monstre</title>
 </head>
 <body background="images/fond5.gif">
+<div class="bordiv">
 
-<table width="90%" bgcolor="#EBE7E7" border="0" cellpadding="0" cellspacing="0">
-<tr>
-<td width="10" background="images/coin_hg.gif"><img src="images/del.gif" height="8" width="10"></td>
-<td background="images/ligne_haut.gif"><img src="images/del.gif" height="8" width="10"></td>
-<td width="10" background="images/coin_hd.gif"><img src="images/del.gif" height="8" width="10"></td>
-</tr>
-<tr><td colspan=3><?php 
-if ($db->is_admin_monstre($compt_cod))
-{
-    $monstres = $_POST['monstres'];
-    $monstres_array = explode(';' , $monstres);
-    foreach ($monstres_array as $monstre)
-    {
-        $monstre_numero = sprintf("%u" , $monstre);
+    <?php
+    if ($compte->is_admin_monstre()) {
+        $pdo = new bddpdo();
+        $monstres = $_POST['monstres'];
+        $monstres_array = explode(';', $monstres);
+        foreach ($monstres_array as $monstre) {
+            $monstre_numero = sprintf("%u", $monstre);
 
-        if ($monstre_numero != 0)
-        {
-            $db = new base_delain;
-            $requete = "select tue_perso_final(620947,perso_cod) , perso_nom from perso,perso_position,positions where perso_cod = $monstre_numero and ppos_perso_cod = perso_cod and ppos_pos_cod = pos_cod and pos_etage = -100 and perso_type_perso = 2";
-//             $requete = "select perso_cod,perso_nom from perso,perso_position,positions where perso_cod = $monstre_numero and ppos_perso_cod = perso_cod and ppos_pos_cod = pos_cod and pos_etage = 6 and perso_type_perso = 2";
-            $db->query($requete);
-            while ($db->next_record())
-            {
-                echo 'Suppression du monstre ' . $db->f('perso_nom') . ' réussie<br />';
+            if ($monstre_numero != 0) {
+                $requete = "select tue_perso_final(620947,perso_cod) , 
+                    perso_nom from perso,perso_position,positions 
+                    where perso_cod = :monstre
+                      and ppos_perso_cod = perso_cod 
+                      and ppos_pos_cod = pos_cod 
+                      and pos_etage = -100 
+                      and perso_type_perso = 2";
+                $stmt = $pdo->prepare($requete);
+                $stmt = $pdo->execute(array(":monstre" => $monstre_numero),$stmt);
+
+                while ($result = $stmt->fetch()) {
+                    echo 'Suppression du monstre ' . $result['perso_nom'] . ' réussie<br />';
+                }
+            } else {
+                echo 'Numéro inconnu: ' . $monstre . '<br />';
             }
         }
-        else
-        {
-            echo 'Numéro inconnu: ' . $monstre . '<br />';
-        }
+    } else {
+        echo 'Mauvaise idée de vouloir tricher';
     }
-}
-else
-{
-    echo 'Mauvaise idée de vouloir tricher';
-}
-echo '</td></tr>';
-echo("<tr>\n");
-echo("<td width=\"10\" background=\"images/coin_bg.gif\"><img src=\"images/del.gif\" height=\"10\" width=\"10\"></td>\n");
-echo("<td background=\"images/ligne_bas.gif\"><img src=\"images/del.gif\" height=\"10\" width=\"10\"></td>\n");
-echo("<td width=\"10\" background=\"images/coin_bd.gif\"><img src=\"images/del.gif\" height=\"10\" width=\"10\"></td>\n");
-echo("</tr>\n");
-echo("</table>\n");
-?>
+    ?>
+
+</div>
+
 </body>
 </html>

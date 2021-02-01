@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -21,34 +20,41 @@ class bddpdo
 {
 
     // Hote
-    var $host        = SERVER_HOST;
+    var $host = SERVER_HOST;
     // User
-    var $user        = SERVER_USERNAME;
+    var $user = SERVER_USERNAME;
     // Password
-    var $password    = SERVER_PASSWORD;
+    var $password = SERVER_PASSWORD;
     // Databse
-    var $database    = SERVER_DBNAME;
+    var $database = SERVER_DBNAME;
     // Persistency
     var $persistency = false;
     // Port
-    var $port        = NULL;
+    var $port = NULL;
     // DB DSN
-    var $dsn         = '';
+    var $dsn = '';
     // PDO
-    var $pdo         = NULL;
+    var $pdo = NULL;
     // Error mode
-    var $errorMode   = 'WARNING';
+    var $errorMode = 'WARNING';
 
     function __construct()
     {
+        global $profiler, $debug_mode;
         try
         {
-            $this->pdo = new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
-            /* if(ENTEST)
-              {
-              $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-              } */
-        } catch (PDOException $e)
+            $temp =
+                new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
+            if ($debug_mode)
+            {
+                $this->pdo = new \Fabfuel\Prophiler\Decorator\PDO\PDO($temp, $profiler);
+            } else
+            {
+                $this->pdo = $temp;
+            }
+
+        }
+        catch (PDOException $e)
         {
             echo 'Échec lors de la connexion : ' . $e->getMessage();
         }
@@ -92,26 +98,27 @@ class bddpdo
             {
                 $ret = $stmt->execute();
                 // Sinon on execute la requête préparée avec les paramètres
-            }
-            else
+            } else
             {
                 $ret = $stmt->execute($varArray);
             }
-            if($ret === false)
+            if ($ret === false)
             {
                 $this->erreur($stmt);
+                $debug = false;
+
                 die('Erreur SQL, impossible de continuer');
+
+
             }
             return $stmt;
-        }
-        else
+        } else
         {
             // Mode exception
             if ($this->exception)
             {
-                throw new Exception('<pre><b>FATAL ERROR : ' . __METHOD__ . '</b> except first given parameter to be an array</pre>', 0);
-            }
-            else
+                throw new Exception('<pre><strong>FATAL ERROR : ' . __METHOD__ . '</strong> except first given parameter to be an array</pre>', 0);
+            } else
             {
                 return false;
             }
@@ -126,20 +133,14 @@ class bddpdo
 
     public function query($sql)
     {
-        if (strpos(strtoupper($sql), "SELECT") == 0)
-        {
-            return $this->pdo->query($sql);
-        }
-        else
-        {
-            return $this->pdo->exec($sql);
-        }
+
+        return $this->pdo->query($sql);
     }
 
     /*     * *
      * @desc   : Gestion des transactions
      * @param : Bool $autocomit
-     * @return : Bool 
+     * @return : Bool
      */
 
     public function AutoCommit($autocommit = true)
@@ -258,7 +259,7 @@ class bddpdo
     }
 
     /*     * *
-     * @desc   : Librer les resultats de la requête 
+     * @desc   : Librer les resultats de la requête
      * @param : results
      * @return : Bool
      */
@@ -269,7 +270,7 @@ class bddpdo
     }
 
     /*     * *
-     * quote 
+     * quote
      */
 
     public function quote($value, $type = DATABASE::PARAM_STR)
@@ -294,40 +295,38 @@ class bddpdo
 
     public function erreur($stmt = '')
     {
-        if(defined('DEBUG'))
+        if (defined('DEBUG'))
         {
             $debug = DEBUG;
-        }
-        else
+        } else
         {
             $debug = false;
         }
         if (empty($stmt))
         {
-            $msg = print_r($stmt->errorInfo(),true);
+            $msg = print_r($stmt->errorInfo(), true);
             ob_flush();
             ob_start();
             $stmt->debugDumpParams();
             $msg .= ob_get_flush();
             ob_clean();
             $this->log_message($msg);
-            if($debug)
+            if ($debug)
             {
                 echo '<pre>' . $msg . '</pre>';
             }
             return $this->pdo->errorInfo();
-        }
-        else
+        } else
         {
-            $msg = print_r($stmt->errorInfo(),true);
-            $msg .= print_r($stmt,true);
+            $msg = print_r($stmt->errorInfo(), true);
+            $msg .= print_r($stmt, true);
             // on efface ce qui a pu être envoyé
             ob_flush();
             ob_start();
             $stmt->debugDumpParams();
             $msg .= ob_get_flush();
             ob_clean();
-            if($debug)
+            if ($debug)
             {
                 echo '<pre>' . $msg . '</pre>';
             }
@@ -335,22 +334,36 @@ class bddpdo
         }
     }
 
+    function get_value($req, $champ)
+    {
+        $stmt   = $this->query($req);
+        $result = $stmt->fetch();
+        return $result[$champ];
+    }
+
+    function get_one_record($req)
+    {
+        $stmt   = $this->query($req);
+        return $stmt->fetch();
+    }
+
     function log_message($msg)
     {
         global $auth;
         $ip        = getenv('REMOTE_ADDR');
         $message   = $msg;
-        $texte_log = chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
+        $texte_log =
+            chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
 	IP : ' . $ip . '
 	Message : [' . $message . ']
-	Erreur :  
+	Erreur :
 	Libelle : [ ]
 	Compte = ' . ((isset($auth)) ? $auth->compt_cod : '0') . '
 	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');
 
         $e         = new Exception;
         $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . ']';
-        $logfile = new logfile();
+        $logfile   = new logfile();
         $logfile->writelog_class_sql($texte_log . $pileAppel);
 
     }

@@ -1,30 +1,35 @@
-<?php 
+<?php
 $offset = 3600; // on remet à jour la feuille de style une fois par heure.
 $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 header($expire);
 header("Content-type: text/css");
 
-include "../includes/img_pack.php";
-include "verif_connexion.php";
+
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/images_delain.php';
+
+$num_etage = get_request_var('num_etage', '');
 
 if (!isset($num_etage) || $num_etage === '')
 {
-	$req_etage = "select etage_affichage, etage_numero from perso_position,positions,etage ";
-	$req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
-	$req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
-	$req_etage = $req_etage . "and pos_etage = etage_numero ";
-	$db->query($req_etage);
-	$db->next_record();
-	$etage = $db->f("etage_affichage");
-	$num_etage = $db->f("etage_numero");
+    $req_etage = "select etage_affichage, etage_numero from perso_position,positions,etage ";
+    $req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
+    $req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
+    $req_etage = $req_etage . "and pos_etage = etage_numero ";
+    $stmt      = $pdo->query($req_etage);
+    $result    = $stmt->fetch();
+    $etage     = $result['etage_affichage'];
+	$num_etage = $result['etage_numero'];
 }
 else
 {
 	$req_etage = "select etage_affichage from etage where etage_numero = $num_etage ";
-	$db->query($req_etage);
-	$db->next_record();
-	$etage = $db->f("etage_affichage");
+	$stmt = $pdo->query($req_etage);
+	$result = $stmt->fetch();
+	$etage = $result['etage_affichage'];
 }
 ?>
 
@@ -72,7 +77,7 @@ else
 }
 .murSimple { background: black; }
 .pasMurSimple { background: lightgreen; }
-.pinceauOnOffJoli { opacity: 0.5; }
+.pinceauOnOffJoli { opacity: 0.85; text-align:center; font-size:9px; }
 .pinceauOn { background: lightgreen; }
 .pinceauOff { background: pink; }
 .pinceauOn.murSimple { background: darkgreen; }
@@ -91,11 +96,11 @@ if (empty($source) || ($source != 'bdd' && $source != 'fichiers'))
 if ($source == 'bdd')
 {
 	$req_styles = "select distinct pos_type_aff from positions where pos_etage = $num_etage";
-	$db->query($req_styles);
+	$stmt = $pdo->query($req_styles);
 	$arr_styles = array();
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		$cpt = $db->f('pos_type_aff');
+		$cpt = $result['pos_type_aff'];
 		echo ".v$cpt { background-image: url('" . G_IMAGES . "f_" , $etage, "_" , $cpt, ".png'); }\n";
 	}
 }
@@ -113,10 +118,10 @@ else
 
 // LIEUX
 $req_styles = "select distinct tlieu_cod from lieu_type";
-$db->query($req_styles);
-while ($db->next_record())
+$stmt = $pdo->query($req_styles);
+while ($result = $stmt->fetch())
 {
-	$cpt = $db->f('tlieu_cod');
+	$cpt = $result['tlieu_cod'];
 	echo ".lieu$cpt{ background-image:url('" . G_IMAGES . "t_" , $cpt, "_lie.png'); }\n";
 }
 
@@ -128,10 +133,10 @@ while ($db->next_record())
 	$req_styles = "select distinct pos_decor from positions where pos_etage = $num_etage
 		UNION
 		select distinct pos_decor_dessus from positions where pos_etage = $num_etage";
-	$db->query($req_styles);
-	while ($db->next_record())
+	$stmt = $pdo->query($req_styles);
+	while ($result = $stmt->fetch())
 	{
-		$cpt = $db->f('pos_decor');
+		$cpt = $result['pos_decor'];
 		if ($cpt != 0)
 			echo ".decor$cpt { background-image:url('" . G_IMAGES . "dec_" , $cpt, ".gif'); }\n";
 	}
@@ -161,10 +166,10 @@ echo ".objet{ background-image:url('" . G_IMAGES . "t_" , $etage, "_obj.png'); }
 	$req_styles = "select distinct mur_type from murs
 		inner join positions on pos_cod = mur_pos_cod
 		where pos_etage = $num_etage";
-	$db->query($req_styles);
-	while ($db->next_record())
+	$stmt = $pdo->query($req_styles);
+	while ($result = $stmt->fetch())
 	{
-		$cpt = $db->f('mur_type');
+		$cpt = $result['mur_type'];
 		echo ".mur_$cpt{ background-image: url('" . G_IMAGES . "t_" , $etage, "_mur_" , $cpt, ".png'); visibility: visible; }\n";
 	}
 }

@@ -1,14 +1,24 @@
 #!/bin/bash
-source `dirname $0`/env
-for f in `find $livroot -type f| grep -v "initial_import.sql"|sort`; do
-  livexist=`$shellroot/livraison_exists.sh $(basename $f)`
-  if [ "$livexist" -eq "0" ];then
-      echo "LIVRAIONS A TRAITER : $f"
-      $psql -A -q -t -d delain -U webdelain -f $f
-      $psql -A -q -t -d delain -U webdelain << EOF
+source $(dirname $0)/env
+echo "===========================" >>${shellroot}/livraison.log
+echo "= LIVRAISONS SQL EN COURS =" >>${shellroot}/livraison.log
+for f in $(find $livroot -type f | grep -v "initial_import.sql" | grep -v ".gitignore" | sort); do
+  livexist=$($shellroot/livraison_exists.sh $(basename $f))
+  if [ "$livexist" -eq "0" ]; then
+    echo "LIVRAISONS A TRAITER : $f" >>${shellroot}/livraison.log
+    $psql -A -q -t -d delain -U ${USERNAME} -f $f >>${shellroot}/livraison.log 2>&1
+    $psql -A -q -t -d delain -U ${USERNAME} <<EOF >>${shellroot}/livraison.log 2>&1
 insert into livraisons (liv_fichier) values ('$(basename $f)');
 EOF
-  else
-    echo "$f déjà traité"
   fi
 done
+# livraison des fonctions
+echo "= LIVRAISONS DES FONCTIONS =" >>${shellroot}/livraison.log
+cd ${root_project}
+IFS=$'\n'
+cat ${root_project}/.diff_to_apply | while read ligne; do
+  $psql -A -q -t -d delain -U ${USERNAME} -f ${ligne} >>${shellroot}/livraison.log 2>&1
+done
+#for f in `find $livfunc -type f| sort`; do
+#      $psql -A -q -t -d delain -U ${USERNAME} -f $f >> ${shellroot}/livraison.log 2>&1
+#done

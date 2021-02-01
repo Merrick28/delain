@@ -1,0 +1,11 @@
+{% extends'template_jeu.twig' %}
+
+{% block contenu_droite %}
+    <form name="suppr_pers" method="post" action="valide_suppr_perso2.php">
+        <input type="hidden" name="perso" value="{{ PERSO_CIBLE.perso_cod }}">
+
+        <p><strong>Attention !</strong>Toute suppression de personnage est définitive !<br/>
+        <p>Voulez vous vraiment supprimer le perso <strong>{{ PERSO_CIBLE.perso_nom }}</strong> ?
+        <p><a href="javascript:document.suppr_pers.submit();"><strong>OUI</strong>, je le veux !</a>
+        <p><a href="jeu/switch.php"><strong>NON !</strong>, je souhaite garder ce perso !</a>
+{% endblock %}

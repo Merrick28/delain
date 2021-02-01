@@ -29,7 +29,39 @@ class perso_familier
         $pdo  = new bddpdo;
         $req  = "SELECT * FROM perso_familier WHERE pfam_perso_cod = ? and pfam_familier_cod = ?";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($code,$pfam_familier_cod), $stmt);
+        $stmt = $pdo->execute(array($code, $pfam_familier_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $this->pfam_perso_cod    = $result['pfam_perso_cod'];
+        $this->pfam_familier_cod = $result['pfam_familier_cod'];
+        $this->pfam_duree_vie    = $result['pfam_duree_vie'];
+        return true;
+    }
+
+    function getByPerso($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "SELECT * FROM perso_familier WHERE pfam_perso_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $this->pfam_perso_cod    = $result['pfam_perso_cod'];
+        $this->pfam_familier_cod = $result['pfam_familier_cod'];
+        $this->pfam_duree_vie    = $result['pfam_duree_vie'];
+        return true;
+    }
+
+    function getByFamilier($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "SELECT * FROM perso_familier WHERE pfam_familier_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -42,8 +74,8 @@ class perso_familier
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -88,8 +120,10 @@ class perso_familier
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \perso_familier
+     * @return perso_familier
      */
+
+
     function getAll()
     {
         $retour = array();
@@ -138,6 +172,10 @@ class perso_familier
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

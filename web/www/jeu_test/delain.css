@@ -1,11 +1,9 @@
-@charset "iso-8859-1";
+@charset "UTF-8";
 /* AUTEUR: julien */
 /* DATE DE CREATION: 30/06/2009 */
 
 
-
-
-/* le design général du site */
+/* le design gÃ©nÃ©ral du site */
 .delain
 {
 	font-family:"Trebuchet MS",Arial,sans-serif ;
@@ -157,20 +155,20 @@
 	padding-left:2px;
 	
 	background:url(images/fondparchemin.gif);
-	border-top-width:1px;
+	border-top-width: 1px;
 	border-top-style: solid;
-	border-left-width:1px;
+	border-left-width: 1px;
 	border-left-style: solid;
-	border-right-width:1px;
+	border-right-width: 1px;
 	border-right-style: solid;
-	border-bottom-width:0px;
+	border-bottom-width: 0px;
 	border-bottom-style: none;
-	font-size:14px;
-	
-	/* pour enlever les pointillée en dessous des liens selectionnés */
-	outline-color:-moz-use-text-color;
-	outline-style:none;
-	
+	font-size: 14px;
+
+	/* pour enlever les pointillÃ©e en dessous des liens selectionnÃ©s */
+	outline-color: -moz-use-text-color;
+	outline-style: none;
+
 }	
 
 .navigation_non_selectionne
@@ -184,19 +182,19 @@
 	padding-left:2px;
 	
 	background:url(images/fondparchemin.gif);
-	border-top-width:1px;
+	border-top-width: 1px;
 	border-top-style: solid;
-	border-left-width:1px;
+	border-left-width: 1px;
 	border-left-style: solid;
-	border-right-width:1px;
+	border-right-width: 1px;
 	border-right-style: solid;
-	border-bottom-width:0px;
+	border-bottom-width: 0px;
 	border-bottom-style: none;
-	font-size:14px;
-	
-	/* pour enlever les pointillée en dessous des liens selectionnés */
-	outline-color:-moz-use-text-color;
-	outline-style:none;
+	font-size: 14px;
+
+	/* pour enlever les pointillÃ©e en dessous des liens selectionnÃ©s */
+	outline-color: -moz-use-text-color;
+	outline-style: none;
 	border-bottom-style: none;
 }
 
@@ -286,21 +284,20 @@
 
 
 /* Pied de page */
-.footer 
-{
-	height:35px;
-	background:url(images/fondparchemin.gif);
-	
-	/* Cette déclaration nous assure que le footer se trouvera bien en bas de la page.*/
+.footer {
+	height: 35px;
+	background: url(images/fondparchemin.gif);
+
+	/* Cette dÃ©claration nous assure que le footer se trouvera bien en bas de la page.*/
 	clear: both;
 }
 
 .cols {
-	/* Ces deux déclarations permettent d'obtenir une élégant effet de colonnage pour le texte. */
+	/* Ces deux dÃ©clarations permettent d'obtenir une Ã©lÃ©gant effet de colonnage pour le texte. */
 	/* La suppression de ces deux lignes affiche l'ensemble du texte dans une colonnne unique, tout simplement */
 	width: 48%;
 	float: left;
-	background:url(images/fondparchemin.gif);	
+	background: url(images/fondparchemin.gif);
 }
 
 
@@ -598,7 +595,7 @@
 }
 
 
-/*Dégats de l'item*/
+/*DÃ©gats de l'item*/
 .titre_degats_item
 {	
 	font-family:georgia;
@@ -652,7 +649,7 @@
 }
 
 
-/*Agilité de l'item*/
+/*AgilitÃ© de l'item*/
 .titre_dexterite_item
 {	
 	font-family:georgia;
@@ -845,7 +842,7 @@
 	font-size:17px;
 }
 
-/*propriété deposable de l'item*/
+/*propriÃ©tÃ© deposable de l'item*/
 .titre_deposable_item
 {	
 	font-family:georgia;
@@ -1034,7 +1031,7 @@
 }
 
 
-/*Propriété Enchantable de l'item*/
+/*PropriÃ©tÃ© Enchantable de l'item*/
 .titre_enchantable_item
 {	
 	font-family:georgia;
@@ -1061,8 +1058,7 @@
 }
 
 
-
-/* L'item equipé */
+/* L'item equipÃ© */
 .selection_item
 {
 	float:right;
@@ -1398,7 +1394,7 @@
 }
 
 
-/* Pour nettoyer les propriétés float */
+/* Pour nettoyer les propriÃ©tÃ©s float */
 .clear
 {
 	clear:both;

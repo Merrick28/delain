@@ -1,6 +1,6 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<script type="text/javascript">
@@ -21,12 +21,12 @@ if (!isset($fac_cod))
 else
 {
 	$req = "SELECT fac_nom FROM factions where fac_cod = $fac_cod";
-	$db->query($req);
-	$db->next_record();
-	$fac_nom = $db->f('fac_nom');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les rangs définis pour la faction « $fac_nom »</div><br />";
 }
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'debut': break;
@@ -41,7 +41,7 @@ switch ($methode)
 
 			$req = "INSERT INTO faction_rangs (rfac_fac_cod, rfac_seuil, rfac_nom, rfac_description, rfac_intro)
 				VALUES ($fac_cod, $rfac_seuil, '$rfac_nom', '$rfac_description', '$rfac_intro')";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Rang $rfac_nom ajouté pour la faction « $fac_nom » !";
 		}
@@ -62,7 +62,7 @@ switch ($methode)
     			SET rfac_seuil = $rfac_seuil, rfac_nom = '$rfac_nom',
     			    rfac_description = '$rfac_description', rfac_intro = '$rfac_intro'
 				WHERE rfac_seuil = $rfac_seuil_prec AND rfac_fac_cod = $fac_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Rang $rfac_nom modifié pour la faction « $fac_nom » !";
 		}
@@ -74,17 +74,17 @@ switch ($methode)
 		if (isset($_POST['rfac_seuil_prec']) && $fac_cod >= 0)
 		{
 			$rfac_seuil = $_POST['rfac_seuil_prec'];
-			$req = "DELETE FROM faction_rangs WHERE rfac_fac_cod = $fac_cod AND rfac_seuil = $rfac_seuil";
-			$db->query($req);
+            $req        = "DELETE FROM faction_rangs WHERE rfac_fac_cod = $fac_cod AND rfac_seuil = $rfac_seuil";
+            $stmt       = $pdo->query($req);
 
-			$resultat = "Rang seuillé à $rfac_seuil supprimé pour la faction « $fac_nom » !";
-		}
-		else
-			$resultat = "Erreur de paramètres";
-	break;
+            $resultat = "Rang seuillé à $rfac_seuil supprimé pour la faction « $fac_nom » !";
+        } else
+            $resultat = "Erreur de paramètres";
+        break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 echo '<div style="padding:10px;"><p>Sélectionnez la faction sur laquelle vous souhaitez travailler.</p>
 	<form method="GET" action="#"><select name="fac_cod">';
@@ -117,30 +117,21 @@ if ($fac_cod > -1)
 			<th class="titre">Actions</th>
 		</tr>';
 
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	$i = 1;
 
-	while($db->next_record())
-	{
-		// Récupération des données
-		$rfac_seuil = $db->f('rfac_seuil');
-		$rfac_nom = $db->f('rfac_nom');
-		$rfac_description = $db->f('rfac_description');
-		$rfac_intro = $db->f('rfac_intro');
+	while($result = $stmt->fetch())
+    {
+        // Récupération des données
+        $rfac_seuil       = $result['rfac_seuil'];
+        $rfac_nom         = $result['rfac_nom'];
+        $rfac_description = $result['rfac_description'];
+        $rfac_intro       = $result['rfac_intro'];
 
-		echo "<form action='#' method='POST' onsubmit='if (this.methode == \"rang_supprime\") return confirm(\"Êtes-vous sûr de vouloir supprimer ce rang ?\");'><tr>
-			<td class='soustitre2'>$i. <input type='text' value='$rfac_nom' name='rfac_nom' size='20' /></td>
-			<td class='soustitre2'><input type='text' value='$rfac_seuil' name='rfac_seuil' size='7' /></td>
-            <td class='soustitre2'><textarea cols='40' rows='3' name='rfac_description'>$rfac_description</textarea></td>
-        	<td class='soustitre2'><textarea cols='40' rows='3' name='rfac_intro'>$rfac_intro</textarea></td>
-			<td class='soustitre2'><input type='hidden' value='$rfac_seuil' name='rfac_seuil_prec' />
-				<input type='hidden' value='$fac_cod' name='fac_cod' />
-				<input type='hidden' value='rang_modif' name='methode' id='methode$rfac_seuil' />
-				<input type='submit' class='test' value='Modifier' onclick='changeMethode($rfac_seuil, \"rang_modif\");'/>
-				<input type='submit' class='test' value='Supprimer' onclick='changeMethode($rfac_seuil, \"rang_supprime\");'/>
+        echo ")'/>
 			</td></tr></form>";
-		$i++;
-	}
+        $i++;
+    }
 
 	echo "<form action='#' method='POST'><tr>
 		<td class='soustitre2'><input type='text' value='' name='rfac_nom' size='20' /></td>

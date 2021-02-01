@@ -11,31 +11,29 @@
  */
 class messages_dest
 {
+    public $dmsg_cod;
+    public $dmsg_msg_cod;
+    public $dmsg_perso_cod;
+    public $dmsg_lu      = 'N';
+    public $dmsg_archive = 'N';
+    public $dmsg_efface  = 0;
 
-    var $dmsg_cod;
-    var $dmsg_msg_cod;
-    var $dmsg_perso_cod;
-    var $dmsg_lu      = 'N';
-    var $dmsg_archive = 'N';
-    var $dmsg_efface  = 0;
-
-    function __construct()
+    public function __construct()
     {
-        
     }
 
     /**
      * Charge dans la classe un enregistrement de messages_dest
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
-    function charge($code)
+    public function charge($code)
     {
-        $pdo    = new bddpdo;
-        $req    = "select * from messages_dest where dmsg_cod = ?";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($code), $stmt);
+        $pdo  = new bddpdo;
+        $req  = "select * from messages_dest where dmsg_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -49,16 +47,34 @@ class messages_dest
         return true;
     }
 
-    function getByPersoNonLu($perso)
+    public function getByPersoNonLu($perso)
     {
         $pdo    = new bddpdo;
         $retour = array();
-        $req    = "select dmsg_cod from messages_dest where dmsg_perso_cod = ? and dmsg_lu = 'N' and dmsg_archive = 'N'";
+        $req    =
+            "select dmsg_cod from messages_dest where dmsg_perso_cod = ? and dmsg_lu = 'N' and dmsg_archive = 'N'";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso), $stmt);
         while ($result = $stmt->fetch())
         {
-            $temp     = new messages_dest;
+            $temp = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function getByMessage($msg)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest where dmsg_msg_cod = :message and dmsg_efface = 0";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":message" => $msg), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new messages_dest;
             $temp->charge($result["dmsg_cod"]);
             $retour[] = $temp;
             unset($temp);
@@ -67,11 +83,83 @@ class messages_dest
     }
 
     /**
-     * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
-     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @param $perso_cod
+     * @param $msg
+     * @return messages_dest[] array
+     * @throws Exception
      */
-    function stocke($new = false)
+    public function getByPersoMessage($perso_cod, $msg)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest 
+                where dmsg_msg_cod = :message 
+                  and dmsg_perso_cod = :perso
+                  and dmsg_efface = 0";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":message" => $msg, ":perso" => $perso_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function getByPerso($perso, $offset = 0, $limit = 50)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest where dmsg_perso_cod = ? limit $limit offset $offset";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso), $stmt);
+
+        while ($result = $stmt->fetch())
+        {
+            $temp = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            // on va charger le message
+            $message = new messages;
+            $message->charge($temp->dmsg_msg_cod);
+            $temp->message = $message;
+            unset($message);
+
+            // on va chercher l'expéditeur
+            $messages_exp = new messages_exp;
+            if ($messages_exp->getByMsg($temp->dmsg_msg_cod) !== false)
+            {
+                $temp->messages_exp = $messages_exp;
+            }
+            unset($messages_exp);
+
+            // on va chercher les destinataires
+            $messages_dest2      = new messages_dest;
+            $temp->messages_dest = $messages_dest2->getByMessage($temp->dmsg_msg_cod);
+            unset($messages_dest2);
+
+            // on nettoie
+            unset($temp->dmsg_cod);
+            unset($temp->dmsg_msg_cod);
+            unset($temp->dmsg_perso_cod);
+            unset($temp->dmsg_lu);
+            unset($temp->dmsg_archive);
+            unset($temp->dmsg_efface);
+
+
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    /**
+     * Stocke l'enregistrement courant dans la BDD
+     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
+     */
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
         if ($new)
@@ -92,18 +180,17 @@ class messages_dest
                     returning dmsg_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":dmsg_msg_cod"   => $this->dmsg_msg_cod,
-               ":dmsg_perso_cod" => $this->dmsg_perso_cod,
-               ":dmsg_lu"        => $this->dmsg_lu,
-               ":dmsg_archive"   => $this->dmsg_archive,
-               ":dmsg_efface"    => $this->dmsg_efface,
-               ), $stmt);
+                                      ":dmsg_msg_cod"   => $this->dmsg_msg_cod,
+                                      ":dmsg_perso_cod" => $this->dmsg_perso_cod,
+                                      ":dmsg_lu"        => $this->dmsg_lu,
+                                      ":dmsg_archive"   => $this->dmsg_archive,
+                                      ":dmsg_efface"    => $this->dmsg_efface,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update messages_dest
                     set
@@ -114,22 +201,22 @@ class messages_dest
                                         dmsg_efface = :dmsg_efface                                        where dmsg_cod = :dmsg_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":dmsg_cod"       => $this->dmsg_cod,
-               ":dmsg_msg_cod"   => $this->dmsg_msg_cod,
-               ":dmsg_perso_cod" => $this->dmsg_perso_cod,
-               ":dmsg_lu"        => $this->dmsg_lu,
-               ":dmsg_archive"   => $this->dmsg_archive,
-               ":dmsg_efface"    => $this->dmsg_efface,
-               ), $stmt);
+                                      ":dmsg_cod"       => $this->dmsg_cod,
+                                      ":dmsg_msg_cod"   => $this->dmsg_msg_cod,
+                                      ":dmsg_perso_cod" => $this->dmsg_perso_cod,
+                                      ":dmsg_lu"        => $this->dmsg_lu,
+                                      ":dmsg_archive"   => $this->dmsg_archive,
+                                      ":dmsg_efface"    => $this->dmsg_efface,
+                                  ), $stmt);
         }
     }
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \messages_dest
+     * @global bdd_mysql $pdo
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
@@ -137,7 +224,7 @@ class messages_dest
         $stmt   = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
-            $temp     = new messages_dest;
+            $temp = new messages_dest;
             $temp->charge($result["dmsg_cod"]);
             $retour[] = $temp;
             unset($temp);
@@ -154,12 +241,13 @@ class messages_dest
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "select dmsg_cod  from messages_dest where " . substr($name, 6) . " = ? order by dmsg_cod";
+                    $req    =
+                        "select dmsg_cod  from messages_dest where " . substr($name, 6) . " = ? order by dmsg_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
-                        $temp     = new messages_dest;
+                        $temp = new messages_dest;
                         $temp->charge($result["dmsg_cod"]);
                         $retour[] = $temp;
                         unset($temp);
@@ -169,16 +257,18 @@ class messages_dest
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }
-
 }

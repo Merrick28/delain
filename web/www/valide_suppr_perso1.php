@@ -1,29 +1,32 @@
-<?php 
+<?php
 include "includes/classes.php";
-include "ident.php";
-$db = new base_delain;
-$perso_cible = $_REQUEST['perso'];
-?>
-<html>
-<link rel="stylesheet" type="text/css" href="../style.css" title="essai">
-<head>
-</head>
-<body background="../images/fond5.gif">
-<?php $db = new base_delain;
-include "jeu_test/tab_haut.php";
-echo("<form name=\"suppr_pers\" method=\"post\" action=\"valide_suppr_perso2.php\">");
-echo("<input type=\"hidden\" name=\"perso\" value=\"$perso_cible\">");
-$req = "select perso_nom from perso where perso_cod = $perso_cible";
-$db->query($req);
-$db->next_record();
-$tab[0] = $db->f("perso_nom");
-?>
-<p><b>Attention !</b>Toute suppression de personnage est définitive !<br />
-<p>Voulez vous vraiment supprimer le perso <b><?php  echo $tab[0] ?></b> ?
-<p><a href="javascript:document.suppr_pers.submit();"><b>OUI</b>, je le veux !</a>
-<p><a href="jeu/switch.php"><b>NON !</b>, je souhaite garder ce perso !</a>
-<?php 
-include "jeu_test/tab_bas.php";
-?>
-</body>
-</html>
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+
+// ces deux lignes sont temporaires
+// sans ça, le variable_menu ne fonctionne pas
+include_once 'includes/template.inc';
+$t = new template;
+
+include(G_CHE . '/jeu_test/variables_menu.php');
+
+$perso_cible = 1 * $_REQUEST['perso'];
+
+$class_perso_cible = new perso;
+$class_perso_cible->charge($perso_cible);
+
+
+$compte = $verif_connexion->compte;
+
+//$logger->debug('Perso_cible ' . $class_perso_cible);
+
+
+$template     = $twig->load('valide_suppr_perso1.twig');
+$options_twig = array(
+'COMPTE'       => $compte,
+'PERSO_CIBLE'    => $class_perso_cible
+);
+
+
+echo $template->render(array_merge($var_twig_defaut, $options_twig));

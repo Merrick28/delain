@@ -7,6 +7,7 @@ select cree_stat();
 select cron_dissip_monstre();
 select cron_comptes_temp();
 select cron_repousse_composants();
+select cron_dissip_objet();
 EOF
 $webroot/delete_memcached.sh
 

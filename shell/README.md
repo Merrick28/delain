@@ -1,8 +1,8 @@
-#Shells pour Delain
+# Shells pour Delain
 
 ## Liste des fichiers spéciaux
 
-* env : variables d'environnement
+* env : variables d'environnement (à charger au début de chaque script)
 
 ## Fonctionnement
 

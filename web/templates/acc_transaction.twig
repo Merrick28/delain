@@ -1,0 +1,8 @@
+{% extends 'template_jeu.twig' %}
+
+ {% block contenu_droite %}
+     {% if TEST_RESULTAT == -1 %}
+     <p>Une erreur est survenue : {{ DETAIL_ERREUR }}</p>
+     {% else %}
+     <p>La transaction a été validée. L'objet de trouve maintenant dans votre inventaire.</p>
+ {% endblock %}

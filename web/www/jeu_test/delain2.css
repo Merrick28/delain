@@ -1,10 +1,10 @@
-@charset "iso-8859-1";
+@charset "UTF-8";
 /* AUTEUR: julien */
 /* DATE DE CREATION: 30/06/2009 */
-/* DATE DE Dern'�re MAJ: 15/04/2010 */
+/* DATE DE Dern'ï¿½re MAJ: 15/04/2010 */
 
 
-/* Postionnement des marges � 0 pour tous les �lements */
+/* Postionnement des marges ï¿½ 0 pour tous les ï¿½lements */
 * { margin: 0; padding: 0; }
 
 
@@ -235,7 +235,7 @@
 	width:490px;
 }
 
-/* le design g�n�ral du site */
+/* le design gï¿½nï¿½ral du site */
 .delain
 {
 	font-family:"Trebuchet MS",Arial,sans-serif ;
@@ -388,20 +388,20 @@
 	padding-left:2px;
 	
 	background:url(images/fondparchemin.gif);
-	border-top-width:1px;
+	border-top-width: 1px;
 	border-top-style: solid;
-	border-left-width:1px;
+	border-left-width: 1px;
 	border-left-style: solid;
-	border-right-width:1px;
+	border-right-width: 1px;
 	border-right-style: solid;
-	border-bottom-width:0px;
+	border-bottom-width: 0px;
 	border-bottom-style: none;
-	font-size:14px;
-	
-	/* pour enlever les pointill�e en dessous des liens selectionn�s */
-	outline-color:-moz-use-text-color;
-	outline-style:none;
-	
+	font-size: 14px;
+
+	/* pour enlever les pointillï¿½e en dessous des liens selectionnï¿½s */
+	outline-color: -moz-use-text-color;
+	outline-style: none;
+
 }	
 
 .navigation_non_selectionne
@@ -415,19 +415,19 @@
 	padding-left:2px;
 	
 	background:url(images/fondparchemin.gif);
-	border-top-width:1px;
+	border-top-width: 1px;
 	border-top-style: solid;
-	border-left-width:1px;
+	border-left-width: 1px;
 	border-left-style: solid;
-	border-right-width:1px;
+	border-right-width: 1px;
 	border-right-style: solid;
-	border-bottom-width:0px;
+	border-bottom-width: 0px;
 	border-bottom-style: none;
-	font-size:14px;
-	
-	/* pour enlever les pointill�e en dessous des liens selectionn�s */
-	outline-color:-moz-use-text-color;
-	outline-style:none;
+	font-size: 14px;
+
+	/* pour enlever les pointillï¿½e en dessous des liens selectionnï¿½s */
+	outline-color: -moz-use-text-color;
+	outline-style: none;
 	border-bottom-style: none;
 }
 
@@ -545,21 +545,20 @@
 
 
 /* Pied de page */
-.footer 
-{
-	height:35px;
-	background:url(images/fondparchemin.gif);
-	
-	/* Cette d�claration nous assure que le footer se trouvera bien en bas de la page.*/
+.footer {
+	height: 35px;
+	background: url(images/fondparchemin.gif);
+
+	/* Cette dï¿½claration nous assure que le footer se trouvera bien en bas de la page.*/
 	clear: both;
 }
 
 .cols {
-	/* Ces deux d�clarations permettent d'obtenir une �l�gant effet de colonnage pour le texte. */
+	/* Ces deux dï¿½clarations permettent d'obtenir une ï¿½lï¿½gant effet de colonnage pour le texte. */
 	/* La suppression de ces deux lignes affiche l'ensemble du texte dans une colonnne unique, tout simplement */
 	width: 48%;
 	float: left;
-	background:url(images/fondparchemin.gif);	
+	background: url(images/fondparchemin.gif);
 }
 
 
@@ -961,7 +960,7 @@ color:transparent;
 }
 
 
-/*D�gats de l'item*/
+/*Dï¿½gats de l'item*/
 .titre_degats_item
 {	
 	font-family:georgia;
@@ -1016,7 +1015,7 @@ color:transparent;
 }
 
 
-/*Agilit� de l'item*/
+/*Agilitï¿½ de l'item*/
 .titre_dexterite_item
 {	
 	font-family:georgia;
@@ -1170,7 +1169,7 @@ color:transparent;
 }
 
 
-/*propri�t� deposable de l'item*/
+/*propriï¿½tï¿½ deposable de l'item*/
 .titre_deposable_item
 {	
 	font-family:georgia;
@@ -1386,7 +1385,7 @@ color:transparent;
 	display: none;
 }
 
-/*Propri�t� Enchantable de l'item*/
+/*Propriï¿½tï¿½ Enchantable de l'item*/
 .titre_enchantable_item
 {	
 	font-family:georgia;
@@ -1413,8 +1412,7 @@ color:transparent;
 }
 
 
-
-/* L'item equip� */
+/* L'item equipï¿½ */
 .selection_item
 {
 	float:right;
@@ -1854,7 +1852,7 @@ color:transparent;
 }
 
 
-/* Pour nettoyer les propri�t�s float */
+/* Pour nettoyer les propriï¿½tï¿½s float */
 .clear
 {
 	clear:both;

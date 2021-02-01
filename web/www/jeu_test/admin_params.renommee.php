@@ -1,11 +1,11 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Renommées et Karma</div><br />';
 
-$erreur = false;
+$erreur         = false;
 $message_erreur = '';
 
 // Pour factoriser le code, on commence par récupérer le nom des tables et colonnes pour le type de renommée sur lequel on travaille
@@ -56,6 +56,7 @@ $typeRenommee = '';
 
 // Ce bloc peut sûrement être remplacé par une expression rationnelle ou un simple substring, pour déterminer le type...
 // J’ai la flemme de le changer. Et je préfère le déterminisme ^^
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'ren_g_creation': case 'ren_g_modif': case 'ren_g_supp':
@@ -99,17 +100,17 @@ switch ($methode)
 		{
 			$req_verif = "select $col_min, $col_max, $col_lib
 				from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = !$db->next_record();
+			$erreur = !$result = $stmt->fetch();
 		}
 
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
 		else
 		{
-			$renommee_min_orig = $db->f($col_min);
-			$renommee_max_orig = $db->f($col_max);
-			$renommee_libelle_orig = $db->f($col_lib);
+			$renommee_min_orig = $result[$col_min];
+			$renommee_max_orig = $result[$col_max];
+			$renommee_libelle_orig = $result[$col_lib];
 			$log .= "	Modification $log_renommee n°$renommee_cod « $renommee_libelle_orig ».\n";
 
 			$renommee_libelle = pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $renommee_libelle))));
@@ -121,7 +122,7 @@ switch ($methode)
 
 			$req_upd = "update $table_ren set $col_min = $renommee_min, $col_max = $renommee_max, $col_lib = '$renommee_libelle'
 				where $col_cod = $renommee_cod";
-			$db->query($req_upd);
+			$stmt = $pdo->query($req_upd);
 		}
 	break;
 
@@ -141,7 +142,7 @@ switch ($methode)
 
 			$req_ins = "insert into $table_ren ($col_min, $col_max, $col_lib)
 				values ($renommee_min, $renommee_max, '$renommee_libelle')";
-			$db->query($req_ins);
+			$stmt = $pdo->query($req_ins);
 		}
 	break;
 
@@ -159,32 +160,32 @@ switch ($methode)
 		{
 			$req_verif = "select $col_min, $col_max, $col_lib
 				from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = !$db->next_record();
+			$erreur = !$result = $stmt->fetch();
 		}
 
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
 		else
 		{
-			$renommee_min_orig = $db->f($col_min);
-			$renommee_max_orig = $db->f($col_max);
-			$renommee_libelle_orig = $db->f($col_lib);
+			$renommee_min_orig = $result[$col_min];
+			$renommee_max_orig = $result[$col_max];
+			$renommee_libelle_orig = $result[$col_lib];
 			$log .= "	Suppression de $log_renommee n°$renommee_cod « $renommee_libelle_orig » [$renommee_min_orig ; $renommee_max_orig].\n";
 
 			$req_del = "delete from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_del);
+			$stmt = $pdo->query($req_del);
 		}
 	break;
 }
 if (!$erreur && $log != '')
 {
-	echo "<div class='bordiv'><b>Mise à jour de $log_renommee.</b><br /><pre>$log</pre></div>";
-	writelog($log);
+	echo "<div class='bordiv'><strong>Mise à jour de $log_renommee.</strong><br /><pre>$log</pre></div>";
+	writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {
-	echo "<div class='bordiv'><b>Erreur !</b><br /><pre>$message_erreur</pre></div>";
+	echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
 echo '<p>Liste des renommées / karma du jeu</p>';
@@ -219,12 +220,12 @@ foreach ($lesTypes as $i)
 	$col_lib = $lesColonnes[$i]['lib'];
 	$log_renommee = $lesNoms[$i];
 	echo "<table id='table_renommee_$i'><tr>
-			<td class='titre' colspan='5'><b>$log_renommee</b></td></tr>";
+			<td class='titre' colspan='5'><strong>$log_renommee</strong></td></tr>";
 	echo '<tr>
-			<td class="titre"><b>Titre</b></td>
-			<td class="titre"><b>Intervalle</b></td>
-			<td class="titre" colspan="2"><b>Action</b></td>
-			<td class="titre"><b>Problèmes détectés</b></td></tr>';
+			<td class="titre"><strong>Titre</strong></td>
+			<td class="titre"><strong>Intervalle</strong></td>
+			<td class="titre" colspan="2"><strong>Action</strong></td>
+			<td class="titre"><strong>Problèmes détectés</strong></td></tr>';
 	echo "<tr><form method='POST' action='#'>
 		<td class='titre' style='padding:2px;'><input name='renommee_libelle' type='text' size='25' /></td>
 		<td class='titre' style='padding:2px;'><input name='renommee_min' type='text' size='6' /> / <input name='renommee_max' type='text' size='6' /></td>
@@ -233,14 +234,14 @@ foreach ($lesTypes as $i)
 		</form></tr>";
 
 	$req = "select $col_cod, $col_min, $col_max, $col_lib from $table_ren order by $col_min";
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	$prev_max = false;
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
-		$renommee_cod = $db->f($col_cod);
-		$renommee_min = $db->f($col_min);
-		$renommee_max = $db->f($col_max);
-		$renommee_libelle = str_replace('\'', '’', $db->f($col_lib));
+		$renommee_cod = $result[$col_cod];
+		$renommee_min = $result[$col_min];
+		$renommee_max = $result[$col_max];
+		$renommee_libelle = str_replace('\'', '’', $result[$col_lib]);
 
 		$erreur = false;
 		$message_erreur = '';

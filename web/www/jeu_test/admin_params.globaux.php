@@ -1,15 +1,16 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Paramètres globaux</div><br />';
 
-$erreur = false;
+$erreur         = false;
 $message_erreur = '';
+$methode        = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'glob_modif':    // Modifie un paramètre global
+    case 'glob_modif':    // Modifie un paramètre global
 		$erreur = !isset($parm_cod) || !isset($parm_type) || !isset($parm_desc) || !isset($parm_valeur)
 			|| !is_numeric($parm_cod);
 		$message_erreur = '';
@@ -29,9 +30,9 @@ switch ($methode)
 					lower(parm_type) as parm_type, parm_desc,
 					case lower(parm_type) when 'integer' then parm_valeur::text else parm_valeur_texte end as parm_valeur
 				from parametres where parm_cod = $parm_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = (!$db->next_record()) || ($parm_type != 'integer' && $parm_type != 'text')
+			$erreur = (!$result = $stmt->fetch()) || ($parm_type != 'integer' && $parm_type != 'text')
 				|| ($parm_type == 'integer' && !is_numeric($parm_valeur));
 		}
 
@@ -42,9 +43,9 @@ switch ($methode)
 		}
 		else
 		{
-			$texte_orig = $db->f('parm_desc');
-			$valeur_orig = $db->f('parm_valeur');
-			$type_orig = $db->f('parm_type');
+			$texte_orig = $result['parm_desc'];
+			$valeur_orig = $result['parm_valeur'];
+			$type_orig = $result['parm_type'];
 			$log .= "	Modification du paramètre n°$parm_cod « $texte_orig ».\n";
 
 			if ($parm_type == 'integer')
@@ -109,27 +110,27 @@ switch ($methode)
 
 			$req_ins = "insert into parametres (parm_type, $champ_valeur, parm_desc)
 				values ('$parm_type', '$parm_valeur', '$parm_desc')";
-			$db->query($req_ins);
+			$stmt = $pdo->query($req_ins);
 		}
 	break;
 }
 if (!$erreur && $log != '')
 {
-	echo "<div class='bordiv'><b>Mise à jour des paramètres globaux</b><br /><pre>$log</pre></div>";
-	writelog($log);
+	echo "<div class='bordiv'><strong>Mise à jour des paramètres globaux</strong><br /><pre>$log</pre></div>";
+	writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {
-	echo "<div class='bordiv'><b>Erreur !</b><br /><pre>$message_erreur</pre></div>";
+	echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
 echo '<p>Liste des paramètres globaux du jeu</p>
 	<table><tr>
-		<td class="titre"><b>Id</b></td>
-		<td class="titre"><b>Description</b></td>
-		<td class="titre"><b>Type</b></td>
-		<td class="titre"><b>Valeur</b></td>
-		<td class="titre"><b>Modifier ?</b></td></tr>';
+		<td class="titre"><strong>Id</strong></td>
+		<td class="titre"><strong>Description</strong></td>
+		<td class="titre"><strong>Type</strong></td>
+		<td class="titre"><strong>Valeur</strong></td>
+		<td class="titre"><strong>Modifier ?</strong></td></tr>';
 echo "<tr><form method='POST' action='#'>
 	<td class='titre' style='padding:2px;'></td>
 	<td class='titre' style='padding:2px;'><input name='parm_desc' type='text' size='50' /></td>
@@ -140,13 +141,13 @@ echo "<tr><form method='POST' action='#'>
 $req = "select parm_cod, lower(parm_type) as parm_type, parm_desc,
 		case lower(parm_type) when 'integer' then parm_valeur::text else parm_valeur_texte end as parm_valeur
 	from parametres order by parm_cod";
-$db->query($req);
-while ($db->next_record())
+$stmt = $pdo->query($req);
+while ($result = $stmt->fetch())
 {
-	$parm_cod = $db->f('parm_cod');
-	$parm_desc = str_replace('\'', '’', $db->f('parm_desc'));
-	$parm_valeur = str_replace('\'', '’', $db->f('parm_valeur'));
-	$parm_type = $db->f('parm_type');
+	$parm_cod = $result['parm_cod'];
+	$parm_desc = str_replace('\'', '’', $result['parm_desc']);
+	$parm_valeur = str_replace('\'', '’', $result['parm_valeur']);
+	$parm_type = $result['parm_type'];
 
 	$int_selected = ($parm_type == 'integer') ? 'selected="selected"' : '' ;
 	$tex_selected = ($parm_type == 'text') ? 'selected="selected"' : '' ;

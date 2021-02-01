@@ -1,0 +1,92 @@
+{% extends 'template_jeu.twig' %}
+
+{% block contenu_droite %}
+
+<script>//# sourceURL=admin_table_list_twig.js
+
+
+    function loadTable(d) {
+        // Ici on récupère le nombre d'entrée et la liste de nom recherché (max 10) => affichage dans le popup
+        $("#table-header").html("");
+        if (d.resultat == -1) {
+            $("#table-content").html("<tr><td colspan='2'><strong>Erreur:</strong> " + d.message+"</td></tr>");
+        } else if (!d.data || !d.data.count) {
+            $("#table-content").html("<tr><td colspan='2'><strong>Aucun élément ne correspond à la recherche:</strong></td></tr>");;
+        } else {
+            var data = d.data.data;
+            var content = "";
+            for (i in data) {
+                content += "<tr><td class=\"soustitre2\">" + data[i].cod + "</td><td class=\"soustitre2\">" + data[i].nom + "</td></tr>";
+            }
+            $("#table-header").html(d.data.table.toUpperCase());
+            $("#table-content").html(content);
+        }
+    }
+
+    function changeSelector() {
+        var table = $("#table-selector").val();
+        runAsync({request: "get_table_cod", data: {recherche: "", limit:10000, table:table}}, loadTable);
+    }
+
+    function exportCSV() {
+        $("#table-list").table2csv({
+            separator:';',
+            newline:'\n',
+            quoteFields:true,
+            excludeColumns:'',
+            excludeRows:'',
+            trimContent:true // Trims the content of individual <th>, <td> tags of whitespaces.
+        });
+
+    }
+
+
+    $( document ).ready(function() {
+        runAsync({request: "get_table_cod", data: {recherche: "", limit:10000, table:"{{ TABLE }}"}}, loadTable);
+    });
+</script>
+<script src="/scripts/table2csv.min.js" type="text/javascript"></script>
+
+    <table width="100%" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <td class="titre" style="text-align: left; width:20%;">
+                <button onclick="exportCSV()" style="font-size: 10px;">export CSV</button> &nbsp;
+                <select id="table-selector" onChange="changeSelector()">
+                    <option value="">Choisir une TABLE</option>
+                    <option value="bonus_type">BONUS_TYPE</option>
+                    <option value="competence">COMPETENCE</option>
+                    <option value="lieu">LIEU</option>
+                    <option value="lieu_type">LIEU_TYPE</option>
+                    <option value="monstre_generique">MONSTRE_GENERIQUE</option>
+                    <option value="objet_generique">OBJET_GENERIQUE</option>
+                    <option value="race">RACE</option>
+                    <option value="sort">SORT</option>
+                </select>
+            </td>
+            <td id="table-header" class="titre" style="width:80%; height: 30px;">TABLE</td>
+        </tr>
+        </thead>
+    </table>
+
+ <table id="table-list" width="100%" cellspacing="2" cellpadding="2">
+     <thead>
+         <tr>
+         <td class="titre" style="width:20%;">Code</td>
+         <td class="titre" style="width:80%;">Nom</td>
+         </tr>
+     </thead>
+     <tbody id="table-content">
+         <tr>
+             <td class="soustitre2">Code</td>
+             <td class="soustitre2">Nom</td>
+         </tr>
+     </tbody>
+
+
+ </table>
+
+
+
+
+{% endblock %}

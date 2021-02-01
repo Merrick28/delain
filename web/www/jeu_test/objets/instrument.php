@@ -1,17 +1,14 @@
-<?php 
-include "../verif_connexion.php";
-include '../../includes/template.inc';
-
-$t = new template('..');
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$bd=new base_delain;
+
 $req_matos = "select perobj_obj_cod
 	from perso_objets
 	inner join objets on obj_cod = perobj_obj_cod
@@ -19,37 +16,35 @@ $req_matos = "select perobj_obj_cod
 	where perobj_perso_cod = $perso_cod
 		and gobj_tobj_cod = 15
 		and perobj_equipe = 'O'";
-$bd->query($req_matos);
-if(!($bd->next_record()))
+$stmt = $pdo->query($req_matos);
+if (!($result = $stmt->fetch()))
 {
 	// PAS D'OBJET.
 	$contenu_page .= "<p>Hélas... Vous n’avez équippé aucun instrument !</p>";
 } else {
-	$num_obj =   $bd->f("perobj_obj_cod");
+    $num_obj = $result['perobj_obj_cod'];
   // TRAITEMENT DES ACTIONS.
-	if(isset($_POST['methode'])){
-		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-		$bd->query($req_pa);
-		$bd->next_record();
-		if ($bd->f("perso_pa") < 2)
-		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
-		}
-		else
-		{
-			// ON ENLEVE LES PAs
-			$req_enl_pa = "update perso set perso_pa = perso_pa - 2 where perso_cod = $perso_cod";
-			$bd->query($req_enl_pa);
-			
-			$code_evt = 0;
-			$texte_evt = '';
-			switch ($_POST['style'])
-			{
-				case 'complainte':
-					$code_evt = 70;
-					$texte_evt = '[perso_cod1] a chantonné une complainte romantique.';
-				break;
-				case 'valse':
+	if(isset($_POST['methode']))
+    {
+
+        if ($perso->perso_pa < 2)
+        {
+            $contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
+        } else
+        {
+            // ON ENLEVE LES PAs
+            $perso->perso_pa = $perso->perso_pa - 2;
+            $perso->stocke();
+
+            $code_evt  = 0;
+            $texte_evt = '';
+            switch ($_POST['style'])
+            {
+                case 'complainte':
+                    $code_evt  = 70;
+                    $texte_evt = '[perso_cod1] a chantonné une complainte romantique.';
+                    break;
+                case 'valse':
 					$code_evt = 71;
 					$texte_evt = '[perso_cod1] a interprété une valse classique.';
 				break;
@@ -75,13 +70,13 @@ if(!($bd->next_record()))
 			{
 				// On regarde où le chant a été réalisé.
 				$req_pos = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod";
-				$bd->query($req_pos);
-				$bd->next_record();
-				$position = $bd->f('ppos_pos_cod');
+                $stmt = $pdo->query($req_pos);
+                $result = $stmt->fetch();
+                $position  = $result['ppos_pos_cod'];
 				$req_chant = "select insere_evenement($perso_cod, $perso_cod, $code_evt, '$texte_evt', 'O', '[pos_cod]=$position')";
-				$bd->query($req_chant);
+                $stmt = $pdo->query($req_chant);
 			}
-			$contenu_page .= '<p><b>Une interprétation émouvante, mais encore quelques progrès à faire avant de collectioner les fans.</b></p>';
+			$contenu_page .= '<p><strong>Une interprétation émouvante, mais encore quelques progrès à faire avant de collectioner les fans.</strong></p>';
 		}
 	} else {
 		$contenu_page .= '
@@ -133,6 +128,9 @@ if(!($bd->next_record()))
 // on va maintenant charger toutes les variables liées au menu
 include('../variables_menu.php');
 
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'CONTENU_PAGE'             => $contenu_page
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

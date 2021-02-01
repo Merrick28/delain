@@ -1,0 +1,20 @@
+{% extends'template_jeu.twig' %}
+
+{% block contenu_droite %}
+    <p>Cliquez sur le portrait du perso à supprimer :</p>
+    {% if NB_PERSOS == 0 %}
+        Aucun joueur dirigé.
+    {% else %}
+
+        <form name="login" method="post" action="valide_suppr_perso1.php">
+            <input type="hidden" name="perso">
+            <input type="hidden" name="compt_cod" value="{{ COMPT.compt_cod }}">
+        </form>
+        {{ DETAIL_PERSO|raw }}
+
+
+
+    {% endif %}
+
+    {{ CONTENU_PAGE|raw }}
+{% endblock %}

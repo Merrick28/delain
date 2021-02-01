@@ -1,28 +1,24 @@
 <?php // gestion des quêtes sur les auberges.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
-if(!isset($methode2))
-	$methode2 = "debut";
+$methode2 = get_request_var('methode2', 'debut');
 
-switch($methode2)
+switch ($methode2)
 {
-	case "debut":
-		//Utilisation des points de prestige pour donner un peu de contenu.
-		$req = "select perso_prestige,perso_nom,perso_sex,perso_po from perso where perso_cod = $perso_cod";
-		$db->query($req);
-		$db->next_record();
-		$prestige = $db->f("perso_prestige");
-		$nom = $db->f("perso_nom");
-		$sexe = $db->f("perso_sex");
-		$brouzoufs = $db->f("perso_po");
-		if ($prestige >= 10 and $prestige <= 20)
-		{
-			srand ((double) microtime() * 10000000); // pour intialiser le random
-			$input = array (
-				"<br>Alors que vous rentrez dans cette auberge, une sorte d’ivrogne s’approche de vous, sentant la bière à plein nez :
-				<br><i> Et dîtes, ch’vous connais vous ! vous n’seriez pas $nom ? Ou alors Graspork ?
+case "debut":
+//Utilisation des points de prestige pour donner un peu de contenu.
+$prestige  = $perso->perso_prestige;
+$nom       = $perso->perso_nom;
+$sexe      = $perso->perso_sex;
+$brouzoufs = $perso->perso_po;
+if ($prestige >= 10 and $prestige <= 20)
+{
+    srand((double)microtime() * 10000000); // pour intialiser le random
+    $input = array(
+        "<br>Alors que vous rentrez dans cette auberge, une sorte d’ivrogne s’approche de vous, sentant la bière à plein nez :
+				<br><em> Et dîtes, ch’vous connais vous ! vous n’seriez pas $nom ? Ou alors Graspork ?
 				<br>Pfff, encore un de ces espèces de %#*£^ù qui cherche la gloire à tous les étages !
 				<br>En plus, j’suis sûr que vous n’connaissez même pas les bons coins qui font la gloire !
 				<br>Allez, si vous m’payez un coup à boire, j’vous dirais un secret. Il parait qu’il y a une drôle de grotte,
@@ -30,8 +26,8 @@ switch($methode2)
 				"<br>Et vous là, vous avez une tête qui m’revient.
 				À moins que ce ne soit sur une affiche de la Milice que je vous ai vu...",
 				"<br>Vous surprenez une conversation, plongé dans votre verre :
-				<br><i>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j’suis tombé sur une cachette !
-				<br>J’me souviens plus bien où c’était mais franchement, y’avait un max à se faire !</i>",
+				<br><em>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j’suis tombé sur une cachette !
+				<br>J’me souviens plus bien où c’était mais franchement, y’avait un max à se faire !</em>",
 				"Au pays des farfadets, on raconte qu’il y a plein de recoins avec des planques ! Ce serait les farfadets eux mêmes qui entreposeraient le butin de leurs larcins !",
 				"",
 				""
@@ -45,7 +41,7 @@ switch($methode2)
 		{
 		?>
 			<hr><br>Un homme s’approche de vous, et vous interpelle :
-			<br><i>« Il me semble vous reconnaître ! Ne seriez-vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
+			<br><em>« Il me semble vous reconnaître ! Ne seriez-vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
 			<br>Vos exploits sont contés de-ci de-là, et nul ne les ignore maintenant.
 			Je m’en vais diffuser la nouvelle de votre venue en cet endroit !
 		<?php 		}
@@ -64,11 +60,11 @@ switch($methode2)
 				from perso_auberge
 				where paub_perso_cod = $perso_cod and paub_lieu_cod = $lieu_cod) t2
 			on t1.pquete_perso_cod = t2.paub_perso_cod";
-		$db->query($req);
-		if ($db->next_record())
+		$stmt = $pdo->query($req);
+		if($result = $stmt->fetch())
 		{
-			$quete_termine = $db->f("pquete_termine");
-			$aub_visite = $db->f("paub_visite");
+			$quete_termine = $result['pquete_termine'];
+			$aub_visite = $result['paub_visite'];
 			if ($quete_termine == 'N' and ($aub_visite == null or $aub_visite == 'N'))
 			{
 				echo "<hr><br>". $nom_sexe[$sexe] .", je vois que vous faites partie des joyeux fêtards qui ont choisi la tournée des auberges !
@@ -84,18 +80,19 @@ switch($methode2)
 				}
 				else
 				{
-				?>
-					<form name="tournee" method="post" action="<?php echo $PHP_SELF;?>">
-					<input type="hidden" name="methode2" value="tournee">
-					<table>
-					<tr>
-					<tr>
-					<td class="soustitre2"><p>Allez, buvons un coup ensemble ! C'est ma tournée !</td>
-					<td><input type="radio" class="vide" name="controle1" value="tournee_ok"></td>
-					</tr>
-					<tr>
-					<td class="soustitre2"><p>Je ne suis pas sûr de vous trouver de bonne compagnie.
-						Et cette inscription à visiter des auberges pour une beuverie n’était pas une bonne idée.</td>
+					?>
+					<form name="tournee" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+						<input type="hidden" name="methode2" value="tournee">
+						<table>
+							<tr>
+							<tr>
+								<td class="soustitre2"><p>Allez, buvons un coup ensemble ! C'est ma tournée !</td>
+								<td><input type="radio" class="vide" name="controle1" value="tournee_ok"></td>
+							</tr>
+							<tr>
+								<td class="soustitre2"><p>Je ne suis pas sûr de vous trouver de bonne compagnie.
+										Et cette inscription à visiter des auberges pour une beuverie n’était pas une
+										bonne idée.</td>
 					<td><input type="radio" class="vide" name="controle1" value="tournee_ko"></td>
 					</tr>
 					<tr>
@@ -169,27 +166,27 @@ switch($methode2)
 				<br>La fille à qui je pense
 				<br>La fille à qui je pense
 				<br>Est plus belle que toi"
-			);
-			$phrase = array_rand ($input, 1);
-			$phrase_boire = $input[$phrase];
-			echo "<i>Un chant est alors entonné gaillardement :</i><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
+            );
+            $phrase = array_rand($input, 1);
+            $phrase_boire = $input[$phrase];
+            echo "<em>Un chant est alors entonné gaillardement :</em><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
 
-			$req = "update perso set perso_po  = perso_po - 50 where perso_cod = $perso_cod";
-			$db->query($req);
-			$db->next_record();
-			if ($aub_visite == null)
-			{
-				$req = "insert into perso_auberge (paub_perso_cod, paub_lieu_cod, paub_nombre, paub_visite)
+
+            $perso->perso_po = $perso->perso_po - 50;
+            $perso->stocke();
+
+            if ($aub_visite == null)
+            {
+                $req = "insert into perso_auberge (paub_perso_cod, paub_lieu_cod, paub_nombre, paub_visite)
 					values ($perso_cod, $lieu_cod, '1', 'O')";
-			}
-			else
-			{
-				$req = "update perso_auberge set paub_visite = 'O'
+            } else
+            {
+                $req = "update perso_auberge set paub_visite = 'O'
 					where paub_lieu_cod = $lieu_cod
 						and paub_perso_cod = $perso_cod";
 			}
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 		}
 		else if ($valid_tournee == 'tournee_ko')
 		{

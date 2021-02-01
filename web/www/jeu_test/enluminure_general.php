@@ -1,44 +1,11 @@
-<?php 
-define("APPEL",1);
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-
+<?php
+include "blocks/_header_page_jeu.php";
+$perso = new perso;
+$perso = $verif_connexion->perso;
 
 // scripts JS
 $contenu_page .= '
-<script language="javascript">
-function blocking(nr)
-{
-	if (document.layers)
-	{
-		current = (document.layers[nr].display == \'none\') ? \'block\' : \'none\';
-		document.layers[nr].display = current;
-	}
-	else if (document.all)
-	{
-		current = (document.all[nr].style.display == \'none\') ? \'block\' : \'none\';
-		document.all[nr].style.display = current;
-	}
-	else if (document.getElementById)
-	{ vista = (document.getElementById(nr).style.display == \'none\') ? \'block\' : \'none\';
-		document.getElementById(nr).style.display = vista;
-	}
-}
-function retour()
-{
-parent.gauche.location.href="menu.php";
-}
-</script>';
+<script language="javascript" src="javascripts/modif_etage.js"></script>';
 $contenu_page .= '
 <style type="text/css">
 .interieur {
@@ -89,15 +56,15 @@ height:200px;
 
 //
 include_once 'sjoueur.php';
-$is_enlumineur = $db->is_enlumineur($perso_cod);
+$is_enlumineur = $perso->is_enlumineur();
 if($is_enlumineur)
 {
 	$controle = 1;
 }
-$contenu_page .= '<span align="center"><b>Enluminure</b></span>
+$contenu_page .= '<span align="center"><strong>Enluminure</strong></span>
 (<a href="javascript:blocking(\'aide\');">Aide</a>)<br><br>
 	<div id="aide" class="tableau2"  style="display:none;">
-	<p><b>Préambule :</b>
+	<p><strong>Préambule :</strong>
 		<br>L’art de l’enluminure n’est en rien complexe.
 		<br>Cela nécessite simplement de trouver une peau qui pourra ensuite servir de support comme parchemin afin de lancer son sort dessus.
 		<br>La difficulté de cet art est que chaque peau possède intrinsecquement une énergie magique, et que c’est cette énergie qui permet d’en faire un support de qualité.
@@ -133,10 +100,10 @@ for($cpt=0;$cpt<$nb;$cpt++)
 	}
 	else
 	{
-		$style = 'pas_onglet';
-		$lien = '<a href="' . $PHP_SELF . '?tenl=' . $cpt . '">';
-		$f_lien = '</a>';
-	}
+        $style  = 'pas_onglet';
+        $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?tenl=' . $cpt . '">';
+        $f_lien = '</a>';
+    }
 	$contenu_page .= '<td class="' . $style .'"><p style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</p></td>';
 }
 $contenu_page .= '</tr>
@@ -147,12 +114,12 @@ switch($tenl)
 	case "0": //Tannage des peaux
 		if($controle == 1)
 		{
-			$contenu_page .= '<span align="center"><b>Tannage des peaux</b></span>
+			$contenu_page .= '<span align="center"><strong>Tannage des peaux</strong></span>
 			(<a href="javascript:blocking(\'aide2\');">Aide sur le tannage</a>)<br><br>
 				<div id="aide2" class="tableau2"  style="display:none;">
-				<p><b>Le tannage des peaux, pourquoi ?</b>
+				<p><strong>Le tannage des peaux, pourquoi ?</strong>
 				<br>Un parchemin n’est pas un simple bout de papier, comme certains pourraient le croire. Il s’agit d’une peau d’un monstre, qui contient déjà une énergie magique. L’opération de tanange consiste à en retirer cette quintessence magique, afin que le parchemin soit ensuite le réceptacle d’un sort.
-				<br><br><b>Comment ?</b>
+				<br><br><strong>Comment ?</strong>
 				<br>Il est nécessaire de sélectionner la peau qui sera tannée, et ensuite, de décider quel niveau de sortilège vous voudrez ensuite pouvoir lancer dessus. Plus vous souhaitez lancer des sortilèges complexes dessus, plus vous avez intérêt à avoir une peau de qualité.
 				<br>Néanmoins, toute peau est capable théroriquement de produire un parchemin de haut niveau. Certaines avec une chance très faible.
 				<br>Dans les faits, il s’avère que certaines peaux ne peuvent pas produire certains résultats, sans que ceci ne soit expliquable par les enlumineurs.
@@ -161,9 +128,9 @@ switch($tenl)
 					</p>
 			</div>
 			<br>';
-			include "enluminure_tannage.php";
-			$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?tenl=0">Retour à l’onglet sélectionné</a>';
-		}
+            include "enluminure_tannage.php";
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?tenl=0">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -171,10 +138,10 @@ switch($tenl)
 		break;	
 	case "1": //Peau en séchage
 		if($controle == 1)
-		{
-			include "enluminure_peau_sechage.php";
-			$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?tenl=1">Retour à l’onglet sélectionné</a>';
-		}
+        {
+            include "enluminure_peau_sechage.php";
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?tenl=1">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -183,10 +150,4 @@ switch($tenl)
 }
 $contenu_page .= '</td></tr></table>';
 
-
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

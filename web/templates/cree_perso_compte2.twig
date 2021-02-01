@@ -1,0 +1,70 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+
+    {% if ERROR_MESSAGE != '' %}
+        <div class="groupdiv">
+            <div class="alert alert-danger">
+                {{ ERROR_MESSAGE }}
+            </div>
+        </div>
+        <a href="cree_perso_compte.php?retour=1&ret_for={{ REQUEST.force }}&ret_dex={{ REQUEST.dex }}&ret_con={{ REQUEST.con }}&ret_int={{ REQUEST.int }}">Retourner
+            à l’étape 1</a>
+    {% else %}
+        <div class="groupdiv">
+            Maintenant que votre personnage est créé, n’hésitez pas à aller consulter <a
+                    href="http://www.jdr-delain.net/faq.php"
+                    target="_blank">la
+                FAQ</a> qui vous donnera des réponses aux questions les plus fréquemment posées.<br>
+            Le <a href="http://www.jdr-delain.net/forum/index.php"
+                  target="_blank">forum</a> ajoutera des compléments parfois indispensables, et permet de lier des
+            contacts.
+            <br>
+            <br>
+        </div>
+        <div class="groupdiv">
+            <div class="titre">{{ PERSO.perso_nom }}</div>
+            <p class="soustitre">Perso n°{{ PERSO.perso_cod }}</p>
+            <table class="table table-bordered table-condensed" style="width: 80%">
+                <tr>
+                    <td class="soustitre">Force</td>
+                    <td>{{ PERSO.perso_for }}</td>
+                </tr>
+                <tr>
+                    <td class="soustitre">Dextérité</td>
+                    <td>{{ PERSO.perso_dex }}</td>
+                </tr>
+                <tr>
+                    <td class="soustitre">Intelligence</td>
+                    <td>{{ PERSO.perso_int }}</td>
+                </tr>
+                <tr>
+                    <td class="soustitre">Constitution</td>
+                    <td>{{ PERSO.perso_con }}</td>
+                </tr>
+
+                {% for typecomp in ALLTC %}
+                    {% if typecomp.comp|length != 0 %}
+                        <tr>
+                            <td colspan="2" class="soustitre"><b><p
+                                            class="soustitre">{{ typecomp.typc_libelle }}</p></b></td>
+                        </tr>
+                        {% for comp in typecomp.comp %}
+                            <tr>
+                                <td>{{ comp.comp_libelle }}</td>
+                                <td>{{ comp.pcomp_modificateur }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <p>Votre aventurier a été créé.<br/>
+                <a href="validation_login2.php">Retour !</a>
+        </div>
+    {% endif %}
+
+
+{% endblock %}
+{% block postscripts %}
+{% endblock %}
+
+

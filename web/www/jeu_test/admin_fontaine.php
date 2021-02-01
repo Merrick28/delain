@@ -1,331 +1,290 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+<?php
+include "blocks/_header_page_jeu.php";
 ob_start();
 ?>
-<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
-<p class="titre">Création d’une fontaine</p>
-<?php 
+    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
+    <p class="titre">Création d’une fontaine</p>
+<?php
 $erreur = 0;
-$req = "select dcompt_objet,dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle
-	from compt_droit
-	where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
-{
-	$droit['modif_perso'] = 'N';
-	$droit['modif_gmon'] = 'N';
-	$droit['controle'] = 'N';
-	$droit['objet'] = 'N';
-}
-else
-{
-	$db->next_record();
-	$droit['modif_perso'] = $db->f("dcompt_modif_perso");
-	$droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-	$droit['controle'] = $db->f("dcompt_controle");
-	$droit['objet'] = $db->f("dcompt_objet");
-}
-if ($droit['modif_perso'] != 'O')
-{
-	echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-	$erreur = 1;
-}
-else
-{
-	if(!isset($mode))
-		$mode = "normal";
-	if(!isset($methode))
-		$methode = "debut";
-	switch($methode)
-	{
-		case "debut":
-			?>
-			<p>Choisissez votre méthode :</p>
-			<a href="<?php echo $PHP_SELF;?>?methode=cre">Création d’une nouvelle fontaine ?</a><br>
-			<a href="<?php echo $PHP_SELF;?>?methode=liste">Liste des existantes existants et possibilités de modification</a><br><br><hr>
-			<?php 
-			$included = true;
-			include "modif_etage6.php";
-		break;
 
-		case "cre": // Création d’une nouvelle fontaine
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
-		?>
-	<form name="cre" method="post" action="<?php echo $PHP_SELF;?>">
-		<br> Pour créer une nouvelle fontaine, il suffit d’indiquer les valeurs nécessaires à sa création.
-		<br> Attention à  bien remplir toutes les informations
-		<input type="hidden" name="methode" value="cre1">
-		<center>
-		<table>
-			<tr>
-				<td class="soustitre2">Position en X</td>
-				<td><input type="text" name="pos_x" value="<?php echo $pos_x?>"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Position en Y</td>
-				<td><input type="text" name="pos_y" value="<?php echo $pos_y?>"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Étage</td>
-				<td><select name="pos_etage">
-		<?php 
-			echo $html->etage_select($pos_e);
-		?>
-				</select></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Gain en pv : nombre de dés</td>
-				<td><input type="text" name="gain_pv_nbre_des"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Gain en pv : valeur des dés</td>
-				<td><input type="text" name="gain_pv_des"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Gains en régénération (valeur du bonus)</td>
-				<td><input type="text" name="gain_regen"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Nombre de dlt du gain en régén</td>
-				<td><input type="text" name="gain_regen_nbre_dlt"></td>
-			</tr>
-			<tr>
-				<td colspan="2"><center><input type="submit" class="test" value="Valider !"></center></td>
-			</tr>
-		</table></center>
-	</form>
-	<?php 
-		break;
+$droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
+include "blocks/_test_droit_modif_generique.php";
 
-		case "cre1":
-			// vérification de la présence d’une position
-			$erreur = 0;
-			$req = 'select pos_cod,pos_fonction_arrivee
+if ($erreur == 0)
+{
+    $mode             = get_request_var('mode', "normal");
+    $methode          = get_request_var('methode', 'debut');
+
+    switch ($methode)
+    {
+        case "debut":
+            ?>
+            <p>Choisissez votre méthode :</p>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’une nouvelle fontaine ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste">Liste des existantes existants et possibilités
+                de
+                modification</a>
+            <br><br>
+            <hr>
+            <?php
+            $included = true;
+            include "modif_etage6.php";
+            break;
+
+        case "cre": // Création d’une nouvelle fontaine
+            echo '<strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a></strong><br>';
+            ?>
+            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <br> Pour créer une nouvelle fontaine, il suffit d’indiquer les valeurs nécessaires à sa création.
+                <br> Attention à bien remplir toutes les informations
+                <input type="hidden" name="methode" value="cre1">
+                <div class="centrer">
+                    <table>
+                        <tr>
+                            <td class="soustitre2">Position en X</td>
+                            <td><input type="text" name="pos_x" value="<?php echo $pos_x ?>"></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Position en Y</td>
+                            <td><input type="text" name="pos_y" value="<?php echo $pos_y ?>"></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Étage</td>
+                            <td><select name="pos_etage">
+                                    <?php
+                                    echo $html->etage_select($pos_e);
+                                    ?>
+                                </select></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Gain en pv : nombre de dés</td>
+                            <td><input type="text" name="gain_pv_nbre_des"></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Gain en pv : valeur des dés</td>
+                            <td><input type="text" name="gain_pv_des"></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Gains en régénération (valeur du bonus)</td>
+                            <td><input type="text" name="gain_regen"></td>
+                        </tr>
+                        <tr>
+                            <td class="soustitre2">Nombre de dlt du gain en régén</td>
+                            <td><input type="text" name="gain_regen_nbre_dlt"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="centrer"><input type="submit" class="test" value="Valider !"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+            <?php
+            break;
+
+        case "cre1":
+            // vérification de la présence d’une position
+            $erreur = 0;
+            $req      = 'select pos_cod,pos_fonction_arrivee
 				from positions
 				where pos_x = ' . $_POST['pos_x'] . '
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
-			$db->query($req);
-			if($db->nf() == 0)
-			{
-				/*********************************/
-				/* Il n’existe pas de position ! */
-				/*********************************/
-				echo 'Aucune position trouvée !<br>
-					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
-				break;
-			}
-			else
-			{
-				/*********************************/
-				/* on stocke le pos_cod et le    */
-				/* pos_fonction_arrivee          */
-				/*********************************/
-				$db->next_record();
-				$pos_cod = $db->f("pos_cod");
-				$pos_fonction_arrive = $db->f("pos_fonction_arrivee");
-			}
+            $stmt     = $pdo->query($req);
+            if (!$result = $stmt->fetch())
+            {
+                /*********************************/
+                /* Il n’existe pas de position ! */
+                /*********************************/
+                echo 'Aucune position trouvée !<br>
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
+                break;
+            } else
+            {
+                /*********************************/
+                /* on stocke le pos_cod et le    */
+                /* pos_fonction_arrivee          */
+                /*********************************/
+                $pos_cod             = $result['pos_cod'];
+                $pos_fonction_arrive = $result['pos_fonction_arrivee'];
+            }
 
-			if($pos_fonction_arrive == '')
-			{
-				/**************************************************/
-				/* Il n’existe pas de fonction sur cette position */
-				/**************************************************/
-				// mise à 0 des valeurs vides pour les malus
-				$fields = array(
-					'gain_pv_nbre_des',
-					'gain_pv_des',
-					'gain_regen',
-					'gain_regen_nbre_dlt',
-					);
-				foreach ($fields as $i => $value)
-				{
-					if($_POST[$fields[$i]] == '')
-						$_POST[$fields[$i]] = 0;
-				}
-				// modif de la table positions pour intégrer la fonction d’arrivée
-				$piege = "deplace_fontaine([perso],". $_POST['gain_pv_nbre_des'] .",". $_POST['gain_pv_des'] .",". $_POST['gain_regen'] .",". $_POST['gain_regen_nbre_dlt'] .")";
-				echo ($piege);
-				$req = "update positions
+            if ($pos_fonction_arrive == '')
+            {
+                /**************************************************/
+                /* Il n’existe pas de fonction sur cette position */
+                /**************************************************/
+                // mise à 0 des valeurs vides pour les malus
+                $fields = array(
+                    'gain_pv_nbre_des',
+                    'gain_pv_des',
+                    'gain_regen',
+                    'gain_regen_nbre_dlt',
+                );
+                foreach ($fields as $i => $value)
+                {
+                    if ($_POST[$fields[$i]] == '')
+                        $_POST[$fields[$i]] = 0;
+                }
+                // modif de la table positions pour intégrer la fonction d’arrivée
+                $piege =
+                    "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . ")";
+                echo($piege);
+                $req  = "update positions
 					set pos_fonction_arrivee = '$piege'
 					,pos_decor = 101
 					where pos_cod = " . $pos_cod;
-				$db->query($req);
-				echo "<p>L’insertion de cette fontaine s’est bien déroulée en ". $_POST['pos_x'] .",". $_POST['pos_y'] ." au ". $_POST['pos_etage'];
-			?>
-	<br><b><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a></b><br>
-		<?php 
-			}
-			else
-			{
-				/******************************************/
-				/* Il existe une fonction sur la position */
-				/******************************************/
-				//
-				/*************************************************/
-				/* on prend la variable $valide pour validation  */
-				/* Si elle est à 1 on force l’update, sinon      */
-				/* on affiche un message                         */
-				/*************************************************/
-				if(!isset($valide))
-					$valide = 0;
-				if($valide != 1)
-				{
-					$db->next_record();
-					echo '<form method="post" name="piege" action="'. $PHP_SELF . '">';
-					//
-					// on remet les variables post qui vont bien
-					//
-					foreach($_POST as $key=>$val)
-						echo '<input type="hidden" name="' . $key . '" value="' . $val . '">';
-					// on rajoute la variable valide, et soit mise à jour, soit annulation
-					echo '<input type="hidden" name="valide" value="1">';
-					echo '</form>';
-					echo "<p> Cette case contient déjà un élément <br><b>" . $pos_fonction_arrive;
-					echo "</b><br> Souhaitez vous quand même effectuer la mise à jour ? <br><i>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</i>";
-					echo '<br><a href="' . $PHP_SELF. '"?methode=cre">Non ?</a>';
-					echo '<br><a href="javascript:document.piege.submit();">Oui ?</a>';
-				}
-				else
-				// Rien de bloquant, on met à jour
-				{
-					$fields = array(
-						'gain_pv_nbre_des',
-						'gain_pv_des',
-						'gain_regen',
-						'gain_regen_nbre_dlt',
-						);
-					foreach ($fields as $i => $value)
-					{
-						if($_POST[$fields[$i]] == '')
-							$_POST[$fields[$i]] = 0;
-					}
-					// modif de la table positions pour intégrer la fonction d'arrivée
-					$piege = "deplace_fontaine([perso],". $_POST['gain_pv_nbre_des'] .",". $_POST['gain_pv_des'] .",". $_POST['gain_regen'] .",". $_POST['gain_regen_nbre_dlt'] .",". $_POST['mal_deg'] .",". $_POST['mal_vue'] .",". $_POST['mal_touche'] .",". $_POST['mal_son'] .",". $_POST['mal_attaque'] .")";
-					echo ($piege);
-					$req = "update positions
+                $stmt = $pdo->query($req);
+                echo "<p>L’insertion de cette fontaine s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'];
+                ?>
+                <br><strong><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a></strong><br>
+                <?php
+            } else
+            {
+                /******************************************/
+                /* Il existe une fonction sur la position */
+                /******************************************/
+                //
+                /*************************************************/
+                /* on prend la variable $valide pour validation  */
+                /* Si elle est à 1 on force l’update, sinon      */
+                /* on affiche un message                         */
+                /*************************************************/
+                $valide = get_request_var('valide', 0);
+
+                if ($valide != 1)
+                {
+                    require "blocks/_admin_fontaine_piege.php";
+                } else // Rien de bloquant, on met à jour
+                {
+                    $fields = array(
+                        'gain_pv_nbre_des',
+                        'gain_pv_des',
+                        'gain_regen',
+                        'gain_regen_nbre_dlt',
+                    );
+                    foreach ($fields as $i => $value)
+                    {
+                        if ($_POST[$fields[$i]] == '')
+                            $_POST[$fields[$i]] = 0;
+                    }
+                    // modif de la table positions pour intégrer la fonction d'arrivée
+                    $piege =
+                        "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
+                    echo($piege);
+                    $req  = "update positions
 						set pos_fonction_arrivee = '$piege'
 						,pos_decor = 101
 						where pos_cod = " . $pos_cod;
-					$db->query($req);
-					echo "<p>L’insertion de cette fontaine s’est bien déroulée en ". $_POST['pos_x'] .",". $_POST['pos_y'] ." au ". $_POST['pos_etage'];
-				}
-			}
-		break;//Fin du process de création
+                    $stmt = $pdo->query($req);
+                    echo "<p>L’insertion de cette fontaine s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'];
+                }
+            }
+            break;//Fin du process de création
 
-		//Liste de l’ensemble des fontaines existantes
-		case "liste":
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
-			$req = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle
+        //Liste de l’ensemble des fontaines existantes
+        case "liste":
+            echo '<strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a></strong><br>';
+            $req  = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle
 				from positions,etage
 				where pos_etage = etage_numero
 					AND SUBSTR(pos_fonction_arrivee,1,16) = 'deplace_fontaine'
 				order by pos_etage,pos_x,pos_y";
-			$db->query($req);
-			while($db->next_record())
-			{
-				$pos_cod = $db->f("pos_cod");
-				echo '<br><b>Fontaine :</b>' . $db->f('pos_fonction_arrivee') . '
-				<br><b>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </b>' . $db->f('etage_libelle') . '<br>
-				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=mod">Modifier la définition de cette fontaine ?</a><br><br>
-				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer cette fontaine ? <b><i>(ATTENTION, action définitive !)</i></b></a><hr>';
-			}
-		break;
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
+            {
+                $pos_cod = $result['pos_cod'];
+                echo '<br><strong>Fontaine :</strong>' . $result['pos_fonction_arrivee'] . '
+				<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?pos_cod=' . $pos_cod . '&methode=mod">Modifier la définition de cette fontaine ?</a><br><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?pos_cod=' . $pos_cod . '&methode=sup">Supprimer cette fontaine ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
+            }
+            break;
 
-		// Modification d’une fontaine existante
-		case "mod":
-			$req = "select pos_fonction_arrivee
+        // Modification d’une fontaine existante
+        case "mod":
+            $req = "select pos_fonction_arrivee
 				from positions
-				where pos_cod = ". $pos_cod;
-			$db->query($req);
-			$db->next_record();
-			$fonction = $db->f("pos_fonction_arrivee");
-			echo "Fonction d’origine : ". $fonction;
-			$fac_piege = explode( ",", $fonction);
+				where pos_cod = " . $pos_cod;
+            $stmt     = $pdo->query($req);
+            $result   = $stmt->fetch();
+            $fonction = $result['pos_fonction_arrivee'];
+            echo "Fonction d’origine : " . $fonction;
+            $fac_piege = explode(",", $fonction);
 
-			echo "<br><b><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></b>";
-		?>
-	<form name="mod" method="post" action="<?php echo $PHP_SELF;?>">
-		<br> Pour modifier une fontaine, il suffit de corriger les valeurs présentes.
-		<br>Une fontaine ne peut pas être déplacée, il faut la supprimer et la recréer ailleurs
-		<br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
-		<input type="hidden" name="methode" value="mod1">
-		<input type="hidden" name="pos_cod" value="<?php echo $pos_cod?>">
-		<center><table>
-			<tr>
-				<td class="soustitre2">Gain de PV : nombre de PV</td>
-				<td><input type="text" name="gain_pv_nbre_des" value="<?php echo $fac_piege[1]?>"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Gain PV : valeur des dés</td>
-				<td><input type="text" name="gain_pv_des" value="<?php echo $fac_piege[2]?>"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Valeur du gain de régén</td>
-				<td><input type="text" name="gain_regen" value="<?php echo $fac_piege[3]?>"></td>
-			</tr>
-			<tr>
-				<td class="soustitre2">Nombre de dlt du gain de régén</td>
-				<td><input type="text" name="gain_regen_nbre_dlt" value="<?php echo $fac_piege[4]?>"></td>
-			</tr>
-			<tr>
-				<td colspan="2"><center><input type="submit" class="test" value="Valider !"></center></td>
-			</tr>
-		</table>
-	<?php 
-		break;
+            echo "<br><strong><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a></strong>";
+            ?>
+        <form name="mod" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <br> Pour modifier une fontaine, il suffit de corriger les valeurs présentes.
+            <br>Une fontaine ne peut pas être déplacée, il faut la supprimer et la recréer ailleurs
+            <br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
+            <input type="hidden" name="methode" value="mod1">
+            <input type="hidden" name="pos_cod" value="<?php echo $pos_cod ?>">
+            <div class="centrer">
+            <table>
+                <tr>
+                    <td class="soustitre2">Gain de PV : nombre de PV</td>
+                    <td><input type="text" name="gain_pv_nbre_des" value="<?php echo $fac_piege[1] ?>"></td>
+                </tr>
+                <tr>
+                    <td class="soustitre2">Gain PV : valeur des dés</td>
+                    <td><input type="text" name="gain_pv_des" value="<?php echo $fac_piege[2] ?>"></td>
+                </tr>
+                <tr>
+                    <td class="soustitre2">Valeur du gain de régén</td>
+                    <td><input type="text" name="gain_regen" value="<?php echo $fac_piege[3] ?>"></td>
+                </tr>
+                <tr>
+                    <td class="soustitre2">Nombre de dlt du gain de régén</td>
+                    <td><input type="text" name="gain_regen_nbre_dlt" value="<?php echo $fac_piege[4] ?>"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="centrer"><input type="submit" class="test" value="Valider !"></div>
+                    </td>
+                </tr>
+            </table>
+            <?php
+            break;
 
-		//La modification  d’une fontaine existante est traitée ci-dessous en terme de MAJ
-		case "mod1": // Résultat de la modification
-			$fields = array(
-				'gain_pv_nbre_des',
-				'gain_pv_des',
-				'gain_regen',
-				'gain_regen_nbre_dlt',
-				);
-			foreach ($fields as $i => $value)
-			{
-				if($_POST[$fields[$i]] == '')
-					$_POST[$fields[$i]] = 0;
-			}
-			// modif de la table positions pour intégrer la fonction d’arrivée
-			$piege = "piege_param([perso],". $_POST['gain_pv_nbre_des'] .",". $_POST['gain_pv_des'] .",". $_POST['gain_regen'] .",". $_POST['gain_regen_nbre_dlt'] .",". $_POST['mal_deg'] .",". $_POST['mal_vue'] .",". $_POST['mal_touche'] .",". $_POST['mal_son'] .",". $_POST['mal_attaque'] .")";
-			echo ($piege);
-			$req = "update positions set pos_fonction_arrivee = '$piege',pos_decor = 101 where pos_cod = " . $pos_cod;
-			$db->query($req);
-			echo "<p>La fontaine a bien été modifiée
-				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
-		break;
+        //La modification  d’une fontaine existante est traitée ci-dessous en terme de MAJ
+        case "mod1": // Résultat de la modification
+            $fields = array(
+                'gain_pv_nbre_des',
+                'gain_pv_des',
+                'gain_regen',
+                'gain_regen_nbre_dlt',
+            );
+            foreach ($fields as $i => $value)
+            {
+                if ($_POST[$fields[$i]] == '')
+                    $_POST[$fields[$i]] = 0;
+            }
+            // modif de la table positions pour intégrer la fonction d’arrivée
+            $piege =
+                "piege_param([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
+            echo($piege);
+            $req  = "update positions set pos_fonction_arrivee = '$piege',pos_decor = 101 where pos_cod = " . $pos_cod;
+            $stmt = $pdo->query($req);
+            echo "<p>La fontaine a bien été modifiée
+				<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a>";
+            break;
 
-		case "sup": //Suppression d’une fontaine existante
-			$req = "update positions set pos_fonction_arrivee = '',pos_decor = 101 where pos_cod = " . $pos_cod;
-			$db->query($req);
-			echo "Fontaine supprimée
-				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
-		break;
-	}
+        case "sup": //Suppression d’une fontaine existante
+            $req  = "update positions set pos_fonction_arrivee = '',pos_decor = 101 where pos_cod = " . $pos_cod;
+            $stmt = $pdo->query($req);
+            echo "Fontaine supprimée
+				<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a>";
+            break;
+    }
 }
-if($mode == 'popup')
-	echo '<script type="text/javascript">document.getElementById("colonne1").style.display="none";
+if ($mode == 'popup')
+    echo '<script type="text/javascript">document.getElementById("colonne1").style.display="none";
 		document.getElementById("colonne2").style.marginLeft="0";
 		</script>';
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
-?>
+include "blocks/_footer_page_jeu.php";

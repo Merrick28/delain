@@ -50,6 +50,7 @@ class monstre_generique
     var $gmon_nb_receptacle = 0;
     var $gmon_quete         = 'N';
     var $gmon_duree_vie     = 0;
+    var $gmon_monture     = 'N' ;
 
     function __construct()
     {
@@ -110,6 +111,7 @@ class monstre_generique
         $this->gmon_nb_receptacle         = $result['gmon_nb_receptacle'];
         $this->gmon_quete                 = $result['gmon_quete'];
         $this->gmon_duree_vie             = $result['gmon_duree_vie'];
+        $this->gmon_monture               = $result['gmon_monture'];
         return true;
     }
 
@@ -160,7 +162,8 @@ class monstre_generique
             gmon_pourcentage_aleatoire,
             gmon_nb_receptacle,
             gmon_quete,
-            gmon_duree_vie                        )
+            gmon_duree_vie,
+            gmon_monture                        )
                     values
                     (
                         :gmon_nom,
@@ -199,7 +202,8 @@ class monstre_generique
                         :gmon_pourcentage_aleatoire,
                         :gmon_nb_receptacle,
                         :gmon_quete,
-                        :gmon_duree_vie                        )
+                        :gmon_duree_vie,
+                        :gmon_monture                        )
     returning gmon_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -240,6 +244,7 @@ class monstre_generique
                ":gmon_nb_receptacle"         => $this->gmon_nb_receptacle,
                ":gmon_quete"                 => $this->gmon_quete,
                ":gmon_duree_vie"             => $this->gmon_duree_vie,
+               ":gmon_monture"               => $this->gmon_monture,
                ), $stmt);
 
 
@@ -286,7 +291,8 @@ class monstre_generique
             gmon_pourcentage_aleatoire = :gmon_pourcentage_aleatoire,
             gmon_nb_receptacle = :gmon_nb_receptacle,
             gmon_quete = :gmon_quete,
-            gmon_duree_vie = :gmon_duree_vie                        where gmon_cod = :gmon_cod ";
+            gmon_duree_vie = :gmon_duree_vie,
+            gmon_monture = :gmon_monture                        where gmon_cod = :gmon_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                ":gmon_cod"                   => $this->gmon_cod,
@@ -327,6 +333,7 @@ class monstre_generique
                ":gmon_nb_receptacle"         => $this->gmon_nb_receptacle,
                ":gmon_quete"                 => $this->gmon_quete,
                ":gmon_duree_vie"             => $this->gmon_duree_vie,
+               ":gmon_monture"               => $this->gmon_monture,
                ), $stmt);
         }
     }
@@ -334,7 +341,7 @@ class monstre_generique
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \monstre_generique
+     * @return monstre_generique[] array
      */
     function getAll()
     {
@@ -384,6 +391,10 @@ class monstre_generique
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

@@ -1,6 +1,6 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Modification / suppression / création d’une faction</div><br />';
@@ -12,7 +12,7 @@ echo '<script type="text/javascript">
 	</script>';
 
 $resultat = '';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'debut': break;
@@ -30,7 +30,7 @@ switch ($methode)
 					fac_description = '$fac_description',
 					fac_introduction = '$fac_introduction'
 				WHERE fac_cod = $fac_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$resultat = "Faction $fac_nom ($fac_cod) mise à jour !";
 		}
 		else
@@ -47,9 +47,9 @@ switch ($methode)
 			$req = "INSERT INTO factions (fac_nom, fac_description, fac_introduction)
 				VALUES ('$fac_nom', '$fac_description', '$fac_introduction')
 				RETURNING fac_cod";
-			$db->query($req);
-			$db->next_record();
-			$fac_cod = $db->f('fac_cod');
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$fac_cod = $result['fac_cod'];
 
 			$resultat = "Faction $fac_nom ($fac_cod) créée !";
 		}
@@ -62,11 +62,11 @@ switch ($methode)
 		{
 			$fac_cod = $_POST['fac_cod'];
 			$req = "SELECT fac_nom FROM factions WHERE fac_cod = $fac_cod";
-			$db->query($req);
-			$db->next_record();
-			$fac_nom = $db->f('fac_nom');
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$fac_nom = $result['fac_nom'];
 			$req = "UPDATE factions SET fac_active = 'N' where fac_cod = $fac_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$resultat = "Faction $fac_nom ($fac_cod) désactivée !";
 		}
 		else
@@ -76,21 +76,21 @@ switch ($methode)
 	case 'faction_restaure':
 		if (isset($_POST['fac_cod']))
 		{
-			$fac_cod = $_POST['fac_cod'];
-			$req = "SELECT fac_nom FROM factions WHERE fac_cod = $fac_cod";
-			$db->query($req);
-			$db->next_record();
-			$fac_nom = $db->f('fac_nom');
-			$req = "UPDATE factions SET fac_active = 'O' where fac_cod = $fac_cod";
-			$db->query($req);
-			$resultat = "Faction $fac_nom ($fac_cod) restaurée !";
-		}
-		else
-			$resultat = "Erreur de paramètres";
-	break;
+			$fac_cod  = $_POST['fac_cod'];
+			$req      = "SELECT fac_nom FROM factions WHERE fac_cod = $fac_cod";
+			$stmt     = $pdo->query($req);
+			$result   = $stmt->fetch();
+            $fac_nom  = $result['fac_nom'];
+            $req      = "UPDATE factions SET fac_active = 'O' where fac_cod = $fac_cod";
+            $stmt     = $pdo->query($req);
+            $resultat = "Faction $fac_nom ($fac_cod) restaurée !";
+        } else
+            $resultat = "Erreur de paramètres";
+        break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 $req = 'SELECT fac_cod, fac_nom, fac_description, fac_introduction, fac_active, coalesce(fmiss_nb, 0) as fmiss_nb, coalesce(rfac_nb, 0) as rfac_nb, coalesce(lfac_nb, 0) as lfac_nb
 	FROM factions
@@ -116,27 +116,27 @@ echo '<div style="padding:10px;"><table>
 		<th class="titre">Actions</th>
 	</tr>';
 
-$db->query($req);
+$stmt = $pdo->query($req);
 
-while($db->next_record())
+while($result = $stmt->fetch())
 {
 	// Récupération des données
-	$fac_cod = $db->f('fac_cod');
-	$fac_nom = $db->f('fac_nom');
-	$fac_active = ($db->f('fac_active') == 'O');
-	$txt_active = ($fac_active) ? '' : '<br /><i>(inactive)</i>';
-	$fac_description = $db->f('fac_description');
-	$fac_introduction = $db->f('fac_introduction');
-	$fmiss_nb = $db->f('fmiss_nb');
-	$rfac_nb = $db->f('rfac_nb');
-	$lfac_nb = $db->f('lfac_nb');
+	$fac_cod = $result['fac_cod'];
+	$fac_nom = $result['fac_nom'];
+	$fac_active = ($result['fac_active'] == 'O');
+	$txt_active = ($fac_active) ? '' : '<br /><em>(inactive)</em>';
+	$fac_description = $result['fac_description'];
+	$fac_introduction = $result['fac_introduction'];
+	$fmiss_nb = $result['fmiss_nb'];
+	$rfac_nb = $result['rfac_nb'];
+	$lfac_nb = $result['lfac_nb'];
 	
-	$b1miss = ($fmiss_nb > 0) ? '' : '<b>';
-	$b2miss = ($fmiss_nb > 0) ? '' : '</b>';
-	$b1rang = ($rfac_nb > 0) ? '' : '<b>';
-	$b2rang = ($rfac_nb > 0) ? '' : '</b>';
-	$b1lieu = ($lfac_nb > 0) ? '' : '<b>';
-	$b2lieu = ($lfac_nb > 0) ? '' : '</b>';
+	$b1miss = ($fmiss_nb > 0) ? '' : '<strong>';
+	$b2miss = ($fmiss_nb > 0) ? '' : '</strong>';
+	$b1rang = ($rfac_nb > 0) ? '' : '<strong>';
+	$b2rang = ($rfac_nb > 0) ? '' : '</strong>';
+	$b1lieu = ($lfac_nb > 0) ? '' : '<strong>';
+	$b2lieu = ($lfac_nb > 0) ? '' : '</strong>';
 
 	echo "<form action='#' method='POST'><tr>
 		<td class='soustitre2'><input type='text' value='$fac_nom' name='fac_nom' size='30' />$txt_active</td>

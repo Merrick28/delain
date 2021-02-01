@@ -1,10 +1,15 @@
-<?php 
+<?php
 
-if(!defined("APPEL"))
-	die("Erreur d'appel de page !");
-if(!isset($db))
-	include_once "verif_connexion.php";
 
-$tab_lieu = $db->get_lieu($perso_cod);
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+
+$perso = new perso;
+$perso = $verif_connexion->perso;
+
+$tab_lieu = $perso->get_lieu();
 echo "<p>Vous voyez une pancarte qui indique : ";
-echo "<p><b><i>" . $tab_lieu['description'] . "</i></b>";
+echo "<p><strong><em>" . $tab_lieu['lieu']->lieu_description . "</em></strong>";

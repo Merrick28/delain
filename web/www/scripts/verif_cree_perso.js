@@ -52,7 +52,6 @@ function verif_carac(carac)
 			document.formuperso1.points.value=(45 - total);
 			return false;
 		}
-		return false;
 	}
 	if (carac == 2)
 	{

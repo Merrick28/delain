@@ -1,52 +1,42 @@
-<?php 
-if (!DEFINED("APPEL"))
-{
-    die("Erreur d'appel de page !");
-}
-if (!isset($db))
-{
-    include "verif_connexion.php";
-}
-?>
+<!DOCTYPE html>
 <html>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href="../css/delain.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Escalier fermé</title>
 </head>
-<body background="../images/fond5.gif">
-<?php include "tab_haut.php";
+<body>
+<div class="bordiv">
+    <?php
 
-// on regarde si le joueur est bien sur une banque
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 3)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
-	}
-}
 
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	echo "<p><b>" . $tab_lieu['nom'] . "</b>  - " . $tab_lieu['description'];
-	echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");
-	echo("Il y a un mot gravé sur la pierre ; <br />");
-	echo("<i>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");
-	if ($db->has_artefact($perso_cod,636))
-	{
-		echo("<p>Souhaitez vous poser l'amulette sur l'escalier ?<br />");
-		echo("<a href=\"valide_escalier_d_ferme.php\">Oui !</a><br />");
-		echo("<a href=\"perso.php\">Non merci !</a><br />");
-	}
-}
+    $type_lieu = 3;
+    $nom_lieu  = 'un escalier';
 
-?>
+    define('APPEL', 1);
+    include "blocks/_test_lieu.php";
+
+
+    if ($erreur == 0)
+    {
+        $perso    = new perso;
+        $perso    = $verif_connexion->perso;
+        $tab_lieu = $perso->get_lieu();
+        echo "<p><strong>" . $tab_lieu['lieu']->lieu_nom . "</strong>  - " . $tab_lieu['lieu']->lieu_description;
+        echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");
+        echo("Il y a un mot gravé sur la pierre ; <br />");
+        echo("<em>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");
+        if ($perso->has_artefact(636))
+        {
+            echo("<p>Souhaitez vous poser l'amulette sur l'escalier ?<br />");
+            echo("<a href=\"valide_escalier_d_ferme.php\">Oui !</a><br />");
+            echo("<a href=\"perso2.php\">Non merci !</a><br />");
+        }
+    }
+
+    ?>
+</div>
 </body>
 </html>

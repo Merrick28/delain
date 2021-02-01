@@ -8,3 +8,16 @@ export webroot=/home/delain/delain/web/www
 export shellroot=/home/delain/delain/shell
 # Racine des livraisons
 export livroot=/home/delain/delain/sql
+# Racine des fonctions sql
+export livfunc=/home/delain/delain/fonctions_sql
+# racine du projet
+export root_project=/home/delain/delain
+# serveur BDD
+
+export PGHOST=`grep SERVER_HOST /home/delain/delain/web/www/includes/conf.php |awk -F"'" '{print $4}'`
+if [ $PGHOST = "localhost" ]; then
+  unset PGHOST
+fi
+
+export USERNAME=`grep SERVER_USERNAME /home/delain/delain/web/www/includes/conf.php |awk -F"'" '{print $4}'`
+export PASSWORD=`grep SERVER_PASSWORD /home/delain/delain/web/www/includes/conf.php |awk -F"'" '{print $4}'`

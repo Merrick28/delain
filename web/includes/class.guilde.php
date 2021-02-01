@@ -24,7 +24,24 @@ class guilde
 
     function __construct()
     {
-        
+
+    }
+
+    function nb_admin_guilde()
+    {
+
+        $pdo      = new bddpdo;
+        $req_comp = "select count(*) as nombre 
+            from guilde_perso,guilde_rang,perso where pguilde_guilde_cod = :guilde
+            and pguilde_guilde_cod = rguilde_guilde_cod 
+            and pguilde_rang_cod = rguilde_rang_cod 
+            and rguilde_admin = 'O' 
+            and pguilde_perso_cod = perso_cod 
+            and perso_actif = 'O' ";
+        $stmt     = $pdo->prepare($req_comp);
+        $stmt     = $pdo->execute(array(":guilde" => $this->guilde_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['nombre'];
     }
 
     /**
@@ -35,10 +52,10 @@ class guilde
      */
     function charge($code)
     {
-        $pdo    = new bddpdo;
-        $req    = "select * from guilde where guilde_cod = ?";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($code), $stmt);
+        $pdo  = new bddpdo;
+        $req  = "select * from guilde where guilde_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -87,21 +104,20 @@ class guilde
     returning guilde_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":guilde_nom"           => $this->guilde_nom,
-               ":guilde_description"   => $this->guilde_description,
-               ":guilde_valide"        => $this->guilde_valide,
-               ":guilde_modif"         => $this->guilde_modif,
-               ":guilde_modif_noir"    => $this->guilde_modif_noir,
-               ":guilde_meta_milice"   => $this->guilde_meta_milice,
-               ":guilde_meta_noir"     => $this->guilde_meta_noir,
-               ":guilde_meta_caravane" => $this->guilde_meta_caravane,
-               ), $stmt);
+                                      ":guilde_nom"           => $this->guilde_nom,
+                                      ":guilde_description"   => $this->guilde_description,
+                                      ":guilde_valide"        => $this->guilde_valide,
+                                      ":guilde_modif"         => $this->guilde_modif,
+                                      ":guilde_modif_noir"    => $this->guilde_modif_noir,
+                                      ":guilde_meta_milice"   => $this->guilde_meta_milice,
+                                      ":guilde_meta_noir"     => $this->guilde_meta_noir,
+                                      ":guilde_meta_caravane" => $this->guilde_meta_caravane,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update guilde
                     set
@@ -115,16 +131,16 @@ class guilde
             guilde_meta_caravane = :guilde_meta_caravane                        where guilde_cod = :guilde_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":guilde_cod"           => $this->guilde_cod,
-               ":guilde_nom"           => $this->guilde_nom,
-               ":guilde_description"   => $this->guilde_description,
-               ":guilde_valide"        => $this->guilde_valide,
-               ":guilde_modif"         => $this->guilde_modif,
-               ":guilde_modif_noir"    => $this->guilde_modif_noir,
-               ":guilde_meta_milice"   => $this->guilde_meta_milice,
-               ":guilde_meta_noir"     => $this->guilde_meta_noir,
-               ":guilde_meta_caravane" => $this->guilde_meta_caravane,
-               ), $stmt);
+                                      ":guilde_cod"           => $this->guilde_cod,
+                                      ":guilde_nom"           => $this->guilde_nom,
+                                      ":guilde_description"   => $this->guilde_description,
+                                      ":guilde_valide"        => $this->guilde_valide,
+                                      ":guilde_modif"         => $this->guilde_modif,
+                                      ":guilde_modif_noir"    => $this->guilde_modif_noir,
+                                      ":guilde_meta_milice"   => $this->guilde_meta_milice,
+                                      ":guilde_meta_noir"     => $this->guilde_meta_noir,
+                                      ":guilde_meta_caravane" => $this->guilde_meta_caravane,
+                                  ), $stmt);
         }
     }
 
@@ -141,12 +157,34 @@ class guilde
         $stmt   = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
-            $temp     = new guilde;
+            $temp = new guilde;
             $temp->charge($result["guilde_cod"]);
             $retour[] = $temp;
             unset($temp);
         }
         return $retour;
+    }
+
+    function get_stats_guilde()
+    {
+        $pdo                     = new bddpdo();
+        $req_comp                = 'select sum(perso_nb_joueur_tue) as joueur_tue,
+        sum(perso_nb_monstre_tue) as monstre_tue,sum(perso_nb_mort) as nb_mort,
+        get_renommee_guilde(:guilde) as renommee,get_karma_guilde(:guilde) as karma 
+        from guilde_perso,perso 
+        where pguilde_guilde_cod = :guilde
+        and pguilde_perso_cod = perso_cod 
+        and perso_actif != \'N\' 
+        and pguilde_valide = \'O\' ';
+        $stmt                    = $pdo->prepare($req_comp);
+        $stmt                    = $pdo->execute(array(":guilde" => $this->guilde_codd), $stmt);
+        $result                  = $stmt->fetch();
+        $tab_comp['joueur_tue']  = $result['joueur_tue'];
+        $tab_comp['monstre_tue'] = $result['monstre_tue'];
+        $tab_comp['nb_mort']     = $result['nb_mort'];
+        $tab_comp['renommee']    = $result['renommee'];
+        $tab_comp['karma']       = $result['karma'];
+        return $tab_comp;
     }
 
     public function __call($name, $arguments)
@@ -163,7 +201,7 @@ class guilde
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
-                        $temp     = new guilde;
+                        $temp = new guilde;
                         $temp->charge($result["guilde_cod"]);
                         $retour[] = $temp;
                         unset($temp);
@@ -173,14 +211,17 @@ class guilde
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

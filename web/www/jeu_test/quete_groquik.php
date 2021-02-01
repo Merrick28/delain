@@ -1,5 +1,5 @@
 <?php 
-$db2 = new base_delain;
+
 $contenu_page4 = '';
 $erreur = 0	;
 
@@ -10,22 +10,19 @@ $req_comp = "select perso_cod as groquik, pos_cod, pos_etage
 				and perso_quete = 'quete_groquik.php'
 				and perso_cod = ppos_perso_cod
 				and ppos_pos_cod = pos_cod";
-$db->query($req_comp);
-if($db->nf() == 0)
+$stmt = $pdo->query($req_comp);
+if($stmt->rowCount() == 0)
 {
 	$erreur = 1;
 	$contenu_page4 .= 'Vous n\'avez pas accès à cette page !';
 }
-if (!isset($methode3))
-{
-	$methode3 = 'debut';
-}
+$methode3 = get_request_var('methode3', 'debut');
 if ($erreur == 0)
 {
-	$db->next_record();
-	$groquik = $db->f('groquik');
-	$position = $db->f('pos_cod');
-	$etage = $db->f('pos_etage');
+	$result = $stmt->fetch();
+	$groquik = $result['groquik'];
+	$position = $result['pos_cod'];
+	$etage = $result['pos_etage'];
 
 	switch($methode3)
 	{
@@ -34,52 +31,52 @@ if ($erreur == 0)
 	Il lève les yeux vers vous et dit : <br />
 	« Bonjour aventurier, vous venez me vendre des pièces en chocolat ?
 	Je vous les achète un bon prix »";
-			$contenu_page4 .= "<p><a href=\"$PHP_SELF?methode3=vendre\">Vendre vos pièces en chocolat (300 Brouzoufs chacune) ...</a></p>";
+            $contenu_page4 .= "<p><a href=\"" . $_SERVER['PHP_SELF'] . "?methode3=vendre\">Vendre vos pièces en chocolat 
+            (300 Brouzoufs chacune) ...</a></p>";
 
-		break;
+            break;
 		case "vendre":
-			$req = "select perobj_obj_cod from perso_objets, objets 
+			$req           = "select perobj_obj_cod from perso_objets, objets 
 					where perobj_obj_cod = obj_cod and obj_gobj_cod = 861
 					and perobj_perso_cod = $perso_cod";
-			$db->query($req);
-			$nombre_vendus = $db->nf();
-			$req = "update perso_objets set perobj_perso_cod = $groquik 
+            $stmt          = $pdo->query($req);
+            $nombre_vendus = $stmt->rowCount();
+            $req           = "update perso_objets set perobj_perso_cod = $groquik 
 					where perobj_perso_cod = $perso_cod 
 					and perobj_obj_cod in ($req)";
-			$db->query($req);
-			$req = "update perso 
-					set perso_po = perso_po + 300 * $nombre_vendus 
-					where perso_cod = $perso_cod";
-			$db->query($req);
-				
-			
-			$req = "select perobj_obj_cod from perso_objets, objets 
+            $stmt          = $pdo->query($req);
+
+            $perso->perso_po = $perso->perso_po + 300 * $nombre_vendus;
+            $perso->stocke();
+
+
+            $req             = "select perobj_obj_cod from perso_objets, objets 
 					where perobj_obj_cod = obj_cod and obj_gobj_cod = 861
 					and perobj_perso_cod = $groquik
 					limit 30";
-			$db->query($req);
-			$nombre_recoltes = $db->nf();
-			$brouzoufs = 300 * $nombre_vendus;
-			$manquants = 30 - $nombre_recoltes;
+            $stmt            = $pdo->query($req);
+            $nombre_recoltes = $stmt->rowCount();
+            $brouzoufs       = 300 * $nombre_vendus;
+            $manquants       = 30 - $nombre_recoltes;
 
 			$contenu_page4 .= "Voilà $brouzoufs Brouzoufs pour votre peine. N'hésitez pas à me ramener d'autres pièces... Il ne m'en manque plus que $manquants !<br />";
 
 			// Compteur de pièces par joueur.
-			$db2 = new base_delain;
-			$db2->query("insert into log_1_avr (nom, nombre) values ($perso_cod, $nombre_vendus)");
+
+            $pdo->query("insert into log_1_avr (nom, nombre) values ($perso_cod, $nombre_vendus)");
 			if ( $nombre_recoltes >= 30 )
 			{
 				// Retirer les pièces de l'inventaire, Créer un dragonnet.
-				while ($db->next_record())
+				while ($result = $stmt->fetch())
 				{
-					$req = "select f_del_objet(" . $db->f('perobj_obj_cod') . ")";
-					$db2->query($req);
+					$req = "select f_del_objet(" . $result['perobj_obj_cod'] . ")";
+					$stmt2 = $pdo->query($req);
 				}
-				$db2->query("
+                $pdo->query("
 						select cree_monstre_invasion(571, $etage) as dragonnet");
-				$db2->next_record();
-				$db2->query("update perso_position set ppos_pos_cod = $position
-							where ppos_perso_cod = " . $db2->f('dragonnet'));
+				$result2 = $stmt2->fetch();
+                $pdo->query("update perso_position set ppos_pos_cod = $position
+							where ppos_perso_cod = " . $result2['dragonnet']);
 				$contenu_page4 .= 'Un nuage de chocolat en poudre apparaît, puis retzombe lentement laissant entrevoir un dragonnet... Visiblement peu coopératif. Vous feriez mieux de ne pas vous éterniser dans les parages...<br />';
 			}
 		break;

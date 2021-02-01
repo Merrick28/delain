@@ -119,6 +119,48 @@ class lock_combat
         return $retour;
     }
 
+    function  getByCible($cible)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select lock_cod  from lock_combat where lock_cible = :cible order by lock_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":cible" => $cible),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new lock_combat;
+            $temp->charge($result["lock_cod"]);
+            $perso = new perso;
+            $perso->charge($temp->lock_attaquant);
+            $temp->attaquant = $perso;
+            unset($perso);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    function  getByAttaquant($cible)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select lock_cod  from lock_combat where lock_attaquant = :cible order by lock_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":cible" => $cible),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new lock_combat;
+            $temp->charge($result["lock_cod"]);
+            $perso = new perso;
+            $perso->charge($temp->lock_cible);
+            $temp->cible = $perso;
+            unset($perso);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     public function __call($name, $arguments){
         switch(substr($name, 0, 6)){
             case 'getBy_':
@@ -149,6 +191,10 @@ class lock_combat
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

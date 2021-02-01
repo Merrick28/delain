@@ -1,34 +1,23 @@
-<?php 
-if(!defined("APPEL"))
-    die("Erreur d’appel de page !");
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; max-height:20px; overflow:hidden;" id="cadre_invasion">';
 echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);">Invasion de monstre</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'cree_invasion':	// Crée une invasion de monstre
-		$code_monstre = $_POST['code_monstre'];
-		$code_etage = $_POST['etage'];
-		$adapterNiveau = (isset($_POST['adapter'])) ? 'true' : 'false';
-		$antres = (isset($_POST['antres']));
-		$eparpillement = $_POST['eparpillement'];
-		$where = '';
-		
-		$req_invasion = "select gmon_nom from monstre_generique where gmon_cod = $code_monstre";
-		$db->query($req_invasion);
-		$db->next_record();
-		$nom_monstre = $db->f('gmon_nom');
-		
-		
-		$texte = "Invasion de $nom_monstre ";
-		if ($code_etage == 'tous' && $antres)
-		{
-			$where = 'WHERE etage_reference != -100';
-			$texte .= "dans tous les étages !";
-		}
-		else if ($code_etage == 'tous' && !$antres)
-		{
+    case 'cree_invasion':    // Crée une invasion de monstre
+        require "blocks/_admin_invasion.php";
+
+
+        $texte = "Invasion de $nom_monstre ";
+        if ($code_etage == 'tous' && $antres)
+        {
+            $where = 'WHERE etage_reference != -100';
+            $texte .= "dans tous les étages !";
+        } else if ($code_etage == 'tous' && !$antres)
+        {
 			$where = 'WHERE etage_reference != -100 AND etage_numero = etage_reference';
 			$texte .= "dans tous les étages principaux !";
 		}
@@ -37,9 +26,9 @@ switch ($methode)
 			$where = "WHERE etage_reference = $code_etage";
 
 			$req_invasion = "select etage_libelle from etage where etage_numero = $code_etage";
-			$db->query($req_invasion);
-			$db->next_record();
-			$nom_etage = $db->f('etage_libelle');
+			$stmt = $pdo->query($req_invasion);
+			$result = $stmt->fetch();
+			$nom_etage = $result['etage_libelle'];
 			$texte .= "dans l’étage « $nom_etage » et ses dépendances !";
 		}
 		else if ($code_etage != 'tous' && !$antres)
@@ -47,27 +36,27 @@ switch ($methode)
 			$where = "WHERE etage_numero = $code_etage";
 
 			$req_invasion = "select etage_libelle from etage where etage_numero = $code_etage";
-			$db->query($req_invasion);
-			$db->next_record();
-			$nom_etage = $db->f('etage_libelle');
+			$stmt = $pdo->query($req_invasion);
+			$result = $stmt->fetch();
+			$nom_etage = $result['etage_libelle'];
 			$texte .= "dans l’étage « $nom_etage » !";
 		}
 		else	// Just to be on the safe side...
 			$where = "WHERE 1 = 0";
 
 		$req_invasion = "select etage_libelle, invasion($code_monstre, etage_numero, $eparpillement, $adapterNiveau) as invasion from etage $where";
-		$db->query($req_invasion);
+		$stmt = $pdo->query($req_invasion);
 		echo '<p>Invasion réalisée !</p>';
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			$resultat = $db->f('invasion');
-			$etage = $db->f('etage_libelle');
-			echo "<p><b>Pour l’étage $etage</b></p><p>$resultat</p>";
+			$resultat = $result['invasion'];
+			$etage = $result['etage_libelle'];
+			echo "<p><strong>Pour l’étage $etage</strong></p><p>$resultat</p>";
 		}
 
 		$texte = pg_escape_string($texte);
 		$req = "INSERT INTO historique_animations(anim_date, anim_texte, anim_type) values (now()::date, '$texte', 'invasion')";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 	break;
 }
 echo '<form name="cree_invasion" method="POST" action="#" onsubmit="return confirm(\'Êtes-vous sûr de vouloir lancer cette invasion ?\');">
@@ -81,19 +70,19 @@ echo '<p>Les invasions de monstre permettent de générer aléatoirement de nomb
 			<p> - Éparpillement : le nombre de cases de l’étage pour un monstre. Une valeur de 50 signifie qu’on créera un monstre pour 50 cases (hors murs). Pour un étage standard (1600 cases), une valeur de 50 ajoute donc 32 monstres. </p>
 			<p>Les paramètres donnés par défaut (sauf pour le type de monstre...) donnent une invasion légère (par exemple utilisée par le passé lors des animations de pâques...).</p>
 	<table>
-		<tr><td class="titre"><b>Type de monstre</b></td>
-		<td class="titre"><b>Étage(s)</b></td>
-		<td class="titre"><b>Options</b></td>
-		<td class="titre"><b>Lancer l’invasion ?</b></td></tr>
+		<tr><td class="titre"><strong>Type de monstre</strong></td>
+		<td class="titre"><strong>Étage(s)</strong></td>
+		<td class="titre"><strong>Options</strong></td>
+		<td class="titre"><strong>Lancer l’invasion ?</strong></td></tr>
 		<tr>
 			<td class="soustitre2">
 			<select name="code_monstre">';
 
 $req = 'select gmon_cod, gmon_nom, gmon_niveau from monstre_generique order by gmon_niveau, gmon_nom';
-$db->query($req);
-while ($db->next_record())
+$stmt = $pdo->query($req);
+while ($result = $stmt->fetch())
 {
-	echo '<option value="' . $db->f('gmon_cod') . '">' . $db->f('gmon_nom') . ' (Niv. ' . $db->f('gmon_niveau') . ' )</option>';
+	echo '<option value="' . $result['gmon_cod'] . '">' . $result['gmon_nom'] . ' (Niv. ' . $result['gmon_niveau'] . ' )</option>';
 }
 echo '</select></td>';
 echo '<td class="soustitre2">
@@ -102,10 +91,10 @@ echo '<td class="soustitre2">
 	';
 
 $req = "select case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle, etage_numero from etage order by etage_reference desc, etage_numero";
-$db->query($req);
-while ($db->next_record())
+$stmt = $pdo->query($req);
+while ($result = $stmt->fetch())
 {
-	echo '<option value="' . $db->f('etage_numero') . '">' . $db->f('etage_libelle') . '</option>';
+	echo '<option value="' . $result['etage_numero'] . '">' . $result['etage_libelle'] . '</option>';
 }
 echo '</select></td>';
 echo '<td class="soustitre2">
@@ -117,15 +106,8 @@ echo '<td class="soustitre2">
 	<input type="submit" value="Lancer l’invasion !" class="test" />
 	</td></tr>';
 echo '</table></form>';
-echo "<p><b>Historique des invasions :</b> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
+echo "<p><strong>Historique des invasions :</strong> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
 
-$req = 'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
-$db->query($req);
-$derniere_distrib = -1;
-while ($db->next_record())
-{
-	echo '<li>' . $db->f('date') . ' : ' . $db->f('anim_texte') . '</li>';
-	$derniere_distrib = $db->f('duree');
-}
-echo '</ul>';
-echo '</div>';
+$req =
+    'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
+require "blocks/_admin_distrib_invasion.php";

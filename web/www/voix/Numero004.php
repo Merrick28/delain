@@ -3,17 +3,17 @@ include "counter.php";
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n&deg;4 - Septembre 2005</title>
-<link href="CSS/voix004.css" rel="stylesheet" type="text/css">
-<script type="text/javascript">
-<!--
-//=======================================================
-     //detect browser settings for showing and hiding DIVs
-     isNS4 = (document.layers) ? true : false;
-     isIE4 = (document.all && !document.getElementById) ? true : false;
-     isIE5 = (document.all && document.getElementById) ? true : false;
-     isNS6 = (!document.all && document.getElementById) ? true : false;
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n&deg;4 - Septembre 2005</title>
+    <link href="CSS/voix004.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        <!--
+        //=======================================================
+        //detect browser settings for showing and hiding DIVs
+        isNS4 = (document.layers) ? true : false;
+        isIE4 = (document.all && !document.getElementById) ? true : false;
+        isIE5 = (document.all && document.getElementById) ? true : false;
+        isNS6 = (!document.all && document.getElementById) ? true : false;
 //=======================================================
 
 function switchDiv(strDivName,bolVisible){
@@ -102,22 +102,22 @@ Un sourire espiègle se dessina sur les lèvres du nain, tout à fait disposé �
       </tr>
       <tr class="interview1_corps">
         <td class="interview1_corps">
-<b>Bardamu</b> : Aeswen... Sois le bienvenu. Installe-toi, et attaquons !
+<strong>Bardamu</strong> : Aeswen... Sois le bienvenu. Installe-toi, et attaquons !
 <br>AlorsPourquoi solliciter cette interview ? 
-<br><b>Aeswen</b> :Tout simplement parce que je le mérite, et que si tout le monde n'a pas entendu 
+<br><strong>Aeswen</strong> :Tout simplement parce que je le mérite, et que si tout le monde n'a pas entendu 
 parler de moi - ce qui est un grand tort - et bien ce sera chose faite.   
-<br><i>* sourire carnassier *</i> 
+<br><em>* sourire carnassier *</em> 
 <br>En fait je crois que j'aime bien parler de moi, et puis j'aime bien que les autres parlent de moi aussi. 
-<br><i>* regard brillant *</i>
-<br><b>Bardamu</b> : Aurais-tu soif de reconnaissance, Aeswen ? ?  
-<br><i>* il malicieux et amusé *</i>
-<br><b>Aeswen</b> : Jaime être le centre dintérêt plutôt. Je dois être un peu <i>* toussote exprès *</i> 
+<br><em>* regard brillant *</em>
+<br><strong>Bardamu</strong> : Aurais-tu soif de reconnaissance, Aeswen ? ?  
+<br><em>* il malicieux et amusé *</em>
+<br><strong>Aeswen</strong> : Jaime être le centre dintérêt plutôt. Je dois être un peu <em>* toussote exprès *</em> 
 égocentrique, ou quelque chose comme ça. Je suis plutôt solitaire, donc rechercher la reconnaissance... 
 Je sais pas... Je parle de mon enfance ou on enchaîne ? 
-<br><i>* tire la langue *</i>
-<br><b>Bardamu</b> : Euh... Oui, enchaînons...
+<br><em>* tire la langue *</em>
+<br><strong>Bardamu</strong> : Euh... Oui, enchaînons...
 <br>As-tu toujours été Mercenaire ? 
-<br><b>Aeswen</b> : Ho non ! Point du tout mon cher ! 
+<br><strong>Aeswen</strong> : Ho non ! Point du tout mon cher ! 
 <br>J'ai été longtemps sans attache, vivant au jour 
 le jour sans me préoccuper du lendemain. Oups... ben c'est encore le cas aujourd'hui. 
 Quoiqu'il en soit, j'ai par la suite rejoint un ami, chef des Larmes de Seluné à l'époque. 
@@ -126,68 +126,68 @@ Cette guilde proposait que chacun soit libre de son destin, et ne prônait pas l
 plus de force... Les Mercenaires se sont alors trouvés sur mon chemin - ou plutôt moi sur le leur - 
 et j'ai fait en sorte de me faire une place parmi eux, ce qui s'est fait assez vite et bien. 
 En fait peut-on vraiment dire que je suis un véritable mercenaire... hmm... 
-<br><b>Bardamu</b> : Ce &quot;matricule&quot;  tencombrerait-il ? ?
-<br><b>Aeswen</b> : Absolument pas ! Je lassume totalement, layant choisi moi-même. 
+<br><strong>Bardamu</strong> : Ce &quot;matricule&quot;  tencombrerait-il ? ?
+<br><strong>Aeswen</strong> : Absolument pas ! Je lassume totalement, layant choisi moi-même. 
 Seulement je ne me trouve pas parmi eux pour largent, parce que jaime la traque ou parce que 
 jai besoin dune excuse pour laisser libre cours à mes envies de faire couler le sang. 
 Et le pire cest quils sont au courant. Je crois que la guilde des Mercenaires est 
 vraiment intéressante, faite de gens intéressants, tous différents les uns des autres et 
 dont les véritables buts diffèrent. Nous devons avoir quelque chose en commun, 
 mais est-ce bien prudent de savancer sur sa nature ?
-<br><b>Bardamu</b> : Qui ta recruté ? 
-<br><b>Aeswen</b> : Je me suis autorecruté si je puis dire, mais Kaali et ses compagnons de route ont 
+<br><strong>Bardamu</strong> : Qui ta recruté ? 
+<br><strong>Aeswen</strong> : Je me suis autorecruté si je puis dire, mais Kaali et ses compagnons de route ont 
 facilité mon adhésion au groupe si ma mémoire est bonne. Je n'ai pas attendu qu'on vienne me chercher. 
 Je sais ce que je veux, et mon verbe suffit généralement à l'obtenir. Et si comme dans le cas des 
 Mercenaires cela colle parfaitement à mes objectifs, c'est encore plus simple.  
-<br><b>Bardamu</b> : Pries-tu Balgur, toi aussi ? 
-<br><b>Aeswen</b> : Allons, cette question n'honore pas ta vivacité d'esprit... 
-<br><b>Bardamu</b> :  <i>* large sourire *</i>
+<br><strong>Bardamu</strong> : Pries-tu Balgur, toi aussi ? 
+<br><strong>Aeswen</strong> : Allons, cette question n'honore pas ta vivacité d'esprit... 
+<br><strong>Bardamu</strong> :  <em>* large sourire *</em>
 <br>Tes paroles doivent sans doute anesthésier mon raisonnement... &quot;Narcisse&quot;
-<br><i>* regard provocateur *</i>
-<br><i>* Aeswen se lève et fait une légère révérence comique, puis se rassoie *</i>
-<br><b>Aeswen</b> : Non mon bon ami, je ne prie pas Balgur ! Je ne prie personne et je suis mon propre maître. Par contre Balgur est un dieu qui a des affinités avec moi.  *regard rieur*
+<br><em>* regard provocateur *</em>
+<br><em>* Aeswen se lève et fait une légère révérence comique, puis se rassoie *</em>
+<br><strong>Aeswen</strong> : Non mon bon ami, je ne prie pas Balgur ! Je ne prie personne et je suis mon propre maître. Par contre Balgur est un dieu qui a des affinités avec moi.  *regard rieur*
 <br> S'il venait me rendre visite je suis sûr qu'on s'entendrait. Cela ne va pas plus loin ! 
-<br><b>Bardamu</b> : Tu nas pas toujours été un tueur... Quest-ce qui ta poussé à franchir le pas ? 
-<br><b>Aeswen</b> : Je ne sais pas ce que tu appelles un tueur... Néanmoins la réponse à ta question 
+<br><strong>Bardamu</strong> : Tu nas pas toujours été un tueur... Quest-ce qui ta poussé à franchir le pas ? 
+<br><strong>Aeswen</strong> : Je ne sais pas ce que tu appelles un tueur... Néanmoins la réponse à ta question 
 est soit &quot;non, je nai jamais été un tueur, et n'en suis toujours pas un&quot;, soit 
 &quot;oui j'ai toujours été un tueur&quot;, à toi de choisir. Ma ligne de conduite n'a jamais changé, 
 et le fait d'entrer parmi les Mercenaires ne l'a donc pas modifiée. Je ne sais pas quelle vision 
 tu as de cette guilde, mais je crains qu'il te fasse un peu plus de recul pour l'appréhender. 
-<br><b>Bardamu</b> : Tu fais erreur Aeswen... Je sais apprécier un ennemi de qualité.  
-<br><i>* &oelig;eil sombre et pénétrant *</i>
-<br><b>Aeswen</b> : Alors je crains que tu ne sois pas sur la bonne longueur donde. 
+<br><strong>Bardamu</strong> : Tu fais erreur Aeswen... Je sais apprécier un ennemi de qualité.  
+<br><em>* &oelig;eil sombre et pénétrant *</em>
+<br><strong>Aeswen</strong> : Alors je crains que tu ne sois pas sur la bonne longueur donde. 
         </td>
         <td class="interview1_corps">
 Nous ne sommes les ennemis de personne, ceux qui nous étiquettent comme tels nont pas tout compris. 
 Si tu veux parler dadversaires de qualité, alors là je suis déjà plus daccord.
-<br><b>Bardamu</b> : Soit... 
-<br><i>* Adresse un sourire ambigu à lelfe *</i>
+<br><strong>Bardamu</strong> : Soit... 
+<br><em>* Adresse un sourire ambigu à lelfe *</em>
 <br>Te concernant, jaccepte le terme « adversaire »...
 Aimes-tu tuer ? 
-<br><b>Aeswen</b> : J'aime affronter de valeureux adversaires et leur prouver que je suis le meilleur. 
+<br><strong>Aeswen</strong> : J'aime affronter de valeureux adversaires et leur prouver que je suis le meilleur. 
 Cela peut - et le plus souvent doit - aller jusqu'à la mort, c'est ainsi que vont les choses. 
 Le fait de tuer ne me procure pas un plaisir particulier, car c'est tout le combat et le frisson 
 qui laccompagne qui sont importants et que je recherche. Un vrai guerrier n'acceptera pas 
 qu'on lui laisse la vie sauve... Il n'y a que les lâches et les faibles qui fuient l'issue fatale ! 
-<br><b>Bardamu</b> : Hum... Hum... De &quot;valeureux adversaires&quot; dis-tu ?? 
+<br><strong>Bardamu</strong> : Hum... Hum... De &quot;valeureux adversaires&quot; dis-tu ?? 
 Bien souvent, tu assènes le coup fatidique sur plus faible que toi... Pourtant...
-<br><b>Aeswen</b> : Bien souvent ? Et puis-je savoir doù tu tiens cette information ?  
-<br><i>* Plisse les yeux *</i>
+<br><strong>Aeswen</strong> : Bien souvent ? Et puis-je savoir doù tu tiens cette information ?  
+<br><em>* Plisse les yeux *</em>
 <br>Si tu veux parler des Harpies ou autre Diablotin qui barrent ma route, alors oui; 
 mais cela tient plus du ménage que du combat. Quant aux aventuriers que jaffronte, 
 sils nétaient pas « valeureux » ils nauraient pu se trouver aussi bas dans les souterrains, 
 et lorsquils se sont égarés je les aide à retrouver leur chemin. Non, je naffronte pas les plus 
 faibles que moi  sauf raison particulière  car cela nest daucun intérêt. 
-<br><i>* Bardamu samuse beaucoup des propos entourloupeurs tenus pas son invité *</i>
-<br><b>Bardamu</b> : Tu es Maître darmes, Maître Mage, Héros Sacré 
+<br><em>* Bardamu samuse beaucoup des propos entourloupeurs tenus pas son invité *</em>
+<br><strong>Bardamu</strong> : Tu es Maître darmes, Maître Mage, Héros Sacré 
 <br>Tu cherches à impressionner ou quoi ? ? 
-<br><b>Aeswen</b> : Les choses vont d'elles-mêmes. On ne peut pas vraiment dire que j'ai poursuivi 
+<br><strong>Aeswen</strong> : Les choses vont d'elles-mêmes. On ne peut pas vraiment dire que j'ai poursuivi 
 avidement cette débauche de renommée, mais j'avoue très bien m'en contenter. Et ces titres je ne me 
 les suis pas donnés moi-même, on me les a attribué au cours du temps. Je dois donc les mériter, non ?  
-<br><i>* sourire narquois *</i>
-<br><b>Bardamu</b> : Sans doute
-<br>Mais, <i>* ton railleur *</i>  déploierais-tu la même assurance sans tes alliés ?   
-<br><b>Aeswen</b> : Cest justement dans les affrontements en un contre un que je peux développer 
+<br><em>* sourire narquois *</em>
+<br><strong>Bardamu</strong> : Sans doute
+<br>Mais, <em>* ton railleur *</em>  déploierais-tu la même assurance sans tes alliés ?   
+<br><strong>Aeswen</strong> : Cest justement dans les affrontements en un contre un que je peux développer 
 tout mon potentiel. Ma Magie et mes capacités naturelles massurent de grandes chances de victoire et 
 au pire une égalité. Si maintenant tu timagines que je pense être capable dannihiler seul une armée, 
 tu te trompes. Je suis un archer, et je peux me débrouiller pour rester hors de portée 
@@ -195,52 +195,52 @@ du danger autant que possible, mais je nai pas la prétention dêtre invinci
 Seul on est une proie trop fragile : un passage, cinq aventuriers, et cen est fini de moi. 
 En groupe on fait réfléchir un peu plus ceux qui sont en mal de prestige et de sensations fortes. 
 Et bizarrement ces gens nous attaquent souvent à trois contre un... de vrais guerriers...
-<br><b>Bardamu</b> : EuhJe note aussi : « Bateleur »mmmCa, ça le fait moinsNon ? 
-<br><b>Aeswen</b> : L'Arcane Majeur du Bateleur s'applique très bien à ma manière de voir l'existence. 
+<br><strong>Bardamu</strong> : EuhJe note aussi : « Bateleur »mmmCa, ça le fait moinsNon ? 
+<br><strong>Aeswen</strong> : L'Arcane Majeur du Bateleur s'applique très bien à ma manière de voir l'existence. 
 Un autre nom que l'on donne au Bateleur est le &quot;Magicien&quot;. Peut-être que cela le fait plus comme ça ? 
 Et pour ta gouverne, c'est l'arcane majeur n°1... Comme tous les arcanes il a son rôle à jouer et 
 il est complémentaire avec les autres. 
-<br><b>Bardamu</b> : « Bateleur », dans mon jargon, signifie « pitre » !  
+<br><strong>Bardamu</strong> : « Bateleur », dans mon jargon, signifie « pitre » !  
 <br>Mais, de toute évidence, nous ne parlons pas le même langage
-<br><b>Aeswen</b> : Le Tarot et ses Arcanes... des clés pour comprendre lunivers et lêtre. 
+<br><strong>Aeswen</strong> : Le Tarot et ses Arcanes... des clés pour comprendre lunivers et lêtre. 
 Chaque Mercenaire est détenteur de lun des Arcanes Majeures. Je te laisserai te cultiver à ce sujet.  
-<br><i>* léger sourire moqueur *</i>
-<br><b>Bardamu</b> : Je crains davoir besoin d un « maître » pour mon initiation...
-<br><i>* regard pétillant *</i>
+<br><em>* léger sourire moqueur *</em>
+<br><strong>Bardamu</strong> : Je crains davoir besoin d un « maître » pour mon initiation...
+<br><em>* regard pétillant *</em>
 <br>Pourquoi refuser délever une peluche ? Peut-être considères-tu que certains de tes « amis » se substituent avec talent à ces petits animaux de compagnie ? ? *petit rire*
-<br><b>Aeswen</b> : Une peluche ! Cest exactement ça ! Je nai pas besoin de mencombrer dune créature 
+<br><strong>Aeswen</strong> : Une peluche ! Cest exactement ça ! Je nai pas besoin de mencombrer dune créature 
 qui piaille, qui court entre les jambes et qui a de 
         </td>
         <td class="interview1_corps">
 grands yeux qui pétillent. 
 Et semblablement tu nas pas compris ce que je dis depuis le début. Je reconnais que je suis moins efficace que ces aventuriers accompagnés de leur familier, cependant cela ne me convient pas ! Seul ma force propre importe, je nai besoin daide daucune sorte.
-<br><b>Bardamu</b> : OkOkTagite pas tant, tu me rends nerveux !
+<br><strong>Bardamu</strong> : OkOkTagite pas tant, tu me rends nerveux !
 <br>Qui bénéficie de ta confiance dans ces bas-fonds ? Qui sont tes amis ?
-<br><b>Aeswen</b> : Confiance, un beau mot tout plein de subtilités. Je ne fais bien sûr pas confiance à tout le monde de la même manière, mais ça cest mon problème. En fait il sagit plus dun respect mutuel. Je connais une grande partie des « puissants » qui parcourent les souterrains, et nous nous respectons comme il se doit. Lorsque nous nous croisons, une bonne poignée de main et une chope de bière, et nous reprenons chacun notre route. Rien ne dit que prochainement nous ne nous retrouverons pas face à face selon les circonstances, mais cest ainsi que je vois les choses. Regarde nous deux, nous avons failli nous combattre il y a peu, et voilà que maintenant nous discutons comme des gens civilisés ; cest à peu près ça ! Je nai pas besoin de citer de nom, mes amis se reconnaîtront.
-<br><b>Bardamu</b> : Après quoi cours-tu ?
-<br><b>Aeswen</b> : La Force, le Pouvoir, le dépassement de soi... Vivacité, créativité, volonté, astuce, dextérité, originalité, initiative, voilà ce qui anime le Bateleur, voilà ce qui m'anime ! Je maîtrise les armes et la magie, et ce pour moi seul... Je participe à une cause ou à une quête, j'accompagne des aventuriers, tant que j'y trouve un intérêt. Je reconnais la valeur des gens par leur force, force au combat ou force de caractère... Je ne trahis personne, pour la simple et bonne raison que je ne demande à personne de m'accorder sa confiance. Je cours, mais je sais aussi de temps en temps m'arrêter pour apprécier les choses accomplies et sentir le monde vibrer autour de moi. 
-<br><b>Bardamu</b> : HmmLe monde ne tourne cependant pas autour de toiBateleur ! 
-<br><b>Aeswen</b> : Et bien cest un tort ! Hahaha !!  *immense sourire joyeux* 
-<br><b>Bardamu</b> : BienAeswenDis moi ? Cest le grand rassemblement en ce moment ? Quel dessein machiavélique allez-vous servirCette fois ? ?
-<br><b>Aeswen</b> : Ha bon ? Mince, zutre, flûte et caca boudin ! Voilà quils font encore la fête sans moi ! Si tu as des informations, donne-les moi sinon je vais être en retard ! 
-<br><i>* soudain lesprit ailleurs *</i> 
+<br><strong>Aeswen</strong> : Confiance, un beau mot tout plein de subtilités. Je ne fais bien sûr pas confiance à tout le monde de la même manière, mais ça cest mon problème. En fait il sagit plus dun respect mutuel. Je connais une grande partie des « puissants » qui parcourent les souterrains, et nous nous respectons comme il se doit. Lorsque nous nous croisons, une bonne poignée de main et une chope de bière, et nous reprenons chacun notre route. Rien ne dit que prochainement nous ne nous retrouverons pas face à face selon les circonstances, mais cest ainsi que je vois les choses. Regarde nous deux, nous avons failli nous combattre il y a peu, et voilà que maintenant nous discutons comme des gens civilisés ; cest à peu près ça ! Je nai pas besoin de citer de nom, mes amis se reconnaîtront.
+<br><strong>Bardamu</strong> : Après quoi cours-tu ?
+<br><strong>Aeswen</strong> : La Force, le Pouvoir, le dépassement de soi... Vivacité, créativité, volonté, astuce, dextérité, originalité, initiative, voilà ce qui anime le Bateleur, voilà ce qui m'anime ! Je maîtrise les armes et la magie, et ce pour moi seul... Je participe à une cause ou à une quête, j'accompagne des aventuriers, tant que j'y trouve un intérêt. Je reconnais la valeur des gens par leur force, force au combat ou force de caractère... Je ne trahis personne, pour la simple et bonne raison que je ne demande à personne de m'accorder sa confiance. Je cours, mais je sais aussi de temps en temps m'arrêter pour apprécier les choses accomplies et sentir le monde vibrer autour de moi. 
+<br><strong>Bardamu</strong> : HmmLe monde ne tourne cependant pas autour de toiBateleur ! 
+<br><strong>Aeswen</strong> : Et bien cest un tort ! Hahaha !!  *immense sourire joyeux* 
+<br><strong>Bardamu</strong> : BienAeswenDis moi ? Cest le grand rassemblement en ce moment ? Quel dessein machiavélique allez-vous servirCette fois ? ?
+<br><strong>Aeswen</strong> : Ha bon ? Mince, zutre, flûte et caca boudin ! Voilà quils font encore la fête sans moi ! Si tu as des informations, donne-les moi sinon je vais être en retard ! 
+<br><em>* soudain lesprit ailleurs *</em> 
 <br>Kaali et ses idées... les égoûts... jte jure ! Jarriverai jamais à faire partir cette odeur, même après une dizaine de douches. 
 Non très cher, il ny a pas de rassemblement prévu pour les temps à venir...
-<br><b>Bardamu</b> : Ah ? Cest donc toi ? ?  
-<br><i>* toussote *</i>
+<br><strong>Bardamu</strong> : Ah ? Cest donc toi ? ?  
+<br><em>* toussote *</em>
 <br>Poursuivons avec un peu de légèreté. Virginie fut ton amanteComment as-tu réagi à son départ ?
-<br><i>* Aeswen Ecarquille les yeux puis jette des regards apeurés de tous côtés, soudain très mal *</i>
-<br><b>Aeswen</b> : Hein ? Quoi !? Comment es-tu au courant ? Personne ne savait sinon nous deux !! Cest très embêtant tout ça, ça va nuire salement à ma réputation  
-<br><i>* inspire un grand coup de dépit *</i>
+<br><em>* Aeswen Ecarquille les yeux puis jette des regards apeurés de tous côtés, soudain très mal *</em>
+<br><strong>Aeswen</strong> : Hein ? Quoi !? Comment es-tu au courant ? Personne ne savait sinon nous deux !! Cest très embêtant tout ça, ça va nuire salement à ma réputation  
+<br><em>* inspire un grand coup de dépit *</em>
 <br>Tant pis, je suppose que cest trop tard ! Oui, nous étions assez proches  
-<br><i>* regard mutin *</i>
+<br><em>* regard mutin *</em>
 <br>Dailleurs si je la revois elle aura droit à une bonne fessée. Partir sans même me dire adieu ! Mon pauvre petit cur fragile... 
-<br><i>* se gratte le nez *</i> 
-<br><b>Bardamu</b> : Et aujourdhuiOù en es-tu avec les Femmes ? Lune dentre elles a-t-elle su te faire chavirer ?
-<br><b>Aeswen</b> : Pas le moins du monde, célibataire jusquau bout des ongles. Mais qui sait ce que les souterrains me réservent ? Peut-être quaprès une grande bataille, après des éclats de voix joyeux et enflammés, une aventurière au regard clair saura-t-elle attirer mon attention ? Notre relation ne sera pas conventionnelle, ça je peux te lassurer !
-<br><b>Bardamu</b> : Héhéhé ! ! !  Je nen doute pas un instantCependant, épargnons les détails à nos lecteursHum
+<br><em>* se gratte le nez *</em> 
+<br><strong>Bardamu</strong> : Et aujourdhuiOù en es-tu avec les Femmes ? Lune dentre elles a-t-elle su te faire chavirer ?
+<br><strong>Aeswen</strong> : Pas le moins du monde, célibataire jusquau bout des ongles. Mais qui sait ce que les souterrains me réservent ? Peut-être quaprès une grande bataille, après des éclats de voix joyeux et enflammés, une aventurière au regard clair saura-t-elle attirer mon attention ? Notre relation ne sera pas conventionnelle, ça je peux te lassurer !
+<br><strong>Bardamu</strong> : Héhéhé ! ! !  Je nen doute pas un instantCependant, épargnons les détails à nos lecteursHum
 <br>AeswenMerci 
-<br><i>* salue lelfe dun mouvement de tête, quelque peu étourdi par tant de vanité! *</i>
+<br><em>* salue lelfe dun mouvement de tête, quelque peu étourdi par tant de vanité! *</em>
         </td>
 	  </tr>
     </table>
@@ -270,22 +270,22 @@ Un sourire espiègle se dessina sur les lèvres du nain, tout à fait disposé �
     <table class="interview1">
       <tr class="interview1_corps">
         <td class="interview1_corps" width="194px">
-<b>Bardamu</b> : Aeswen... Sois le bienvenu. Installe-toi, et attaquons !
+<strong>Bardamu</strong> : Aeswen... Sois le bienvenu. Installe-toi, et attaquons !
 <br>AlorsPourquoi solliciter cette interview ? 
-<br><b>Aeswen</b> :Tout simplement parce que je le mérite, et que si tout le monde n'a pas entendu 
+<br><strong>Aeswen</strong> :Tout simplement parce que je le mérite, et que si tout le monde n'a pas entendu 
 parler de moi - ce qui est un grand tort - et bien ce sera chose faite.   
-<br><i>* sourire carnassier *</i> 
+<br><em>* sourire carnassier *</em> 
 <br>En fait je crois que j'aime bien parler de moi, et puis j'aime bien que les autres parlent de moi aussi. 
-<br><i>* regard brillant *</i>
-<br><b>Bardamu</b> : Aurais-tu soif de reconnaissance, Aeswen ? ?  
-<br><i>* il malicieux et amusé *</i>
-<br><b>Aeswen</b> : Jaime être le centre dintérêt plutôt. Je dois être un peu <i>* toussote exprès *</i> 
+<br><em>* regard brillant *</em>
+<br><strong>Bardamu</strong> : Aurais-tu soif de reconnaissance, Aeswen ? ?  
+<br><em>* il malicieux et amusé *</em>
+<br><strong>Aeswen</strong> : Jaime être le centre dintérêt plutôt. Je dois être un peu <em>* toussote exprès *</em> 
 égocentrique, ou quelque chose comme ça. Je suis plutôt solitaire, donc rechercher la reconnaissance... 
 Je sais pas... Je parle de mon enfance ou on enchaîne ? 
-<br><i>* tire la langue *</i>
-<br><b>Bardamu</b> : Euh... Oui, enchaînons...
+<br><em>* tire la langue *</em>
+<br><strong>Bardamu</strong> : Euh... Oui, enchaînons...
 <br>As-tu toujours été Mercenaire ? 
-<br><b>Aeswen</b> : Ho non ! Point du tout mon cher ! 
+<br><strong>Aeswen</strong> : Ho non ! Point du tout mon cher ! 
 <br>J'ai été longtemps sans attache, vivant au jour 
 le jour sans me préoccuper du lendemain. Oups... ben c'est encore le cas aujourd'hui. 
 Quoiqu'il en soit, j'ai par la suite rejoint un ami, chef des Larmes de Seluné à l'époque. 
@@ -294,36 +294,36 @@ Cette guilde proposait que chacun soit libre de son destin, et ne prônait pas l
 plus de force... Les Mercenaires se sont alors trouvés sur mon chemin - ou plutôt moi sur le leur - 
 et j'ai fait en sorte de me faire une place parmi eux, ce qui s'est fait assez vite et bien. 
 En fait peut-on vraiment dire que je suis un véritable mercenaire... hmm... 
-<br><b>Bardamu</b> : Ce &quot;matricule&quot;  tencombrerait-il ? ?
-<br><b>Aeswen</b> : Absolument pas ! Je lassume totalement, layant choisi moi-même. 
+<br><strong>Bardamu</strong> : Ce &quot;matricule&quot;  tencombrerait-il ? ?
+<br><strong>Aeswen</strong> : Absolument pas ! Je lassume totalement, layant choisi moi-même. 
 Seulement je ne me trouve pas parmi eux pour largent, parce que jaime la traque ou parce que 
 jai besoin dune excuse pour laisser libre cours à mes envies de faire couler le sang. 
 Et le pire cest quils sont au courant. Je crois que la guilde des Mercenaires est 
 vraiment intéressante, faite de gens intéressants, tous différents les uns des autres et 
 dont les véritables buts diffèrent. Nous devons avoir quelque chose en commun, 
 mais est-ce bien prudent de savancer sur sa nature ?
-<br><b>Bardamu</b> : Qui ta recruté ? 
-<br><b>Aeswen</b> : Je me suis autorecruté si je puis dire, mais Kaali et ses compagnons de route ont 
+<br><strong>Bardamu</strong> : Qui ta recruté ? 
+<br><strong>Aeswen</strong> : Je me suis autorecruté si je puis dire, mais Kaali et ses compagnons de route ont 
 facilité mon adhésion au groupe si ma mémoire est bonne. Je n'ai pas attendu qu'on vienne me chercher. 
 Je sais ce que je veux, et mon verbe suffit généralement à l'obtenir. Et si comme dans le cas des 
 Mercenaires cela colle parfaitement à mes objectifs, c'est encore plus simple.  
-<br><b>Bardamu</b> : Pries-tu Balgur, toi aussi ? 
-<br><b>Aeswen</b> : Allons, cette question n'honore pas ta vivacité d'esprit... 
-<br><b>Bardamu</b> :  <i>* large sourire *</i>
+<br><strong>Bardamu</strong> : Pries-tu Balgur, toi aussi ? 
+<br><strong>Aeswen</strong> : Allons, cette question n'honore pas ta vivacité d'esprit... 
+<br><strong>Bardamu</strong> :  <em>* large sourire *</em>
 <br>Tes paroles doivent sans doute anesthésier mon raisonnement... &quot;Narcisse&quot;
-<br><i>* regard provocateur *</i>
-<br><i>* Aeswen se lève et fait une légère révérence comique, puis se rassoie *</i>
-<br><b>Aeswen</b> : Non mon bon ami, je ne prie pas Balgur ! Je ne prie personne et je suis mon propre maître. Par contre Balgur est un dieu qui a des affinités avec moi.  *regard rieur*
+<br><em>* regard provocateur *</em>
+<br><em>* Aeswen se lève et fait une légère révérence comique, puis se rassoie *</em>
+<br><strong>Aeswen</strong> : Non mon bon ami, je ne prie pas Balgur ! Je ne prie personne et je suis mon propre maître. Par contre Balgur est un dieu qui a des affinités avec moi.  *regard rieur*
 <br> S'il venait me rendre visite je suis sûr qu'on s'entendrait. Cela ne va pas plus loin ! 
-<br><b>Bardamu</b> : Tu nas pas toujours été un tueur... Quest-ce qui ta poussé à franchir le pas ? 
-<br><b>Aeswen</b> : Je ne sais pas ce que tu appelles un tueur... Néanmoins la réponse à ta question 
+<br><strong>Bardamu</strong> : Tu nas pas toujours été un tueur... Quest-ce qui ta poussé à franchir le pas ? 
+<br><strong>Aeswen</strong> : Je ne sais pas ce que tu appelles un tueur... Néanmoins la réponse à ta question 
 est soit &quot;non, je nai jamais été un tueur, et n'en suis toujours pas un&quot;, soit 
 &quot;oui j'ai toujours été un tueur&quot;, à toi de choisir. Ma ligne de conduite n'a jamais changé, 
 et le fait d'entrer parmi les Mercenaires ne l'a donc pas modifiée. Je ne sais pas quelle vision 
 tu as de cette guilde, mais je crains qu'il te fasse un peu plus de recul pour l'appréhender. 
-<br><b>Bardamu</b> : Tu fais erreur Aeswen... Je sais apprécier un ennemi de qualité.  
-<br><i>* &oelig;eil sombre et pénétrant *</i>
-<br><b>Aeswen</b> : Alors je crains que tu ne sois pas sur la bonne longueur donde. 
+<br><strong>Bardamu</strong> : Tu fais erreur Aeswen... Je sais apprécier un ennemi de qualité.  
+<br><em>* &oelig;eil sombre et pénétrant *</em>
+<br><strong>Aeswen</strong> : Alors je crains que tu ne sois pas sur la bonne longueur donde. 
         </td>
 	  </tr>
     </table>
@@ -334,34 +334,34 @@ tu as de cette guilde, mais je crains qu'il te fasse un peu plus de recul pour l
         <td class="interview1_corps" width="194px">
 Nous ne sommes les ennemis de personne, ceux qui nous étiquettent comme tels nont pas tout compris. 
 Si tu veux parler dadversaires de qualité, alors là je suis déjà plus daccord.
-<br><b>Bardamu</b> : Soit... 
-<br><i>* Adresse un sourire ambigu à lelfe *</i>
+<br><strong>Bardamu</strong> : Soit... 
+<br><em>* Adresse un sourire ambigu à lelfe *</em>
 <br>Te concernant, jaccepte le terme « adversaire »...
 Aimes-tu tuer ? 
-<br><b>Aeswen</b> : J'aime affronter de valeureux adversaires et leur prouver que je suis le meilleur. 
+<br><strong>Aeswen</strong> : J'aime affronter de valeureux adversaires et leur prouver que je suis le meilleur. 
 Cela peut - et le plus souvent doit - aller jusqu'à la mort, c'est ainsi que vont les choses. 
 Le fait de tuer ne me procure pas un plaisir particulier, car c'est tout le combat et le frisson 
 qui laccompagne qui sont importants et que je recherche. Un vrai guerrier n'acceptera pas 
 qu'on lui laisse la vie sauve... Il n'y a que les lâches et les faibles qui fuient l'issue fatale ! 
-<br><b>Bardamu</b> : Hum... Hum... De &quot;valeureux adversaires&quot; dis-tu ?? 
+<br><strong>Bardamu</strong> : Hum... Hum... De &quot;valeureux adversaires&quot; dis-tu ?? 
 Bien souvent, tu assènes le coup fatidique sur plus faible que toi... Pourtant...
-<br><b>Aeswen</b> : Bien souvent ? Et puis-je savoir doù tu tiens cette information ?  
-<br><i>* Plisse les yeux *</i>
+<br><strong>Aeswen</strong> : Bien souvent ? Et puis-je savoir doù tu tiens cette information ?  
+<br><em>* Plisse les yeux *</em>
 <br>Si tu veux parler des Harpies ou autre Diablotin qui barrent ma route, alors oui; 
 mais cela tient plus du ménage que du combat. Quant aux aventuriers que jaffronte, 
 sils nétaient pas « valeureux » ils nauraient pu se trouver aussi bas dans les souterrains, 
 et lorsquils se sont égarés je les aide à retrouver leur chemin. Non, je naffronte pas les plus 
 faibles que moi  sauf raison particulière  car cela nest daucun intérêt. 
-<br><i>* Bardamu samuse beaucoup des propos entourloupeurs tenus pas son invité *</i>
-<br><b>Bardamu</b> : Tu es Maître darmes, Maître Mage, Héros Sacré 
+<br><em>* Bardamu samuse beaucoup des propos entourloupeurs tenus pas son invité *</em>
+<br><strong>Bardamu</strong> : Tu es Maître darmes, Maître Mage, Héros Sacré 
 <br>Tu cherches à impressionner ou quoi ? ? 
-<br><b>Aeswen</b> : Les choses vont d'elles-mêmes. On ne peut pas vraiment dire que j'ai poursuivi 
+<br><strong>Aeswen</strong> : Les choses vont d'elles-mêmes. On ne peut pas vraiment dire que j'ai poursuivi 
 avidement cette débauche de renommée, mais j'avoue très bien m'en contenter. Et ces titres je ne me 
 les suis pas donnés moi-même, on me les a attribué au cours du temps. Je dois donc les mériter, non ?  
-<br><i>* sourire narquois *</i>
-<br><b>Bardamu</b> : Sans doute
-<br>Mais, <i>* ton railleur *</i>  déploierais-tu la même assurance sans tes alliés ?   
-<br><b>Aeswen</b> : Cest justement dans les affrontements en un contre un que je peux développer 
+<br><em>* sourire narquois *</em>
+<br><strong>Bardamu</strong> : Sans doute
+<br>Mais, <em>* ton railleur *</em>  déploierais-tu la même assurance sans tes alliés ?   
+<br><strong>Aeswen</strong> : Cest justement dans les affrontements en un contre un que je peux développer 
 tout mon potentiel. Ma Magie et mes capacités naturelles massurent de grandes chances de victoire et 
 au pire une égalité. Si maintenant tu timagines que je pense être capable dannihiler seul une armée, 
 tu te trompes. Je suis un archer, et je peux me débrouiller pour rester hors de portée 
@@ -369,20 +369,20 @@ du danger autant que possible, mais je nai pas la prétention dêtre invinci
 Seul on est une proie trop fragile : un passage, cinq aventuriers, et cen est fini de moi. 
 En groupe on fait réfléchir un peu plus ceux qui sont en mal de prestige et de sensations fortes. 
 Et bizarrement ces gens nous attaquent souvent à trois contre un... de vrais guerriers...
-<br><b>Bardamu</b> : EuhJe note aussi : « Bateleur »mmmCa, ça le fait moinsNon ? 
-<br><b>Aeswen</b> : L'Arcane Majeur du Bateleur s'applique très bien à ma manière de voir l'existence. 
+<br><strong>Bardamu</strong> : EuhJe note aussi : « Bateleur »mmmCa, ça le fait moinsNon ? 
+<br><strong>Aeswen</strong> : L'Arcane Majeur du Bateleur s'applique très bien à ma manière de voir l'existence. 
 Un autre nom que l'on donne au Bateleur est le &quot;Magicien&quot;. Peut-être que cela le fait plus comme ça ? 
 Et pour ta gouverne, c'est l'arcane majeur n°1... Comme tous les arcanes il a son rôle à jouer et 
 il est complémentaire avec les autres. 
-<br><b>Bardamu</b> : « Bateleur », dans mon jargon, signifie « pitre » !  
+<br><strong>Bardamu</strong> : « Bateleur », dans mon jargon, signifie « pitre » !  
 <br>Mais, de toute évidence, nous ne parlons pas le même langage
-<br><b>Aeswen</b> : Le Tarot et ses Arcanes... des clés pour comprendre lunivers et lêtre. 
+<br><strong>Aeswen</strong> : Le Tarot et ses Arcanes... des clés pour comprendre lunivers et lêtre. 
 Chaque Mercenaire est détenteur de lun des Arcanes Majeures. Je te laisserai te cultiver à ce sujet.  
-<br><i>* léger sourire moqueur *</i>
-<br><b>Bardamu</b> : Je crains davoir besoin d un « maître » pour mon initiation...
-<br><i>* regard pétillant *</i>
+<br><em>* léger sourire moqueur *</em>
+<br><strong>Bardamu</strong> : Je crains davoir besoin d un « maître » pour mon initiation...
+<br><em>* regard pétillant *</em>
 <br>Pourquoi refuser délever une peluche ? Peut-être considères-tu que certains de tes « amis » se substituent avec talent à ces petits animaux de compagnie ? ? *petit rire*
-<br><b>Aeswen</b> : Une peluche ! Cest exactement ça ! Je nai pas besoin de mencombrer dune créature 
+<br><strong>Aeswen</strong> : Une peluche ! Cest exactement ça ! Je nai pas besoin de mencombrer dune créature 
 qui piaille, qui court entre les jambes et qui a de 
         </td>
 	  </tr>
@@ -394,33 +394,33 @@ qui piaille, qui court entre les jambes et qui a de
         <td class="interview1_corps">
 grands yeux qui pétillent. 
 Et semblablement tu nas pas compris ce que je dis depuis le début. Je reconnais que je suis moins efficace que ces aventuriers accompagnés de leur familier, cependant cela ne me convient pas ! Seul ma force propre importe, je nai besoin daide daucune sorte.
-<br><b>Bardamu</b> : OkOkTagite pas tant, tu me rends nerveux !
+<br><strong>Bardamu</strong> : OkOkTagite pas tant, tu me rends nerveux !
 <br>Qui bénéficie de ta confiance dans ces bas-fonds ? Qui sont tes amis ?
-<br><b>Aeswen</b> : Confiance, un beau mot tout plein de subtilités. Je ne fais bien sûr pas confiance à tout le monde de la même manière, mais ça cest mon problème. En fait il sagit plus dun respect mutuel. Je connais une grande partie des « puissants » qui parcourent les souterrains, et nous nous respectons comme il se doit. Lorsque nous nous croisons, une bonne poignée de main et une chope de bière, et nous reprenons chacun notre route. Rien ne dit que prochainement nous ne nous retrouverons pas face à face selon les circonstances, mais cest ainsi que je vois les choses. Regarde nous deux, nous avons failli nous combattre il y a peu, et voilà que maintenant nous discutons comme des gens civilisés ; cest à peu près ça ! Je nai pas besoin de citer de nom, mes amis se reconnaîtront.
-<br><b>Bardamu</b> : Après quoi cours-tu ?
-<br><b>Aeswen</b> : La Force, le Pouvoir, le dépassement de soi... Vivacité, créativité, volonté, astuce, dextérité, originalité, initiative, voilà ce qui anime le Bateleur, voilà ce qui m'anime ! Je maîtrise les armes et la magie, et ce pour moi seul... Je participe à une cause ou à une quête, j'accompagne des aventuriers, tant que j'y trouve un intérêt. Je reconnais la valeur des gens par leur force, force au combat ou force de caractère... Je ne trahis personne, pour la simple et bonne raison que je ne demande à personne de m'accorder sa confiance. Je cours, mais je sais aussi de temps en temps m'arrêter pour apprécier les choses accomplies et sentir le monde vibrer autour de moi. 
-<br><b>Bardamu</b> : HmmLe monde ne tourne cependant pas autour de toiBateleur ! 
-<br><b>Aeswen</b> : Et bien cest un tort ! Hahaha !!  *immense sourire joyeux* 
-<br><b>Bardamu</b> : BienAeswenDis moi ? Cest le grand rassemblement en ce moment ? Quel dessein machiavélique allez-vous servirCette fois ? ?
-<br><b>Aeswen</b> : Ha bon ? Mince, zutre, flûte et caca boudin ! Voilà quils font encore la fête sans moi ! Si tu as des informations, donne-les moi sinon je vais être en retard ! 
-<br><i>* soudain lesprit ailleurs *</i> 
+<br><strong>Aeswen</strong> : Confiance, un beau mot tout plein de subtilités. Je ne fais bien sûr pas confiance à tout le monde de la même manière, mais ça cest mon problème. En fait il sagit plus dun respect mutuel. Je connais une grande partie des « puissants » qui parcourent les souterrains, et nous nous respectons comme il se doit. Lorsque nous nous croisons, une bonne poignée de main et une chope de bière, et nous reprenons chacun notre route. Rien ne dit que prochainement nous ne nous retrouverons pas face à face selon les circonstances, mais cest ainsi que je vois les choses. Regarde nous deux, nous avons failli nous combattre il y a peu, et voilà que maintenant nous discutons comme des gens civilisés ; cest à peu près ça ! Je nai pas besoin de citer de nom, mes amis se reconnaîtront.
+<br><strong>Bardamu</strong> : Après quoi cours-tu ?
+<br><strong>Aeswen</strong> : La Force, le Pouvoir, le dépassement de soi... Vivacité, créativité, volonté, astuce, dextérité, originalité, initiative, voilà ce qui anime le Bateleur, voilà ce qui m'anime ! Je maîtrise les armes et la magie, et ce pour moi seul... Je participe à une cause ou à une quête, j'accompagne des aventuriers, tant que j'y trouve un intérêt. Je reconnais la valeur des gens par leur force, force au combat ou force de caractère... Je ne trahis personne, pour la simple et bonne raison que je ne demande à personne de m'accorder sa confiance. Je cours, mais je sais aussi de temps en temps m'arrêter pour apprécier les choses accomplies et sentir le monde vibrer autour de moi. 
+<br><strong>Bardamu</strong> : HmmLe monde ne tourne cependant pas autour de toiBateleur ! 
+<br><strong>Aeswen</strong> : Et bien cest un tort ! Hahaha !!  *immense sourire joyeux* 
+<br><strong>Bardamu</strong> : BienAeswenDis moi ? Cest le grand rassemblement en ce moment ? Quel dessein machiavélique allez-vous servirCette fois ? ?
+<br><strong>Aeswen</strong> : Ha bon ? Mince, zutre, flûte et caca boudin ! Voilà quils font encore la fête sans moi ! Si tu as des informations, donne-les moi sinon je vais être en retard ! 
+<br><em>* soudain lesprit ailleurs *</em> 
 <br>Kaali et ses idées... les égoûts... jte jure ! Jarriverai jamais à faire partir cette odeur, même après une dizaine de douches. 
 Non très cher, il ny a pas de rassemblement prévu pour les temps à venir...
-<br><b>Bardamu</b> : Ah ? Cest donc toi ? ?  
-<br><i>* toussote *</i>
+<br><strong>Bardamu</strong> : Ah ? Cest donc toi ? ?  
+<br><em>* toussote *</em>
 <br>Poursuivons avec un peu de légèreté. Virginie fut ton amanteComment as-tu réagi à son départ ?
-<br><i>* Aeswen Ecarquille les yeux puis jette des regards apeurés de tous côtés, soudain très mal *</i>
-<br><b>Aeswen</b> : Hein ? Quoi !? Comment es-tu au courant ? Personne ne savait sinon nous deux !! Cest très embêtant tout ça, ça va nuire salement à ma réputation  
-<br><i>* inspire un grand coup de dépit *</i>
+<br><em>* Aeswen Ecarquille les yeux puis jette des regards apeurés de tous côtés, soudain très mal *</em>
+<br><strong>Aeswen</strong> : Hein ? Quoi !? Comment es-tu au courant ? Personne ne savait sinon nous deux !! Cest très embêtant tout ça, ça va nuire salement à ma réputation  
+<br><em>* inspire un grand coup de dépit *</em>
 <br>Tant pis, je suppose que cest trop tard ! Oui, nous étions assez proches  
-<br><i>* regard mutin *</i>
+<br><em>* regard mutin *</em>
 <br>Dailleurs si je la revois elle aura droit à une bonne fessée. Partir sans même me dire adieu ! Mon pauvre petit cur fragile... 
-<br><i>* se gratte le nez *</i> 
-<br><b>Bardamu</b> : Et aujourdhuiOù en es-tu avec les Femmes ? Lune dentre elles a-t-elle su te faire chavirer ?
-<br><b>Aeswen</b> : Pas le moins du monde, célibataire jusquau bout des ongles. Mais qui sait ce que les souterrains me réservent ? Peut-être quaprès une grande bataille, après des éclats de voix joyeux et enflammés, une aventurière au regard clair saura-t-elle attirer mon attention ? Notre relation ne sera pas conventionnelle, ça je peux te lassurer !
-<br><b>Bardamu</b> : Héhéhé ! ! !  Je nen doute pas un instantCependant, épargnons les détails à nos lecteursHum
+<br><em>* se gratte le nez *</em> 
+<br><strong>Bardamu</strong> : Et aujourdhuiOù en es-tu avec les Femmes ? Lune dentre elles a-t-elle su te faire chavirer ?
+<br><strong>Aeswen</strong> : Pas le moins du monde, célibataire jusquau bout des ongles. Mais qui sait ce que les souterrains me réservent ? Peut-être quaprès une grande bataille, après des éclats de voix joyeux et enflammés, une aventurière au regard clair saura-t-elle attirer mon attention ? Notre relation ne sera pas conventionnelle, ça je peux te lassurer !
+<br><strong>Bardamu</strong> : Héhéhé ! ! !  Je nen doute pas un instantCependant, épargnons les détails à nos lecteursHum
 <br>AeswenMerci 
-<br><i>* salue lelfe dun mouvement de tête, quelque peu étourdi par tant de vanité! *</i>
+<br><em>* salue lelfe dun mouvement de tête, quelque peu étourdi par tant de vanité! *</em>
         </td>
 	  </tr>
     </table>
@@ -444,7 +444,7 @@ Ce tout nouveau numéro accueille Albert, héros dun feuilleton delainien dont
 <br>
 <br>Bonne lecture à tous !
 <br>
-<br><b>La rédaction.</b>
+<br><strong>La rédaction.</strong>
             </td>
           </tr>
     </table>
@@ -466,53 +466,53 @@ fraîchement débarqués dans les profondeurs, se livrent à Bardamu.
       </tr>
       <tr class="interview2_corps">
         <td class="interview2_corps">
-<b>Bardamu</b> :  Salut messieurs... 
+<strong>Bardamu</strong> :  Salut messieurs... 
 <br>GARGOTIER !!?? Trois chopines!!!
 Bien... Alors, comment avez-vous atterri dans les profondeurs ?
-<br><b>Mandrak</b> : Ce qui m'a attiré dans ces sombres souterrains, c'est l'ennui que me 
+<br><strong>Mandrak</strong> : Ce qui m'a attiré dans ces sombres souterrains, c'est l'ennui que me 
 procurait la lecture de ces vieux grimoires et parchemins à la Tour des Mages... 
 Bref, ma curiosité exacerbée et le manque d'exercice physique !!!
 (Jildrake se concentre sur les danseuses affriolantes qui se tortillent devant lui, et semble 
 quelque peu effrayer par leur souplesseBref, il en reste sans voixBardamu sen inquiète, 
 puis se resaisit)
-<br><b>Bardamu</b> :  EuhQuels sont vos tout premiers sentiments ?
-<br><b>Mandrak</b> : Mes premiers sentiments par rapport aux souterrains... Et bien j'ai vite pu 
+<br><strong>Bardamu</strong> :  EuhQuels sont vos tout premiers sentiments ?
+<br><strong>Mandrak</strong> : Mes premiers sentiments par rapport aux souterrains... Et bien j'ai vite pu 
 constater qu'ils sont truffés de vils personnes animés par la soif de détruire son prochain...
 Que du bonheur en compte...
-<br><b>Bardamu</b> :  mmmQuels objectifs vous êtes-vous fixez ?
-<br><b>Mandrak</b> : Mes objectifs sont de rencontrer des aventuriers, lier des amitiés et défendre 
+<br><strong>Bardamu</strong> :  mmmQuels objectifs vous êtes-vous fixez ?
+<br><strong>Mandrak</strong> : Mes objectifs sont de rencontrer des aventuriers, lier des amitiés et défendre 
 les loups égarés par la folie de Malkiar.
 (Jildrake toujours envoûté par les accrobaties des ballerines garde le silence)
-<br><b>Bardamu</b> : Des amis, déjà ? ?
-<br><b>Mandrak</b> : Bien sûr ! Par le grand Sachem plutôt deux fois qu'une !! Les amitiés sont vitales 
+<br><strong>Bardamu</strong> : Des amis, déjà ? ?
+<br><strong>Mandrak</strong> : Bien sûr ! Par le grand Sachem plutôt deux fois qu'une !! Les amitiés sont vitales 
 dans ce monde rempli de créatures malsaines. Nous avons même créé une Ligue, Le Peuple des Loups. 
 Tout frais de cet été !
-<br><b>Jildrake</b> : Pas encore, mais je pense que ça viendra tout seul avec un peuu de temps...
-<br><b>Bardamu</b> :  Ah ! Jildrake... Te revoilà parmi nous ! BienAvez-vous peur, ou avancez-vous 
+<br><strong>Jildrake</strong> : Pas encore, mais je pense que ça viendra tout seul avec un peuu de temps...
+<br><strong>Bardamu</strong> :  Ah ! Jildrake... Te revoilà parmi nous ! BienAvez-vous peur, ou avancez-vous 
 dans la sérénité ?
-<br><b>Mandrak</b> : Peur de quoi Morbleu ? De ces créatures maléfiques, de ces aventuriers mal 
+<br><strong>Mandrak</strong> : Peur de quoi Morbleu ? De ces créatures maléfiques, de ces aventuriers mal 
 intentionnés ? Mouarf, non, je pense errer en toute tranquillité dans les souterrains. 
         </td>
         <td class="interview2_corps">
 Mais bon, je viens d'arriver, si jamais tu me reposes la question dans un peu de temps, 
 ma réponse pourrait changer
-<br><b>Jildrake</b> : Peur non! Serein, moui...
+<br><strong>Jildrake</strong> : Peur non! Serein, moui...
 <br>Curieux plutot ...
-<br><b>Bardamu</b> : Bah... Si une jambe levée par une « entraîneuse » te laisse rêveur, tes pas au bout de tes surprises !
+<br><strong>Bardamu</strong> : Bah... Si une jambe levée par une « entraîneuse » te laisse rêveur, tes pas au bout de tes surprises !
 EtVous destinez-vous au Bien, au Mal... ?
-<br><b>Mandrak</b> : Le bien, le Mal? Pour qui, pour quoi... A vrai dire la philosophie n'est pas mon fort. Ce qui importe c'est l'exactitude de mes sorts ! Mais bon, je pense être considéré comme &quot;gentil&quot; par mes pairs..
-<br><b>Jildrake</b> : L'avenir le dira...
-<br><b>Bardamu</b> : Etes-vous déçus ou enthousiasmés par les lieux?
-<br><b>Mandrak</b> : Les lieux sont ,certes, mal famés mais je ne désespère pas de trouver l'Eden où tous les peuples et races vivent ensemble, main dans la main.. Dans la joie et l'allégresse !
-<br><b>Bardamu</b> : Tes sérieux?? Euh... Hum... Vous promenez-vous souvent en place publique? 
-<br><b>Mandrak</b> : Jy suis passé, surtout au début, maintenant je n'en ai plus utilité..Peut-être ai-je tort....
-<br><b>Jildrake</b> : Non, pas pour le moment
-<br><b>Bardamu</b> : Ah ! Bah je vous le recommande vivementBeaucoup dévénements y sont révélésAutre chose ?
-<br><b>Mandrak</b> : Savez-vous que Malkiar porte un T-shirt rose étriqué et se balade toujours 
+<br><strong>Mandrak</strong> : Le bien, le Mal? Pour qui, pour quoi... A vrai dire la philosophie n'est pas mon fort. Ce qui importe c'est l'exactitude de mes sorts ! Mais bon, je pense être considéré comme &quot;gentil&quot; par mes pairs..
+<br><strong>Jildrake</strong> : L'avenir le dira...
+<br><strong>Bardamu</strong> : Etes-vous déçus ou enthousiasmés par les lieux?
+<br><strong>Mandrak</strong> : Les lieux sont ,certes, mal famés mais je ne désespère pas de trouver l'Eden où tous les peuples et races vivent ensemble, main dans la main.. Dans la joie et l'allégresse !
+<br><strong>Bardamu</strong> : Tes sérieux?? Euh... Hum... Vous promenez-vous souvent en place publique? 
+<br><strong>Mandrak</strong> : Jy suis passé, surtout au début, maintenant je n'en ai plus utilité..Peut-être ai-je tort....
+<br><strong>Jildrake</strong> : Non, pas pour le moment
+<br><strong>Bardamu</strong> : Ah ! Bah je vous le recommande vivementBeaucoup dévénements y sont révélésAutre chose ?
+<br><strong>Mandrak</strong> : Savez-vous que Malkiar porte un T-shirt rose étriqué et se balade toujours 
 accompagné d'un caniche nain?  Euh, c'est comme ça que je l'ai rêvé!!
 (Jildrake et Bardamu écarquillent de grands yeux incrédules... Et tentent de retrouver leurs esprits distraits par la fantaisie de lelfe.)
-<br><b>Jildrake</b> : Pour l'instant non, je ne suis pas là depuis longtemps !
-<br><b>Bardamu</b> : Je vous remercie de vous être livrés... Arffff... 
+<br><strong>Jildrake</strong> : Pour l'instant non, je ne suis pas là depuis longtemps !
+<br><strong>Bardamu</strong> : Je vous remercie de vous être livrés... Arffff... 
 Les contorsionnistes ont fini 
 leur show... Tu vas ten remettre Jildrake ??
 <br>TAVERNIER !!! Un echopine pour mon ami !!
@@ -611,7 +611,7 @@ Les Nyouzes des Souterrains.
       </tr>
       <tr class="pub_corps">
         <td class="pub_corps">
-<center><b>La Casa da FANO</b></center>
+<center><strong>La Casa da FANO</strong></center>
 
 Fano, marchant et Gérant de la boutique situé au nord-est de lantichambre bénéficie dune solide expérience.
 Son commerce vous propose un grand choix d'objets divers et de bonne qualité. 
@@ -636,7 +636,7 @@ Son commerce vous propose un grand choix d'objets divers et de bonne qualité.
 	  </tr>
 	  <tr class="courrier_corps">
           <td class="courrier_corps">
-<b>Familier d'Akasha</b>:
+<strong>Familier d'Akasha</strong>:
  hiiik hiik hiiik couic couic! 
 <br>
 <br>(dans un soucis de clarté Akasha nous livre la version traduite): 
@@ -646,7 +646,7 @@ cela les rend plus... COUIC&quot;
 <br>(fin de la vie de Mary, renvoyé d'où il 	venait par le coup de pate d'une bete trop grosse pour lui)
 
 <br>
-<br>	        <b>La Voix des Souterrains</b> :<br><br>
+<br>	        <strong>La Voix des Souterrains</strong> :<br><br>
 			Une aventure qui arrive malheuresement trop souvent, comme ont pu le constater certains membres de notre &eacute;quipe.<br>
 			L'équipe toute enti&egrave;re s'associe &agrave; votre peine.<br>
             La r&eacute;daction.
@@ -706,7 +706,7 @@ La Voix solicite votre participation pour:
 La Voix lance son premier sondage : 
 <br>LE TOP 10 des guildes les plus originales.
 <br>
-<br><b> - Selon vous, quelles guildes méritent de rentrer dans ce classement ?</b>
+<br><strong> - Selon vous, quelles guildes méritent de rentrer dans ce classement ?</strong>
 <br>
 <br>La Voix attend vos avis, et diffusera dans un numéro futur le résultat du sondage.
 		</td>

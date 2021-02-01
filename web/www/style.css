@@ -1,4 +1,4 @@
-@charset "iso-8859-1";
+@charset "UTF-8";
 /* AUTEUR: SMESO */
 /* DATE DE CREATION: 09/06/99 */
 
@@ -63,7 +63,7 @@ table {
 	background-color:#FFFFFF;
 }
 table.vide {
-	background : url('http://images.jdr-delain.net/mp_fondcarte.gif');
+	background : url('http://www.jdr-delain.net/images/mp_fondcarte.gif');
 	background-color:#FFFFFF;
 }
 table.vide2 {
@@ -192,7 +192,7 @@ input.vide {
 	border: none;
 	font-size: 11px;
 	color: black;
-	background : url('http://images.jdr-delain.net/fondparchemin.gif');
+	background : url('http://www.jdr-delain.net/images/fondparchemin.gif');
 }
 textarea {
 	border: black 1px solid;
@@ -424,3 +424,377 @@ img {border:none}
 }
 
 .invalide { background-color: red; }
+
+/* class pour les barres de pv, xp, etc.... */
+.container-hp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/hp0.gif');
+ }
+.barre-hp {
+	height: 10px;
+	background-image: url('../images/hp01.png');
+	background-repeat:repeat-x;
+}
+.container-xp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/xp0.gif');
+ }
+.barre-xp {
+	height: 10px;
+	background-image: url('../images/xp01.png');
+	background-repeat:repeat-x;
+}
+.container-nrj {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/nrj0.png');
+}
+.barre-nrj {
+	height: 10px;
+	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}
+.container-div {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
+	background-repeat:repeat-x;
+}
+
+/* class pour les barres de pv, xp, etc pour version responsive .... */
+.mob-barre-inline {
+	display: inline-block;
+}
+.mob-container-hp {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/hp0.gif');
+}
+.mob-barre-hp {
+	height: 10px;
+	background-image: url('../images/hp01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-xp {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/xp0.gif');
+}
+.mob-barre-xp {
+	height: 10px;
+	background-image: url('../images/xp01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-nrj {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/nrj0.png');
+}
+.mob-barre-nrj {
+	height: 10px;
+	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-div {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.mob-barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
+	background-repeat:repeat-x;
+}
+
+/* class pour les toasts nok (voir vendor nok.js .... */
+#nok{
+	position:fixed;
+	z-index:999;
+	top:10px;
+	right:0
+}
+#nok .nok{
+	display:block;
+	position:relative;
+	overflow:hidden;
+	margin-top:10px;
+	margin-right:10px;
+	padding:20px;
+	width:240px;
+	border-radius:10px;
+	color:white;
+	right:-300px
+}
+#nok .nok_info{
+	background:#3c3b3b
+}
+#nok .nok_success{
+	border-color: black;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: #BA9C6C;
+	padding: 10px;
+}
+#nok .nok_error{
+	background:red;
+}
+
+.spop-overlay {
+	z-index: 999;
+	float: right;
+	position:absolute;
+	margin-top:-2px;
+	margin-left:18px;
+	border-color: black;
+	border-width: thin;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: #BA9C6C;
+	padding: 5px;
+}
+
+/* class pour la barre de switch rapide. */
+.button-switch	{
+	background-color: #800000;
+	color: #FFE081;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background: url(../images/bouton.jpg);
+	width:100%;
+	min-width: 150px;
+	white-space: nowrap;
+	height:34px;
+	overflow:hidden;
+}
+.button-switch-act	{
+	background-color: #800000;
+	color: #FFE081;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	width:100%;
+	min-width: 150px;
+	white-space: nowrap;
+	height:34px;
+	overflow:hidden;
+}
+.button-switch-dlt	{
+	background-color: #800000;
+	color: white;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	background: url(../images/bouton.jpg);
+	width:100%;
+	min-width: 150px;
+	white-space: nowrap;
+	height:34px;
+	overflow:hidden;
+}
+
+/* css custom pour version mobile */
+div#colonne1 {
+	float: left;
+	width: 175px;
+	height : 100%;
+	background-image:url(../images/fondparchemin.gif);
+	border-color:#800000;
+	border-style:solid;
+	border-radius: 10px;
+	height:auto;
+	overflow:auto;
+}
+div#colonne2 {
+	padding:10px;
+	margin-left: 2px;
+}
+
+div#colonne2.fond-delain {
+	border-radius: 10px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+}
+
+div#colonne0 {
+	border-radius: 10px;
+	padding:2px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+	margin-left: 185px;
+	margin-bottom: 5px;
+}
+
+div#colonne0-hide {
+	margin-bottom: 5px;
+}
+
+div#colonne0-icons {
+	margin-bottom: 5px;
+	padding-top: 2px;
+	margin-left: 2px;
+	border-radius: 10px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+	display: block;
+	width: 100%;
+	height: 34px;
+}
+
+.dropdown-content {
+	padding:0 10px 10px 10px;
+	display: none;
+}
+
+#dropdown-button {
+	background-color:#800000;
+	color:white;
+	font-weight:bold;
+	text-align:center;
+	padding:10px 0 10px 0;
+	display: block;
+}
+
+
+/*div#colonne1:hover .dropdown-content {display: block;}
+
+div#colonne1:hover   {
+    position: absolute;
+    top : 15px;
+    left : 15px;
+    width: 175px;
+}*/
+
+/* css pour version Standard */
+@media (min-width: 768px) {
+	div#colonne0-icons {
+		display: none;
+	}
+
+	div#colonne1 {
+		position: absolute;
+		top : 12px;
+		left : 12px;
+	}
+	div#colonne2 {
+		margin-left: 185px;
+	}
+	.dropdown-content {
+		display: block;
+	}
+
+	#dropdown-button {
+		display: none;
+	}
+
+}
+
+/* d'affichage menu icone */
+.badge {
+	border-radius: 10px;
+	background-color: #F00000;
+	color: #ffffff;
+	position: absolute;
+	font-size: 10px;
+	padding: 0px 3px 0px 3px;
+	margin: 0px 0px 0px -16px;
+	height: 14px;
+}
+
+/* d'affichage bouton switch perso */
+.badge-btn {
+	border-radius: 10px;
+	background-color: #F00000;
+	color: #ffffff;
+	position: absolute;
+	font-size: 10px;
+	padding: 0px 3px 0px 3px;
+	margin: 0px 0px 0px 7px;
+	height: 14px;
+}
+
+.badge-profil {
+	border-radius: 5px;
+	background-color: #800000;
+	color: #ffffff;
+	position: relative;
+	font-size: 8px;
+	padding: 0px 2px 0px 2px;
+	height: 12px;
+	bottom: 8px;
+	left: 2px;
+}
+
+/* affichage specifique quete */
+.hr {
+	display: flex;
+	align-items: center;
+	margin: 1em 0;
+}
+.hr::before, .hr::after {
+	content: '';
+	flex: 1;
+	display: block;
+	unicode-bidi: isolate;
+	margin-block-start: 0.5em;
+	margin-block-end: 0.5em;
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	overflow: hidden;
+	border-style: inset;
+	border-width: 1px;
+}
+
+/* Affichage des malus dans la page de switch*/
+.badge-malus {
+	color: white;
+	position: relative;
+	font-size: 8px;
+	top: 16px;
+	right: 18px;
+}
+
+.img-malus {
+	 margin-left: -8px;
+	vertical-align: middle;
+}
+
+.groupdiv .persotitre {
+    background-color: #800000;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    padding: 0px;
+}

@@ -13,17 +13,35 @@
     <meta name="keywords" lang="fr"
           content="jeu de rôle, JDR, gratuit, tour par tour, online, multijoueurs, Delain, Souterrains, role-play, médiéval, fantastique"/>
     <meta name="category" content="Jeux"/>
+    <meta name="propeller" content="56fad5b9e1137f8a4f50c3f6fa3e657d">
     <link rel="author" href="https://plus.google.com/117937611211014007112/posts">
-    <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
+    <link rel="shortcut icon" href="drake_head_red.gif" type="image/gif">
     <title>Les souterrains de Delain</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="{{ HTTPS }}{{ URL }}/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="{{ HTTPS }}{{ URL }}/css/datatables.min.css" rel="stylesheet">
+
+    <!-- Custom delain CSS -->
+    <link rel="stylesheet" type="text/css" href="style.css?v{{ __VERSION }}" title="essai">
+    <link rel="stylesheet" type="text/css" href="/style.php">
 
     {#<!-- Custom CSS -->
     <link href="{{ HTTPS }}{{ URL }}/css/simple-sidebar.css" rel="stylesheet">#}
+    <link href="/css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="/css/delain.css?v{{ __VERSION }}" rel="stylesheet">
 
-    <link href="{{ HTTPS }}{{ URL }}/css/delain.css" rel="stylesheet">
+    <!-- CDN -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- JQueryUI a charger après bootstrap pour utiliser son tooltip -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,11 +56,22 @@
             enable_page_level_ads: true
         });
     </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1534416-3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'UA-1534416-3');
+    </script>
+    <script data-ad-client="ca-pub-6632318064183878" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 
 <body>
 
-<script>
+{#<script>
     (function (i, s, o, g, r, a, m) {
         i['GoogleAnalyticsObject'] = r;
         i[r] = i[r] || function () {
@@ -59,7 +88,7 @@
     ga('require', 'GTM-M2VTQQW');
     ga('send', 'pageview');
 
-</script>
+</script>#}
 <div id="wrapper">
 
     <!-- Sidebar -->
@@ -101,7 +130,7 @@
                                 </li>
                                 <hr/>
                                 <li>
-                                    <a href="http://www.jdr-delain.net/wiki/index.php/Histoire" target="droite">L’histoire</a>
+                                    <a href="https://wiki.jdr-delain.net/index.php/Histoire" target="_blank">L’histoire</a>
                                 </li>
                                 <li>
                                     <a href="http://www.chez.com/delain/" target="_blank">le commencement</a>
@@ -111,7 +140,7 @@
                                 </li>
                                 <hr/>
                                 <li>
-                                    <a href="http://wiki.jdr-delain.net/index.php/R%C3%A8gles" target="_blank">Les
+                                    <a href="http://wiki.jdr-delain.net/index.php/Regles" target="_blank">Les
                                         règles</a>
                                 </li>
                                 <li>
@@ -144,26 +173,11 @@
                                                                          alt="Flux des news"/></a>
                                 </li>
 
-                                <li>
-                                    <g:plusone href="http://www.jdr-delain.net/"></g:plusone>
-                                </li>
-                                <li>
-                                    <a href="https://plus.google.com/107447277968158531530/?prsrc=3"
-                                       style="text-decoration: none; color: #333;" target="_blank">
-                                        <div style="display: inline-block;"><span
-                                                    style="float: left; font: bold 13px/16px arial,sans-serif; margin-right: 4px;">Suivez nous </span><span
-                                                    style="float: left; font: 13px/16px arial,sans-serif; margin-right: 11px;">sur</span>
-                                            <div style="float: left;"><img
-                                                        src="https://ssl.gstatic.com/images/icons/gplus-16.png"
-                                                        width="16" height="16" style="border: 0;"/></div>
-                                            <div style="clear: both"></div>
-                                        </div>
-                                    </a>
-                                </li>
+
                                 <hr/>
                                 <li>
 
-                                    <b>Annuaires de jeux</b>
+                                    <strong>Annuaires de jeux</strong>
                                     <a href="http://www.portaildesjeux.com" target="_blank" title="Jeux"><img
                                                 src="http://www.portaildesjeux.com/images/portaildesjeux.gif" border="0"
                                                 alt="jeux gratuits"/></a>
@@ -210,10 +224,10 @@
                             <div id="descJeu">
                                         <span>
                                             <hr/>
-                                            <b>Aventurier, baladin, réfugié, bandit de grand chemin, te voici arrivé sur les terres du royaume de Delain... Ou plutôt devrait-on dire... sous les terres.</b><br>
+                                            <strong>Aventurier, baladin, réfugié, bandit de grand chemin, te voici arrivé sur les terres du royaume de Delain... Ou plutôt devrait-on dire... sous les terres.</strong><br>
                                             Là où s’éveille depuis peu un mal très ancien ; dans les ténèbres de ces cavernes au plus profond desquelles Malkiar le Rouge reprend lentement ses forces et envoie ses hordes démoniaques à l’assaut des extérieurs...
                                             Sauras-tu surmonter les mille épreuves qui se dresseront devant toi, affronter les dangers de cette vie souterraine ? Pourras-tu protéger les contrées extérieures de ce mal grandissant ?
-                                            <br><b>Entre, et trouve par toi-même les réponses à ces questions.</b>
+                                            <br><strong>Entre, et trouve par toi-même les réponses à ces questions.</strong>
                                             <br/>Mais attention : aujourd’hui, dans les souterrains, {{ AVENTURIERS_MORTS }}
                                             aventuriers, {{ MONSTRES_MORTS }} monstres et {{ FAMILIERS_MORTS }}
                                             familiers sont morts au combat...
@@ -228,11 +242,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="groupdiv" id="pub">
-                    {{ PUB | raw }}
+                {% if PUB.type == 'haut' %}
+                <div class="groupdiv" style="text-align: center;" id="pub">
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- Reponsive -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-6632318064183878"
+                         data-ad-slot="8485409096"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 </div>
+                {% endif %}
+                
                 <div class="groupdiv">
-                    <b>Les souterrains de Delain</b> est un jeu de rôles en ligne, où vous pouvez incarner jusqu’à 3
+                    <strong>Les souterrains de Delain</strong> est un jeu de rôles en ligne, où vous pouvez incarner jusqu’à 3
                     aventuriers. Il se déroule en tour par tour, et les seuls outils nécessaires pour y jouer sont une
                     connexion internet, un navigateur, et une adresse mail.
                     Pour plus d’infos : <a href="aide.php">comment débuter</a>, <a href="regles.php">les règles</a>, et
@@ -285,14 +312,14 @@
 </div>
 <!-- /#wrapper -->
 
-<!-- jQuery -->
-<script src="js/jquery.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="js/bootstrap.min.js"></script>
 
 <script src="js/advert.js"></script>
-
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/additional-methods.js"></script>
+<script src="js/localization/messages_fr.js"></script>
+<script src="js/datatables.min.js"></script>
+{%  block postscripts %}
 
 <script>
     if (document.getElementById("tester") == undefined) {
@@ -304,6 +331,8 @@ Je sais à quel point la pub sur Internet peut être pénible, mais nous nous ef
 
 
 </script>
+
+{%  endblock %}
 
 
 </body>

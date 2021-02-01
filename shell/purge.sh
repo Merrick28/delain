@@ -11,5 +11,6 @@ select nettoie(0);
 delete from logs_ia where now() - lia_date > '2 days'::interval;
 update objet_position set pobj_pos_cod = pos_aleatoire_ref( -9 ) where pobj_obj_cod in (select obj_cod from objets, objet_position, murs, positions where obj_cod = pobj_obj_cod and pobj_pos_cod = mur_pos_cod and mur_pos_cod = pos_cod and mur_creusable = 'N');
 delete from fonction_specifique where fonc_date_limite < (now() - '15 days'::interval) AND fonc_date_limite IS NOT NULL;
+delete from fonction_specifique_perso where pfonc_ddda < (now() - '15 days'::interval);
 EOF
 

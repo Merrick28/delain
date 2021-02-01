@@ -1,0 +1,18 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    {% if ERROR_MESSAGE is defined %}
+        <div class="groupdiv">
+            <div class="alert alert-danger">
+                {{ ERROR_MESSAGE }}
+            </div>
+        </div>
+
+    {% else %}
+        <div class="groupdiv">
+            Un mail vous a été adressé à l’adresse {{ MAIL }} pour validation
+        </div>
+    {% endif %}
+
+{% endblock %}
+{% block postscripts %}
+{% endblock %}

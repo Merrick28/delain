@@ -32,16 +32,16 @@ class messages
 
     /**
      * Charge dans la classe un enregistrement de messages
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
-        $pdo    = new bddpdo;
-        $req    = "select * from messages where msg_cod = ?";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($code), $stmt);
+        $pdo  = new bddpdo;
+        $req  = "select * from messages where msg_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -59,8 +59,8 @@ class messages
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -87,37 +87,36 @@ class messages
                     returning msg_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":msg_date"       => $this->msg_date,
-               ":msg_titre"      => $this->msg_titre,
-               ":msg_corps"      => $this->msg_corps,
-               ":msg_date2"      => $this->msg_date2,
-               ":msg_guilde"     => $this->msg_guilde,
-               ":msg_guilde_cod" => $this->msg_guilde_cod,
-               ":msg_init"       => $this->msg_init,
-               ), $stmt);
+                                      ":msg_date"       => $this->msg_date,
+                                      ":msg_titre"      => $this->msg_titre,
+                                      ":msg_corps"      => $this->msg_corps,
+                                      ":msg_date2"      => $this->msg_date2,
+                                      ":msg_guilde"     => $this->msg_guilde,
+                                      ":msg_guilde_cod" => $this->msg_guilde_cod,
+                                      ":msg_init"       => $this->msg_init,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
             // on enregistre l'expéditeur
-            $exp = new messages_exp;
-            $exp->emsg_msg_cod = $this->msg_cod;
+            $exp                 = new messages_exp;
+            $exp->emsg_msg_cod   = $this->msg_cod;
             $exp->emsg_perso_cod = $this->exp_perso_cod;
-            $exp->emsg_lu = 'N';
+            $exp->emsg_lu        = 0;
             $exp->stocke(true);
             // on enregistre les destinataires
-            foreach($this->tabDest as $perso_dest)
+            foreach ($this->tabDest as $perso_dest)
             {
-                $dest = new messages_dest;
-                $dest->dmsg_lu = 'N';
+                $dest                 = new messages_dest;
+                $dest->dmsg_lu        = 'N';
                 $dest->dmsg_perso_cod = $perso_dest;
-                $dest->dmsg_msg_cod = $this->msg_cod;
+                $dest->dmsg_msg_cod   = $this->msg_cod;
                 $dest->stocke(true);
-                
+
                 unset($dest);
             }
-        }
-        else
+        } else
         {
             $req  = "update messages
                     set
@@ -130,22 +129,22 @@ class messages
                                         msg_init = :msg_init                                        where msg_cod = :msg_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-               ":msg_cod"        => $this->msg_cod,
-               ":msg_date"       => $this->msg_date,
-               ":msg_titre"      => $this->msg_titre,
-               ":msg_corps"      => $this->msg_corps,
-               ":msg_date2"      => $this->msg_date2,
-               ":msg_guilde"     => $this->msg_guilde,
-               ":msg_guilde_cod" => $this->msg_guilde_cod,
-               ":msg_init"       => $this->msg_init,
-               ), $stmt);
+                                      ":msg_cod"        => $this->msg_cod,
+                                      ":msg_date"       => $this->msg_date,
+                                      ":msg_titre"      => $this->msg_titre,
+                                      ":msg_corps"      => $this->msg_corps,
+                                      ":msg_date2"      => $this->msg_date2,
+                                      ":msg_guilde"     => $this->msg_guilde,
+                                      ":msg_guilde_cod" => $this->msg_guilde_cod,
+                                      ":msg_init"       => $this->msg_init,
+                                  ), $stmt);
         }
     }
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \messages
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -155,10 +154,53 @@ class messages
         $stmt   = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
-            $temp     = new messages;
+            $temp = new messages;
             $temp->charge($result["msg_cod"]);
             $retour[] = $temp;
             unset($temp);
+        }
+        return $retour;
+    }
+
+    function envoi_simple($dest_cod, $exp_cod)
+    {
+        // il faut que le message soit déjà enregistré
+        // expéditeur
+        $msg_exp                 = new messages_exp();
+        $msg_exp->emsg_msg_cod   = $this->msg_cod;
+        $msg_exp->emsg_perso_cod = $exp_cod;
+        print_r($msg_exp);
+        $msg_exp->stocke(true);
+        //destinaire
+        $msg_dest                 = new messages_dest();
+        $msg_dest->dmsg_msg_cod   = $this->msg_cod;
+        $msg_dest->dmsg_perso_cod = $dest_cod;
+        $msg_dest->stocke(true);
+
+    }
+
+    function is_auth_msg($perso_cod)
+    {
+        $pdo    = new bddpdo;
+        $retour = false;
+        $req    = 'select dmsg_cod from messages_dest where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $perso_cod,
+                                      ":msg"   => $this->msg_cod), $stmt);
+
+        if ($stmt->fetch())
+        {
+            $retour = true;
+        }
+
+        $req  = 'select emsg_cod from messages_exp where emsg_msg_cod = :msg and emsg_perso_cod = :perso';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $perso_cod,
+                                    ":msg"   => $this->msg_cod), $stmt);
+
+        if ($stmt->fetch())
+        {
+            $retour = true;
         }
         return $retour;
     }
@@ -177,7 +219,7 @@ class messages
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
-                        $temp     = new messages;
+                        $temp = new messages;
                         $temp->charge($result["msg_cod"]);
                         $retour[] = $temp;
                         unset($temp);
@@ -187,14 +229,17 @@ class messages
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

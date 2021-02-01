@@ -1,0 +1,27 @@
+{% extends 'template_jeu.twig' %}
+
+{% block contenu_droite %}
+
+    {% if IS_INTANGIBLE %}
+        Vous ne pouvez pas attaquer en étant impalpable !
+    {% endif %}
+    {% if IS_REFUGE %}
+        Vous ne pouvez pas attaquer sur un refuge !
+    {% endif %}
+    {% if (not IS_INTANGIBLE ) and (not IS_REFUGE) %}
+        <form name="attaque" method="post" action="action.php">
+        <input type="hidden" name="methode" value="attaque2">
+        <span {% if ARME_COULEUR!="" %}class="soustitre2_{{ ARME_COULEUR }}" style="color:white;"{% endif %}>Arme utilisée {% if ARME_ETAT!="" %}<em>({{ ARME_ETAT }})</em>{% endif %}</span>: <strong>{{ ARME_UTILISEE }}</strong><br />
+        Choisissez votre méthode de combat :
+        <select name="type_at">
+            {{ COMP_COMBAT|raw }}
+        </select> - mode {{ MODE }} <a href="perso2.php?m=3">(changer ?)</a>
+        &nbsp;&nbsp;<input type="submit" class="test centrer" value="Attaquer !">
+        <br>Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a><br>
+
+    {% endif %}
+
+    {% include 'blocks/_include_tab_attaque.twig' %}
+
+    <input type="submit" class="test centrer" value="Attaquer !">
+{% endblock %}

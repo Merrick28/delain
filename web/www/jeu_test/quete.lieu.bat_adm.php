@@ -1,41 +1,40 @@
-<?php 
+<?php
 // gestion des quêtes sur les bâtiments administratifs.
 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 echo "<hr><br>";
-if(!isset($methode2))
-	$methode2 = "debut";
+$methode2     = get_request_var('methode2', 'debut');
 
-switch($methode2)
+switch ($methode2)
 {
-	case "debut":
-		// Quête n°11 : contrats de chasse
-		$req = "select pquete_cod, pquete_nombre, pquete_date_debut, pquete_date_fin, pquete_termine, pquete_param
+    case "debut":
+        // Quête n°11 : contrats de chasse
+        $req = "select pquete_cod, pquete_nombre, pquete_date_debut, pquete_date_fin, pquete_termine, pquete_param
 			from quete_perso
 			where pquete_quete_cod = 11
 				and pquete_perso_cod = $perso_cod
 				and pquete_termine not in ('O', 'R')";
-		$db->query($req);
-		if ($db->nf() != 0) // le perso a une mission en cours, on teste si il l’a terminée.
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() != 0) // le perso a une mission en cours, on teste si il l’a terminée.
 		{
-			$db->next_record();
-			$statut_quete = $db->f("pquete_termine");
-			$nombre_monstre = $db->f("pquete_nombre");
-			$monstre_mission = $db->f("pquete_param");
-			$debut_mission = $db->f("pquete_date_debut");
-			$fin_mission = $db->f("pquete_date_fin");
-			$quete_cod = $db->f("pquete_cod");
+			$result = $stmt->fetch();
+			$statut_quete = $result['pquete_termine'];
+			$nombre_monstre = $result['pquete_nombre'];
+			$monstre_mission = $result['pquete_param'];
+			$debut_mission = $result['pquete_date_debut'];
+			$fin_mission = $result['pquete_date_fin'];
+			$quete_cod = $result['pquete_cod'];
 			$req_monstres = "select sum(ptab_total) as total_encours from perso_tableau_chasse
 				where ptab_perso_cod = $perso_cod
 					and ptab_gmon_cod = $monstre_mission
 					and ptab_date > '$debut_mission'
 					and ptab_date < '$fin_mission'";
-			$db->query($req_monstres);
+			$stmt = $pdo->query($req_monstres);
 			$total_encours = 0;
-			$db->next_record();
-			$total_encours = $db->f("total_encours");
+			$result = $stmt->fetch();
+			$total_encours = $result['total_encours'];
 			if (is_null($total_encours))
 			{
 				$total_encours = 0;
@@ -46,14 +45,14 @@ switch($methode2)
 			{
 				$req = "update quete_perso set pquete_termine = 'R'
 					where pquete_cod = $quete_cod and pquete_date_fin < now()";
-				$db->query($req);
-				if ($db->nf() == 0) // Pas d'expiration pour cette mission (ça marche ça ??)
+				$stmt = $pdo->query($req);
+				if ($stmt->rowCount() == 0) // Pas d'expiration pour cette mission (ça marche ça ??)
 				{
 					$req = "select gmon_nom from monstre_generique
 						where gmon_cod = $monstre_mission";
-					$db->query($req);
-					$db->next_record();
-					$monstre_nom = $db->f("gmon_nom");
+					$stmt = $pdo->query($req);
+					$result = $stmt->fetch();
+					$monstre_nom = $result['gmon_nom'];
 					echo "Vous avez déjà une mission en cours. Réalisez là avant d’en chercher une autre !
 						La chasse au $monstre_nom ne se fait pas à moitié.
 						<br>Ce n’est pas en en tuant seulement $total_encours que vous allez nous convaincre de votre valeur.
@@ -63,27 +62,28 @@ switch($methode2)
 			}
 			else
 			{
-				echo "Félicitations ! vous avez réalisé avec valeur votre mission.
+                echo "Félicitations ! vous avez réalisé avec valeur votre mission.
 							<br>Comme convenu, nous vous offrons votre récompense.
 							<br>Voici une bourse qui vous permettra d’aller loin !";
-				$req = "update perso set
-						perso_po = perso_po + 5000,
-						perso_px = perso_px + 10,
-						perso_prestige = perso_prestige + 1
-					where perso_cod = $perso_cod";
-				$db->query($req);
-				$req = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-				$db->query($req);
-			}
+
+
+                $perso->perso_po       = $perso->perso_po + 5000;
+                $perso->perso_px       = $perso->perso_px + 10;
+                $perso->perso_prestige = $perso->perso_prestige + 1;
+                $perso->stocke();
+
+                $req  = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
+                $stmt = $pdo->query($req);
+            }
 		}
 		else /*le perso n’a pas de quête de ce type engagée, on teste si on lui en donne une
 		Pour l’instant, test sur son num de perso et la date. On pourrait aussi imaginer de ne faire ça que tous les 10 premiers jours
 		de chaque mois*/
 		{
 			$req = "select donne_contrat($perso_cod) as resultat";
-			$db->query($req);
-			$db->next_record();
-			$donne_contrat = $db->f("resultat");
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$donne_contrat = $result['resultat'];
 
 			$req = "select perso_niveau, etage_reference
 				from perso, perso_position, positions, etage
@@ -91,10 +91,10 @@ switch($methode2)
 					and ppos_pos_cod = pos_cod
 					and pos_etage = etage_numero
 					and perso_cod = $perso_cod";
-			$db->query($req);
-			$db->next_record();
-			$perso_level = $db->f("perso_niveau");
-			$etage_reference = $db->f("etage_reference");
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$perso_level = $result['perso_niveau'];
+			$etage_reference = $result['etage_reference'];
 			if(isset($_COOKIE['quete_gmon_cod']))
 			{
 				$req = "select gmon_cod,gmon_nom,gmon_avatar
@@ -121,25 +121,25 @@ switch($methode2)
 					order by random()
 					limit 1";
 			}
-			$db->query($req);
-			if ($db->nf() == 0) /*Le perso n’a pas le niveau requis pour cet étage pour avoir une mission*/
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() == 0) /*Le perso n’a pas le niveau requis pour cet étage pour avoir une mission*/
 			{
 			?>
 				<br>Un fonctionnaire s’approche de vous et vous interpelle
-				<br><i>Allons, soyons sérieux, vous êtes un aventurier. Mesurez-vous à ce qui pourra vous valoir Gloire et Honneur !</i>
+				<br><em>Allons, soyons sérieux, vous êtes un aventurier. Mesurez-vous à ce qui pourra vous valoir Gloire et Honneur !</em>
 				<br>Ce faisant, le fonctionnaire vous tourne le dos, sans vous proposer de contrat.
 				<br><br>Pour rappel, vous êtes niveau <?php echo $perso_level ?>. Une quête vous sera proposée uniquement en adéquation avec votre niveau.
 			<?php 			}
 			else if ($donne_contrat == 'O')
 			{
-				$db->next_record();
-				$quete_gmon_cod = $db->f("gmon_cod");
+				$result = $stmt->fetch();
+				$quete_gmon_cod = $result['gmon_cod'];
 				setcookie("quete_gmon_cod", $quete_gmon_cod, time() + 86400);
-				$monstre = $db->f("gmon_cod");
-				$monstre_nom = $db->f("gmon_nom");
-				$avatar = $db->f("gmon_avatar");
+				$monstre = $result['gmon_cod'];
+				$monstre_nom = $result['gmon_nom'];
+				$avatar = $result['gmon_avatar'];
 				srand ((double) microtime() * 10000000); // pour intialiser le random
-				$input = array (
+				$input         = array (
 					"Aventuriers, Aventurières, depuis un certain temps, nous notons la recrudescence d’agglomération de monstres dans
 						certains coins de ces souterrains, et plus particulièrement de $monstre_nom !
 						<br>Nous faisons donc appel à votre aide pour chasser cette vermine.",
@@ -154,7 +154,7 @@ switch($methode2)
 					"Qui ne rêve pas d’accrocher au dessus de sa cheminée une tête de $monstre_nom ? Montrez-nous votre plus bel empaillage
 						et vous gagnerez peut-être notre premier prix !"
 				);
-				$wanted = array_rand ($input, 1);
+				$wanted        = array_rand($input, 1);
 				$phrase_wanted = $input[$wanted];
 				echo $phrase_wanted;
 				if ($avatar != null) //Utilisation des avatars si il existe pour ce monstre.
@@ -162,9 +162,9 @@ switch($methode2)
 					echo "<br>Ce type de monstre est facilement reconnaissable.
 						Il ressemble à cela :<br><p\"><img src=\"../avatars/" . $avatar . "\"></p>";
 				}
-				echo "<br>Souhaitez vous répondre à cette annonce ? <i>(Attention, ce choix vous engage pour une certaine durée)</i>";
-			?>
-				<form name="mission" method="post" action="<?php echo $PHP_SELF;?>">
+				echo "<br>Souhaitez vous répondre à cette annonce ? <em>(Attention, ce choix vous engage pour une certaine durée)</em>";
+				?>
+				<form name="mission" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 					<input type="hidden" name="methode2" value="mission">
 					<table>
 						<tr>
@@ -183,43 +183,41 @@ switch($methode2)
 			<?php 			}
 			else //Le perso n’obtiendra pas de quête aujourd’hui
 			{
-			?>
-				<br>Un papier vole au vent. On peut y lire le texte d’un ancien contrat, dont la date est passée depuis fort longtemps.
-				<br>Vous regardez autour de vous ... Et personne.
-				<br>Ce n’est certainement pas aujourd’hui que l’on vous proposera un contrat de chasse.
-				<br>Mais comme il est dit, demain est un autre jour ...
-			<?php 			}
-		}
+                ?>
+                <br>Un papier vole au vent. On peut y lire le texte d’un ancien contrat, dont la date est passée depuis fort longtemps.
+                <br>Vous regardez autour de vous ... Et personne.
+                <br>Ce n’est certainement pas aujourd’hui que l’on vous proposera un contrat de chasse.
+                <br>Mais comme il est dit, demain est un autre jour ...
+            <?php }
+        }
 
-		//Traitement des pochettes surprises (début)
-		// Type de perso
-		$req = "select perso_type_perso  from perso where perso_cod = $perso_cod";
-		$db->query($req);
-		$db->next_record();
-		$type_perso_ok = ($db->f("perso_type_perso") == 1);
+        //Traitement des pochettes surprises (début)
+        // Type de perso
 
-		// Possession de pochette surprise
-		$req = "select obj_gobj_cod, perobj_obj_cod, obj_nom
+        $type_perso_ok = ($perso->perso_type_perso == 1);
+
+        // Possession de pochette surprise
+        $req              = "select obj_gobj_cod, perobj_obj_cod, obj_nom
 			from objets, perso_objets
 			where perobj_obj_cod = obj_cod
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod = 642";
-		$db->query($req);
-		$possede_pochette = ($db->nf() != 0);
+        $stmt             = $pdo->query($req);
+        $possede_pochette = ($stmt->rowCount() != 0);
 
 		// Pochette déjà échangée ?
 		$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
-		$db->query($req);
-		if (!$db->next_record())
+		$stmt = $pdo->query($req);
+		if (!$result = $stmt->fetch())
 		{
 			$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$deja_fait = false;
 		}
 		else
 		{
-			$deja_fait = ($db->f("ppoch_valeur") > 0);
+			$deja_fait = ($result['ppoch_valeur'] > 0);
 		}
 
 		if ($type_perso_ok && $possede_pochette && !$deja_fait)
@@ -232,8 +230,8 @@ switch($methode2)
 					onMouseOut="img.src='../avatars/roue.png' ">
 				<img name="img" align = "center" src="../avatars/roue.png"></a></td>
 				<td>Vous pouvez participer au grand tirage de la loterie magique.
-				<br>Ce tirage ne peut être fait qu’<b>une seule fois</b>, si vous possédez votre pochette surprise.
-				<br><br><br><b>Faites tourner la roue pour découvrir votre cadeau !</b> <i>(cliquez dessus)</i></td></table>
+				<br>Ce tirage ne peut être fait qu’<strong>une seule fois</strong>, si vous possédez votre pochette surprise.
+				<br><br><br><strong>Faites tourner la roue pour découvrir votre cadeau !</strong> <em>(cliquez dessus)</em></td></table>
 			</form>
 		<?php 		}
 	break;
@@ -246,7 +244,7 @@ switch($methode2)
 		{
 			$random = rand (1,4);
 			$temps = $random + 4; //Nombre de semaines autorisées pour la mission
-			echo "Allez, partez donc en chasse au $monstre_nom ! Ramenez-nous en <b>$random</b> pour nous montrer votre courage.
+			echo "Allez, partez donc en chasse au $monstre_nom ! Ramenez-nous en <strong>$random</strong> pour nous montrer votre courage.
 				<br>Nous vous récompenserons alors de 5000 brouzoufs !
 				<br>Vous devez impérativement tuer cette vermine de $monstre_nom vous-même, car c’est la marque des vrais chasseurs.
 				Vous pourrez vous faire aider dans votre entreprise, mais seuls les morts faites de vos mains seront comptabilisées.
@@ -257,7 +255,7 @@ switch($methode2)
 			$req = "insert into quete_perso
 					(pquete_quete_cod, pquete_perso_cod, pquete_nombre, pquete_date_debut, pquete_date_fin, pquete_param)
 				values ('11', '$perso_cod', '$random', now(), now() + '$temps weeks'::interval, '$monstre')";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 		else
 		{
@@ -268,40 +266,38 @@ switch($methode2)
 		}
 	break;
 
-	case "pochette":
-		// Type de perso
-		$req = "select perso_type_perso  from perso where perso_cod = $perso_cod";
-		$db->query($req);
-		$db->next_record();
-		$type_perso_ok = ($db->f("perso_type_perso") == 1);
+    case "pochette":
+        // Type de perso
 
-		// Possession de pochette surprise
-		$req = "select obj_gobj_cod, perobj_obj_cod, obj_nom
+        $type_perso_ok = ($perso->perso_type_perso == 1);
+
+        // Possession de pochette surprise
+        $req              = "select obj_gobj_cod, perobj_obj_cod, obj_nom
 			from objets, perso_objets
 			where perobj_obj_cod = obj_cod
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod = 642";
-		$db->query($req);
-		$possede_pochette = ($db->nf() != 0);
+        $stmt             = $pdo->query($req);
+        $possede_pochette = ($stmt->rowCount() != 0);
 		if ($possede_pochette)
 		{
-			$db->next_record();
-			$pochette_cod = $db->f('perobj_obj_cod');
+			$result = $stmt->fetch();
+			$pochette_cod = $result['perobj_obj_cod'];
 		}
 
 		// Pochette déjà échangée ?
 		$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
-		$db->query($req);
-		if (!$db->next_record())
+		$stmt = $pdo->query($req);
+		if (!$result = $stmt->fetch())
 		{
 			$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$deja_fait = false;
 		}
 		else
 		{
-			$deja_fait = ($db->f("ppoch_valeur") > 0);
+			$deja_fait = ($result['ppoch_valeur'] > 0);
 		}
 
 		if ($type_perso_ok && $possede_pochette && !$deja_fait)
@@ -310,32 +306,34 @@ switch($methode2)
 			// 1) Dans tous les cas : une rune.
 			$rune_code = 26 + rand(1, 20);
 			$req = "select cree_objet_perso_nombre($rune_code, $perso_cod, 1)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			
 			// 2) Cadeau aléatoire
 			$random = rand (1, 6);
 			if ($random == 1) // Entre 5000 et 9000 brouzoufs
-			{
-				$brouzoufs = ((rand (1, 5) * 1000) + 4000);
-				$req = "update perso set perso_po = perso_po + $brouzoufs where perso_cod = $perso_cod";
-				$db->query($req);
-				$texte = "une petite somme d’or, de <b>$brouzoufs brouzoufs et une rune</b>.";
-			}
+            {
+                $brouzoufs = ((rand(1, 5) * 1000) + 4000);
+
+                $perso->perso_po = $perso->perso_po + $brouzoufs;
+                $perso->stocke();
+
+                $texte = "une petite somme d’or, de <strong>$brouzoufs brouzoufs et une rune</strong>.";
+            }
 			else if ($random == 2) // deux potions (différentes)
 			{
 				$req = "select gobj_cod, lancer_des(1, 1000) as num from objet_generique
 					where gobj_tobj_cod = 21 and gobj_cod not in (561, 412)
 					order by num limit 2";
-				$db->query($req);
-				$db->next_record();
-				$potion1 = $db->f("gobj_cod");
-				$db->next_record();
-				$potion2 = $db->f("gobj_cod");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$potion1 = $result['gobj_cod'];
+				$result = $stmt->fetch();
+				$potion2 = $result['gobj_cod'];
 
 				$req = "select cree_objet_perso_nombre($potion1, $perso_cod, 1),
 					cree_objet_perso_nombre($potion2, $perso_cod, 1)";
-				$db->query($req);
-				$texte = "<b>deux petites potions</b> qui ont été rajoutées à votre inventaire ainsi qu’une rune.";
+				$stmt = $pdo->query($req);
+				$texte = "<strong>deux petites potions</strong> qui ont été rajoutées à votre inventaire ainsi qu’une rune.";
 			}
 			else if ($random == 3) // Deux parchemins
 			{
@@ -345,24 +343,24 @@ switch($methode2)
 						where g2.gobj_tobj_cod=20 and g2.gobj_valeur > 100
 						order by random()
 						limit 2)";
-				$db->query($req);
-				$db->next_record();
-				$texte = "<b>deux parchemins</b> qui ont été rajoutés à votre inventaire ainsi qu’une rune.";
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$texte = "<strong>deux parchemins</strong> qui ont été rajoutés à votre inventaire ainsi qu’une rune.";
 			}
 			else if ($random == 4)  // Deux (autres) runes
 			{
 				$rune_code1 = 26 + rand(1, 20);
 				$rune_code2 = 26 + rand(1, 20);
-				$req = "select cree_objet_perso_nombre($rune_code1, $perso_cod, 1)
+				$req = "select cree_objet_perso_nombre($rune_code1, $perso_cod, 1),
 					cree_objet_perso_nombre($rune_code2, $perso_cod, 1)";
-				$db->query($req);
-				$texte = "<b>trois runes</b>, qui ont été rajoutées à votre inventaire.";
+				$stmt = $pdo->query($req);
+				$texte = "<strong>trois runes</strong>, qui ont été rajoutées à votre inventaire.";
 			}
 			else if ($random == 5) // Un œuf de basilic
 			{
 				$req = "select cree_objet_perso_nombre(269, $perso_cod, 1)";
-				$db->query($req);
-				$texte = "<b>un œuf de basilic</b>, qui a été rajouté à votre inventaire et qu’il faudra faire éclore, ainsi qu’une rune.";
+				$stmt = $pdo->query($req);
+				$texte = "<strong>un œuf de basilic</strong>, qui a été rajouté à votre inventaire et qu’il faudra faire éclore, ainsi qu’une rune.";
 			}
 			else if ($random == 6) // Deux composants de forgeamagie
 			{
@@ -372,18 +370,18 @@ switch($methode2)
 					where g2.gobj_poids < 2
 					order by random()
 					limit 2)";
-				$db->query($req);
-				$texte = "<b>deux composants d’enchantement</b> qui ont été rajoutés à votre inventaire, ainsi qu’une rune.";
+				$stmt = $pdo->query($req);
+				$texte = "<strong>deux composants d’enchantement</strong> qui ont été rajoutés à votre inventaire, ainsi qu’une rune.";
 			}
-			echo "<hr><br><b>La roue a parlé !</b><br>
+			echo "<hr><br><strong>La roue a parlé !</strong><br>
 				<br>Votre pochette surprise s’est transformée. Et pour la peine, vous avez gagné $texte
-				<div align='center'><br><br><br><font size='+2'><b>À tous un joyeux Léno, et de bonnes fêtes !<b></font><br><br></div>";
+				<div align='center'><br><br><br><font size='+2'><strong>À tous un joyeux Léno, et de bonnes fêtes !<strong></font><br><br></div>";
 
 			//On supprime la pochette et on fait augmenter le compteur pour n’avoir cette récompense qu’une seule fois
 			$req = "select f_del_objet($pochette_cod)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$req = "update perso_pochette set ppoch_valeur = 1 where ppoch_perso_cod = $perso_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 		else
 		{

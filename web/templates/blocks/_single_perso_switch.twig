@@ -20,7 +20,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
         {% endif %}
         <div class="soustitre2">
             <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</span>
-            <br/><i>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</i>
+            <br/><em>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</em>
             <br/>
         </div>
 
@@ -37,10 +37,10 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
         </div>
 
         <div>
-            <b>Niveau {{ PERSO.perso_niveau }}</b>
+            <strong>Niveau {{ PERSO.perso_niveau }}</strong>
             {% if PERSO.perso_tangible == 'N' %}
-                <br/><i>Impalpable ({{ PERSO.perso_nb_tour_intangible }}
-                tour{% if PERSO.perso_nb_tour_intangible >1 %}s{% endif %})</i>
+                <br/><em>Impalpable ({{ PERSO.perso_nb_tour_intangible }}
+                tour{% if PERSO.perso_nb_tour_intangible >1 %}s{% endif %})</em>
 
             {% endif %}
         </div>
@@ -62,39 +62,45 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
             <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                 <img src="{{ URL_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
                      alt="{{ PERSO.perso_pa }}PA" width="108" height="18" class="imgFit">
-                <br/><img src="{{ URL_IMAGES }}coeur.gif" alt=""> <img
-                        src="{{ URL_IMAGES }}hp{{ PERSO.barre_hp }}.gif" title="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}" alt="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}"
-                        class="imgFit">
+                <br/><img src="{{ URL_IMAGES }}coeur.gif" alt=""> <div class="mob-barre-inline">
+                            <div class="mob-container-hp" title="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}" alt="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}">
+                                <div class="mob-barre-hp" style="width:{{ PERSO.barre_hp }}%"></div>
+                            </div>
+                        </div>
                 {% if PERSO.is_enchanteur %}
-                    <br/><img src="{{ URL_IMAGES }}energi10.png" alt=""> <img
-                        src="{{ URL_IMAGES }}nrj{{ PERSO.barre_energie }}.png"
-                        title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100" class="imgFit">
+                    <br/><img src="{{ URL_IMAGES }}energi10.png" alt=""> <div class="mob-barre-inline">
+                            <div class="mob-container-nrj" title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100">
+                                <div class="mob-barre-nrj" style="width:{{ PERSO.perso_energie }}%"></div>
+                            </div>
+                         </div>
                 {% endif %}
 
                 {% if PERSO.barre_divine != -1 %}
-                    <br/><img src="{{ URL_IMAGES }}magie.gif" alt=""> <img
-                        src="{{ URL_IMAGES }}nrj{{ PERSO.barre_divine }}.png"
-                        title="Énergie divine : ' {{ PERSO.barre_divine }} sur 100"
-                        alt="Énergie divine : ' {{ PERSO.barre_divine }} sur 100" class="imgFit">
+                    <br/><img src="{{ URL_IMAGES }}magie.gif" alt=""> <div class="mob-barre-inline">
+                            <div class="mob-container-div" title="Énergie divine : ' {{ PERSO.barre_divine }} sur 100" alt="Énergie divine : ' {{ PERSO.barre_divine }} sur 100">
+                                <div class="mob-barre-div" style="width:{{ PERSO.barre_divine }}%"></div>
+                            </div>
+                        </div>
                 {% endif %}
                 <br/>
-                <img src="{{ URL_IMAGES }}iconexp.gif" alt=""> <img
-                        src="{{ URL_IMAGES }}xp{{ PERSO.barre_xp }}.gif"
-                        title="{{ PERSO.perso_px }} PX, prochain niveau à {{ PERSO.px_limite }}"
-                        alt="{{ PERSO.perso_px }} PX sur {{ PERSO.px_limite }}" class="imgFit">
+                <img src="{{ URL_IMAGES }}iconexp.gif" alt=""> <div class="mob-barre-inline">
+                            <div class="mob-container-xp" title="{{ PERSO.perso_px }} PX, prochain niveau à {{ PERSO.px_limite }}"alt="{{ PERSO.perso_px }} PX sur {{ PERSO.px_limite }}">
+                                <div class="mob-barre-xp" style="width:{{ PERSO.barre_xp }}%"></div>
+                            </div>
+                        </div>
             </div>
 
 
         </div>
         {% if PERSO.msg_non_lu|length > 0 %}
-            <div class="row">
+            <div class="row"><div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                 <span class="bouton">
 			<input type="button" class="bouton"
                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
                    title='Cliquez ici pour lire vos 10 derniers messages'
                    value="{{ PERSO.msg_non_lu|length }} messages non lus."/>
 			</span>
-            </div>
+            </div></div>
         {% endif %}
         {% if PERSO.transactions > 0 %}
             <div class="soustitre2 row">

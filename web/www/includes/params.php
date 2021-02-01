@@ -16,7 +16,7 @@
                          ////////////////////////////////////////////////
 
 // Les quelques variables utilisées par les fichiers "binettes.php3" et "codes.php3"
-$titrecart = "<b><font face='verdana' size='2'>";   // Police des titres
+$titrecart = "<strong><font face='verdana' size='2'>";   // Police des titres
 $police = "<font face='verdana' size='1'>";         // Police des smileys en caractères (=avant transformation)
 $tableauwidth = "240";                              // Largeur générale du tableau du fichier "codes.php3"
 $colwidth = "50%";

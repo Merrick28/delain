@@ -20,3 +20,5 @@ define('SMTP_HOST','smtp.free.fr');    // The smtp server host/ip
 define('SMTP_PORT',25);
 define('STMP_USER','');
 define('STMP_PASSWORD','');
+
+define('API_URL','http://localhost/delain/api/v2');

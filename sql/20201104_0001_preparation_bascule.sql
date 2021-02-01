@@ -1,0 +1,190 @@
+ALTER TABLE public.journal
+    SET WITHOUT OIDS;
+ALTER TABLE public.lieu_position
+    SET WITHOUT OIDS;
+ALTER TABLE public.parametres
+    SET WITHOUT OIDS;
+ALTER TABLE public.multi_trace
+    SET WITHOUT OIDS;
+ALTER TABLE public.objets
+    SET WITHOUT OIDS;
+ALTER TABLE public.murs
+    SET WITHOUT OIDS;
+ALTER TABLE public.objet_generique
+    SET WITHOUT OIDS;
+ALTER TABLE public.objet_position
+    SET WITHOUT OIDS;
+ALTER TABLE public.objets_caracs
+    SET WITHOUT OIDS;
+ALTER TABLE public.or_position
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_competences
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_identifie_objet
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso2
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_nb_sorts
+    SET WITHOUT OIDS;
+ALTER TABLE public.regles
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_objets
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_nb_comp
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_nb_sorts_total
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_compte
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_banque
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_15
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_13
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_14
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_temple
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_17
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_16
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_1
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_sorts
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_11
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_10
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_22
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_20
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_3
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_21
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_23
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_25
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_4
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_5
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_6
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_19
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_7
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_8
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_9
+    SET WITHOUT OIDS;
+ALTER TABLE public.popbox
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_12
+    SET WITHOUT OIDS;
+ALTER TABLE public.rune_famille
+    SET WITHOUT OIDS;
+ALTER TABLE public.race_comp
+    SET WITHOUT OIDS;
+ALTER TABLE public.renommee
+    SET WITHOUT OIDS;
+ALTER TABLE public.renommee_magie
+    SET WITHOUT OIDS;
+ALTER TABLE public.rep_mon_joueur
+    SET WITHOUT OIDS;
+ALTER TABLE public.repart_monstre
+    SET WITHOUT OIDS;
+ALTER TABLE public.positions
+    SET WITHOUT OIDS;
+ALTER TABLE public.race
+    SET WITHOUT OIDS;
+ALTER TABLE public.etage
+    SET WITHOUT OIDS;
+ALTER TABLE public.compte
+    SET WITHOUT OIDS;
+ALTER TABLE public.lock_combat
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso
+    SET WITHOUT OIDS;
+ALTER TABLE public.messages_dest
+    SET WITHOUT OIDS;
+ALTER TABLE public.gmon_type_comp
+    SET WITHOUT OIDS;
+ALTER TABLE public.faq_type
+    SET WITHOUT OIDS;
+ALTER TABLE public.competences
+    SET WITHOUT OIDS;
+ALTER TABLE public.stock_mag_magique_defaut
+    SET WITHOUT OIDS;
+ALTER TABLE public.sorts
+    SET WITHOUT OIDS;
+ALTER TABLE public.karma
+    SET WITHOUT OIDS;
+ALTER TABLE public.messages
+    SET WITHOUT OIDS;
+ALTER TABLE public.type_objet
+    SET WITHOUT OIDS;
+ALTER TABLE public.transaction
+    SET WITHOUT OIDS;
+ALTER TABLE public.virtual
+    SET WITHOUT OIDS;
+ALTER TABLE public.type_evt
+    SET WITHOUT OIDS;
+ALTER TABLE public.type_competences
+    SET WITHOUT OIDS;
+ALTER TABLE public.messages_exp
+    SET WITHOUT OIDS;
+ALTER TABLE public.sessions_active_popbox
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_24
+    SET WITHOUT OIDS;
+ALTER TABLE public.concentrations
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_position
+    SET WITHOUT OIDS;
+ALTER TABLE public.sort_rune
+    SET WITHOUT OIDS;
+ALTER TABLE public.guilde
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_18
+    SET WITHOUT OIDS;
+ALTER TABLE public.faq
+    SET WITHOUT OIDS;
+ALTER TABLE public.riposte
+    SET WITHOUT OIDS;
+ALTER TABLE public.lieu
+    SET WITHOUT OIDS;
+ALTER TABLE public.guilde_perso
+    SET WITHOUT OIDS;
+ALTER TABLE public.guilde_banque
+    SET WITHOUT OIDS;
+ALTER TABLE public.monstre_generique
+    SET WITHOUT OIDS;
+ALTER TABLE public.sessions_active
+    SET WITHOUT OIDS;
+ALTER TABLE public.ligne_evt
+    SET WITHOUT OIDS;
+ALTER TABLE public.lieu_type
+    SET WITHOUT OIDS;
+ALTER TABLE public.hits_voix
+    SET WITHOUT OIDS;
+ALTER TABLE public.guilde_banque_transactions
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_favoris
+    SET WITHOUT OIDS;
+ALTER TABLE public.perso_vue_pos_2
+    SET WITHOUT OIDS;
+ALTER TABLE public.guilde_rang
+    SET WITHOUT OIDS;
+ALTER TABLE public.donnees_automap
+    SET WITHOUT OIDS;
+ALTER TABLE public.domain
+    SET WITHOUT OIDS;
+ALTER TABLE public.dieu
+    SET WITHOUT OIDS;

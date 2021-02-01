@@ -1,8 +1,13 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d'appel de page !");
-if(!isset($db))
-	include_once "verif_connexion.php";
+<?php
 
-$desc = $db->get_lieu($perso_cod);
-echo "<p><b>". $tab_lieu['nom'] ."</b> - ". $tab_lieu['description'];
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+
+$perso = new perso;
+$perso = $verif_connexion->perso;
+
+$desc = $perso->get_lieu();
+echo "<p><strong>" . $tab_lieu['lieu']->lieu_nom . "</strong> - " . $tab_lieu['lieu']->lieu_description;

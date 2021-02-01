@@ -4,12 +4,13 @@ Tags
 .. toctree::
     :maxdepth: 1
 
+    apply
     autoescape
     block
+    deprecated
     do
     embed
     extends
-    filter
     flush
     for
     from
@@ -19,7 +20,6 @@ Tags
     macro
     sandbox
     set
-    spaceless
     use
     verbatim
     with

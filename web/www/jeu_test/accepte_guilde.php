@@ -1,39 +1,44 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+<?php
+include "blocks/_header_page_jeu.php";
 
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-if (!$db->is_revolution($num_guilde))
-{
-	$req = "update guilde_perso set pguilde_valide = 'O' where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
-	
-	$db->query($req);
-    
-    $msg = new message;
-    $msg->corps = "Vous avez été validé dans la guilde pour laquelle vous demandiez une admission.<br />";
-    $msg->sujet = "Demande d’admission dans une guilde.";
-    $msg->expediteur = $perso_cod;
-    $msg->ajouteDestinataire($vperso);
-    
-    $msg->envoieMessage();
 
-	$contenu_page = '<p>Le joueur a été rajouté à votre guilde.</p>
-		<p><a href="admin_guilde.php">Retourner à l’administration de la guilde</a></p>';
-}
-else
+$guilde       = new guilde();
+$guilde_perso = new guilde_perso();
+
+$guilde_perso->get_by_perso($perso_cod);
+
+$guilde->charge($guilde_perso->pguilde_guilde_cod);
+$guilderev = new guilde_revolution();
+$isrev     = false;
+$ok        = true;
+if (!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
 {
-	$contenu_page = '<p>Vous ne pouvez pas intervenir dans la gestion de la guilde pendant une révolution !</p>';
+    $gperso2 = new guilde_perso();
+    if ($gperso2->get_by_perso_guilde($_REQUEST['vperso'], $guilde->guilde_cod))
+    {
+        $gperso2->pguilde_valide = 'O';
+        $gperso2->stocke();
+        $msg             = new message;
+        $msg->corps      = "Vous avez été validé dans la guilde pour laquelle vous demandiez une admission.<br />";
+        $msg->sujet      = "Demande d’admission dans une guilde.";
+        $msg->expediteur = $perso_cod;
+        $msg->ajouteDestinataire($_REQUEST['vperso']);
+        $msg->envoieMessage();
+
+    } else
+    {
+        $ok = false;
+    }
+
+} else
+{
+    $isrev = true;
 }
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+
+$template     = $twig->load('accepte_guilde.twig');
+$options_twig = array(
+
+    'ISREV' => $isrev,
+    'OK'    => $ok
+);
+echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

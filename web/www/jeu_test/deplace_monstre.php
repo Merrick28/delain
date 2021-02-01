@@ -1,38 +1,15 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+include "blocks/_header_page_jeu.php";
+$erreur = 0;
+$erreur2 = 0;
 
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-$erreur       = 0;
-$erreur2      = 0;
-$req          = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
-{
-    $droit['modif_perso']   = 'N';
-    $droit['modif_gmon']    = 'N';
-    $droit['controle']      = 'N';
-    $droit['creer_monstre'] = 'N';
-}
-else
-{
-    $db->next_record();
-    $droit['modif_perso']   = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon']    = $db->f("dcompt_modif_gmon");
-    $droit['controle']      = $db->f("dcompt_controle");
-    $droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
-}
-if ($droit['modif_perso'] != 'O')
+$droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
+include "blocks/_test_droit_modif_generique.php";
+
+
+
+if ($erreur != 0)
 {
     echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
     $erreur2 = 1;
@@ -62,7 +39,7 @@ if (!isset($monstre_etage))
 //
 // initialisation tableau
 //
-$db2 = new base_delain;
+
 if ($erreur2 != 1)
 {
     ob_start();
@@ -70,35 +47,35 @@ if ($erreur2 != 1)
     $contenu_page .= ob_get_contents();
     ob_end_clean();
 
-    $contenu_page .= '<table><form name="deplace_monstre" method="post" action="' . $PHP_SELF . '">
+    $contenu_page .= '<table><form name="deplace_monstre" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 		
 		<tr>
 			<td class="titre" colspan="2"><p class="titre">Déplacement de monstres en bloc</p></td>
 		</tr>
 		<tr>
-			<td class="soustitre2"><p>Monstres concernés<br><i>(Entrez les numéros de monstres séparés par des ";")</i></p></td>
+			<td class="soustitre2"><p>Monstres concernés<br><em>(Entrez les numéros de monstres séparés par des ";")</em></p></td>
 			<td class="soustitre2"><p>Récupération de numéros de monstres</p></td>
 		</tr>
 		<tr>
 			<td><p><textarea name="monstre" cols="70" rows="4">' . $monstre . '</textarea></p></td>
-			<td><p><b>Par position</b></p>
-				<p><b>Position X : </b><input type="text" name="recup_x" size="5" />
-				<b>Position Y : </b><input type="text" name="recup_y" size="5" /><br />
-				<b>Étage : </b><select name="recup_etage">';
-
+			<td><p><strong>Par position</strong></p>
+				<p><strong>Position X : </strong><input type="text" name="recup_x" size="5" />
+				<strong>Position Y : </strong><input type="text" name="recup_y" size="5" /><br />
+				<strong>Étage : </strong><select name="recup_etage">';
+    $html = new html;
     $contenu_page .= $html->etage_select();
 
     $contenu_page
         .= '</select></p>
-			<hr /><p><b>Par armée</b></p>
-			<p><b>Numéro du commandant : </b><input type="text" name="recup_commandant" size="10" /></p></td>
+			<hr /><p><strong>Par armée</strong></p>
+			<p><strong>Numéro du commandant : </strong><input type="text" name="recup_commandant" size="10" /></p></td>
 		</tr><tr>
 			<td class="soustitre2"><p>Position de lancement<br></p></td>
 			<td><input type="submit" name="recup" value="Récupérer"></td>
 		</tr>
-		<tr><td><p><b>Position X : </b><input type="text" name="pos_x" size="5" value="' . $pos_x . '">
-			<b>Position Y : </b><input type="text" name="pos_y" size="5" value="' . $pos_y . '">
-			<b>Étage : </b><select name="etage">';
+		<tr><td><p><strong>Position X : </strong><input type="text" name="pos_x" size="5" value="' . $pos_x . '">
+			<strong>Position Y : </strong><input type="text" name="pos_y" size="5" value="' . $pos_y . '">
+			<strong>Étage : </strong><select name="etage">';
 
     $contenu_page .= $html->etage_select($monstre_etage);
 
@@ -114,12 +91,10 @@ if ($erreur2 != 1)
     if (isset($_POST['recup']))
     {
         $methode2 = 'recuperation';
-    }
-    elseif (isset($_POST['validation']))
+    } elseif (isset($_POST['validation']))
     {
         $methode2 = 'validation';
-    }
-    elseif (isset($_POST['deplacement']))
+    } elseif (isset($_POST['deplacement']))
     {
         $methode2 = 'deplacement';
     }
@@ -130,32 +105,31 @@ if ($erreur2 != 1)
             {
                 $monstre2 .= $recup_commandant . ';';
                 $req = "select perso_nom from perso where perso_cod = $recup_commandant";
-                $db->query($req);
-                $db->next_record();
-                $perso_nom = $db->f("perso_nom");
-                $req       = "select perso_subalterne_cod from perso_commandement where perso_superieur_cod = $recup_commandant";
-                $db->query($req);
-                while ($db->next_record())
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $perso_nom = $result['perso_nom'];
+                $req = "select perso_subalterne_cod from perso_commandement where perso_superieur_cod = $recup_commandant";
+                $stmt = $pdo->query($req);
+                while ($result = $stmt->fetch())
                 {
-                    $monstre2 .= $db->f("perso_subalterne_cod") . ';';
+                    $monstre2 .= $result['perso_subalterne_cod'] . ';';
                 }
-                $texte = "Liste des monstres sous le commandement de <b>$perso_nom</b>";
-            }
-            else
+                $texte = "Liste des monstres sous le commandement de <strong>$perso_nom</strong>";
+            } else
             {
                 $req = "select etage_numero, etage_libelle from etage where etage_numero = $recup_etage";
-                $db->query($req);
-                $db->next_record();
-                $etage_nom = $db->f("etage_libelle");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $etage_nom = $result['etage_libelle'];
                 $req
-                           = "select ppos_perso_cod from perso_position, positions 
+                    = "select ppos_perso_cod from perso_position, positions 
 					where pos_x = $recup_x and pos_y = $recup_y and pos_etage = $recup_etage and ppos_pos_cod = pos_cod";
-                $db->query($req);
-                while ($db->next_record())
+                $stmt = $pdo->query($req);
+                while ($result = $stmt->fetch())
                 {
-                    $monstre2 .= $db->f("ppos_perso_cod") . ';';
+                    $monstre2 .= $result['ppos_perso_cod'] . ';';
                 }
-                $texte = "Liste des monstres en position <b>X : $recup_x / Y : $recup_y / Étage : $etage_nom</b>";
+                $texte = "Liste des monstres en position <strong>X : $recup_x / Y : $recup_y / Étage : $etage_nom</strong>";
             }
             $contenu_page .= '<table><td class="soustitre2"><p>' . $texte . '</p></td>
 			<tr><td><p><textarea name="monstre2" cols="70" rows="2">' . $monstre2 . '</textarea></p></td></tr></table>';
@@ -165,37 +139,35 @@ if ($erreur2 != 1)
             $err_depl = 0;
             if ($pos_x == null or $pos_y == null)
             {
-                $contenu_page .= '<br><p><b>*********** Attention, aucune position sélectionnée. *************</b><br><br><hr>';
+                $contenu_page .= '<br><p><strong>*********** Attention, aucune position sélectionnée. *************</strong><br><br><hr>';
                 $err_depl = 1;
-            }
-            else
+            } else
             {
                 $req
                     = "select pos_cod from positions 
 					where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $monstre_etage ";
-                $db->query($req);
-                if ($db->nf() == 0)
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() == 0)
                 {
-                    $contenu_page .= '<br><p><b>*********** Aucune position trouvée à ces coordonnées. *************</b><br><br><hr>';
+                    $contenu_page .= '<br><p><strong>*********** Aucune position trouvée à ces coordonnées. *************</strong><br><br><hr>';
                     $err_depl = 1;
-                }
-                else
+                } else
                 {
-                    $db->next_record();
-                    $pos_cod2 = $db->f("pos_cod");
-                    $req      = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod2 ";
-                    $db->query($req);
-                    if ($db->nf() != 0)
+                    $result = $stmt->fetch();
+                    $pos_cod2 = $result['pos_cod'];
+                    $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod2 ";
+                    $stmt = $pdo->query($req);
+                    if ($stmt->rowCount() != 0)
                     {
-                        $contenu_page .= '<br><p><b> ************* impossible de déplacer le perso : un mur en destination. *************</b><br><br><fr>';
+                        $contenu_page .= '<br><p><strong> ************* impossible de déplacer le perso : un mur en destination. *************</strong><br><br><fr>';
                         $err_depl = 1;
                     }
                 }
             }
-            $erreur      = 0;
+            $erreur = 0;
             $tab_monstre = explode(";", $monstre);
-            $nb_monstre  = count($tab_monstre);
-            $cpt         = 0;
+            $nb_monstre = count($tab_monstre);
+            $cpt = 0;
             if ($nb_monstre == 0)
             {
                 $contenu_page .= '<p>Vous devez renseigner au moins un monstre !';
@@ -205,9 +177,9 @@ if ($erreur2 != 1)
             {
                 if ($err_depl != 1)
                 {
-                    $contenu_page .= '<br><p><b>*********** Position trouvée. Vérifiez bien monstres concernés et position avant de valider définitivement !*************</b><br><br><hr>';
+                    $contenu_page .= '<br><p><strong>*********** Position trouvée. Vérifiez bien monstres concernés et position avant de valider définitivement !*************</strong><br><br><hr>';
                 }
-                $contenu_page .= '<table><form name="deplace" method="post" action="' . $PHP_SELF . '">
+                $contenu_page .= '<table><form name="deplace" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<tr><td class="titre">Code</td><td class="titre">Nom</td><td class="titre">Type</td><td class="titre">Position de déplacement</td><td class="titre" colspan="2">Paramètres d’IA</td></tr>';
                 for ($cpt = 0; $cpt < $nb_monstre; $cpt++)
                 {
@@ -217,44 +189,40 @@ if ($erreur2 != 1)
                         $req
                             = "select perso_nom, perso_type_perso, perso_cod, perso_sta_combat, perso_sta_hors_combat, perso_dirige_admin
 							from perso where perso_cod = $code";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         //On teste si le code existe, sinon danger !
-                        if ($db->nf() == 0)
+                        if ($stmt->rowCount() == 0)
                         {
-                            $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2"><b>Ce code n’existe pas !</b></td></tr>';
-                        }
-                        else
+                            $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2"><strong>Ce code n’existe pas !</strong></td></tr>';
+                        } else
                         {
-                            $db->next_record();
-                            $nom           = $db->f("perso_nom");
-                            $type          = $db->f("perso_type_perso");
-                            $check_stat    = $db->f("perso_sta_combat");
-                            $check_stat_hc = $db->f("perso_sta_hors_combat");
-                            $dirige_admin  = $db->f("perso_dirige_admin");
+                            $result = $stmt->fetch();
+                            $nom = $result['perso_nom'];
+                            $type = $result['perso_type_perso'];
+                            $check_stat = $result['perso_sta_combat'];
+                            $check_stat_hc = $result['perso_sta_hors_combat'];
+                            $dirige_admin = $result['perso_dirige_admin'];
 
                             //On indique le type de perso dont il s’agit
                             if ($type == 1)
                             {
                                 $type_nom = 'Personnage';
-                            }
-                            else if ($type == 2)
+                            } else if ($type == 2)
                             {
                                 $type_nom = 'Monstre';
-                            }
-                            else if ($type == 3)
+                            } else if ($type == 3)
                             {
                                 $type_nom = 'Familier';
-                            }
-                            else
+                            } else
                             {
-                                $type = 'Autre... <b>Attention, risque d’être inconnu !</b>';
+                                $type = 'Autre... <strong>Attention, risque d’être inconnu !</strong>';
                             }
                             //On donne la possibilité de changer la position de manière individuelle
                             //en ayant préalablement récupéré la position générale
                             $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2">' . $nom . '</td><td class="soustitre2">' . $type_nom . '</td>
-								<td class="soustitre2"><p><b>X : </b><input type="text" name="x[' . $code . ']" size="5" value="' . $pos_x . '">
-									<b>Y : </b><input type="text" name="y[' . $code . ']" size="5" value="' . $pos_y . '">
-									<b>Étage : </b><select name="etage_monstre[' . $code . ']">';
+								<td class="soustitre2"><p><strong>X : </strong><input type="text" name="x[' . $code . ']" size="5" value="' . $pos_x . '">
+									<strong>Y : </strong><input type="text" name="y[' . $code . ']" size="5" value="' . $pos_y . '">
+									<strong>Étage : </strong><select name="etage_monstre[' . $code . ']">';
 
                             $contenu_page .= $html->etage_select($monstre_etage);
 
@@ -266,8 +234,7 @@ if ($erreur2 != 1)
                                 {
                                     $check_stat_O = "checked";
                                     $check_stat_N = "";
-                                }
-                                else
+                                } else
                                 {
                                     $check_stat_O = "";
                                     $check_stat_N = "checked";
@@ -276,8 +243,7 @@ if ($erreur2 != 1)
                                 {
                                     $check_stat_hc_O = "checked";
                                     $check_stat_hc_N = "";
-                                }
-                                else
+                                } else
                                 {
                                     $check_stat_hc_O = "";
                                     $check_stat_hc_N = "checked";
@@ -299,15 +265,14 @@ if ($erreur2 != 1)
                                 }
                                 $contenu_page .= '>Oui</option><br />';
                                 $req = "select pcompt_compt_cod, pcompt_perso_cod from perso_compte where pcompt_perso_cod = $code";
-                                $db2->query($req);
-                                if ($db2->nf() == 0)
+                                $stmt2 = $pdo->query($req);
+                                if ($stmt2->rowCount() == 0)
                                 {
                                     $compte_administrateur = '';
-                                }
-                                else
+                                } else
                                 {
-                                    $db2->next_record();
-                                    $compte_administrateur = $db2->f("pcompt_compt_cod");
+                                    $result2 = $stmt2->fetch();
+                                    $compte_administrateur = $result2['pcompt_compt_cod'];
                                 }
                                 $contenu_page .= '<input type="hidden" name="compte_administrateur[' . $code . ']" value="' . $compte_administrateur . '">
 									<br />Admin monstre : <select name="compt_admin[' . $code . ']">
@@ -317,8 +282,7 @@ if ($erreur2 != 1)
                                 $html->select_from_query($req, 'compt_cod', 'compt_nom', $compte_administrateur);
 
                                 $contenu_page .= '</select></td></tr>';
-                            }
-                            else
+                            } else
                             {
                                 $contenu_page .= '<td colspan="2" class="soustitre2"></td></tr>';
                             }
@@ -341,17 +305,17 @@ if ($erreur2 != 1)
                 {
                     //$contenu_page .= '<br>debug ' . $key . ' - ' . $val . ' - ' . $pos_x[$key];
                     $liste_monstre .= $key;
-                    $pos_x1        = $x[$key];
-                    $pos_y1        = $y[$key];
+                    $pos_x1 = $x[$key];
+                    $pos_y1 = $y[$key];
                     $monstre_etage = $etage_monstre[$key];
 
                     $gestion_ia = isset($perso_sta_combat) && isset($perso_sta_combat[$key]);
                     if ($gestion_ia)
                     {
-                        $stat_combat  = $perso_sta_combat[$key];
-                        $stat_hc      = $perso_sta_hors_combat[$key];
-                        $hors_ia      = $ia[$key];
-                        $admin        = $compt_admin[$key];
+                        $stat_combat = $perso_sta_combat[$key];
+                        $stat_hc = $perso_sta_hors_combat[$key];
+                        $hors_ia = $ia[$key];
+                        $admin = $compt_admin[$key];
                         $ancien_admin = $compte_administrateur[$key];
                     }
                     $req
@@ -360,20 +324,19 @@ if ($erreur2 != 1)
 						where pos_x = $pos_x1 
 							and pos_y = $pos_y1
 							and pos_etage = $monstre_etage ";
-                    $db->query($req);
-                    if ($db->nf() == 0)
+                    $stmt = $pdo->query($req);
+                    if ($stmt->rowCount() == 0)
                     {
-                        $liste_monstre .= '<b> ***position inconnue***</b><br>';
-                    }
-                    else
+                        $liste_monstre .= '<strong> ***position inconnue***</strong><br>';
+                    } else
                     {
-                        $db->next_record();
-                        $position   = $db->f("pos_cod");
-                        $arene_dest = $db->f("etage_arene");
-                        $req        = "delete from lock_combat where lock_cible = $key ";
-                        $db2->query($req);
+                        $result = $stmt->fetch();
+                        $position = $result['pos_cod'];
+                        $arene_dest = $result['etage_arene'];
+                        $req = "delete from lock_combat where lock_cible = $key ";
+                        $stmt2 = $pdo->query($req);
                         $req = "delete from lock_combat where lock_attaquant = $key ";
-                        $db2->query($req);
+                        $stmt2 = $pdo->query($req);
 
                         // origine
                         $req
@@ -381,14 +344,14 @@ if ($erreur2 != 1)
 							inner join positions on pos_cod = ppos_pos_cod
 							inner join etage on etage_numero = pos_etage
 							where ppos_perso_cod = $key";
-                        $db2->query($req);
-                        $db2->next_record();
-                        $position_depart = $db2->f("pos_cod");
-                        $arene_depart    = $db2->f("etage_arene");
+                        $stmt2 = $pdo->query($req);
+                        $result2 = $stmt2->fetch();
+                        $position_depart = $result2['pos_cod'];
+                        $arene_depart = $result2['etage_arene'];
 
                         // déplacement
                         $req = "update perso_position set ppos_pos_cod = $position where ppos_perso_cod = $key ";
-                        $db2->query($req);
+                        $stmt2 = $pdo->query($req);
                         $liste_monstre .= ' déplacé';
 
                         // Gestion arènes
@@ -396,23 +359,23 @@ if ($erreur2 != 1)
                         {
                             case 'NO':    // D’un étage normal vers une arène
                                 $req = "delete from perso_arene where parene_perso_cod = $key ";
-                                $db2->query($req);
+                                $stmt2 = $pdo->query($req);
                                 $req
                                     = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
 									values($key, $monstre_etage, $position_depart, now()) ";
-                                $db2->query($req);
+                                $stmt2 = $pdo->query($req);
                                 $liste_monstre .= " vers une arène : position d’origine = position de sortie d’arène.";
                                 break;
 
                             case 'OO':    // D’une arène vers une autre
                                 $req = "update perso_arene set parene_etage_numero = $monstre_etage where parene_perso_cod = $key";
-                                $db2->query($req);
+                                $stmt2 = $pdo->query($req);
                                 $liste_monstre .= " d’une arène vers une arène : première position d’entrée = position de sortie d’arène.";
                                 break;
 
                             case 'ON':    // D’une arène vers un étage normal
                                 $req = "delete from perso_arene where parene_perso_cod = $key ";
-                                $db2->query($req);
+                                $stmt2 = $pdo->query($req);
                                 $liste_monstre .= " d’une arène vers un étage normal : perte de la position d’entrée dans l’arène !";
                                 break;
 
@@ -430,30 +393,27 @@ if ($erreur2 != 1)
 								perso_sta_combat = '$stat_combat',
 								perso_sta_hors_combat = '$stat_hc'
 							where perso_cod = $key";
-                            $db2->query($req);
+                            $stmt2 = $pdo->query($req);
 
                             if ($admin != -1 and $admin != '' and $admin != null)
                             {
                                 if ($compte_administrateur[$key] == '')
                                 {
                                     $req = "insert into perso_compte (pcompt_compt_cod,pcompt_perso_cod) values ($admin,$key)";
-                                    $db2->query($req);
-                                }
-                                else
+                                    $stmt2 = $pdo->query($req);
+                                } else
                                 {
                                     $req = "update perso_compte set pcompt_compt_cod = $admin where pcompt_perso_cod = $key";
-                                    $db2->query($req);
+                                    $stmt2 = $pdo->query($req);
                                 }
                             }
                         }
                     }
                 }
             }
-            $contenu_page .= '<br><b>Les monstres ont bien été déplacés</b><br><br>' . $liste_monstre . '<br>';
+            $contenu_page .= '<br><strong>Les monstres ont bien été déplacés</strong><br><br>' . $liste_monstre . '<br>';
             break;
     }
 }
 
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse("Sortie", "FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";

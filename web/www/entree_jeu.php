@@ -1,7 +1,10 @@
 <?php
 include_once "includes/classes.php";
-$verif_auth = false;
-include G_CHE . "ident.php";
+$verif_auth      = false;
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+$compte     = $verif_connexion->compte;
 
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
@@ -19,7 +22,7 @@ if ($verif_auth)
         // TODO : mettre en template
         echo("<html><head>");
         ?>
-        <link rel="stylesheet" type="text/css" href="style.css" title="essai">
+        <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
         <?php
         echo("</head>");
         echo '<body background="images/fond5.gif" onload="retour();">';
@@ -36,7 +39,7 @@ if ($verif_auth)
         // TODO : mettre en template
         echo("<html><head>");
         ?>
-        <link rel="stylesheet" type="text/css" href="style.css" title="essai">
+        <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
         <?php
         echo("</head>");
         echo '<body background="images/fond5.gif" onload="retour();">';
@@ -161,27 +164,9 @@ if ($verif_auth)
 
                 foreach ($liste_evt as $detail_evt)
                 {
-                    if (!empty($detail_evt->levt_attaquant != ''))
-                    {
-                        $perso_attaquant = new perso;
-                        $perso_attaquant->charge($detail_evt->levt_attaquant);
-                    }
-                    if (!empty($detail_evt->levt_cible != ''))
-                    {
-                        $perso_cible = new perso;
-                        $perso_cible->charge($detail_evt->levt_cible);
-                    }
-                    $texte_evt = str_replace('[perso_cod1]', "<b>" . $ancien_monstre->perso_nom . "</b>", $detail_evt->levt_texte);
-                    if ($detail_evt->levt_attaquant != '')
-                    {
-                        $texte_evt = str_replace('[attaquant]', "<b>" . $perso_attaquant->perso_nom . "</b>", $texte_evt);
-                    }
-                    if ($detail_evt->levt_cible != '')
-                    {
-                        $texte_evt = str_replace('[cible]', "<b>" . $perso_cible->perso_nom . "</b>", $texte_evt);
-                    }
-                    $date_evt      = new DateTime($detail_evt->levt_date);
-                    $evt_monstre[] = $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
+                    require "_block_nouveaux_evts.php";
+                    $evt_monstre[] =
+                        $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
                 }
                 // On relâche le monstre du compte du joueur
                 $ancien_monstre->relache_monstre_4e_perso();
@@ -254,6 +239,8 @@ if ($verif_auth)
 
 // affichage de la page
 $options_twig = array(
+    '__VERSION'                => $__VERSION,
+    'IS_ADMIN_MONSTRE'         => $is_admin_monstre,
     'IS_ADMIN_MONSTRE'         => $is_admin_monstre,
     'COMPTE'                   => $compte,
     'TYPE_PERSO'               => $type_perso,
@@ -272,5 +259,5 @@ $options_twig = array(
     'PREMIER_PERSO'            => $premier_perso,
 
 );
-echo $template->render(array_merge($options_twig_defaut,$options_twig));
+echo $template->render(array_merge($options_twig_defaut, $options_twig));
 

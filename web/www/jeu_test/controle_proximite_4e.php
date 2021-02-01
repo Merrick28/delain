@@ -1,37 +1,24 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+<?php
+include "blocks/_header_page_jeu.php";
 ob_start();
 
 ?>
 
-<p><b>Liste des comptes dont les personnages principaux sont proches du quatrième personnage.</b>
+<p><strong>Liste des comptes dont les personnages principaux sont proches du quatrième personnage.</strong>
 	Ce n’est pas nécessairement répréhensible, mais un avertissement spécifique leur est envoyé à la connexion.</p>
 
 
 <table cellspacing="2">
 <tr>
-	<td class="soustitre3" rowspan='2'><p><b>Compte</b></p></td>
-	<td class="soustitre3" colspan='2'><p><b>Personnage principal</b></p></td>
-	<td class="soustitre3" colspan='2'><p><b>Quatrième personnage</b></p></td>
+	<td class="soustitre3" rowspan='2'><p><strong>Compte</strong></p></td>
+	<td class="soustitre3" colspan='2'><p><strong>Personnage principal</strong></p></td>
+	<td class="soustitre3" colspan='2'><p><strong>Quatrième personnage</strong></p></td>
 </tr>
 <tr>
-	<td class="soustitre3"><p><b>Nom</b></p></td>
-	<td class="soustitre3"><p><b>Position</b></p></td>
-	<td class="soustitre3"><p><b>Nom</b></p></td>
-	<td class="soustitre3"><p><b>Position</b></p></td>
+	<td class="soustitre3"><p><strong>Nom</strong></p></td>
+	<td class="soustitre3"><p><strong>Position</strong></p></td>
+	<td class="soustitre3"><p><strong>Nom</strong></p></td>
+	<td class="soustitre3"><p><strong>Position</strong></p></td>
 </tr>
 <?php 
 $req = 'select compt_cod, compt_nom,
@@ -54,16 +41,16 @@ $req = 'select compt_cod, compt_nom,
 		and triplette.perso_actif = \'O\' and quatrieme.perso_actif = \'O\'
 		and controle_persos_proches(triplette.perso_cod, quatrieme.perso_cod, 10)
 	order by compt_cod';
-$db->query($req);
+$stmt = $pdo->query($req);
 
 $lignes = '';
 $compte_precedent = -1;
 $nombre = 0;
 
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	$c_cod = $db->f("compt_cod");
-	$c_nom = $db->f("compt_nom");
+	$c_cod = $result['compt_cod'];
+	$c_nom = $result['compt_nom'];
 
 	if ($c_cod != $compte_precedent && $nombre > 0)
 	{
@@ -72,12 +59,12 @@ while ($db->next_record())
 		$compte_precedent = $c_cod;
 		$lignes = '';
 	}
-	$pn1 = $db->f("perso_nom1");
-	$pc1 = $db->f("perso_cod1");
-	$pn4 = $db->f("perso_nom4");
-	$pc4 = $db->f("perso_cod4");
-	$pos1 = $db->f("pos1");
-	$pos4 = $db->f("pos4");
+    $pn1  = $result['perso_nom1'];
+    $pc1  = $result['perso_cod1'];
+    $pn4  = $result['perso_nom4'];
+    $pc4  = $result['perso_cod4'];
+    $pos1 = $result['pos1'];
+    $pos4 = $result['pos4'];
 	if ($nombre == 0)
 	{
 		$lignes .= "<a href='detail_compte.php?compte=$c_cod'>$c_nom</a></td>";
@@ -101,7 +88,4 @@ echo '</table>';
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
-?>
+include "blocks/_footer_page_jeu.php";

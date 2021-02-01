@@ -1,8 +1,11 @@
 ﻿<?php
 
 // par défaut, on n'est pas authentifié
-$verif_auth = false;
-include G_CHE . "ident.php";
+$verif_auth      = false;
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+$compte     = $verif_connexion->compte;
 
 $finances = new finances;
 
@@ -37,7 +40,6 @@ $date_maj        = $finances->getDateUpdate();
 $template = $twig->load('finances.twig');
 
 $options_twig = array(
-    'PERCENT_FINANCES' => $percent_finances,
     'TABFIN'           => $TableauFinances,
     'MIN_YEAR'         => $minYear,
     'CURRENT_YEAR'     => $currentYear,

@@ -1,0 +1,240 @@
+{# UTILISATION DES PA RESTANTS #}
+<div class="titre">Utilisation des PA restants</div>
+{{ PERSO.perso_nom }}
+<strong>{% if PERSO.perso_utl_pa_rest == 1 %}utilise{% else %}n'utilise pas{% endif %}</strong> ses PA restants pour réduire le temps de tour suivant.
+<a href="{{ PHP_SELF }}?m=2&ch_util={% if PERSO.perso_utl_pa_rest == 1 %}0{% else %}1{% endif %}">(changer ?)</a><br/>
+
+{# CONCENTRATONS #}
+<div class="titre">Concentration</div>
+{% if HAS_CONCENTRATION %}
+    Vous êtes concentré(e) pendant {{ CONCENTRATION.concentration_nb_tours }} tours.
+{% else %}
+    Vous n’avez effectué aucune concentration.
+{% endif %}
+<br/><a href="valide_concentration.php">Se concentrer ! (4 PA)</a>
+{% if HAS_CONCENTRATION %}
+    <br/><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration
+    précédente sera annulée !</em>
+{% endif %}
+
+{# BONUS PERMANENTS #}
+<div class="titre">Bonus permanents</div>
+Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} dégât(s)</strong><br>
+
+{# BONUS EQUIPEMENT #}
+<div class="titre">Bonus/Malus d'équipement</div>
+<table>
+    <tr valign="top">
+        <td style="padding:15px;">
+            {# BONUS #}
+            {% if (TAB_BONUS.0|length == 0 and BONUS_CARAC.0|length == 0) %}
+                <p>Vous n’avez aucun bonus d'équipement en ce moment.</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <td class="soustitre2"><strong>Bonus</strong></td>
+                        <td class="soustitre2"><strong>Valeur</strong></td>
+                        <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class=""></td>
+                        {% for detail_bonus in TAB_BONUS.0 %}
+
+                    <tr class="delain-tooltip" title="{{  detail_bonus.tbonus_description|raw }}">
+                        <td class="soustitre2"><strong>{{ detail_bonus.tonbus_libelle }}
+                                {% if detail_bonus.bonus_mode == "C" %} (cumulatif){% endif %}</strong>
+                        </td>
+
+                        <td>
+                            <div style="text-align:center;">{% if detail_bonus.bonus_valeur >= 0 %}+{% endif %}{{ detail_bonus.bonus_valeur }}</div>
+                        </td>
+                        <td>
+                            <div style="text-align:center;">
+                                Equipement
+                            </div>
+                        </td>
+                        <td style="text-align:center"><img src="{{ detail_bonus.img }}"></td>
+                    </tr>
+                    {% endfor %}
+                    {% for  bonus in BONUS_CARAC.0 %}
+                        <tr class="delain-tooltip" title="{{ bonus.tbonus_description|raw }}">
+                            <td class='soustitre2'><strong>{{ bonus.lib_carac }}</strong></td>
+                            <td>
+                                <div style='text-align:center;'>{% if bonus.0 >= 0 %}+{% endif %}{{ bonus.0 }}</div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'>Equipement
+                                </div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'><img src="{{ bonus.img }}"></div>
+                            </td>
+                        </tr>
+
+
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </td>
+        <td style="padding:15px;">
+            {# MALUS#}
+            {% if (TAB_MALUS.0|length == 0 and MALUS_CARAC.0|length == 0) %}
+                <p>Vous n’avez aucun malus d'équipement en ce moment.</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <td class="soustitre2"><strong>Malus</strong></td>
+                        <td class="soustitre2"><strong>Valeur</strong></td>
+                        <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class=""></td>
+                    </tr>
+                    {% for detail_malus in TAB_MALUS.0 %}
+                        <tr class="delain-tooltip" title="{{ detail_malus.tbonus_description|raw }}">
+                            <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
+                                    {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
+
+                            <td>
+                                <div style="text-align:center;">{% if detail_malus.bonus_valeur >= 0 %}+{% endif %}{{ detail_malus.bonus_valeur }}</div>
+                            </td>
+                            <td>
+                                <div style="text-align:center;">{% if detail_malus.bonus_mode== "E" %}Equipement
+                                    {% else %}
+                                        {{ detail_malus.bonus_nb_tours }} tour(s)
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td style="text-align:center"><img src="{{ detail_malus.img }}"></td>
+                        </tr>
+
+                    {% endfor %}
+
+                    {% for malus in MALUS_CARAC.0 %}
+                        <tr class="delain-tooltip" title="{{  malus.tbonus_description|raw }}">
+                            <td class='soustitre2'><strong>{{ malus.lib_carac }}</strong></td>
+                            <td>
+                                <div style='text-align:center;'>{% if malus.0 >= 0 %}+{% endif %}{{ malus.0 }}</div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'>Equipement
+                                </div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'><img src="{{ malus.img }}}"></div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+<div class="titre">Bonus/Malus temporaires</div>
+<table>
+    <tr valign="top">
+        <td style="padding:15px;">
+            {# BONUS #}
+            {% if (TAB_BONUS.1|length == 0 and BONUS_CARAC.1|length == 0) %}
+                <p>Vous n’avez aucun bonus en ce moment.</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <td class="soustitre2"><strong>Bonus</strong></td>
+                        <td class="soustitre2"><strong>Valeur</strong></td>
+                        <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class=""></td>
+                        {% for detail_bonus in TAB_BONUS.1 %}
+
+                    <tr class="delain-tooltip" title="{{  detail_bonus.tbonus_description|raw }}">
+                        <td class="soustitre2"><strong>{{ detail_bonus.tonbus_libelle }}
+                                {% if detail_bonus.bonus_mode == "C" %} (cumulatif){% endif %}</strong>
+                        </td>
+
+                        <td>
+                            <div style="text-align:center;">{% if detail_bonus.bonus_valeur >= 0 %}+{% endif %}{{ detail_bonus.bonus_valeur }}</div>
+                        </td>
+                        <td>
+                            <div style="text-align:center;">
+                                {{ detail_bonus.bonus_nb_tours }} tour(s)
+                            </div>
+                        </td>
+                        <td style="text-align:center"><img src="{{ detail_bonus.img }}"></td>
+                    </tr>
+                    {% endfor %}
+                    {% for  bonus in BONUS_CARAC.1 %}
+                        <tr class="delain-tooltip" title="{{  bonus.tbonus_description|raw }}">
+                            <td class='soustitre2'><strong>{{ bonus.lib_carac }}</strong></td>
+                            <td>
+                                <div style='text-align:center;'>{% if bonus.0 >= 0 %}+{% endif %}{{ bonus.0 }}</div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'>{{ bonus.1 }}
+                                </div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'><img src="{{ bonus.img }}"></div>
+                            </td>
+                        </tr>
+
+
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </td>
+        <td style="padding:15px;">
+            {# MALUS#}
+            {% if (TAB_MALUS.1|length == 0 and MALUS_CARAC.1|length == 0) %}
+                <p>Vous n’avez aucun malus en ce moment.</p>
+            {% else %}
+                <table>
+                    <tr>
+                        <td class="soustitre2"><strong>Malus</strong></td>
+                        <td class="soustitre2"><strong>Valeur</strong></td>
+                        <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class=""></td>
+                    </tr>
+                    {% for detail_malus in TAB_MALUS.1 %}
+                        <tr class="delain-tooltip" title="{{  detail_malus.tbonus_description|raw }}">
+                            <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
+                                    {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
+
+                            <td>
+                                <div style="text-align:center;">{% if detail_malus.bonus_valeur >= 0 %}+{% endif %}{{ detail_malus.bonus_valeur }}</div>
+                            </td>
+                            <td>
+                                <div style="text-align:center;">
+                                    {{ detail_malus.bonus_nb_tours }} tour(s)
+                                </div>
+                            </td>
+                            <td style="text-align:center"><img src="{{ detail_malus.img }}"></td>
+                        </tr>
+
+                    {% endfor %}
+
+                    {% for malus in MALUS_CARAC.1 %}
+                        <tr class="delain-tooltip" title="{{  malus.tbonus_description|raw }}">
+                            <td class='soustitre2'><strong>{{ malus.lib_carac }}</strong></td>
+                            <td>
+                                <div style='text-align:center;'>{% if malus.0 >= 0 %}+{% endif %}{{ malus.0 }}</div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'>{{ malus.1 }}
+                                </div>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'><img src="{{ malus.img }}"></div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </td>
+
+    </tr>
+</table>
+<script>//# sourceURL=_perso2_bonus_twig.js
+    $(document).ready(function () {
+        $(".delain-tooltip").tooltip({
+            content: function () {
+                return $(this).prop('title');
+            }});
+    });
+</script>

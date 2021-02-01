@@ -1,0 +1,66 @@
+{% if COMPTE.compt_vue_desc == 1 %}
+    <form name="message" method="post" action="messagerie2.php">
+        <input type="hidden" name="m" value="2">
+        <input type="hidden" name="n_dest" value="{{ VISU_PERSO.perso_nom }}">
+        <input type="hidden" name="dmsg_cod">
+    </form>
+    <div style=text-align:center>
+        <a href="javascript:document.message.submit();">Envoyer un message !</a><br>
+        <a href="{{ PHP_SELF }}?met=masq&visu={{ VISU_PERSO.perso_cod }}">Masquer la description ?</a>
+    </div>
+{% else %}
+    <div style=text-align:center>
+        <a href="{{ PHP_SELF }}?met=aff&visu={{ VISU_PERSO.perso_cod }}">Afficher la description ?</a>
+    </div>
+{% endif %}
+
+<table cellspacing="2">
+    <tr>
+        <td colspan="3" class="titre">
+            <div class="titre">Evènements de {{ VISU_PERSO.perso_nom }} ({{ VISU_PERSO.perso_sex }} {{ RACE.race_nom }})
+            </div>
+        </td>
+    </tr>
+    {% for EVT in EVTS %}
+    <tr>
+        <td class="soustitre3">{{ EVT.levt_date|date('d/m/Y H:i:s') }}</td>
+        <td class="soustitre3"><strong>{{ EVT.tevt.tevt_libelle }}</strong></td>
+        <td>
+            {% if (COMPTE.is_admin or MEMEPERSO) %}
+{{ EVT.levt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1 ~  '">' ~  EVT.perso1.perso_nom ~ ' </a></strong>',
+'[attaquant]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_attaquant ~ '">' ~ EVT.perso_attaquant.perso_nom ~ '</a></strong>',
+                            '[cible]' : '<strong><a href="visu_evt_perso.php?visu=' ~ EVT.levt_cible ~ '">' ~
+                            EVT.perso_cible.perso_nom ~ '</a></strong>'})|raw }}
+
+                {% else %}
+                    {# if (loop.index == 1 and EVT.tevt.tevt_libelle == 'Effet automatique') #%}
+                        <!-- effet auto -->
+                    {# else #}
+
+                        {{ EVT.tevt.tevt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1  ~ '">' ~  EVT.perso1.perso_nom ~ '</a></strong>',
+                            '[attaquant]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_attaquant ~ '">' ~ EVT.perso_attaquant.perso_nom ~ '</a></strong>',
+                            '[cible]' : '<strong><a href="visu_evt_perso.php?visu=' ~ EVT.levt_cible ~ '">' ~
+                            EVT.perso_cible.perso_nom ~ '</a></strong>'}) |raw }}
+                    {# endif #}
+
+                {% endif %}
+            </td>
+        </tr>
+
+
+    {% endfor %}
+    <tr>
+        <td>
+            {% if PEVT_START !=0 %}
+                <div align="left"><a
+                            href="visu_evt_perso.php?visu={{ VISU_PERSO.perso_cod }}&pevt_start={{ MOINS20 }}"><==
+                        Précédent</a></div>
+            {% endif %}
+        </td>
+        </td>
+        <td>
+            <div align="right"><a href="visu_evt_perso.php?visu={{ VISU_PERSO.perso_cod }}&pevt_start={{ PLUS20 }}">Suivant
+                    ==></a></div>
+        </td>
+    </tr>
+</table>

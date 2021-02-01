@@ -6,7 +6,7 @@ include "../includes/fonctions.php";
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
 </form>
-<center>
+<div class="centrer">
 
 
 <?php 
@@ -16,20 +16,17 @@ $req_etage = "select pos_etage,pos_cod,perso_type_perso from perso_position,posi
 	where ppos_perso_cod = $perso_cod
 	and ppos_pos_cod = pos_cod
 	and perso_cod = $perso_cod ";
-$db->query($req_etage);
-$db->next_record();
-$etage_actuel = $db->f("pos_etage");
-$pos_actuelle = $db->f("pos_cod");
-$type_perso = $db->f("perso_type_perso");
+$stmt = $pdo->query($req_etage);
+$result = $stmt->fetch();
+$etage_actuel = $result['pos_etage'];
+$pos_actuelle = $result['pos_cod'];
+$type_perso = $result['perso_type_perso'];
 if (!isset($etage))
 {
 	$etage = $etage_actuel;
 }
 
-if(!isset($methode))
-{
-	$methode = "normal";
-}
+$methode          = get_request_var('methode', 'normal');
 switch($methode)
 {
 	case "normal":
@@ -63,38 +60,41 @@ switch($methode)
 9	2	Batiment administratif
 */
 		?>
-		<p style="text-align:center"><a href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a></p>
-<table>
-	<td>
-			<table background="../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">
-	<?php 
-		$req = "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
-		$db->query($req);
-		if ($db->nf() == 0)
-		{
-			$droit['modif_perso'] = 'N';
+    <a class="centrer" href="javascript:void(0);"
+       onclick="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr; ?>&methode=choix', 'vue_droite');">Changer d’étage</a>
+    <table style="border-spacing : 0;">
+        <td>
+            <table style="border-spacing : 1px;" background="../images/fond5.gif" border="0" cellspacing="1"
+                   cellpadding="0">
+                <?php
+                $req  =
+                    "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() == 0)
+                {
+                    $droit['modif_perso'] = 'N';
 			$droit['modif_gmon'] = 'N';
 			$droit['controle'] = 'N';
 			$droit['monstre_automap'] = 'N';
 		}
 		else
 		{
-			$db->next_record();
-			$droit['modif_perso'] = $db->f("dcompt_modif_perso");
-			$droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-			$droit['controle'] = $db->f("dcompt_controle");
-			$droit['monstre_automap'] = $db->f("dcompt_monstre_automap");
+			$result = $stmt->fetch();
+			$droit['modif_perso'] = $result['dcompt_modif_perso'];
+			$droit['modif_gmon'] = $result['dcompt_modif_gmon'];
+			$droit['controle'] = $result['dcompt_controle'];
+			$droit['monstre_automap'] = $result['dcompt_monstre_automap'];
 		}
 		$erreur = false;
 		$req_vue = "select distance_vue($perso_cod) as distance";
-		$db->query($req_vue);
-		$db->next_record();
-		$distance_vue = $db->f("distance");
+		$stmt = $pdo->query($req_vue);
+		$result = $stmt->fetch();
+		$distance_vue = $result['distance'];
 
 		$req = "select etage_cod from etage where etage_numero = $etage ";
-		$db->query($req);
-		$db->next_record();
-		$v_etage = $db->f("etage_cod");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$v_etage = $result['etage_cod'];
 		if ($type_perso != 2)
 		{
 			$req_max = "select pos_cod ";
@@ -102,8 +102,8 @@ switch($methode)
 			$req_max = $req_max . "where pvue_perso_cod = $perso_cod ";
 			$req_max = $req_max . "and pvue_pos_cod = pos_cod ";
 			$req_max = $req_max . "and pos_etage = $etage ";
-			$db->query($req_max);
-			if ($db->nf() == 0)
+			$stmt = $pdo->query($req_max);
+			if ($stmt->rowCount() == 0)
 			{
 				echo "<p>Etage non visité !</p>";
 				$erreur = true;
@@ -122,13 +122,13 @@ switch($methode)
 				$req_max = "select min(pos_x) as minx,max(pos_x) as maxx,min(pos_y) as miny,max(pos_y) as maxy ";
 				$req_max = $req_max . "from positions ";
 				$req_max = $req_max . "where pos_etage = $etage ";
-				$db->query($req_max);
-				if ($db->next_record())
+				$stmt = $pdo->query($req_max);
+				if($result = $stmt->fetch())
 				{
-					$min_x = $db->f("minx");
-					$max_x = $db->f("maxx");
-					$min_y = $db->f("miny");
-					$max_y = $db->f("maxy");
+					$min_x = $result['minx'];
+					$max_x = $result['maxx'];
+					$min_y = $result['miny'];
+					$max_y = $result['maxy'];
 					$total = 1;
 					$automap_ok = true;
 				}
@@ -140,13 +140,13 @@ switch($methode)
 				$req_max = $req_max . "where pvue_perso_cod = $perso_cod ";
 				$req_max = $req_max . "and pvue_pos_cod = pos_cod ";
 				$req_max = $req_max . "and pos_etage = $etage ";
-				$db->query($req_max);
-				if ($db->next_record())
+				$stmt = $pdo->query($req_max);
+				if($result = $stmt->fetch())
 				{
-					$min_x = $db->f("minx");
-					$max_x = $db->f("maxx");
-					$min_y = $db->f("miny");
-					$max_y = $db->f("maxy");
+					$min_x = $result['minx'];
+					$max_x = $result['maxx'];
+					$min_y = $result['miny'];
+					$max_y = $result['maxy'];
 					$total = 0;
 					$automap_ok = isset($min_x);
 				}
@@ -156,13 +156,13 @@ switch($methode)
 				if ($total == 0)
 				{
 					$req = "select count(*) as nb from perso_vue_pos_" . $v_etage . " where pvue_perso_cod = $perso_cod ";
-					$db->query($req);
-					$db->next_record();
-					$nb_v = $db->f("nb");
+					$stmt = $pdo->query($req);
+					$result = $stmt->fetch();
+					$nb_v = $result['nb'];
 					$req = "select count(*) as nb from positions where pos_etage = $etage ";
-					$db->query($req);
-					$db->next_record();
-					$nb_t = $db->f("nb");
+					$stmt = $pdo->query($req);
+					$result = $stmt->fetch();
+					$nb_t = $result['nb'];
 					$p = round($nb_v*100/$nb_t,2);
 					$req_pos = "select 	pos_cod,pos_x,pos_y,dauto_valeur, ";
 					$req_pos = $req_pos . "(select count(pvue_perso_cod) from perso_vue_pos_" . $v_etage . " where pvue_pos_cod = pos_cod	and pvue_perso_cod = $perso_cod) as nombre, ";
@@ -188,19 +188,19 @@ switch($methode)
 					$req_pos = $req_pos . "group by pos_cod,pos_x,pos_y,dauto_valeur,distance ";
 					$req_pos = $req_pos . "order by pos_y desc,pos_x asc ";
 				}
-				$db->query($req_pos);
+				$stmt = $pdo->query($req_pos);
 			
 				$i = 0;
-				while ($db->next_record())
+				while ($result = $stmt->fetch())
 				{
 					$isvue = 9;
 					$dessus = 0;
 					$comment = '';
 					if ($etage == $etage_actuel)
 					{
-						if ($db->f("nombre") != 0)
+						if ($result['nombre'] != 0)
 						{
-							if ($db->f("distance") <= $distance_vue)
+							if ($result['distance'] <= $distance_vue)
 							{
 								$isvue = 1;
 							}
@@ -212,32 +212,32 @@ switch($methode)
 					}
 					else
 					{
-						if ($db->f("nombre") != 0)
+						if ($result['nombre'] != 0)
 						{
 							$isvue = 0;
 						}
 					}
-					if ($db->f("pos_cod") == $pos_actuelle)
+					if ($result['pos_cod'] == $pos_actuelle)
 					{
 						$dessus = 3;
 					}
 					else
 					{
-						$dessus = $db->f("dauto_valeur");
+						$dessus = $result['dauto_valeur'];
 					}
 					if (($dessus == 2) || ($dessus == 4) || ($dessus == 5) || ($dessus == 6)|| ($dessus == 7))
 					{
-						$pos_encours = $db->f("pos_cod");
-						$db_lieu = new base_delain;
+						$pos_encours = $result['pos_cod'];
+						
 						$req_lieu = "select lieu_nom,tlieu_libelle,lieu_tlieu_cod
 							from lieu,lieu_position,lieu_type
 							where lpos_pos_cod = $pos_encours
 								and lpos_lieu_cod = lieu_cod
 								and lieu_tlieu_cod = tlieu_cod ";
-						$db_lieu->query($req_lieu);
-						$db_lieu->next_record();
-						$type_lieu = $db_lieu->f("lieu_tlieu_cod");
-						$comment = $db_lieu->f("lieu_nom") . "(" . $db_lieu->f("tlieu_libelle") . ")";
+						$stmt_lieu = $pdo->query($req_lieu);
+						$result_lieu = $stmt_lieu->fetch();
+						$type_lieu = $result_lieu['lieu_tlieu_cod'];
+						$comment = $result_lieu['lieu_nom'] . "(" . $result_lieu['tlieu_libelle'] . ")";
 						$comment = str_replace("'","\'",$comment);
 						//On donne une nouvelle valeur au $dessus pour faire apparaître des couleurs différentes en fonction des bâtiments
 						if (($type_lieu == 11) || ($type_lieu == 14) || ($type_lieu == 17) || ($type_lieu == 10)|| ($type_lieu == 13) || ($type_lieu == 9))
@@ -270,25 +270,24 @@ switch($methode)
 						$dessus = 0;
 						$comment = '';
 					}
-					$ligne = '<td><img src="' . G_IMAGES . 'automap_' . $isvue . '_' . $dessus . '.gif" title=" '. $comment . 'X ' . $db->f("pos_x") . ',Y ' . $db->f("pos_y") . ')"></td>';
-					if($y_encours != $db->f("pos_y"))
+					$ligne = '<td style="padding: 0px;"   ><img src="' . G_IMAGES . 'automap_' . $isvue . '_' . $dessus .
+                             '.gif" title=" '.
+                             $comment . 'X ' . $result['pos_x'] . ',Y ' . $result['pos_y'] . ')"></td>';
+					if($y_encours != $result['pos_y'])
 					{
-						$y_encours = $db->f("pos_y");
-						$ligne = "</tr><tr>" . $ligne;
+						$y_encours = $result['pos_y'];
+						$ligne = "</tr><tr style=\"padding: 0px;line-height: 0px;\" >" . $ligne;
 					}
 					echo $ligne;
-					//$texte = "tc[$i]" .  "=" . "['" . $db->f("pos_x") . "','" . $db->f("pos_y") . "','$isvue','$dessus','$comment'];\r\n";
+					//$texte = "tc[$i]" .  "=" . "['" . $result['pos_x'] . "','" . $result['pos_y'] . "','$isvue','$dessus','$comment'];\r\n";
 					//echo("$texte");
 					$i = $i + 1;
 				}
 			}
 			else
-			{
-				$req_nom = "select perso_nom from perso where perso_cod=$perso_cod";
-				$db->query($req_nom);
-				$db->next_record();
-				echo '<div style="width:300px;"><p>Qui suis-je&nbsp;? Où vais-je&nbsp;?<br />Dans quelle étagère&nbsp;?<br /><br /> Malgré tous ses efforts, ' . $db->f('perso_nom') . ' est incapable de se souvenir d’où il a mis ses pieds...</p></div>';
-			}
+            {
+                echo '<div style="width:300px;"><p>Qui suis-je&nbsp;? Où vais-je&nbsp;?<br />Dans quelle étagère&nbsp;?<br /><br /> Malgré tous ses efforts, ' . $perso->perso_nom . ' est incapable de se souvenir d’où il a mis ses pieds...</p></div>';
+            }
 		}
 ?>
 	</table>
@@ -299,63 +298,64 @@ switch($methode)
 <td>
 	<table>
 
-	<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_9.gif" style="width:8px;height:8px;"></td><td> Bâtiment administratif</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_10.gif" style="width:8px;height:8px;"></td><td> Passage magique, sortie d'antre, ...</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_11.gif" style="width:8px;height:8px;"></td><td> Magasin</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_13.gif" style="width:8px;height:8px;"></td><td> Centre de maitrise magique</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_14.gif" style="width:8px;height:8px;"></td><td> Magasin runique</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_17.gif" style="width:8px;height:8px;"></td><td> Temple, autel de prière</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_19.gif" style="width:8px;height:8px;"></td><td> Centre d'entrainement</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
+	<tr><td border="2" width="20" height="20" ><img alt="Bâtiment administratif" src="../images/automap_0_9.gif" style="width:8px;height:8px;"></td><td> Bâtiment administratif</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Passage magique" src="../images/automap_0_10.gif" style="width:8px;height:8px;"></td><td> Passage magique, sortie d'antre, ...</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Magasin" src="../images/automap_0_11.gif" style="width:8px;height:8px;"></td><td> Magasin</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Centre de maîtrise magique" src="../images/automap_0_13.gif" style="width:8px;height:8px;"></td><td> Centre de maitrise magique</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Magasin runique" src="../images/automap_0_14.gif" style="width:8px;height:8px;"></td><td> Magasin runique</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Temple" src="../images/automap_0_17.gif" style="width:8px;height:8px;"></td><td> Temple, autel de prière</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Centre d'entrainement" src="../images/automap_0_19.gif" style="width:8px;height:8px;"></td><td> Centre d'entrainement</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Banque" src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Escalier, grands escaliers" src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Dispensaire" src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Auberge" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Pancartes, indications" src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Portails démoniaques" src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
 	</table>
 </td>
 <?php 
 		}
 ?>
-</tr></table></center>
+</tr></table></div>
 <?php 
 		if ($automap_ok)
-			echo "<p style=\"text-align:center;\"><i>$p % de l’étage visité.</i></p>";
+			echo "<em class='centrer'>$p % de l’étage visité.</em>";
 
 		$req = "select etage_libelle from etage where etage_numero = $etage ";
-		$db->query($req);
-		$db->next_record();
-		echo "<br><br><!-- niveau en cours : " . $db->f("etage_libelle") . " -->";
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		echo "<br><br><!-- niveau en cours : " . $result['etage_libelle'] . " -->";
 	break;
 
 	case "choix":
-		$req_total = "select distinct pos_etage,etage_libelle,etage_numero,etage_reference from positions,etage where (pos_etage <= 0 ";
-		$req_total = $req_total . "or exists (select 1 from etage_visite ";
-		$req_total = $req_total . "where vet_perso_cod = $perso_cod ";
-		$req_total = $req_total . "and vet_etage = pos_etage)) ";
-		$req_total = $req_total . "and pos_etage = etage_numero ";
-		$req_total = $req_total . "order by etage_reference desc, pos_etage asc ";
-		$db->query($req_total);
-		?>
-		<form name="automap" method="post" action="fr_dr.php" onsubmit="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&etage=' + document.getElementById('etage').value, 'vue_droite'); return false;">
-		<p>Voir l’automap de l’étage : <select name="etage" id="etage">
-		<?php 
-		$etages_fermes = 0;
-		while ($db->next_record())
-		{
-			if ( $etages_fermes == 0 && $db->f("etage_reference") == -100 )
-			{
+$req_total = "select distinct pos_etage,etage_libelle,etage_numero,etage_reference from positions,etage where (pos_etage <= 0 
+		or exists (select 1 from etage_visite 
+		where vet_perso_cod = $perso_cod 
+		and vet_etage = pos_etage)) 
+		and pos_etage = etage_numero 
+		order by etage_reference desc, pos_etage asc ";
+$stmt      = $pdo->query($req_total);
+?>
+<form name="automap" method="post" action="fr_dr.php"
+      onsubmit="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr; ?>&etage=' + document.getElementById('etage').value, 'vue_droite'); return false;">
+    <p>Voir l’automap de l’étage : <select name="etage" id="etage">
+            <?php
+            $etages_fermes = 0;
+            while ($result = $stmt->fetch())
+            {
+                if ($etages_fermes == 0 && $result['etage_reference'] == -100)
+                {
 				$etages_fermes = 1;
 				echo '<optgroup label="Étages d’animation actuellement fermés">';
 			}
-			printf("<option value=\"%s\" ",$db->f("pos_etage"));
-			if ($db->f("pos_etage") == $etage)
+			printf("<option value=\"%s\" ",$result['pos_etage']);
+			if ($result['pos_etage'] == $etage)
 			{
 				echo(" selected ");
 			}
 			echo(">");
-			$reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-			printf("%s</option>",($reference?'':' |-- ').$db->f("etage_libelle"));
+			$reference = ($result['etage_numero'] == $result['etage_reference']);
+			printf("%s</option>",($reference?'':' |-- ').$result['etage_libelle']);
 		}
 		if ( $etages_fermes == 1 )
 		{

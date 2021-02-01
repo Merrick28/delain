@@ -2,20 +2,20 @@
 include "counter.php";
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n&deg;3 - Ao&ucirc;t 2005</title>
-<link href="CSS/voix003.css" rel="stylesheet" type="text/css">
-<script type="text/javascript">
-<!--
-//=======================================================
-     //detect browser settings for showing and hiding DIVs
-     isNS4 = (document.layers) ? true : false;
-     isIE4 = (document.all && !document.getElementById) ? true : false;
-     isIE5 = (document.all && document.getElementById) ? true : false;
-     isNS6 = (!document.all && document.getElementById) ? true : false;
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n&deg;3 - Ao&ucirc;t 2005</title>
+    <link href="CSS/voix003.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        <!--
+        //=======================================================
+        //detect browser settings for showing and hiding DIVs
+        isNS4 = (document.layers) ? true : false;
+        isIE4 = (document.all && !document.getElementById) ? true : false;
+        isIE5 = (document.all && document.getElementById) ? true : false;
+        isNS6 = (!document.all && document.getElementById) ? true : false;
 //=======================================================
 
 function switchDiv(strDivName,bolVisible){
@@ -169,19 +169,19 @@ Suite &agrave; ce d&eacute;c&egrave;s, il a souhait&eacute; faire profiter de so
       </tr>
       <tr valign="top" class="interview_corps">
         <td class="interview_corps">
-		    <b>Daysleeper</b> : Bonjour, je suis Daysleeper, j'appartiens au staff de la Voix des Souterrains<br>
-		    <b>Bardamu</b> : Salut ! ravie...<br>
-		    <i>[HRP]Non, en fait, pas ravie du tout ! tu me tortures tous les soirs !![/HRP]</i><br>
-		    <b>Daysleeper</b> : <i>[HRP]Tu disais pas &ccedil;a hier soir[/HRP]</i><br>
-		    <b>Daysleeper</b> : Il parait que vous avez eu la chance de croiser l'illustre Ingeloakastimillizan, le bras droit du c&eacute;l&egrave;bre Malkiar. Ca fait quoi de rencontrer un d&eacute;mon aussi c&eacute;l&egrave;bre, et juste apr&egrave;s de rencontrer le metteur en page le plus c&eacute;l&egrave;bre de tout Delain?<br>
-		    <b>Bardamu</b> : Il est impressionnant !<br>
-		    <b>Daysleeper</b> : Il parait que vous avez quand m&ecirc;me salement d&eacute;rouiller...<br>
-		    <b>Bardamu</b> : H&eacute;h&eacute;h&eacute;h&eacute; !!! Enf... je suis en sang et &agrave; poil !!<br>
-		    <i>[HRP]Euh... Je ne vois pas bien... Tu baves ??[/HRP]</i><br>
-		    <b>Daysleeper</b> : <i>[HRP]noooooonnnnnn<br>
-		    penses-tu...[/HRP]</i><br>
-		    <b>Bardamu</b> : lol<br>
-		    <b>Daysleeper</b> : Euh donc revenons en &agrave; 
+		    <strong>Daysleeper</strong> : Bonjour, je suis Daysleeper, j'appartiens au staff de la Voix des Souterrains<br>
+		    <strong>Bardamu</strong> : Salut ! ravie...<br>
+		    <em>[HRP]Non, en fait, pas ravie du tout ! tu me tortures tous les soirs !![/HRP]</em><br>
+		    <strong>Daysleeper</strong> : <em>[HRP]Tu disais pas &ccedil;a hier soir[/HRP]</em><br>
+		    <strong>Daysleeper</strong> : Il parait que vous avez eu la chance de croiser l'illustre Ingeloakastimillizan, le bras droit du c&eacute;l&egrave;bre Malkiar. Ca fait quoi de rencontrer un d&eacute;mon aussi c&eacute;l&egrave;bre, et juste apr&egrave;s de rencontrer le metteur en page le plus c&eacute;l&egrave;bre de tout Delain?<br>
+		    <strong>Bardamu</strong> : Il est impressionnant !<br>
+		    <strong>Daysleeper</strong> : Il parait que vous avez quand m&ecirc;me salement d&eacute;rouiller...<br>
+		    <strong>Bardamu</strong> : H&eacute;h&eacute;h&eacute;h&eacute; !!! Enf... je suis en sang et &agrave; poil !!<br>
+		    <em>[HRP]Euh... Je ne vois pas bien... Tu baves ??[/HRP]</em><br>
+		    <strong>Daysleeper</strong> : <em>[HRP]noooooonnnnnn<br>
+		    penses-tu...[/HRP]</em><br>
+		    <strong>Bardamu</strong> : lol<br>
+		    <strong>Daysleeper</strong> : Euh donc revenons en &agrave; 
 			nos moutons, il parait qu'il est 
 			admirable, qu'&agrave; sa vue seule les jeunes 
 			filles se &acirc;ment d'amiration, que son 
@@ -191,52 +191,52 @@ Suite &agrave; ce d&eacute;c&egrave;s, il a souhait&eacute; faire profiter de so
 			accouchements pr&eacute;matur&eacute;s chez les 
 			femmes enceintes d'enfants de sexe 
 			f&eacute;minin...<br>
-            <b>Bardamu</b> : Ah ? Je n'ai senti que ses 
+            <strong>Bardamu</strong> : Ah ? Je n'ai senti que ses 
 			griffes ac&eacute;r&eacute;es meurtrir mon corps ! Ses 
         </td>
         <td class="interview_corps">
 		    cris ont ab&icirc;m&eacute; mon ou&iuml;e et son haleine a 
 			d&eacute;finitivement ruin&eacute; mon odorat...<br>
-		    <b>Daysleeper</b> : Je parlais du metteur en page<br>
-			<i>[HRP]* Bardamu rougit *[/HRP]</i><br>
-		    <b>Bardamu</b> : <i>[HRP]Ah ! Euh... hummmmmm... [/HRP]</i>Joker...<br>
-		    <b>Daysleeper</b> : Et qu'est devenu votre magnifique vibro-masseur en peluche?<br>
-		    <b>Bardamu</b> : Il s'acharne &agrave; satisfaire un Valchek.... Il a retenu les le&ccedil;ons de son dressage !!<br>
-		    <b>Daysleeper</b> : Ah, cela fait plaisir de savoir qu'il y a encore des sages petites b&ecirc;tes qui sont consciencieuses<br>
+		    <strong>Daysleeper</strong> : Je parlais du metteur en page<br>
+			<em>[HRP]* Bardamu rougit *[/HRP]</em><br>
+		    <strong>Bardamu</strong> : <em>[HRP]Ah ! Euh... hummmmmm... [/HRP]</em>Joker...<br>
+		    <strong>Daysleeper</strong> : Et qu'est devenu votre magnifique vibro-masseur en peluche?<br>
+		    <strong>Bardamu</strong> : Il s'acharne &agrave; satisfaire un Valchek.... Il a retenu les le&ccedil;ons de son dressage !!<br>
+		    <strong>Daysleeper</strong> : Ah, cela fait plaisir de savoir qu'il y a encore des sages petites b&ecirc;tes qui sont consciencieuses<br>
 		    gageons qu'elle durera longtemps...<br>
 		    (surtout avec des piles Dures-&agrave;-selle)<br>
-		    <b>Bardamu</b> : TSsssssss....<br>
-		    <b>Daysleeper</b> : Pour finir, un dernier mot sur votre anusectomie &agrave; coeur ouvert op&eacute;r&eacute;e par le gentil Ingelo-quelque-chose avec l'aide de l'infirmi&egrave;re D&eacute;mon n&deg;573572 et de l'anesthesiste D&eacute;mon n&deg;573571?<br>
-		    <b>Bardamu</b> : DOULEUUUUUURRR!!!!<br>
-		    <b>Daysleeper</b> : Ah une information tombe sur mon t&eacute;l&eacute;scripteur de poche...<br>
-		    <b>Bardamu</b> : Oui ?<br>
-		    <b>Daysleeper</b> : Il semblerai qu'un chef de la Main soit heureux de ta d&eacute;faite contre Ing-truc...<br>
-		    <b>Bardamu</b> : No comment...<br>
-		    <b>Daysleeper</b> : Une question SMS :<br>
+		    <strong>Bardamu</strong> : TSsssssss....<br>
+		    <strong>Daysleeper</strong> : Pour finir, un dernier mot sur votre anusectomie &agrave; coeur ouvert op&eacute;r&eacute;e par le gentil Ingelo-quelque-chose avec l'aide de l'infirmi&egrave;re D&eacute;mon n&deg;573572 et de l'anesthesiste D&eacute;mon n&deg;573571?<br>
+		    <strong>Bardamu</strong> : DOULEUUUUUURRR!!!!<br>
+		    <strong>Daysleeper</strong> : Ah une information tombe sur mon t&eacute;l&eacute;scripteur de poche...<br>
+		    <strong>Bardamu</strong> : Oui ?<br>
+		    <strong>Daysleeper</strong> : Il semblerai qu'un chef de la Main soit heureux de ta d&eacute;faite contre Ing-truc...<br>
+		    <strong>Bardamu</strong> : No comment...<br>
+		    <strong>Daysleeper</strong> : Une question SMS :<br>
 		    de la part de Brorsch...<br>
 		    Qu'est ce que &ccedil;a apporte comme 
 			avantages en nature d'&ecirc;tre r&eacute;dac chef de 
 			la Voix?<br>
 	    </td>
         <td class="interview_corps">
-		    <b>Bardamu</b> : Des cacahu&egrave;tes !!! <br>
-		    <b>Daysleeper</b> : Ouais, mais c'est super bon les cacahu&egrave;tes<br>
+		    <strong>Bardamu</strong> : Des cacahu&egrave;tes !!! <br>
+		    <strong>Daysleeper</strong> : Ouais, mais c'est super bon les cacahu&egrave;tes<br>
 		    Autre question, de Karmilia :<br>
 		    Comment fais-tu pour ne pas craquer au charme fou de ton metteur en page?<br>
-		    <b>Bardamu</b> : <i>[HRP]Hummm... Mais, il ne sait dire que : &quot;NON&quot;...[/HRP]</i><br>
-		    <b>Daysleeper</b> : Tiens, une autre question de Karmilia! &quot;As-tu essay&eacute; de lui demander gentilment?&quot;<br>
-		    <b>Bardamu</b> : <i>[HRP]Elle est o&ugrave; cette Karmilla ???[/HRP]</i><br>
-		    <b>Daysleeper</b> : <i>[HRP]Aucune id&eacute;e[/HRP]</i><br>
-		    <b>Bardamu</b> : <i>[HRP]La pauvre, elle se retrouve propuls&eacute;e dans cette mis&eacute;rable interview !![/HRP]</i><br>
-		    <b>Daysleeper</b> : Attends on a pas vu mieux depuis...<br>
+		    <strong>Bardamu</strong> : <em>[HRP]Hummm... Mais, il ne sait dire que : &quot;NON&quot;...[/HRP]</em><br>
+		    <strong>Daysleeper</strong> : Tiens, une autre question de Karmilia! &quot;As-tu essay&eacute; de lui demander gentilment?&quot;<br>
+		    <strong>Bardamu</strong> : <em>[HRP]Elle est o&ugrave; cette Karmilla ???[/HRP]</em><br>
+		    <strong>Daysleeper</strong> : <em>[HRP]Aucune id&eacute;e[/HRP]</em><br>
+		    <strong>Bardamu</strong> : <em>[HRP]La pauvre, elle se retrouve propuls&eacute;e dans cette mis&eacute;rable interview !![/HRP]</em><br>
+		    <strong>Daysleeper</strong> : Attends on a pas vu mieux depuis...<br>
 		    Depuis...<br>
-		    <b>Bardamu</b> : Oui ?<br>
-		    <i>* Bardamu tend une oreille des plus curieuse *</i><br>
-		    <b>Daysleeper</b> : Ben la derni&egrave;re fois que j'ai fait une mise en page, ce qui a provoqu&eacute; l'inondation totale du kiosque pendant 2 jours tellement mes fans ont pleur&eacute; de joie<br>
-  <i>* Bardamu a un regard hallucin&eacute; *</i><br>
-  <b>Bardamu</b> : <i>[HRP]Ah oui...[/HRP]</i><br>
-  <b>Daysleeper</b> : Bon, je pense qu'on peut en rester l&agrave;, tu as pu t'abreuver &agrave; loisir de mon charme, mais il ne faut pas que tu sois expos&eacute;e trop longtemps sinon, &ccedil;a peut &ecirc;tre dangeureux...<br>
-  <b>Bardamu</b> : <i>[HRP]Oui, j'en ressens les premiers effets d'ailleurs...[/HRP]</i>
+		    <strong>Bardamu</strong> : Oui ?<br>
+		    <em>* Bardamu tend une oreille des plus curieuse *</em><br>
+		    <strong>Daysleeper</strong> : Ben la derni&egrave;re fois que j'ai fait une mise en page, ce qui a provoqu&eacute; l'inondation totale du kiosque pendant 2 jours tellement mes fans ont pleur&eacute; de joie<br>
+  <em>* Bardamu a un regard hallucin&eacute; *</em><br>
+  <strong>Bardamu</strong> : <em>[HRP]Ah oui...[/HRP]</em><br>
+  <strong>Daysleeper</strong> : Bon, je pense qu'on peut en rester l&agrave;, tu as pu t'abreuver &agrave; loisir de mon charme, mais il ne faut pas que tu sois expos&eacute;e trop longtemps sinon, &ccedil;a peut &ecirc;tre dangeureux...<br>
+  <strong>Bardamu</strong> : <em>[HRP]Oui, j'en ressens les premiers effets d'ailleurs...[/HRP]</em>
         </td>
 	  </tr>
     </table>
@@ -283,24 +283,24 @@ Les deux m&acirc;les se jaug&egrave;rent quelques instants, puis Bardamu offrit 
       </tr>
       <tr valign="top" class="interview_corps">
         <td class="interview_corps">
-		<b>Bardamu</b> : Triskell&hellip;Ravi de te rencontrer ! <br>
+		<strong>Bardamu</strong> : Triskell&hellip;Ravi de te rencontrer ! <br>
 		Bon, on commence?<br>
   Alors&hellip;Pourquoi ne s&eacute;vir qu&rsquo;aux &eacute;tages sup&eacute;rieurs ? <br>
-  <b>Triskell</b> : Au d&eacute;but, par obligation. En effet, afin de se familiariser avec le maniement des armes, il est plus facile de s'attaquer &agrave; des victimes que l'on saura pas trop remuantes. Dans un deuxi&egrave;me temps, pour le recrutement des jeunes tueurs, c'est l&agrave; qu'on les trouve. Ensuite, la milice ayant voulu nous faire descendre, nous sommes bien &eacute;videment rest&eacute;s! Ce n'est pas le gros joufflu et son bras arm&eacute; (des bandits la plupart, oui!) qui va nous dire ce que nous devons faire Plus tard encore, une qu&ecirc;te nous a pouss&eacute; &agrave; voir un peu plus profond&eacute;ment. Mais il faut bien avouer que les gars, en dessous, ils sont mieux organis&eacute;s, ils r&eacute;sistent et m&ecirc;me, parfois, nous tuent !!! C'est un comble ! Notons toutefois que la majorit&eacute; de la guilde est entre les -2 et -3 actuellement.<br>
-  <b>Bardamu</b> : Arffff&hellip;On n&rsquo;arrivera jamais &agrave; se croiser&hellip; 
+  <strong>Triskell</strong> : Au d&eacute;but, par obligation. En effet, afin de se familiariser avec le maniement des armes, il est plus facile de s'attaquer &agrave; des victimes que l'on saura pas trop remuantes. Dans un deuxi&egrave;me temps, pour le recrutement des jeunes tueurs, c'est l&agrave; qu'on les trouve. Ensuite, la milice ayant voulu nous faire descendre, nous sommes bien &eacute;videment rest&eacute;s! Ce n'est pas le gros joufflu et son bras arm&eacute; (des bandits la plupart, oui!) qui va nous dire ce que nous devons faire Plus tard encore, une qu&ecirc;te nous a pouss&eacute; &agrave; voir un peu plus profond&eacute;ment. Mais il faut bien avouer que les gars, en dessous, ils sont mieux organis&eacute;s, ils r&eacute;sistent et m&ecirc;me, parfois, nous tuent !!! C'est un comble ! Notons toutefois que la majorit&eacute; de la guilde est entre les -2 et -3 actuellement.<br>
+  <strong>Bardamu</strong> : Arffff&hellip;On n&rsquo;arrivera jamais &agrave; se croiser&hellip; 
   Tu te dis le proph&egrave;te de Malkiar&hellip;  Est-il d&rsquo;accord ? <br>
-  <b>Triskell</b> : Je m'en suis ouvert &agrave; lui, et lui ai m&ecirc;me envoy&eacute; des messagers, qu'il a re&ccedil;u comme une offrande puisque je ne les ai jamais revus! <br>
+  <strong>Triskell</strong> : Je m'en suis ouvert &agrave; lui, et lui ai m&ecirc;me envoy&eacute; des messagers, qu'il a re&ccedil;u comme une offrande puisque je ne les ai jamais revus! <br>
   Adepte du proverbe &quot;qui ne dit mot consent&quot;, je r&eacute;pondrais &agrave; cette question par l'affirmative<br>
-  <i>* Bardamu sourit largement *</i> <br>
+  <em>* Bardamu sourit largement *</em> <br>
   Euh&hellip;Lui es-tu soumis ? <br>
-  <b>Triskell</b> : Non, il n'est pas tr&egrave;s exigeant! Je pense que le simple fait de lui d&eacute;dier la m&eacute;moire de nos victimes lui suffit. <br>
-  <b>Bardamu</b> : Quelles relations entretiens-tu avec les autres guildes de tueurs ? <br>
-  <b>Triskell</b> : Bonnes dans l'ensemble. Nous combattons rarement cote &agrave; cote, mais ne rechignons pas au coup de main en cas de demande. Nous ne manquons jamais de nous saluer lors d'une rencontre fortuite, et &agrave; titre personnel, je me suis trouv&eacute; convi&eacute; au mariage de l'un de leurs dirigeants. <br>
+  <strong>Triskell</strong> : Non, il n'est pas tr&egrave;s exigeant! Je pense que le simple fait de lui d&eacute;dier la m&eacute;moire de nos victimes lui suffit. <br>
+  <strong>Bardamu</strong> : Quelles relations entretiens-tu avec les autres guildes de tueurs ? <br>
+  <strong>Triskell</strong> : Bonnes dans l'ensemble. Nous combattons rarement cote &agrave; cote, mais ne rechignons pas au coup de main en cas de demande. Nous ne manquons jamais de nous saluer lors d'une rencontre fortuite, et &agrave; titre personnel, je me suis trouv&eacute; convi&eacute; au mariage de l'un de leurs dirigeants. <br>
   Nous nous rencontrons toutefois plus souvent dans nos tavernes de guilde que sur le terrain. <br>
-  <b>Bardamu</b> : Pourquoi ne tuer que de 
+  <strong>Bardamu</strong> : Pourquoi ne tuer que de 
   jeunes aventuriers? <br>
   Crains-tu les &laquo;gros&raquo;? <br>
-  <b>Triskell</b> : Les petits &eacute;tant plus nombreux 
+  <strong>Triskell</strong> : Les petits &eacute;tant plus nombreux 
   que les gros, je serais tent&eacute; de dire que 
   c'est la loi des nombres. 
   Mais je pense que cette affirmation tient 
@@ -313,53 +313,53 @@ Les deux m&acirc;les se jaug&egrave;rent quelques instants, puis Bardamu offrit 
   rapport&eacute; un paquet non n&eacute;gligeable de ce 
   que certains nomment exp&eacute;rience, 
   il n'&eacute;tait sans doute plus dans la cat&eacute;gorie que l'on nomme &quot;nouveau&quot;. D'autant que nombreux sont les KAA &acirc;g&eacute;s de 22 ans et plus, cela ne s'est pas fait tout seul, mais en affrontant chaque jour des guerriers plus exp&eacute;riment&eacute;s. Seuls 2 individus de chez nous tuent r&eacute;ellement pour le plaisir, ils font tous les 2 la course aux kills et au karma, les autres recherchent plut&ocirc;t qui l'or, qui les runes, qui les p&eacute;hixs. <br>
-  <b>Bardamu</b> : Que redoutes-tu le plus dans les souterrains ? <br>
-  <b>Triskell</b> : D'y croiser ma belle-m&egrave;re<br>
-  <b>Bardamu</b> : Arfff&hellip;On en est tous l&agrave;, tu sais&hellip;T&rsquo;arrive-t-il d&rsquo;&eacute;pargner des vies ? <br>
-  <b>Triskell</b> : Oui, bien sûr. <br>
-  <b>Bardamu</b> : Pourquoi ? <br>
-  <b>Triskell</b> : Les raisons en sont multiples: <br>
+  <strong>Bardamu</strong> : Que redoutes-tu le plus dans les souterrains ? <br>
+  <strong>Triskell</strong> : D'y croiser ma belle-m&egrave;re<br>
+  <strong>Bardamu</strong> : Arfff&hellip;On en est tous l&agrave;, tu sais&hellip;T&rsquo;arrive-t-il d&rsquo;&eacute;pargner des vies ? <br>
+  <strong>Triskell</strong> : Oui, bien sûr. <br>
+  <strong>Bardamu</strong> : Pourquoi ? <br>
+  <strong>Triskell</strong> : Les raisons en sont multiples: <br>
   -proposition d'embauche accept&eacute;e <br>
   -cible sympa (&eacute;videment, faut r&eacute;pondre quand je cause...) <br>
   -un milicien qui passe dans la vue (rien de tel pour sauver un petit, messieurs les miliciens: vous offrir en sacrifice!) <br>
   -et, &eacute;videment, celui qui me tue avant que j'en sois venu &agrave; bout.<br>
-  <b>Bardamu</b> : La milice g&ecirc;ne-t-elle ton activit&eacute; ? <br>
-  <b>Triskell</b> : Au d&eacute;but, oui, plut&ocirc;t. Mais avec l'age et l'argent facile, je trouve qu'ils se sont ramollis. Et puis &agrave; embaucher n'importe qui, &ccedil;a manque de rigueur et d'organisation...<br>
-  <b>Bardamu</b> : N&rsquo;as-tu jamais song&eacute; &agrave; te glisser de l&rsquo;autre c&ocirc;t&eacute;&hellip;Du c&ocirc;t&eacute; du &laquo; bien &raquo; ? <br>
-  <b>Triskell</b> : Mais c'est par &ccedil;a que j'ai voulu commencer. Mais apr&egrave;s 2 morts par des petites b&ecirc;tes et rat&eacute; toutes mes attaques contre elles, les appels &agrave; l'aide aux alentours n'obtenant pas de r&eacute;ponses, voici que je porte un coup gagnant sur un de mes cong&eacute;n&egrave;res et, bingo, or arme et armure jonchent le sol. Le temps de me baisser pour ramasser tout &ccedil;a, j'avais d&eacute;j&agrave; grandi, et j'&eacute;tais devenu plus fort!<br>
-  <b>Bardamu</b> : Autre chose ? <br>
-  <b>Triskell</b> : Allez tiens, je vais te livrer une info exclusive: 
+  <strong>Bardamu</strong> : La milice g&ecirc;ne-t-elle ton activit&eacute; ? <br>
+  <strong>Triskell</strong> : Au d&eacute;but, oui, plut&ocirc;t. Mais avec l'age et l'argent facile, je trouve qu'ils se sont ramollis. Et puis &agrave; embaucher n'importe qui, &ccedil;a manque de rigueur et d'organisation...<br>
+  <strong>Bardamu</strong> : N&rsquo;as-tu jamais song&eacute; &agrave; te glisser de l&rsquo;autre c&ocirc;t&eacute;&hellip;Du c&ocirc;t&eacute; du &laquo; bien &raquo; ? <br>
+  <strong>Triskell</strong> : Mais c'est par &ccedil;a que j'ai voulu commencer. Mais apr&egrave;s 2 morts par des petites b&ecirc;tes et rat&eacute; toutes mes attaques contre elles, les appels &agrave; l'aide aux alentours n'obtenant pas de r&eacute;ponses, voici que je porte un coup gagnant sur un de mes cong&eacute;n&egrave;res et, bingo, or arme et armure jonchent le sol. Le temps de me baisser pour ramasser tout &ccedil;a, j'avais d&eacute;j&agrave; grandi, et j'&eacute;tais devenu plus fort!<br>
+  <strong>Bardamu</strong> : Autre chose ? <br>
+  <strong>Triskell</strong> : Allez tiens, je vais te livrer une info exclusive: 
   Diwan, la Star'Ac du crime rouvre ses portes apr&egrave;s travaux. 
   D'ailleurs, tu peux dire &agrave; tes lecteurs qu'il reste des places disponibles, et qu'ils trouveront de plus amples renseignements <a href="http://karrig.free.fr/forum/index.php.">ici</a>.<br>
         </td>
         <td class="interview_corps">
-  <b>Bardamu</b> : Ouais, tu parles d&rsquo;une bonne 
+  <strong>Bardamu</strong> : Ouais, tu parles d&rsquo;une bonne 
   nouvelle&hellip; Les souterrains regorgent d&eacute;j&agrave; de tueurs&hellip; <br>
-  <b>Triskell</b> : Nous ne parlons pas de la m&ecirc;me chose... je te parle l&agrave; de tueurs de la
+  <strong>Triskell</strong> : Nous ne parlons pas de la m&ecirc;me chose... je te parle l&agrave; de tueurs de la
   main desquels tu auras plaisir &agrave; succomber! Je ne te parle pas l&agrave; de
   coupe-jarret et autres &eacute;gorgeurs nocturnes, mais de tueurs affirm&eacute;s, reconnus 
   comme tels, ne se cachant pas derri&egrave;re un karma maquill&eacute;! Et l&agrave;, tu peux 
   compter, nous sommes nettement moins nombreux! <br>
   Quand les petits seront l&acirc;ch&eacute;s, 
   vous prendrez go&ucirc;t &agrave; la mort!<br>
-  <b>Bardamu</b> : Oho !! Des menaces ? Triskell, l&acirc;che tes chiots, je leur promets un accueil des plus chaleureux... <br>
+  <strong>Bardamu</strong> : Oho !! Des menaces ? Triskell, l&acirc;che tes chiots, je leur promets un accueil des plus chaleureux... <br>
   <br>
-  <i>* Un silence intense s'installe... *</i><br>
+  <em>* Un silence intense s'installe... *</em><br>
   <br>
-  <b>Bardamu</b> : Encha&icirc;nons... Tu voulais parler de Diwan... <br>
-  <b>Triskell</b> : Si tu acceptes les encarts publicitaires, annonce-moi le prix, je te donne <a href="http://orion.delain.free.fr/kaa/images/diwan.png">la banni&egrave;re de l'&eacute;cole Diwan</a>.<br>
-  <b>Bardamu</b> : Mon prix ? Ben, c&rsquo;est s&ucirc;r qu&rsquo;avec ce que me paie la r&eacute;daction&hellip; <br>
+  <strong>Bardamu</strong> : Encha&icirc;nons... Tu voulais parler de Diwan... <br>
+  <strong>Triskell</strong> : Si tu acceptes les encarts publicitaires, annonce-moi le prix, je te donne <a href="http://orion.delain.free.fr/kaa/images/diwan.png">la banni&egrave;re de l'&eacute;cole Diwan</a>.<br>
+  <strong>Bardamu</strong> : Mon prix ? Ben, c&rsquo;est s&ucirc;r qu&rsquo;avec ce que me paie la r&eacute;daction&hellip; <br>
   Ok&hellip;On n&eacute;gociera loin des curieux... Balance ! <br>
-  <b>Triskell</b> : Annonce exclusive: R&eacute;ouverture de l'&eacute;cole Diwan, la star'Ac du crime! <br>
+  <strong>Triskell</strong> : Annonce exclusive: R&eacute;ouverture de l'&eacute;cole Diwan, la star'Ac du crime! <br>
   Pour devenir un redoutable assassin, frappez &agrave; la bonne porte! <br>
   Les ma&icirc;tres KAA vous transmettront leur savoir-faire en mati&egrave;re de crime, assassinats, tortures, et autres saines activit&eacute;s de plein air ! <br>
   Ne restez pas seul dans votre coin &agrave; tomber sous les coups des plus forts que vous, devenez plus fort en vous groupant sous une banni&egrave;re reconnue pour son savoir-faire!<br>
   L'&eacute;cole Diwan a d&eacute;j&agrave; form&eacute; l'&eacute;lite des assassins de Delain, et m&ecirc;me certains chefs de guilde actuels! <br>
   Renseignements et inscription: [clic sur banni&egrave;re---&gt; lien vers forum KAA] Frais de dossiers offerts sur pr&eacute;sentation de ce coupon. <br>
-  <br><b>Bardamu</b> : Triskell&hellip; J&rsquo;ai particuli&egrave;rement appr&eacute;ci&eacute;&hellip;<br>
-          <b>Triskell</b> : Ce fut un r&eacute;el plaisir, peut- &ecirc;tre aurons-nous l&rsquo;occasion de nous croiser, dans d&rsquo;autres circonstances. <br>
-		  <br><i>* regard lourd de sous-entendus *</i><br>
-          <br><b>Bardamu</b> : J&rsquo;en salive &agrave; l&rsquo;avance&hellip;
+  <br><strong>Bardamu</strong> : Triskell&hellip; J&rsquo;ai particuli&egrave;rement appr&eacute;ci&eacute;&hellip;<br>
+          <strong>Triskell</strong> : Ce fut un r&eacute;el plaisir, peut- &ecirc;tre aurons-nous l&rsquo;occasion de nous croiser, dans d&rsquo;autres circonstances. <br>
+		  <br><em>* regard lourd de sous-entendus *</em><br>
+          <br><strong>Bardamu</strong> : J&rsquo;en salive &agrave; l&rsquo;avance&hellip;
         </td>
 	  </tr>
     </table>
@@ -537,10 +537,10 @@ Nous n'appr&eacute;cions absolument pas la concurrence... Aventurier Bricogne, m
 	  </tr>
 	  <tr class="courrier_corps">
           <td class="courrier_corps">
-		  <b>Naily la Savante :</b><br>
+		  <strong>Naily la Savante :</strong><br>
             J'ai mis un sort de familier en réceptacle c'est grave docteur ?        <br>
 	        <br>
-	        <b>La Voix des Souterrains</b> :<br>
+	        <strong>La Voix des Souterrains</strong> :<br>
 			Non, c'est une pratique étrange, mais sachez bien que cela n'est pas grave. Vous perdez juste la possibilité de stocker un sort plus précieux comme Soin Important ou Bernardo.<br>
             La r&eacute;daction.
          </td>
@@ -560,10 +560,10 @@ Je n&rsquo;ai en effet rien &agrave; lui reprocher...
 <br>
 OR!ON m&rsquo;a dit qu&rsquo;il vous l&rsquo;avait d&eacute;j&agrave; dit mais j&rsquo;insiste 
 c&rsquo;est parfait, continuez ainsi... <br>
-<b>Amalckiar</b> <br>
+<strong>Amalckiar</strong> <br>
 repr&eacute;sentant des Apprentis de l'Apocalypse.. 
 	        <br><br>
-	        <b>La Voix des Souterrains</b> :<br>
+	        <strong>La Voix des Souterrains</strong> :<br>
             L'&eacute;quipe se r&eacute;jouit. Un grand MERCI!!!<br>
             La r&eacute;daction.
 </td>

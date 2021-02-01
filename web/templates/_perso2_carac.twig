@@ -1,0 +1,247 @@
+<p class="titre">{{ PERSO.perso_nom }} ({{ PERSO.perso_sex }} - {{ RACE.race_nom }}) - Date de création
+    : {{ PERSO.perso_dcreat|date('d/m/Y') }}
+<p class="soustitre">Perso n°{{ PERSO.perso_cod }}
+<p style="text-align:center;"><em>{{ PERSO.perso_description|nl2br }}</em>
+<table width="100%" cellspacing="2">
+
+    <tr>
+        <td class="soustitre2">Niveau</td>
+        <td>{{ PERSO.perso_niveau }}<em> (prochain niveau à {{ PERSO.px_limite }} PX)</em></td>
+        <td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
+        <td>{{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Expérience</td>
+        <td>{{ PERSO.perso_px|round(0,'floor') }}</td>
+        <td class="soustitre2">Points d’action</td>
+        <td>{{ PERSO.perso_pa }}</td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Points de vie</td>
+        <td>{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}{{ NIVEAU_BLESSURES }}</td>
+        <td class="soustitre2">Nombre d’esquives ce tour</td>
+        <td>{{ PERSO.perso_nb_esquive }}</td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Renommée</td>
+        <td>{{ PERSO.perso_renommee|round(2) }} ({{ PERSO.get_renommee }})</td>
+        <td class="soustitre2">Renommée magique</td>
+        <td nowrap>{{ PERSO.perso_renommee_magie|round(2) }} ({{ PERSO.get_renommee_magie }})</td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Renommée artisanale</td>
+        <td>{{ PERSO.perso_renommee_artisanat|round(2) }} ({{ PERSO.get_renommee_artisanat }})</td>
+        <td class="soustitre2">Karma</td>
+        <td>{{ PERSO.perso_kharma|round(2) }} ({{ PERSO.get_karma }})</td>
+    </tr>
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="soustitre2">Force</td>
+        <td>{{ PERSO.perso_for }}{% if BM_CARACS.FOR is defined %} {{ BM_CARACS.FOR.texte }} ({{ PERSO.perso_for -  BM_CARACS.FOR.base }}){% endif %}
+        </td>
+        <td class="soustitre2">Intelligence</td>
+        <td>{{ PERSO.perso_int }}{% if BM_CARACS.INT is defined %} {{ BM_CARACS.INT.texte }} ({{ PERSO.perso_int -  BM_CARACS.INT.base }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Dextérité</td>
+        <td>{{ PERSO.perso_dex }}{% if BM_CARACS.DEX is defined %} {{ BM_CARACS.DEX.texte }} ({{ PERSO.perso_dex -  BM_CARACS.DEX.base }}){% endif %}
+        </td>
+        <td class="soustitre2">Constitution</td>
+        <td>{{ PERSO.perso_con }}{% if BM_CARACS.CON is defined %} {{ BM_CARACS.CON.texte }} ({{ PERSO.perso_con -  BM_CARACS.CON.base }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Dégâts</td>
+        <td>
+            {{ NB_DES }}D{{ VAL_DES }}+{% if CARAC.type_arme == 1 %}{{ BONUS + CARAC.bonus_degats + CARAC.bonus_degats_melee + PERSO.perso_amelioration_degats}}{% else %}{{ BONUS + CARAC.bonus_degats + PERSO.perso_amel_deg_dex }}{% endif %}
+        </td>
+        {% if PERSO.perso_niveau_vampire == 0 %}
+            <td class="soustitre2">Régénération
+            </td>
+            <td>
+                {{ PERSO.perso_des_regen }}D{{ PERSO.perso_valeur_regen }}+{{ CARAC.regen }}
+            </td>
+
+        {% else %}
+            <td class="soustitre2">Vampirisme</td>
+            <td>
+                {{ PERSO.perso_vampirisme * 10 }}
+            </td>
+
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="soustitre2">Armure</td>
+        <td>
+            {{ CARAC.armure }}
+        </td>
+        <td class="soustitre2">Vue</td>
+        <td>
+            {{ CARAC.vue }}
+        </td>
+    </tr>
+
+
+    <tr>
+
+        <td class="soustitre2">Encombrement</td>
+        <td>{{ PERSO.get_poids }}/{{ PERSO.perso_enc_max }}</td>
+
+        <td class="soustitre2">Malus lié au poids transporté</td>
+        <td>{{ (PERSO.allonge_temps_poids_temps/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids_temps%60 }} m</td>
+
+    </tr>
+
+
+    <tr>
+        <td class="soustitre2">Temps normal de tour</td>
+
+        <td>{{ (PERSO.perso_temps_tour/60)|round(O,'floor') }} h {{ PERSO.perso_temps_tour%60 }} m</td>
+        <td class="soustitre2">Malus temps lié aux blessures (à cet instant)</td>
+
+        <td>{{ (PERSO.allonge_temps_temps/60)|round(O,'floor') }} h {{ PERSO.allonge_temps_temps%60 }} m</td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Temps du tour actuel</td>
+        <td>{{ (CARAC.temps_tour/60)|round(O,'floor') }} h {{ CARAC.temps_tour%60 }} m</td>
+
+        <td class="soustitre2">Bonus liés aux PA restant <em>(à cet instant précis !)</em></td>
+        <td>{% if PERSO.perso_utl_pa_rest == 1 %}
+                {{ (BONUS_TEMPS_PA/60)|round(O,'floor') }} h {{ BONUS_TEMPS_PA%60 }} m
+            {% else %}0h 0m
+            {% endif %}
+        </td>
+
+    </tr>
+
+
+
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Amélioration Dégâts</td>
+        <td>
+            {% if PERSO.has_arme_distance %}
+                 {{ PERSO.perso_amel_deg_dex }} à distance, +{{ PERSO.perso_amelioration_degats }} en mélée
+            {% else %}
+                {{ PERSO.perso_amelioration_degats }} en mélée, +{{ PERSO.perso_amel_deg_dex }} à distance
+            {% endif %}
+        </td>
+        {% if PERSO.perso_niveau_vampire == 0 %}
+            <td class="soustitre2">Amélioration Régénération
+            </td>
+            <td>
+                {{ PERSO.perso_des_regen - 1 }}
+            </td>
+
+        {% else %}
+            <td class="soustitre2">Amélioration Vampirisme</td>
+            <td>{{ 10 * PERSO.perso_vampirisme }}</td>
+
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="soustitre2">Amélioration Armure</td>
+        <td>
+            {{ PERSO.perso_amelioration_armure }}
+        </td>
+        <td class="soustitre2">Amélioration Vue</td>
+        <td>
+            {{ PERSO.perso_amelioration_vue }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Amélioration Temps au tour</td>
+        <td>
+            {{ DLT_AMELIORATION }}
+        </td>
+
+        <td class="soustitre2">Amélioration Sorts mémorisables</td>
+        <td>
+            {{ PERSO.perso_amelioration_nb_sort }}
+        </td>
+
+    </tr>
+
+
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+
+
+    {% if CARAC.perso_protec_critique!=0 or CARAC.perso_vampirisme!=0 or CARAC.perso_aura_feu!=0  %}
+
+        {% if CARAC.perso_protec_critique!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Protection contre les critiques</td>
+                <td colspan="2">{{ min(100, CARAC.perso_protec_critique) |round(0, 'floor') }} %</td>
+            </tr>
+        {% endif %}
+
+        {% if CARAC.perso_aura_feu!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Aura de feu de l'équipement</td>
+                <td colspan="2">{{ min(100, CARAC.perso_aura_feu * 100) |round(0, 'floor') }} %</td>
+            </tr>
+        {% endif %}
+
+        {% if CARAC.perso_vampirisme!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Vampirisme de l'équipement</td>
+                <td colspan="2">{{ min(100, CARAC.perso_vampirisme) |round(0, 'floor') }} %</td>
+            </tr>
+        {% endif %}
+
+        <tr>
+            <td height="3" colspan="4">
+                <hr/>
+            </td>
+        </tr>
+    {% endif %}
+
+
+    <tr>
+        <td class="soustitre2" colspan="2">Capacité de réparation</td>
+        <td colspan="2">{{ PERSO.perso_capa_repar }}</td>
+    </tr>
+    <tr>
+        <td class="soustitre2" colspan="2">Nombre de réceptacles</td>
+        <td colspan="2">{{ PERSO.perso_nb_receptacle }}</td>
+    </tr>
+    {% if IS_FORGEAMAGE %}
+        <tr>
+            <td class="soustitre2" colspan="2">Énergie</td>
+            <td colspan="2">{{ PERSO.perso_energie }}</td>
+        </tr>
+    {% endif %}
+    {% if PERSO.is_fam == true %}
+        {% if PERSO.perso_gmon_cod == 441 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Énergie divine</td>
+                <td colspan="2">{{ DIEU_PERSO.dper_points }}</td>
+            </tr>
+        {% endif %}
+    {% endif %}
+</table>

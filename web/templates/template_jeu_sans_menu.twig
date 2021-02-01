@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <title>Les souterrains de Delain</title>
+    <link rel="shortcut icon" href="{{ TYPE_FLUX }}{{ G_URL }}drake_head_red.ico" type="image/gif">
+
+    <!-- Custom delain CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v{{ __VERSION }}" title="essai">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.php">
+
+    <!-- Bootstrap custom CSS -->
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css?v{{ __VERSION }}" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js?v{{ __VERSION }}" type="text/javascript"></script>
+</head>
+<body>
+
+<script>//# sourceURL=general_jeu.js
+
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })
+    (window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-1534416-3', 'auto');
+    ga('require', 'GTM-M2VTQQW');
+    ga('send', 'pageview');
+
+</script>
+
+
+<div class="bordiv">
+    <div class="titre">
+        {{ TITRE }}
+    </div>
+    {{ CONTENU|raw }}
+</div>
+</body>
+</html>
+
+
+

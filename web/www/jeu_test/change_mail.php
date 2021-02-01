@@ -1,27 +1,15 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
+<?php
+include "blocks/_header_page_jeu.php";
+$compte = $verif_connexion->compte;
 //
 //Contenu de la div de droite
 //
-$req = "select compt_mail from compte where compt_cod=$compt_cod";
-$db->query($req);
-$db->next_record();
-
 $contenu_page = '<p class="titre">Changement d’adresse e-mail</p>
-<p style="text-align:center;"><b>ATTENTION !!!!</b></p>
+<p style="text-align:center;"><strong>ATTENTION !!!!</strong></p>
 Lors du changement d’adresse e-mail, un nouveau mot de passe sera généré et envoyé à cette adresse.<br>
 Vous ne pourrez donc pas accéder à votre compte tant que vous n’aurez pas reçu ce mail.<br><br>
-Il est donc <b>important</b> de rentrer une adresse mail valide, sans quoi votre accès restera impossible !<br>
-Vous êtes actuellement enregistré avec l’adresse <b>' . $db->f("compt_mail") . '</b><hr>
+Il est donc <strong>important</strong> de rentrer une adresse mail valide, sans quoi votre accès restera impossible !<br>
+Vous êtes actuellement enregistré avec l’adresse <strong>' . $compte->compt_mail . '</strong><hr>
 <form name="change_mail" method="post" action="valide_change_mail.php">
 <table>
 
@@ -36,12 +24,10 @@ Vous êtes actuellement enregistré avec l’adresse <b>' . $db->f("compt_mail")
 </tr>
 
 <tr>
-<td colspan="2"><p style="text-aligne:center">
-<input type="submit" class="test" value="Valider les changements !"></p>
+<td colspan="2">
+<input type="submit" class="test center" value="Valider les changements !">
 </td>
 </tr>
 </table>
 </form>';
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";

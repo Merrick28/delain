@@ -1,0 +1,143 @@
+<table width="100%" border="0" class="tabperso">
+    <tr>
+        <td colspan="2" class="persotitre" valign="top">
+            <div class="titre">{{ PERSO.perso_nom }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="soustitre2">
+            <div style="text-align:center;font-size:7pt;">{{ PERSO.perso_description }}</div>
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2" colspan="2">
+            {% if PERSO.dlt_passee %}<strong>{% endif %}
+                DLT : {{ PERSO.perso_dlt|date("d/m/Y H:i:s") }}
+                {% if PERSO.dlt_passee %}</strong>{% endif %}
+            <br/><em>Puis ± {{ PERSO.prochaine_dlt|date("d/m/Y H:i:s") }}</em>
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2" colspan="2">
+            Position : X={{ POSITION.pos_x }}; Y={{ POSITION.pos_y }}; {{ ETAGE.etage_libelle }}
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2" colspan="2">
+            {{ MYGUILDE }}
+        </td>
+    </tr>
+
+    {% if LIGNE_MALUS != "" %}
+        <tr class="delain-tooltip">
+            <td colspan="2" class="soustitre2" height="40px;">
+                <span><small style="position: relative; top:-5px;">Malus&nbsp;:&nbsp;&nbsp;&nbsp;</small></span>{{ LIGNE_MALUS|raw }}
+            </td>
+        </tr>
+    {% endif %}
+
+    <tr>
+        <td valign="top">
+            <a class="centrer" href="#"
+               onClick="javascript:document.login.perso.value={{ PERSO.perso_cod }};document.login.submit();">
+                <img width="110px" src="{{ AVATAR }}?{{ PERSO.perso_avatar_version }}"
+                     alt="Jouer {{ PERSO.perso_nom }}"/>
+            </a>
+            {% if PERSO.has_evt_non_lu %}
+                <table>
+                    <tr>
+                        <td class="bouton" height="1" width="1">
+                    <span class="bouton">
+		                <input type="button" class="bouton"
+                               onClick="javascript:window.open('{{ TYPE_FLUX }}{{ G_URL }}visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                               title='Cliquez ici pour voir vos événements importants depuis votre dernière connexion'
+                               value="Événements"/>
+		            </span>
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        <div class="image"><strong>Niveau {{ PERSO.perso_niveau }}</strong>{{ IMPALPABLE|raw }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="image">
+                            <img src="{{ G_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif" alt="{{ PERSO.perso_pa }} PA">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="image">
+                            <img src="{{ G_IMAGES }}coeur.gif" alt="">
+                            <div title="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }} PV"
+                                 alt="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }} PV" class="container-hp" {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
+                                <div class="barre-hp" style="width:{{ BARRE_HP }}%">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% if PERSO.is_enchanteur %}
+                    <tr>
+                        <td>
+                            <div class="image">
+                                <img src="{{ G_IMAGES }}energi10.png" alt="">
+                                <div title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100"
+                                     class="container-nrj"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
+                                    <div class="barre-nrj" style="width:{{ BARRE_ENERGIE }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if DIEU_PERSO.dper_points > 0 %}
+                    <tr>
+                        <td>
+                            <div class="image"><img src="{{ G_IMAGES }}magie.gif" alt="" title="Énergie divine">
+                                <div title="Énergie divine : {{ DIEU_PERSO.dper_points }}"
+                                     alt="Énergie divine : {{ DIEU_PERSO.dper_points }}" class="container-div"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
+                                    <div class="barre-div" style="width:{{ BARRE_DIVINE }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <div class="image">
+                            <img src="{{ G_IMAGES }}iconexp.gif" alt="">
+                            <div title="{{ PERSO.perso_px|round( floor) }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                                 alt="{{ PERSO.perso_px|round( floor) }} PX sur {{ PERSO.px_limite }}"
+                                 class="container-xp"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
+                                <div class="barre-xp" style="width:{{ BARRE_XP }}%"></div>
+                            </div>
+                        </div>
+                        {% if PERSO.getMsgNonLu|length > 0 %}
+                            <span class="bouton">
+			<input type="button" class="bouton"
+                   onClick="javascript:window.open('{{ TYPE_FLUX }}{{ G_URL }}visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
+                   title='Cliquez ici pour lire vos 10 derniers messages'
+                   value="{{ PERSO.getMsgNonLu|length }} messages non lus."/>
+			</span><br/>
+                        {% endif %}
+                        {% if PERSO.transactions > 0 %}
+                            {{ PERSO.transactions }} transactions en attente.
+                        {% endif %}
+                    </td>
+                </tr>
+
+
+            </table>
+        </td>
+    </tr>
+
+
+
+</table>

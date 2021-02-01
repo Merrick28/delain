@@ -11,8 +11,7 @@ function log_debug($textline)
         if (touch($filename))
         {
             echo '<!-- creation OK -->';
-        }
-        else
+        } else
         {
             echo '<!-- ECHEC SUR CREATION -->';
         }
@@ -40,338 +39,74 @@ function log_debug($textline)
         //echo 'Success, wrote (' . $textline . ') to file (' . $filename . ')';
 
         fclose($handle);
-    }
-    else
+    } else
     {
         echo 'The file ', $filename, ' is not writable';
     }
 }
 
-function getparm_n($parm)
-{
-    /**
-     * NE PLUS UTILISER !
-     */
-    $db       = new base_delain;
-    $req_parm = "select parm_valeur from parametres where parm_cod = $parm";
-    $db->query($req_parm);
-    $nb_parm  = $db->nf();
-    if ($nb_parm == 0)
-    {
-        $retour = -1;
-        echo("Paramètre non fixé !!");
-        return $retour;
-    }
-    else
-    {
-        $db->next_record();
-        $retour = $db->f("parm_valeur");
-        return $retour;
-    }
-}
 
 function distance($pos1, $pos2)
 {
-    $db           = new base_delain;
-    $req_distance = "select distance($pos1,$pos2) as distance";
-    $db->query($req_distance);
-    $db->next_record();
-    $retour       = $db->f("distance");
-    return $retour;
-}
-
-function getparm_t($parm)
-{
-    $db       = new base_delain;
-    $req_parm = "select parm_valeur_texte from parametres where parm_cod = $parm";
-    $db->query($req_parm);
-    $nb_parm  = $db->nf();
-    if ($nb_parm == 0)
-    {
-        $retour = -1;
-        echo("Paramètre non fixé !!");
-        return $retour;
-    }
-    else
-    {
-        $db->next_record();
-        $retour = $db->f("parm_valeur_texte");
-        return $retour;
-    }
-}
-
-function existe_competence($perso_cod, $competence)
-{
-    $db       = new base_delain;
-    $req_comp = "select count(*) as nombre from perso_competences where pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = $competence and pcomp_modificateur != 0";
-    $db->query($req_comp);
-    $db->next_record();
-    $tab_comp = $db->f("nombre");
-    if ($tab_comp == 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    $pdo          = new bddpdo();
+    $req_distance = "select distance(:pos1,:pos2) as distance";
+    $stmt         = $pdo->prepare($req_distance);
+    $stmt         = $pdo->execute(array(
+                                      ":pos1" => $pos1,
+                                      ":pos2" => $pos2
+                                  ), $stmt);
+    $result       = $stmt->fetch();
+    return $result['distance'];
 }
 
 function is_locked($perso_cod)
 {
-    $db       = new base_delain;
-    $req_lock = "select count(*) as nombre from lock_combat where lock_cible = $perso_cod";
-    $db->query($req_lock);
-    $db->next_record();
-    $tab_lock = $db - f("nombre");
-    if ($tab_lock != 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    $tmpperso = new perso;
+    $tmpperso->charge($perso_cod);
+    unset($tmpperso);
+    return $tmpperso->is_locked();
+
 }
 
-function is_identifie_objet($perso_cod, $obj_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select count(*) as nombre from perso_identifie_objet where pio_perso_cod = $perso_cod and pio_obj_cod = $obj_cod ";
-    $db->query($req_comp);
-    $db->next_record();
-    $tab_comp = $db->f("nombre");
-    ;
-    if ($tab_comp != 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-function is_admin_guilde($perso_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select count(*) as nombre from guilde_perso,guilde_rang where pguilde_perso_cod = $perso_cod ";
-    $req_comp = $req_comp . "and pguilde_guilde_cod = rguilde_guilde_cod ";
-    $req_comp = $req_comp . "and pguilde_rang_cod = rguilde_rang_cod ";
-    $req_comp = $req_comp . "and rguilde_admin = 'O' ";
-    $db->query($req_comp);
-    $db->next_record();
-    $tab_comp = $db->f("nombre");
-    if ($tab_comp != 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-function get_nom_guilde($perso)
-{
-    $db       = new base_delain;
-    $req_comp = "select guilde_nom from guilde,guilde_perso where pguilde_perso_cod = $perso ";
-    $req_comp = $req_comp . "and pguilde_valide = 'O' ";
-    $req_comp = $req_comp . "and pguilde_guilde_cod = guilde_cod ";
-    $db->query($req_comp);
-    $nb_comp  = $db->nf();
-    if ($nb_comp == 0)
-    {
-        return '';
-    }
-    else
-    {
-        $db->next_record();
-        $tab_comp = $db->f("guilde_nom");
-        return $tab_comp;
-    }
-}
 
 function get_pos($perso_cod)
 {
-    $db             = new base_delain;
-    $req            = "select pos_cod,pos_x,pos_y,pos_etage from positions,perso_position ";
-    $req            = $req . "where ppos_perso_cod = $perso_cod ";
-    $req            = $req . "and ppos_pos_cod = pos_cod ";
-    $db->query($req);
-    $db->next_record();
-    $tab['pos_cod'] = $db->f("pos_cod");
-    $tab['x']       = $db->f("pos_x");
-    $tab['y']       = $db->f("pos_y");
-    $tab['etage']   = $db->f("pos_etage");
+    $tmpperso = new perso;
+    $tmpperso->charge($perso_cod);
+    $tmppos         = $tmpperso->get_position();
+    $tab['pos_cod'] = $tmppos['pos']->pos_cod;
+    $tab['x']       = $tmppos['pos']->pos_x;
+    $tab['y']       = $tmppos['pos']->pos_y;
+    $tab['etage']   = $tmppos['pos']->pos_etage;
     return $tab;
 }
 
-function nb_admin_guilde($guilde_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select count(*) as nombre from guilde_perso,guilde_rang,perso where pguilde_guilde_cod = $guilde_cod ";
-    $req_comp = $req_comp . "and pguilde_guilde_cod = rguilde_guilde_cod ";
-    $req_comp = $req_comp . "and pguilde_rang_cod = rguilde_rang_cod ";
-    $req_comp = $req_comp . "and rguilde_admin = 'O' ";
-    $req_comp = $req_comp . "and pguilde_perso_cod = perso_cod ";
-    $req_comp = $req_comp . "and perso_actif = 'O' ";
-    $db->query($req_comp);
-    $db->next_record();
-    $tab_comp = $db->f("nombre");
-    return $tab_comp;
-}
-
-function get_stats_guilde($guilde_cod)
-{
-    $db                      = new base_delain;
-    $req_comp                = "select sum(perso_nb_joueur_tue) as joueur_tue,sum(perso_nb_monstre_tue) as monstre_tue,sum(perso_nb_mort) as nb_mort,get_renommee_guilde($guilde_cod) as renommee,get_karma_guilde($guilde_cod) as karma ";
-    $req_comp                = $req_comp . "from guilde_perso,perso where pguilde_guilde_cod = $guilde_cod ";
-    $req_comp                = $req_comp . "and pguilde_perso_cod = perso_cod ";
-    $req_comp                = $req_comp . "and perso_type_perso = 1 ";
-    $req_comp                = $req_comp . "and perso_actif = 'O' ";
-    $db->query($req_comp);
-    $db->next_record();
-    $tab_comp['joueur_tue']  = $db->f("joueur_tue");
-    $tab_comp['monstre_tue'] = $db->f("monstre_tue");
-    $tab_comp['nb_mort']     = $db->f("nb_mort");
-    $tab_comp['renommee']    = $db->f("renommee");
-    $tab_comp['karma']       = $db->f("karma");
-    return $tab_comp;
-}
-
-function get_pa_attaque($perso_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select nb_pa_attaque($perso_cod) as pa";
-    $db->query($req_comp);
-    $db->next_record();
-    $pa       = $db->f("pa");
-    return $pa;
-}
-
-function get_pa_dep($perso_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select get_pa_dep($perso_cod) as pa";
-    $db->query($req_comp);
-    $db->next_record();
-    $pa       = $db->f("pa");
-    return $pa;
-}
-
-function get_pa_foudre($perso_cod)
-{
-    $db       = new base_delain;
-    $req_comp = "select nb_pa_foudre($perso_cod) as pa";
-    $db->query($req_comp);
-    $db->next_record();
-    $pa       = $db->f("pa");
-    return $pa;
-}
 
 function is_lieu($perso_cod)
 {
-    $db      = new base_delain;
-    $req_pos = "select* from lieu_position,perso_position ";
-    $req_pos = $req_pos . "where ppos_perso_cod = $perso_cod ";
-    $req_pos = $req_pos . "and ppos_pos_cod = lpos_pos_cod ";
-    $db->query($req_pos);
-    $nb_pos  = $db->nf();
-    if ($nb_pos == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    $tmpperso = new perso;
+    $tmpperso->charge($perso_cod);
+    return $tmpperso->is_lieu();
 }
 
-function is_temple($perso_cod)
-{
-    $db      = new base_delain;
-    $req_pos = "select* from lieu_position,perso_position,lieu ";
-    $req_pos = $req_pos . "where ppos_perso_cod = $perso_cod ";
-    $req_pos = $req_pos . "and ppos_pos_cod = lpos_pos_cod ";
-    $req_pos = $req_pos . "and lpos_lieu_cod = lieu_cod ";
-    $req_pos = $req_pos . "and lieu_tlieu_cod = 2 ";
-    $db->query($req_pos);
-    $nb_pos  = $db->nf();
-    if ($nb_pos == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-function init_temple($perso_cod)
-{
-    $db       = new base_delain;
-    $tab_pos  = get_pos($perso_cod);
-    $position = $tab_pos[pos_cod];
-    $req_ins  = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
-    $db->query($req_ins);
-    $req_ins  = "insert into perso_temple (ptemple_perso_cod,ptemple_pos_cod) values ($perso_cod,$position)";
-    $db->query($req_ins);
-    return true;
-}
 
 function get_lieu($perso_cod)
 {
-    $db                      = new base_delain;
-    $req_lieu                = "select lieu_nom,lieu_description,lieu_url,tlieu_libelle ";
-    $req_lieu                = $req_lieu . "from lieu,lieu_type,lieu_position,perso_position ";
-    $req_lieu                = $req_lieu . "where ppos_perso_cod = $perso_cod ";
-    $req_lieu                = $req_lieu . "and ppos_pos_cod = lpos_pos_cod ";
-    $req_lieu                = $req_lieu . "and lpos_lieu_cod = lieu_cod ";
-    $req_lieu                = $req_lieu . "and lieu_tlieu_cod = tlieu_cod ";
-    $db->query($req_lieu);
-    $db->next_record();
-    $tab_lieu['nom']         = $db->f("lieu_nom");
-    $tab_lieu['description'] = $db->f("lieu_description");
-    $tab_lieu['url']         = $db->f("lieu_url");
-    $tab_lieu['libelle']     = $db->f("tlieu_libelle");
+    $tmpperso = new perso;
+    $tmpperso->charge($perso_cod);
+    $lieu                    = $tmpperso->get_lieu();
+    $tab_lieu['nom']         = $lieu['lieu']->lieu_nom;
+    $tab_lieu['description'] = $lieu['lieu']->lieu_description;
+    $tab_lieu['url']         = $lieu['lieu']->lieu_url;
+    $tab_lieu['libelle']     = $lieu['lieu_type']->tlieu_libelle;
     return $tab_lieu;
 }
 
 function is_refuge($perso_cod)
 {
-    $db      = new base_delain;
-    $req_pos = "select lieu_cod from lieu_position,perso_position,lieu ";
-    $req_pos = $req_pos . "where ppos_perso_cod = $perso_cod ";
-    $req_pos = $req_pos . "and ppos_pos_cod = lpos_pos_cod ";
-    $req_pos = $req_pos . "and lpos_lieu_cod = lieu_cod ";
-    $req_pos = $req_pos . "and lieu_refuge = 'O' ";
-    $db->query($req_pos);
-    $nb_pos  = $db->nf();
-    if ($nb_pos == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-function has_artefact($perso_cod, $objet)
-{
-    $db      = new base_delain;
-    $req_pos = "select count(*) as nombre from perso_objets where perobj_perso_cod = $perso_cod and perobj_obj_cod = $objet ";
-    $db->query($req_pos);
-    $tab_pos = $db->f("nombre");
-    if ($tab_pos != 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    $tmpperso = new perso;
+    $tmpperso->charge($perso_cod);
+    return $tmpperso->is_refuge();
 }
 
 function get_etat($parm)
@@ -415,17 +150,17 @@ function genereClasse($table)
         $stmt       = $pdo->execute(array($table), $stmt);
         $tempChamps = $stmt->fetchAll();
         // on calcule la clé primaire
-        $req        = 'SELECT a.attname
+        $req       = 'SELECT a.attname
             FROM   pg_index i
             JOIN   pg_attribute a ON a.attrelid = i.indrelid
                                  AND a.attnum = ANY(i.indkey)
             WHERE  i.indrelid = ?::regclass
             AND    i.indisprimary;';
-        $stmt       = $pdo->prepare($req);
-        $stmt       = $pdo->execute(array($table), $stmt);
-        $result     = $stmt->fetch();
-        $pk         = $result['attname'];
-        $i          = 0;
+        $stmt      = $pdo->prepare($req);
+        $stmt      = $pdo->execute(array($table), $stmt);
+        $result    = $stmt->fetch();
+        $pk        = $result['attname'];
+        $i         = 0;
         $champDate = array();
         foreach ($tempChamps as $key => $val)
         {
@@ -434,11 +169,11 @@ function genereClasse($table)
             {
                 $champsHorsPk[] = $val['column_name'];
             }
-            $champs[$i]['name']    = $val['column_name'];
-            $temp = explode('::',$val['column_default']);
-            if($temp[0] == 'now()')
+            $champs[$i]['name'] = $val['column_name'];
+            $temp               = explode('::', $val['column_default']);
+            if ($temp[0] == 'now()')
             {
-                $temp[0] = '';
+                $temp[0]     = '';
                 $champDate[] = $val['column_name'];
             }
             $champs[$i]['default'] = $temp[0];
@@ -446,25 +181,79 @@ function genereClasse($table)
         }
     }
 
-
+    global $twig;
 
     $template = $twig->load('classes.twig');
 
 
     $options_twig = array(
-       'TABLE'     => $table,
-       'PK'        => $pk,
-       'CHAMPS'    => $champs,
-       'CONNECTOR' => 'bddpdo',
-       'CONN_NAME' => 'pdo',
-       'HORSPK'    => $champsHorsPk,
-       'EOL'       => PHP_EOL,
-       'BDTYPE'    => $bdtype,
-       'CHAMPDATE' => $champDate
+        'TABLE'     => $table,
+        'PK'        => $pk,
+        'CHAMPS'    => $champs,
+        'CONNECTOR' => 'bddpdo',
+        'CONN_NAME' => 'pdo',
+        'HORSPK'    => $champsHorsPk,
+        'EOL'       => PHP_EOL,
+        'BDTYPE'    => $bdtype,
+        'CHAMPDATE' => $champDate
     );
 
 
-
-
     echo $template->render($options_twig);
+}
+
+function format_date($input)
+{
+    $date = new DateTime($input);
+    return $date->format('d/m/Y H:i:s');
+}
+
+function getUserIpAddr()
+{
+    if (!empty($_SERVER['HTTP_CLIENT_IP']))
+    {
+        //ip from share internet
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+    {
+        //ip pass from proxy
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+function niveau_blessures($pv, $pv_max)
+{
+    global $tab_blessures;
+    $niveau_blessures = '';
+    if ($pv / $pv_max < 0.75)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[0];
+    }
+    if ($pv / $pv_max < 0.5)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[1];
+    }
+    if ($pv / $pv_max < 0.25)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[2];
+    }
+    if ($pv / $pv_max < 0.15)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[3];
+    }
+    return $niveau_blessures;
+}
+
+// pour éviter les doublons
+
+
+function ligne_login_monstre($monstre, $compt_cod)
+{
+    $fonctions = new fonctions;
+    $fonctions->ligne_login_monstre($monstre, $compt_cod);
+
 }

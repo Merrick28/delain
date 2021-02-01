@@ -1,4 +1,3 @@
-<?php 
-include 'prepend.php';
+<?php
 ob_start();
 //ob_start("ob_gzhandler");

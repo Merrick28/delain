@@ -1,62 +1,9 @@
 ﻿<?php 
 /* Création d’étages, modification des paramètres de case de l’étage */
 
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include_once('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 
 
-function writelog($textline)
-{
-	$filename = "../logs/lieux_etages.log";
-	if (is_writable($filename))
-	{
-		if (!$handle = fopen($filename, 'a'))
-		{
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE)
-		{
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	}
-	else
-		echo "The file $filename is not writable";
-}
-
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-	global $db, $compt_cod;
-
-	if ($texte)
-	{
-		$log_sql = false;	// Mettre à true pour le debug des requêtes
-
-		if (!$log_sql || $sql == '')
-			$sql = "\n";
-		else
-			$sql = "\n\t\tRequête : $sql\n";
-
-		$req = "select compt_nom from compte where compt_cod = $compt_cod";
-		$db->query($req);
-		$db->next_record();
-		$compt_nom = $db->f("compt_nom");
-
-		$en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-		echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-		if ($loguer)
-			writelog($en_tete . $texte . $sql);
-	}
-}
 
 //
 //Contenu de la div de droite
@@ -65,28 +12,11 @@ $contenu_page = '';
 ob_start();
 $contenu = '';
 $erreur = 0;
-$req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
+define('APPEL', 1);
+include "blocks/_test_droit_modif_etage.php";
 
+$methode          = get_request_var('methode', 'debut');
 
-if ($db->nf() == 0)
-{
-    $droit['carte'] = 'N';
-}
-else
-{
-	$db->next_record();
-	$droit['carte'] = $db->f("dcompt_modif_carte");
-}
-if ($droit['carte'] != 'O')
-{
-	die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
-}
-
-if (!isset($methode))
-{
-	$methode = 'debut';
-}
 $log = '';
 $resultat = '';
 
@@ -104,43 +34,43 @@ if ($erreur == 0)
 			$erreur = 0;
 			if(!$nom)
 			{
-				$resultat .= "<p><b>Le nom du nouvel étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>Le nom du nouvel étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$description)
 			{
-				$resultat .= "<p><b>La description du nouvel étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>La description du nouvel étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$x_min || !$x_max || $x_min >= $x_max)
 			{
-				$resultat .= "<p><b>Les limites de l’étage ne sont pas valides</b></p>";
+				$resultat .= "<p><strong>Les limites de l’étage ne sont pas valides</strong></p>";
 				$erreur = 1;
 			}
 			if(!$y_min || !$y_max || $y_min >= $y_max)
 			{
-				$resultat .= "<p><b>Les limites de l’étage ne sont pas valides</b></p>";
+				$resultat .= "<p><strong>Les limites de l’étage ne sont pas valides</strong></p>";
 				$erreur = 1;
 			}
 			if ($etage_arene == 'O' && $etage_ref == '--')
 			{
-				$resultat .= "<p><b>Un étage principal ne peut pas être une arène</b></p>";
+				$resultat .= "<p><strong>Un étage principal ne peut pas être une arène</strong></p>";
 				$erreur = 1;
 			}
 			$etage_numero = 999;
 			if ($etage_ref == '--')	// Création d’un étage principal
 			{
 				$req = "select min(etage_numero) - 1 as numero from etage where etage_numero <> -100";
-				$db->query($req);
-				$db->next_record();
-				$etage_numero = $db->f("numero");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_numero = $result['numero'];
 			}
 			if($erreur == 0)
 			{
 				$req = "select nextval('seq_etage_cod') as etage_cod";
-				$db->query($req);
-				$db->next_record();
-				$etage_cod = $db->f("etage_cod");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_cod = $result['etage_cod'];
 				$etage_numero = ($etage_numero = 999) ? $etage_cod : $etage_numero;
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -149,30 +79,30 @@ if ($erreur == 0)
 				$etage_affichage = ($etage_affichage == '--') ? 2 : $etage_affichage;
 				$etage_retour_rune_monstre = ($etage_retour_rune_monstre == '') ? 50 : $etage_retour_rune_monstre;
 				$req = "insert into etage (etage_cod, etage_numero, etage_libelle, etage_reference, etage_description,
-						etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort, etage_retour_rune_monstre,
+						etage_affichage, etage_arene, etage_familier_actif, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort, etage_retour_rune_monstre,
 						etage_mine, etage_mine_type, etage_mine_richesse) "
 					."values ($etage_cod, $etage_numero, e'$nom', $etage_ref, e'$description',
-						'$etage_affichage', '$etage_arene', '$etage_quatrieme_perso', '$etage_quatrieme_mortel', $etage_mort, $etage_retour_rune_monstre,
+						'$etage_affichage', '$etage_arene', '$etage_familier_actif', '$etage_quatrieme_perso', '$etage_quatrieme_mortel', $etage_mort, $etage_retour_rune_monstre,
 						$etage_mine, $etage_mine_type, $etage_mine_richesse)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				if ($etage_arene == 'O')
 				{
-					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_ouverte)
-						VALUES($etage_numero, $carene_level_max, '$carene_ouverte')";
-					$db->query($req);
+					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte)
+						VALUES($etage_numero, $carene_level_max, $carene_level_min, '$carene_ouverte')";
+					$stmt = $pdo->query($req);
 				}
 
 				$req = "select cree_etage($etage_numero, $x_min, $x_max, $y_min, $y_max)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req ="create table perso_vue_pos_".$etage_cod." (  pvue_perso_cod INT not null, pvue_pos_cod INT not null )";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT pk_perso_vue_pos_".$etage_cod." PRIMARY KEY (pvue_perso_cod, pvue_pos_cod)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT fk_pvue_perso_cod".$etage_cod." FOREIGN KEY (pvue_perso_cod) REFERENCES perso (perso_cod) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." OWNER TO delain;";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				$resultat .= "Étage $nom ($etage_numero) créé !\n";
 				if ($etage_arene == 'O')
@@ -190,49 +120,51 @@ if ($erreur == 0)
 
 		case "modifier_etage":
 			$erreur = 0;
-			if(!$etage_numero)
+			if($etage_numero === false)
 			{
-				$resultat .= "<p><b>Le numéro de l’étage n’est pas défini !</b></p>";
+				$resultat .= "<p><strong>Le numéro de l’étage n’est pas défini !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$nom)
 			{
-				$resultat .= "<p><b>Le nom de l’étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>Le nom de l’étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$description)
 			{
-				$resultat .= "<p><b>La description de l’étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>La description de l’étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if($erreur == 0)
 			{
 				$req = "select etage_reference from etage where etage_numero = $etage_numero";
-				$db->query($req);
-				$db->next_record();
-				$etage_ref = $db->f("etage_reference");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_ref = $result['etage_reference'];
 
-				$req_avant = "select etage_libelle, etage_description, etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel,
+				$req_avant = "select etage_libelle, etage_description, etage_affichage, etage_arene, etage_familier_actif, etage_quatrieme_perso, etage_quatrieme_mortel,
 						etage_mort, etage_retour_rune_monstre, etage_mine, etage_mine_type, etage_mine_richesse,
-						coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte
+						coalesce(carene_level_min, 0) as carene_level_min, coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte
 					from etage
 					left outer join carac_arene on carene_etage_numero = etage_numero
 					where etage_numero = $etage_numero";
-				$db->query($req_avant);
-				$db->next_record();
-				$nom_avant = $db->f('etage_libelle');
-				$desc_avant = $db->f('etage_description');
-				$affichage_avant = $db->f('etage_affichage');
-				$arene_avant = $db->f('etage_arene');
-				$quatrieme_avant = $db->f('etage_quatrieme_perso');
-				$quatrieme_mortel_avant = $db->f('etage_quatrieme_mortel');
-				$mort_avant = $db->f('etage_mort');
-				$rune_avant = $db->f('etage_retour_rune_monstre');
-				$mine_avant = $db->f('etage_mine');
-				$mine_type_avant = $db->f('etage_mine_type');
-				$richesse_avant = $db->f('etage_mine_richesse');
-				$carene_level_max_avant = $db->f('carene_level_max');
-				$carene_ouverte_avant = $db->f('carene_ouverte');
+				$stmt = $pdo->query($req_avant);
+				$result = $stmt->fetch();
+				$nom_avant = $result['etage_libelle'];
+				$desc_avant = $result['etage_description'];
+				$affichage_avant = $result['etage_affichage'];
+				$arene_avant = $result['etage_arene'];
+				$quatrieme_avant = $result['etage_quatrieme_perso'];
+				$quatrieme_mortel_avant = $result['etage_quatrieme_mortel'];
+				$mort_avant = $result['etage_mort'];
+				$rune_avant = $result['etage_retour_rune_monstre'];
+				$mine_avant = $result['etage_mine'];
+				$mine_type_avant = $result['etage_mine_type'];
+				$richesse_avant = $result['etage_mine_richesse'];
+				$carene_level_max_avant = $result['carene_level_max'];
+				$carene_level_min_avant = $result['carene_level_min'];
+				$carene_ouverte_avant = $result['carene_ouverte'];
+                $etage_familier_actif_avant = $result['etage_familier_actif'];
 
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -244,6 +176,7 @@ if ($erreur == 0)
 						etage_description = e'$description',
 						etage_affichage = '$etage_affichage',
 						etage_arene = '$etage_arene',
+						etage_familier_actif = '$etage_familier_actif',
 						etage_quatrieme_perso = '$etage_quatrieme_perso',
 						etage_quatrieme_mortel = '$etage_quatrieme_mortel',
 						etage_mort = $etage_mort,
@@ -252,26 +185,28 @@ if ($erreur == 0)
 						etage_mine_type = $etage_mine_type,
 						etage_mine_richesse = $etage_mine_richesse
 					where etage_numero = $etage_numero";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				$req = "delete from carac_arene where carene_etage_numero = $etage_numero";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				if ($etage_arene == 'O')
 				{
-					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_ouverte)
-						VALUES($etage_numero, $carene_level_max, '$carene_ouverte')";
-					$db->query($req);
+					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte)
+						VALUES($etage_numero, $carene_level_max, $carene_level_min, '$carene_ouverte')";
+					$stmt = $pdo->query($req);
 				}
 
-				$resultat .= "Étage $nom ($etage_numero) modifié !";
+				$resultat .= "Étage $nom ($etage_numero) modifié !<br>";
 				$resultat .= ($nom == $nom_avant) ? '' : "\nNom passe de $nom_avant à $nom";
 				$resultat .= ($description == $desc_avant) ? '' : "\nLa description est changée.";
 				$resultat .= ($etage_affichage == $affichage_avant) ? '' : "\nStyle d’affichage passe de $affichage_avant à $etage_affichage";
 				$resultat .= ($etage_arene == $arene_avant) ? '' : "\nArène passe de $arene_avant à $etage_arene";
 				if ($etage_arene == 'O')
 				{
+					$resultat .= ($etage_arene == $arene_avant) ? '' : "\nArène - Niveau Min passe de $carene_level_min_avant à $carene_level_min";
 					$resultat .= ($etage_arene == $arene_avant) ? '' : "\nArène - Niveau Max passe de $carene_level_max_avant à $carene_level_max";
 					$resultat .= ($etage_arene == $arene_avant) ? '' : "\nArène - Ouverte passe de $carene_ouverte_avant à $carene_ouverte";
+					$resultat .= ($etage_familier_actif_avant == $etage_familier_actif) ? '' : "\nArène - Ouverte passe de $etage_familier_actif_avant à $etage_familier_actif";
 				}
 				$resultat .= ($etage_quatrieme_perso == $quatrieme_avant) ? '' : "\nAutorisé aux 4èmes persos limités passe de $quatrieme_avant à $etage_quatrieme_perso";
 				$resultat .= ($etage_quatrieme_mortel == $quatrieme_mortel_avant) ? '' : "\nAutorisé aux 4èmes persos mortels passe de $quatrieme_mortel_avant à $etage_quatrieme_mortel";
@@ -353,8 +288,9 @@ if ($erreur == 0)
 	<br />
 <?php 	if ($resultat != '')
 	{
-		ecrireResultatEtLoguer($resultat, $erreur == 0);
-	}
+        $fonctions = new fonctions();
+        $fonctions->ecrireResultatEtLoguerLoguer($resultat, $erreur == 0);
+    }
 ?>
 	Choix de l’étage à modifier
 	<form method="post">
@@ -381,7 +317,7 @@ if ($erreur == 0)
 		echo $html->etage_select('', ' where etage_reference = etage_numero');
 	?>
 			</select><br />
-			Quel style de cases pour l’étage ? <small><i>Voir l’aperçu dessous</i></small>
+			Quel style de cases pour l’étage ? <small><em>Voir l’aperçu dessous</em></small>
 			<select name="etage_affichage" onChange="changeStyle(this.value)">
 				<option value='--'>Choisissez un style...</option>
 			<?php 				foreach ($tableau_styles as $unStyle)
@@ -393,23 +329,27 @@ if ($erreur == 0)
 		echo $html->etage_select('', ' where etage_reference = etage_numero');
 	?>
 			</select><br />
-			L’étage est-il une arène ? <select name="etage_arene"><option value='N'>Non</option><option value='O'>Oui</option></select>
-			-- Si oui : niveau maximal pour y accéder ? <input type="text" name="carene_level_max" value="0" size="4"/> (0 = aucune limite) -- Arène accessible librement ? <select name="carene_ouverte"><option value='O'>Oui</option><option value='N'>Non</option></select> (Non = pour animation uniquement)
+			L’étage est-il une arène ? <select name="etage_arene"><option value='N'>Non</option><option value='O'>Oui</option></select> -- Si Oui :
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Niveau minimum pour y accéder ? <input type="text" name="carene_level_min" value="0" size="4"/> (0 = aucune limite)
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Niveau maximal pour y accéder ? <input type="text" name="carene_level_max" value="0" size="4"/> (0 = aucune limite)
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Arène accessible librement ? <select name="carene_ouverte"><option value='O'>Oui</option><option value='N'>Non</option></select> (Non = pour animation uniquement)
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Arène accessible aux familiers ? <select name="etage_familier_actif"><option value='0'>Non</option><option value='1' >Oui</option></select> <em>(si NON il sera impalpable)</em>
 			<br />
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N'>Non</option><option value='O'>Oui</option></select><br />
 			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N'>Non</option><option value='O'>Oui</option></select><br /><br />
+
 			X min : <input type="text" name="x_min"> -
 			X max : <input type="text" name="x_max"><br />
 			Y min : <input type="text" name="y_min"> -
 			Y max : <input type="text" name="y_max"><br /><br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="50" /><br />
-			<small><i>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</i></small><br />
+			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value='999'><br />
-			<small><i>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</i></small><br />
+			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value='1000'><br />
-			<small><i>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</i></small><br /><br />
+			<small><em>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</em></small><br /><br />
 			Taux de retour des runes dans l’inventaire des monstres, de 0 à 100 : <input type="text" name="etage_retour_rune_monstre" value='50' /><br />
-			<small><i>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</i></small><br /><br />
+			<small><em>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</em></small><br /><br />
 			<input type="submit" class='test' value="Créer !">
 		</form>
 	</div>
@@ -425,27 +365,31 @@ if ($erreur == 0)
 	{
 		$req = "select etage_cod, etage_numero, etage_libelle, etage_reference, etage_description,
 				etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort, etage_retour_rune_monstre,
-				etage_mine, etage_mine_type, etage_mine_richesse,
-				coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte
+				etage_mine, etage_mine_type, etage_mine_richesse,etage_familier_actif,
+				coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_level_min, 0) as carene_level_min, coalesce(carene_ouverte, 'O') as carene_ouverte,
+				(select count(*) from positions where pos_etage=93 and pos_entree_arene='O') as nb_entree_arene
 			from etage
 			left outer join carac_arene on carene_etage_numero = etage_numero
 			where etage_numero = $pos_etage";
-		$db->query($req);
-		$db->next_record();
-		$etage_numero = $db->f('etage_numero');
-		$etage_libelle = $db->f('etage_libelle');
-		$etage_description = $db->f('etage_description');
-		$etage_affichage = $db->f('etage_affichage');
-		$etage_arene = $db->f('etage_arene');
-		$etage_quatrieme_perso = $db->f('etage_quatrieme_perso');
-		$etage_quatrieme_mortel = $db->f('etage_quatrieme_mortel');
-		$etage_mort = $db->f('etage_mort');
-		$etage_retour_rune_monstre = $db->f('etage_retour_rune_monstre');
-		$etage_mine = $db->f('etage_mine');
-		$etage_mine_type = $db->f('etage_mine_type');
-		$etage_mine_richesse = $db->f('etage_mine_richesse');
-		$carene_level_max = $db->f('carene_level_max');
-		$carene_ouverte = $db->f('carene_ouverte');
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$etage_numero = $result['etage_numero'];
+		$etage_libelle = $result['etage_libelle'];
+		$etage_description = $result['etage_description'];
+		$etage_affichage = $result['etage_affichage'];
+		$etage_arene = $result['etage_arene'];
+		$etage_quatrieme_perso = $result['etage_quatrieme_perso'];
+		$etage_quatrieme_mortel = $result['etage_quatrieme_mortel'];
+		$etage_mort = $result['etage_mort'];
+		$etage_retour_rune_monstre = $result['etage_retour_rune_monstre'];
+		$etage_mine = $result['etage_mine'];
+		$etage_mine_type = $result['etage_mine_type'];
+		$etage_mine_richesse = $result['etage_mine_richesse'];
+		$carene_level_max = $result['carene_level_max'];
+		$carene_level_min = $result['carene_level_min'];
+		$carene_ouverte = $result['carene_ouverte'];
+		$nb_entree_arene = $result['nb_entree_arene'];
+		$etage_familier_actif = $result['etage_familier_actif'];
 ?>
 	<p>Modifier l’étage <?php echo  $etage_libelle; ?></p>
 	<div id="etage" class="tableau2">
@@ -454,7 +398,7 @@ if ($erreur == 0)
 			<input type="hidden" name="etage_numero" value="<?php echo  $pos_etage; ?>" />
 			Nom : <input type="text" name="nom" value="<?php echo  $etage_libelle; ?>" /><br>
 			Description : <textarea name="description"><?php echo  $etage_description; ?></textarea><br>
-			Quel style de cases pour l’étage ? <small><i>Voir l’aperçu dessous</i></small>
+			Quel style de cases pour l’étage ? <small><em>Voir l’aperçu dessous</em></small>
 			<select name="etage_affichage" onChange="changeStyle(this.value)">
 			<?php 				foreach ($tableau_styles as $unStyle)
 					echo "<option value='$unStyle' " . (($unStyle == $etage_affichage) ? 'selected="selected"' : '') . ">$unStyle</option>";
@@ -474,21 +418,41 @@ if ($erreur == 0)
 		$sel_4_N = ($etage_quatrieme_perso == 'N') ? 'selected="selected"' : '';
 		$sel_4M_O = ($etage_quatrieme_mortel == 'O') ? 'selected="selected"' : '';
 		$sel_4M_N = ($etage_quatrieme_mortel == 'N') ? 'selected="selected"' : '';
+		$sel_famactif_O = ($etage_familier_actif == '1') ? 'selected="selected"' : '';
+        $sel_famactif_N = ($etage_familier_actif == '0') ? 'selected="selected"' : '';
+
+        $arene_info = "" ;
+        if ($carene_ouverte == 'O')
+        {
+            if ($nb_entree_arene>0)
+            {
+                $arene_info = "L'arène dispose de $nb_entree_arene entrée(s).<br />";
+            }
+            else
+            {
+                $arene_info = "<font color=\"#8b0000\"><strong><u>ATTENTION</u></strong>: L'arène ne dispose pas encore d'entrée, elle ne sera pas accessible par les batiments administratifs.</font><br />";
+            }
+        }
+
 	?>
-			L’étage est-il une arène ? <select name="etage_arene"><option value='N' <?php echo  $sel_arene_N; ?>>Non</option><option value='O' <?php echo  $sel_arene_O; ?>>Oui</option></select>
-			-- Si oui : niveau maximal pour y accéder ? <input type="text" name="carene_level_max" value="<?php echo  $carene_level_max; ?>" size="4"/> (0 = aucune limite)
-			-- Arène accessible librement ? <select name="carene_ouverte"><option value='O' <?php echo  $sel_carene_O; ?>>Oui</option><option value='N' <?php echo  $sel_carene_N; ?>>Non</option></select> (Non = pour animation uniquement)
+			L’étage est-il une arène ? <select name="etage_arene"><option value='N' <?php echo  $sel_arene_N; ?>>Non</option><option value='O' <?php echo  $sel_arene_O; ?>>Oui</option></select> -- Si Oui :
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Niveau minimum pour y accéder ? <input type="text" name="carene_level_min" value="<?php echo  $carene_level_min; ?>" size="4"/> (0 = aucune limite)
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Niveau maximal pour y accéder ? <input type="text" name="carene_level_max" value="<?php echo  $carene_level_max; ?>" size="4"/> (0 = aucune limite)
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Arène accessible librement ? <select name="carene_ouverte"><option value='O' <?php echo  $sel_carene_O; ?>>Oui</option><option value='N' <?php echo  $sel_carene_N; ?>>Non</option></select> (Non = pour animation uniquement)
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- Arène accessible aux familiers ? <select name="etage_familier_actif"><option value='0' <?php echo  $sel_4M_N; ?>>Non</option><option value='1' <?php echo  $sel_famactif_O; ?>>Oui</option></select> <em>(si NON il sera impalpable)</em>
 			<br />
+			<?php echo $arene_info; ?>
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N' <?php echo  $sel_4_N; ?>>Non</option><option value='O' <?php echo  $sel_4_O; ?>>Oui</option></select><br />
-			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N' <?php echo  $sel_4M_N; ?>>Non</option><option value='O' <?php echo  $sel_4M_O; ?>>Oui</option></select><br /><br />
+			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N' <?php echo  $sel_famactif_N; ?>>Non</option><option value='O' <?php echo  $sel_4M_O; ?>>Oui</option></select><br /><br />
+
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
-			<small><i>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</i></small><br />
+			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value="<?php echo  $etage_mine_type; ?>" /><br />
-			<small><i>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</i></small><br />
+			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value="<?php echo  $etage_mine_richesse; ?>" /><br />
-			<small><i>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</i></small><br /><br />
+			<small><em>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</em></small><br /><br />
 			Taux de retour des runes dans l’inventaire des monstres, de 0 à 100 : <input type="text" name="etage_retour_rune_monstre" value="<?php echo  $etage_retour_rune_monstre; ?>" /><br />
-			<small><i>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</i></small><br /><br />
+			<small><em>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</em></small><br /><br />
 			<input type="submit" class='test' value="Modifier !">
 		</form>
 	</div>
@@ -499,10 +463,8 @@ if ($erreur == 0)
 	<div style='width:600px; overflow:auto' class='bordiv' id='visu_murs'></div>
 	<script type='text/javascript'>changeStyle('<?php echo  $etage_affichage; ?>');</script>
 <?php 	}
+	echo "<center><a href=\"admin_etage.php\">Retour au menu d'aministration des étages<a></center>";
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
-?>
+include "blocks/_footer_page_jeu.php";

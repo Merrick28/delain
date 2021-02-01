@@ -1,32 +1,25 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+<?php
+include "blocks/_header_page_jeu.php";
 
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-$req_acc_tran = "select accepte_transaction($transaction) as resultat";
-$db = new base_delain;
-$db->query($req_acc_tran);
-$db->next_record();
-$resultat_temp = $db->f("resultat");
-$tab_res = explode(";",$resultat_temp);
-if ($tab_res[0] == -1)
+$pdo = new bddpdo();
+
+$req_acc_tran = "select accepte_transaction(:transaction) as resultat";
+
+$stmt = $pdo->prepare($req_acc_tran);
+$stmt = $pdo->execute(array(
+                          ":transaction" => $_REQUEST['transaction']
+                      ), $stmt);
+
+if (!$result = $stmt->fetch())
 {
-	$contenu_page  = '<p>Une erreur est survenue : ' . $tab_res[1];
+    die('Erreur sur chargement fonction accepte_transaction');
 }
-else
-{
-	$contenu_page  = '<p>La transaction a été validée. L\'objet de trouve maintenant dans votre inventaire.';
-}
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+$resultat_temp = $result['identifie'];
+$tab_res       = explode(";", $resultat_temp);
+$template      = $twig->load('acc_transaction.twig');
+$options_twig  = array(
+
+    'TEST_RESULTAT' => $tab_res[0],
+    'DETAIL_ERREUR' => $tab_res[1]
+);
+echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

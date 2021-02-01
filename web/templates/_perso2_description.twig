@@ -1,0 +1,176 @@
+<div style="text-align:center;">
+    <table id="desc_perso">
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td colspan="3" class="titre">
+                            <div class="titre">Fiche de {{ VISU_PERSO.perso_nom|raw }}</div>
+                        </td>
+                    </tr>
+                    {% if VISU_PERSO.perso_description != '' %}
+                        <tr>
+                            <td colspan="3" class="soustitre2">{{ VISU_PERSO.perso_description|nl2br }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if MEMEPERSO %}
+                        <tr>
+                            <td colspan="3">
+                                <div style="text-align:center;"><a href="change_desc_perso.php">
+                                        Changer sa description ?</a></div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td rowspan="12">
+                            <img src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom|raw }}">
+                            {% if MEMEPERSO %}
+                                {% if VISU_PERSO.perso_crapaud == 0 %}
+                                    <br>
+                                    <div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar
+                                            ?</a></div>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="soustitre2">Race :</td>
+                        <td>{{ RACE.race_nom }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Sexe :</td>
+                        <td>{{ PERSO_SEX_TXT }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Renommee :</td>
+                        <td>{{ VISU_PERSO.f_vue_renommee }} ({{ VISU_PERSO.get_renommee }} classique -
+                            {{ VISU_PERSO.get_renommee_magie }} magie -
+                            {{ VISU_PERSO.get_renommee_artisanat }} artisanat)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Karma :</td>
+                        <td>{{ VISU_PERSO.get_karma }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de décès :</td>
+                        <td>{{ VISU_PERSO.perso_nb_mort }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre d’aventuriers tués :</td>
+                        <td>{{ VISU_PERSO.perso_nb_joueur_tue }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de décès en arène :</td>
+                        <td>{{ VISU_PERSO.perso_nb_mort_arene }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre d’aventuriers tués en arène :</td>
+                        <td>{{ VISU_PERSO.perso_nb_joueur_tue_arene }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de monstres tués :</td>
+                        <td>{{ VISU_PERSO.perso_nb_monstre_tue }}</td>
+                    </tr>
+                    <tr>
+                        <td class="soustitre2">Équipement porté :</td>
+                        <td>
+                            {% if OBJETS_PORTES|length == 0 %}
+                                Aucun objet équipé
+                            {% else %}
+                                {% for OBJET in  OBJETS_PORTES %}
+                                    {{ OBJET.objet.obj_nom_porte }} ({{ OBJET.nom_type_objet }})<br/>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="soustitre2">Guilde :</td>
+                        <td>
+                            {% if not ISGUILDE == false %}
+                                <a href="visu_guilde.php?num_guilde={{ GUILDE.guilde_cod }}">{{ GUILDE.guilde_nom }}</a> ({{ GUILDE_RANG.rguilde_libelle_rang }}
+                                {% if GUILDE_RANG.rguilde_admin == 'O' %}
+                                    - Administrateur
+                                {% endif %}
+                                )
+                                {% if PGUILDE.pguilde_meta_noir == 'O' %}
+                                    <br>Meta guildé à <strong>envoyés de Salm'o'rv</strong>
+                                {% endif %}
+                                {% if PGUILDE.pguilde_meta_milice == 'O' %}
+                                    <br>Meta guildé à <strong>milice</strong>
+                                {% endif %}
+                                {% if PGUILDE.pguilde_meta_caravane == 'O' %}
+                                    <br>Meta guildé à <strong>Corporation marchande du R.A.D.I.S</strong>
+                                {% endif %}
+                            {% else %}
+                                Pas de guilde
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if not ISDIEU == false %}
+                        <tr>
+                            <td colspan="2" class="soustitre2">Religion :</td>
+                            <td><strong>{{ DIEU_NIVEAU.dniv_libelle }} de {{ DIEU.dieu_nom }}</strong></td>
+                        </tr>
+                    {% endif %}
+                    {% if VISU_PERSO.perso_monture %}
+                        <tr>
+                            <td colspan="3" class="titre">Monture</td>
+                        </tr>
+                        <tr>
+                            <td><a href="visu_desc_perso.php?visu={{ MONTURE.perso_cod }}">{{ MONTURE.perso_nom }}</a></td>
+                            <td colspan="2" style="text-align:left" class="soustitre2"> <img height="60px" src="{{ MONTURE_IMG }}" alt="Avatar de {{ MONTURE.perso_nom|raw }}"></td>
+                        </tr>
+                    {% endif %}
+                    {% if TITRES|length > 0 %}
+
+                                <tr>
+                                    <td colspan="3" class="titre">Titres obtenus</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="soustitre2">Titre</td>
+                                    <td class="soustitre2">Obtenu le</td>
+                                </tr>
+                                {% for TITRE in TITRES %}
+                                    <tr>
+                                        <td colspan="2" ><strong>{{ TITRE.ptitre_titre }}</strong></td>
+                                        <td>{{ TITRE.ptitre_date|date('d/m/Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                    {% endif %}
+                    {% if VISU_PERSO.perso_desc_long != '' %}
+                        <tr>
+                            <td colspan="3" class="soustitre2">{{ VISU_PERSO.perso_desc_long|nl2br }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if MEMEPERSO %}
+                        <tr>
+                            <td colspan="3">
+                                <div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description
+                                        longue ?</a></div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+{% if not PLOUCHE == false %}
+    <div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac
+            quelque chose.<br>
+            Il transpire abondemment et regarde autour de lui pour voir s'il est suivi.<br>
+            Le moindre blason de la milice semble le mettre dans un drole d'état. Il n'y a pas a dire il est pas net...
+        </em></div>
+{% endif %}
+

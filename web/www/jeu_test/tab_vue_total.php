@@ -1,54 +1,42 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+<?php
+include "blocks/_header_page_jeu.php";
 ob_start();
 ?>
 <link rel="stylesheet" type="text/css" href="style_vue_hc.php?num_etage=<?php  echo $num_etage; ?>">
 <script type="text/javascript" src="../scripts/pop-in.js" ></script>
 <div id='informations_case' class='bordiv' style='width:150px; padding:5px; display:none; position:absolute;'></div>
 
-<?php 
-$db2 = new base_delain;
+<?php
+$compte = new compte;
+$compte = $verif_connexion->compte;
 
-if ($db->is_admin_monstre($compt_cod))
+if ($compte->is_admin_monstre())
 {
 	echo("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#FFFFFF\">");
 
 	$req_y = "select distinct pos_y from positions where pos_etage = $num_etage order by pos_y desc";
-	$db->query($req_y);
-	$nb_res_y = $db->nf();
+	$stmt = $pdo->query($req_y);
+	$nb_res_y = $stmt->rowCount();
 
 	$req = "select etage_affichage from etage where etage_numero = $num_etage ";
-	$db->query($req);
-	$db->next_record();
-	$aff = $db->f('etage_affichage');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$aff = $result['etage_affichage'];
 
 	$req_y = "select distinct pos_y from positions where pos_etage = $num_etage order by pos_y desc";
-	$db->query($req_y);
+	$stmt = $pdo->query($req_y);
 ?>
 <script type="text/javascript">
-	var carte = new Array();
+    var carte = [];
 <?php 	$i = 0;
 	$depart = 0;
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		$req_map_vue = "select detail_carte_monstre($num_etage," . $db->f("pos_y") . "," . $depart . ") as vue ";
-		$db2->query($req_map_vue);
-		$db2->next_record();
-		$tab = explode("#",$db2->f("vue"));
+		$req_map_vue = "select detail_carte_monstre($num_etage," . $result['pos_y'] . "," . $depart . ") as vue ";
+		$stmt2 = $pdo->query($req_map_vue);
+		$result2 = $stmt2->fetch();
+		$tab = explode("#",$result2['vue']);
 		echo $tab[0];
 		$depart = $tab[1];
 	}
@@ -65,7 +53,7 @@ if ($db->is_admin_monstre($compt_cod))
 	var texte;
 	var style;
 	var action;
-	var comments = new Array();
+    var comments = [];
 	var tr_en_cours;
 
 <?php  echo("	img_path='" . str_replace(chr(92),chr(92) . chr(92),G_IMAGES) ."';\n"); ?>
@@ -96,7 +84,7 @@ if ($db->is_admin_monstre($compt_cod))
 		
 		if (carte[i][4] != 0)
 		{
-			comment = comment + carte[i][4] + '&nbsp;monstres<br><i>' + carte[i][14] + '</i>';
+			comment = comment + carte[i][4] + '&nbsp;monstres<br><em>' + carte[i][14] + '</em>';
 			comment_light = comment_light + carte[i][4] + '&nbsp;monstres, ' + carte[i][14];
 			texte = texte + '<div class="monstre">';
 			
@@ -130,7 +118,7 @@ if ($db->is_admin_monstre($compt_cod))
 		comments[carte[i][0]] = comment;
 		texte = texte + '<div onClick="changeInfo_tableau(document.getElementById(\'informations_case\'), comments, ' + [carte[i][0]] + ');" class="caseVue">';
 		texte = texte + '<div id="cell' + carte[i][0] + '" class="pasvu caseVue" style="background:url(\'' + img_path + 'c1.gif\')" >';
-		texte = texte + '<img src="' + img_path + 'del.gif" width="27" height="25" alt="' + comment_light + '" title="' + comment_light + '" />'
+        texte = texte + '<img src="' + img_path + 'del.gif" width="27" height="25" alt="' + comment_light + '" title="' + comment_light + '" />';
 		texte = texte + '</div>';
 		texte = texte + '</div>'; 
 		if (carte[i][13] != 0)
@@ -203,7 +191,5 @@ else
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
 ?>

@@ -35,6 +35,7 @@ class compt_droit
     {
     }
 
+
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo
@@ -45,7 +46,7 @@ class compt_droit
         $pdo = new bddpdo;
         if ($new)
         {
-            $req  = "insert into compt_droit (
+            $req = "insert into compt_droit (
             dcompt_modif_perso,
             dcompt_modif_gmon,
             dcompt_controle,
@@ -113,10 +114,9 @@ class compt_droit
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
-            $req  = "update compt_droit
+            $req = "update compt_droit
                     set
             dcompt_modif_perso = :dcompt_modif_perso,
             dcompt_modif_gmon = :dcompt_modif_gmon,
@@ -171,34 +171,34 @@ class compt_droit
      */
     function charge($code)
     {
-        $pdo  = new bddpdo;
-        $req  = "select * from compt_droit where dcompt_compt_cod = ?";
+        $pdo = new bddpdo;
+        $req = "select * from compt_droit where dcompt_compt_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
         }
-        $this->dcompt_compt_cod       = $result['dcompt_compt_cod'];
-        $this->dcompt_modif_perso     = $result['dcompt_modif_perso'];
-        $this->dcompt_modif_gmon      = $result['dcompt_modif_gmon'];
-        $this->dcompt_controle        = $result['dcompt_controle'];
-        $this->dcompt_acces_log       = $result['dcompt_acces_log'];
+        $this->dcompt_compt_cod = $result['dcompt_compt_cod'];
+        $this->dcompt_modif_perso = $result['dcompt_modif_perso'];
+        $this->dcompt_modif_gmon = $result['dcompt_modif_gmon'];
+        $this->dcompt_controle = $result['dcompt_controle'];
+        $this->dcompt_acces_log = $result['dcompt_acces_log'];
         $this->dcompt_monstre_automap = $result['dcompt_monstre_automap'];
-        $this->dcompt_etage           = $result['dcompt_etage'];
-        $this->dcompt_gere_droits     = $result['dcompt_gere_droits'];
-        $this->dcompt_modif_carte     = $result['dcompt_modif_carte'];
-        $this->dcompt_controle_admin  = $result['dcompt_controle_admin'];
-        $this->dcompt_monstre_carte   = $result['dcompt_monstre_carte'];
-        $this->dcompt_objet           = $result['dcompt_objet'];
-        $this->dcompt_enchantements   = $result['dcompt_enchantements'];
-        $this->dcompt_potions         = $result['dcompt_potions'];
-        $this->dcompt_sondage         = $result['dcompt_sondage'];
-        $this->dcompt_news            = $result['dcompt_news'];
-        $this->dcompt_animations      = $result['dcompt_animations'];
-        $this->dcompt_creer_monstre   = $result['dcompt_creer_monstre'];
-        $this->dcompt_magie           = $result['dcompt_magie'];
-        $this->dcompt_factions        = $result['dcompt_factions'];
+        $this->dcompt_etage = $result['dcompt_etage'];
+        $this->dcompt_gere_droits = $result['dcompt_gere_droits'];
+        $this->dcompt_modif_carte = $result['dcompt_modif_carte'];
+        $this->dcompt_controle_admin = $result['dcompt_controle_admin'];
+        $this->dcompt_monstre_carte = $result['dcompt_monstre_carte'];
+        $this->dcompt_objet = $result['dcompt_objet'];
+        $this->dcompt_enchantements = $result['dcompt_enchantements'];
+        $this->dcompt_potions = $result['dcompt_potions'];
+        $this->dcompt_sondage = $result['dcompt_sondage'];
+        $this->dcompt_news = $result['dcompt_news'];
+        $this->dcompt_animations = $result['dcompt_animations'];
+        $this->dcompt_creer_monstre = $result['dcompt_creer_monstre'];
+        $this->dcompt_magie = $result['dcompt_magie'];
+        $this->dcompt_factions = $result['dcompt_factions'];
         return true;
     }
 
@@ -210,9 +210,9 @@ class compt_droit
     function getAll()
     {
         $retour = array();
-        $pdo    = new bddpdo;
-        $req    = "select dcompt_compt_cod  from compt_droit order by dcompt_compt_cod";
-        $stmt   = $pdo->query($req);
+        $pdo = new bddpdo;
+        $req = "select dcompt_compt_cod  from compt_droit order by dcompt_compt_cod";
+        $stmt = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
             $temp = new compt_droit;
@@ -231,10 +231,10 @@ class compt_droit
                 if (property_exists($this, substr($name, 6)))
                 {
                     $retour = array();
-                    $pdo    = new bddpdo;
-                    $req    = "select dcompt_compt_cod  from compt_droit where " . substr($name, 6) . " = ? order by dcompt_compt_cod";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    $pdo = new bddpdo;
+                    $req = "select dcompt_compt_cod  from compt_droit where " . substr($name, 6) . " = ? order by dcompt_compt_cod";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
                         $temp = new compt_droit;
@@ -247,14 +247,19 @@ class compt_droit
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
+
+
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

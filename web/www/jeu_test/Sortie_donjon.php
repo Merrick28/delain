@@ -1,32 +1,21 @@
-﻿<?php 
-if(!defined("APPEL"))
-	die("Erreur d'appel de page !");
-if(!isset($db))
-	include_once "verif_connexion.php";
-// on regarde si le joueur est bien sur une sortie de donjon
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur une sortie de donjon !!!");
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 37)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur une sortie de donjon !!!");
-	}
-}
+﻿<?php
+
+$type_lieu = 37;
+$nom_lieu  = 'une sortie de donjon';
+
+define('APPEL', 1);
+include "blocks/_test_lieu.php";
+
+$perso = new perso;
+$perso = $verif_connexion->perso;
+
 
 if ($erreur == 0)
 {
-	$tab_lieu = $db->get_lieu($perso_cod);
-	$tab_lieu = $db->get_lieu($perso_cod);
-	$nom_lieu = $tab_lieu['nom'];
-	$desc_lieu = $tab_lieu['description'];
-	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
-	echo("<p>Vous voyez la sortie de ce donjon.");
-	echo("<p><a href=\"action.php?methode=sortir_donjon\">Prendre la sortie ! (4PA)</a></p>");
+    $tab_lieu  = $perso->get_lieu();
+    $nom_lieu  = $tab_lieu['lieu']->lieu_nom;
+    $desc_lieu = $tab_lieu['lieu']->lieu_description;
+    echo("<p><strong>$nom_lieu</strong> - $desc_lieu ");
+    echo("<p>Vous voyez la sortie de ce donjon.");
+    echo("<p><a href=\"action.php?methode=sortir_donjon\">Prendre la sortie ! (4PA)</a></p>");
 }

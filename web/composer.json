@@ -1,6 +1,12 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^5.2",
-        "twig/twig": "~2.0"
+        "phpmailer/phpmailer": "6.1.6",
+        "twig/twig": "^3.0",
+        "fabfuel/prophiler": "~1.0",
+        "google/apiclient": "^2.0",
+        "phpunit/phpunit": "^8",
+      "ext-json": "*",
+      "ext-curl": "*",
+        "mobiledetect/mobiledetectlib": "^2.8"
     }
 }

@@ -1,18 +1,22 @@
-<?php 
-include_once "verif_connexion.php";
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 /* Paramètres généraux */
-$cout_pa		= 6; // Affiché sur le bouton d'action
-$nom_script	= 'lieu.php';
-$contenu		= '<p>Vous &ecirc;tes emprisonn&eacute; dans un sac de provision...</p>'; // Texte à afficher au joueur
-$gm_texte = '0'; // Résultat de la fonction sortir_gm()
+$cout_pa    = 6; // Affiché sur le bouton d'action
+$nom_script = 'lieu.php';
+$contenu    = '<p>Vous &ecirc;tes emprisonn&eacute; dans un sac de provision...</p>'; // Texte à afficher au joueur
+$gm_texte   = '0'; // Résultat de la fonction sortir_gm()
 
 /* Tentative de sortie en cours */
-if ( isset($_POST['sortir']) || isset($sortir) ) { // Register_globals ^^ ...
-	$req = "select sortir_gm($perso_cod) as resultat";
-	$db->query($req);
-	$db->next_record();
-	$gm_texte = $db->f('resultat');
+if (isset($_POST['sortir']) || isset($sortir))
+{ // Register_globals ^^ ...
+    $req      = "select sortir_gm($perso_cod) as resultat";
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$gm_texte = $result['resultat'];
 	$contenu .= substr($gm_texte,1);
 }
 

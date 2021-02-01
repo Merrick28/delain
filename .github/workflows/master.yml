@@ -1,0 +1,56 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
+
+jobs:
+  prelivraison:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Slack notification
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Debut de livraison" ${{ secrets.WEBHOOK_ROCKETCHAT }}
+
+
+
+      - name: Resume des infos
+
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
+        run: |
+          echo "Lancement des tests unitaires"
+          echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
+
+      - name: lance les tests unitaires
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
+        run: |
+
+          cd ${GITHUB_WORKSPACE}
+          docker-compose -f docker-compose-tu.yml pull
+          docker-compose -f docker-compose-tu.yml up -d
+          echo "Wait for postgres to be up"
+          /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
+          echo 'PHP Unit tests'
+          ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
+          cd ${GITHUB_WORKSPACE}
+          /usr/local/bin/docker-compose -f docker-compose-tu.yml down
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job prelivraison)" ${{ secrets.WEBHOOK_ROCKETCHAT }}
+
+
+  livraison:
+    runs-on: ubuntu-latest
+    needs: prelivraison
+    steps:
+      - name: Lancement awx
+        run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX }}'  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
+
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job livraison)" ${{ secrets.WEBHOOK_ROCKETCHAT }}
+
+
+

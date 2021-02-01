@@ -77,7 +77,7 @@ class parametres
     }
 
     /**
-     * @param $code Code du parametre à obtenir
+     * @param integer $code Code du parametre à obtenir
      * @param bool $refresh True pour forcer le refresh
      * @return bool|mixed
      */
@@ -201,6 +201,10 @@ class parametres
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }

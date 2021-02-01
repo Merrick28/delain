@@ -1,0 +1,25 @@
+{% extends 'template_jeu.twig' %}
+
+{% block contenu_droite %}
+    <table style="border-spacing : 0; width:100%">
+        <tr>
+            {% for tab in MESS %}
+                <td class="{% if loop.index0 == M %}onglet{% else %}pas_onglet{% endif %}"
+                    style="width: {{ SIZE }}%;text-align:center">
+                    <a href="{{ PHP_SELF }}?m={{ loop.index0 }}">{{ tab }}</a>
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td colspan="{{ MESS|length }}" class="reste_onglet">
+                <div class="centrer">
+                    {{ CONTENU_PAGE|raw }}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+    {% block extra_scripts %}
+    {% endblock %}
