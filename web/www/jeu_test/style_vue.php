@@ -77,9 +77,9 @@ else
 }
 .murSimple { background: black; }
 .pasMurSimple { background: lightgreen; }
-.pinceauOnOffJoli { opacity: 0.85; text-align:center; font-size:9px; }
-.pinceauOn { background: lightgreen; }
-.pinceauOff { background: pink; }
+.pinceauOnOffJoli { opacity: 0.85; }
+.pinceauOn { background: lightgreen; text-align:center; font-size:9px; }
+.pinceauOff { background: pink; text-align:center; font-size:9px; }
 .pinceauOn.murSimple { background: darkgreen; }
 .pinceauOff.murSimple{ background: darkred; }
 .pinceauOn.pasMurSimple { background: lightgreen; }

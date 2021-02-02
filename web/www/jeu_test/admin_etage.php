@@ -30,6 +30,12 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td></tr></table>";
 
+//cahrger les type de terrains
+$pdo = new bddpdo();
+$req_m_terrain= "select ter_cod, ter_nom from terrain order by ter_nom";
+$stmt_m_terrain = $pdo->query($req_m_terrain);
+$terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
+
 switch ($methode) {
     case "debut":
         break;
@@ -120,6 +126,20 @@ switch ($methode) {
                         <label><input name="special" value="areneNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>non.</label><br/>
+
+                        <input name="special" value="terrain" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Sélection du terrain et des BM de déplacement.">Gestion des Terrains/PA: </span><br>
+                        Modificateur PA: <input name="modif-pa" value="0" type="text" size="3"/>
+                        <?php
+                        echo '<select name="select-terrain" id="select-terrain" onchange="Pinceau.miseAJour (\'Speciaux\', \'terrain\')">';
+                        echo '<option value="0"'.($ter_cod == 0 ? ' selected ' : '').'>Sans terrain spécifique</option>';
+                        for ($t=0; $t<count($terrains); $t++ )
+                        {
+                            echo '<option value="'.$terrains[$t]["ter_cod"].'"'.($ter_cod == $terrains[$t]["ter_cod"] ? ' selected ' : '').'>'.$terrains[$t]["ter_nom"].'</option>';
+                        }
+                        echo '</select>';
+                        ?>
+                       <br/>
                     </td>
                 </tr>
             </table>

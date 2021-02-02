@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial) return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -59,6 +59,16 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				var classe = (donneesCourantes.entree_arene) ? cssTrue : cssFalse;
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
+		case 'terrain':
+			var  ter_cod = $("#select-terrain").val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.ter_cod == ter_cod) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
 			}
 		break;
 	}

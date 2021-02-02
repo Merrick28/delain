@@ -67,6 +67,7 @@ Speciaux.donnees = [
 	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
