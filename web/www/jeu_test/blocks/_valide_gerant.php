@@ -10,8 +10,7 @@ if ($erreur == 0)
     $tmplieu = new lieu;
     $tmplieu->charge($lieu);
     $pos = $tmplieu->getPos();
-    echo "<p class=\"titre\">Gestion de l'échoppe " . $tmplieu['pos']->pos_x . ", " . $tmplieu['pos']->pos_y . ", " .
-         $tmplieu['etage']->etage_libelle . "</p>";
+    echo "<p class=\"titre\">Gestion de l'échoppe " . $pos['pos']->pos_x . ", " . $pos['pos']->pos_y . ", " . $pos['etage']->etage_libelle . "</p>";
     switch ($_REQUEST['methode'])
     {
         case "ajout":
