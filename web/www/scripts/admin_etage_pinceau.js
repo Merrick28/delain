@@ -267,6 +267,18 @@ Pinceau.annuleCase = function (idx) {
 		Etage.changeCase (Speciaux, idx, (caseDebut.tangible) ? 'tangibleOK' : 'tangibleNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.entree_arene) ? 'areneOK' : 'areneNOK');
 
+		var spec = $('input[name="special"]:checked').val();
+		if (spec=="terrain") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="deplacement") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.dep_pa == $("#dep_pa").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="terrain-dep") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain-dep").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}
+
 		// On supprime la case de la liste des modifs
 		Etage.CasesModifiees.splice(idxModif, 1);
 		caseDebut.modifiee = false;
