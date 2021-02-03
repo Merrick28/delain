@@ -67,6 +67,9 @@ Speciaux.donnees = [
 	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'terrain-dep', valeur: false, nom: 'Terrain/Déplacement', type: 'terrain-dep', url: 'special-brush.png', css: ''},
+	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
+	{id: 'deplacement', valeur: false, nom: 'Déplacement', type: 'deplacement', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -144,10 +147,39 @@ Pinceau.appliqueCase = function (idx) {
 	var idxModif = (ancienneCase.modifiee) ? Etage.TrouveCaseModifieeParId(ancienneCase.id) : -1;
 	if (idxModif > -1) {	// Case déjà modifiée
 		var caseModif = Etage.CasesModifiees[idxModif];
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: caseModif.mur, decor: caseModif.decor, decor_dessus: caseModif.decor_dessus, fond: caseModif.fond, passage: caseModif.passage, pvp: caseModif.pvp, creusable: caseModif.creusable, tangible: caseModif.tangible, entree_arene: caseModif.entree_arene };
+		nvlleCase = {
+			idx: idx,
+			id: ancienneCase.id,
+			mur: caseModif.mur,
+			decor: caseModif.decor,
+			decor_dessus: caseModif.decor_dessus,
+			fond: caseModif.fond,
+			passage: caseModif.passage,
+			pvp: caseModif.pvp,
+			creusable: caseModif.creusable,
+			tangible: caseModif.tangible,
+			entree_arene: caseModif.entree_arene,
+			ter_cod: caseModif.ter_cod,
+			pa_dep: caseModif.pa_dep
+		};
 		Etage.CasesModifiees.splice(idxModif, 1);
-	} else			// Case pas encore modifiée
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: ancienneCase.mur, decor: ancienneCase.decor, decor_dessus: ancienneCase.decor_dessus, fond: ancienneCase.fond, passage: ancienneCase.passage, pvp: ancienneCase.pvp, creusable: ancienneCase.creusable, tangible: ancienneCase.tangible, entree_arene: ancienneCase.entree_arene };
+	} else {		// Case pas encore modifiée
+		nvlleCase = {
+			idx: idx,
+			id: ancienneCase.id,
+			mur: ancienneCase.mur,
+			decor: ancienneCase.decor,
+			decor_dessus: ancienneCase.decor_dessus,
+			fond: ancienneCase.fond,
+			passage: ancienneCase.passage,
+			pvp: ancienneCase.pvp,
+			creusable: ancienneCase.creusable,
+			tangible: ancienneCase.tangible,
+			entree_arene: ancienneCase.entree_arene,
+			ter_cod: ancienneCase.ter_cod,
+			pa_dep: ancienneCase.pa_dep
+		};
+	}
 
 	// récupération et mise à jour des données
 	switch (Pinceau.type) {
@@ -170,7 +202,26 @@ Pinceau.appliqueCase = function (idx) {
 		case Speciaux.type:
 
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
-			if (pinceauSpecial.id=="passageTOGGLE" || pinceauSpecial.id=="pvpTOGGLE" || pinceauSpecial.id=="creusableTOGGLE" || pinceauSpecial.id=="tangibleTOGGLE" || pinceauSpecial.id=="areneTOGGLE") {
+			if (pinceauSpecial.id=="terrain" ) {
+				var ter_cod = $("#select-terrain").val();
+				nvlleCase.ter_cod = nvlleCase.ter_cod == ter_cod ? 0 : ter_cod;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ter_cod == ter_cod ? true : false);
+
+			} else if (pinceauSpecial.id=="deplacement" ) {
+				var  pa_dep = $("#dep_pa").val();
+				nvlleCase.pa_dep = nvlleCase.pa_dep == pa_dep ? 0 : pa_dep ;
+				$(Etage.Cases[idx].divSpecial).text(nvlleCase.pa_dep == 0 ? '' : nvlleCase.pa_dep );
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.pa_dep == pa_dep ? true : false );
+
+			} else if (pinceauSpecial.id=="terrain-dep" ) {
+				var  ter_cod = $("#select-terrain-dep").val();
+				var  pa_dep = $("#terrain-dep_pa").val();
+				nvlleCase.pa_dep = nvlleCase.ter_cod == ter_cod ? ancienneCase.pa_dep : pa_dep ;
+				nvlleCase.ter_cod = nvlleCase.ter_cod == ter_cod ? 0 : ter_cod ;
+				$(Etage.Cases[idx].divSpecial).text(nvlleCase.pa_dep == 0 ? '' : nvlleCase.pa_dep );
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ter_cod == ter_cod ? true : false );
+
+			} else if (pinceauSpecial.id=="passageTOGGLE" || pinceauSpecial.id=="pvpTOGGLE" || pinceauSpecial.id=="creusableTOGGLE" || pinceauSpecial.id=="tangibleTOGGLE" || pinceauSpecial.id=="areneTOGGLE") {
 				switch (pinceauSpecial.type) {
 					case 'passage': nvlleCase.passage = !nvlleCase.passage; Etage.changeCase (Speciaux, idx, nvlleCase.passage ? "passageOK":"passageNOK");break;
 					case 'pvp': nvlleCase.pvp = !nvlleCase.pvp; Etage.changeCase (Speciaux, idx, nvlleCase.pvp ? "pvpOK":"pvpNOK");break;
@@ -215,6 +266,18 @@ Pinceau.annuleCase = function (idx) {
 		Etage.changeCase (Speciaux, idx, (caseDebut.creusable) ? 'creusableOK' : 'creusableNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.tangible) ? 'tangibleOK' : 'tangibleNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.entree_arene) ? 'areneOK' : 'areneNOK');
+
+		var spec = $('input[name="special"]:checked').val();
+		if (spec=="terrain") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="deplacement") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.dep_pa == $("#dep_pa").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="terrain-dep") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain-dep").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}
 
 		// On supprime la case de la liste des modifs
 		Etage.CasesModifiees.splice(idxModif, 1);

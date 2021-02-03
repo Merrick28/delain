@@ -30,6 +30,12 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td></tr></table>";
 
+//cahrger les type de terrains
+$pdo = new bddpdo();
+$req_m_terrain= "select ter_cod, ter_nom from terrain order by ter_nom";
+$stmt_m_terrain = $pdo->query($req_m_terrain);
+$terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
+
 switch ($methode) {
     case "debut":
         break;
@@ -120,6 +126,39 @@ switch ($methode) {
                         <label><input name="special" value="areneNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>non.</label><br/>
+
+                        <input name="special" value="terrain" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Sélection du terrain.">Terrains seuls: </span>
+                        <?php
+                        echo '<select name="select-terrain" id="select-terrain" onchange="Pinceau.miseAJour (\'Speciaux\', \'terrain\')">';
+                        echo '<option value="0"'.($ter_cod == 0 ? ' selected ' : '').'>Sans terrain spécifique</option>';
+                        for ($t=0; $t<count($terrains); $t++ )
+                        {
+                            echo '<option value="'.$terrains[$t]["ter_cod"].'"'.($ter_cod == $terrains[$t]["ter_cod"] ? ' selected ' : '').'>'.$terrains[$t]["ter_nom"].'</option>';
+                        }
+                        echo '</select>';
+                        ?><br>
+
+                        <input name="special" value="deplacement" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Gestion des BM de déplacement.">Déplacement: </span>
+                        Modificateur PA: <input name="dep_pa" id="dep_pa" value="0" type="text" size="3"/>
+                        <br/>
+
+                        <input name="special" value="terrain-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Sélection du terrain et des BM de déplacement.">Gestion des Terrains/PA: </span><br>
+                        Modificateur PA: <input name="terrain_dep_pa" id="terrain-dep_pa" value="0" type="text" size="3"/>
+                        <?php
+                        echo '<select name="select-terrain-dep" id="select-terrain-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'terrain-dep\')">';
+                        echo '<option value="0"'.($ter_cod == 0 ? ' selected ' : '').'>Sans terrain spécifique</option>';
+                        for ($t=0; $t<count($terrains); $t++ )
+                        {
+                            echo '<option value="'.$terrains[$t]["ter_cod"].'"'.($ter_cod == $terrains[$t]["ter_cod"] ? ' selected ' : '').'>'.$terrains[$t]["ter_nom"].'</option>';
+                        }
+                        echo '</select>';
+                        ?>
+                       <br/>
+
+                       <br/>
                     </td>
                 </tr>
             </table>
@@ -189,7 +228,7 @@ switch ($methode) {
 
         // validation des modifs Version 2: preg_match ne supporte qu'un taille limité pour la chaine d'entrée
         $split=explode(";",$modifs);
-        $schema = "/^\d+\|([dmsfpvct]=\d+,)/i";
+        $schema = "/^\d+\|([dmsfpvctgb]=\d+,)/i";
         foreach ($split as $s) {
             if ($s!=""){
                 if (!preg_match($schema, $s)) {
@@ -217,13 +256,15 @@ switch ($methode) {
             $cpt_tan = 0;
             $cpt_arn = 0;
             $cpt_cre = 0;
+            $cpt_ter = 0;
+            $cpt_dep = 0;
             $cpt_erreur = 0;
             // Parcours de toutes les cases modifiées
             foreach ($tab_modifs as $infos_case) {
                 $tab_infos_case = explode('|', $infos_case);
                 $case = $tab_infos_case[0];
                 if ($case == "") continue;
-                $req_case = "select pos_type_aff, coalesce(mur_type, -1) as mur_type, pos_decor, pos_decor_dessus
+                $req_case = "select pos_type_aff, coalesce(mur_type, -1) as mur_type, pos_decor, pos_decor_dessus, coalesce(pos_modif_pa_dep, 0) as pa_dep, coalesce(pos_ter_cod, 0) as ter_cod
 					from positions left outer join murs on mur_pos_cod = pos_cod
 					where pos_cod = :case AND pos_etage = :admin_etage";
                 $stmt = $pdo->prepare($req_case);
@@ -286,6 +327,14 @@ switch ($methode) {
                                 $set_mur[] = "mur_tangible = '" . (($valeur) ? 'O' : 'N') . "'";
                                 $cpt_tan++;
                                 break;
+                            case 'g': // ground = terrain
+                                $set_case[] = "pos_ter_cod = " . (int)$valeur ;
+                                $cpt_ter++;
+                                break;
+                            case 'b': // Bonus/malus de déplacment (modif pa)
+                                $set_case[] = "pos_modif_pa_dep = " . (int)$valeur ;
+                                $cpt_dep++;
+                                break;
                         }
                     }
                     $set_req = implode(',', $set_case);
@@ -311,6 +360,8 @@ switch ($methode) {
 				$cpt_arn entrées d'arènes modifiées<br />
 				$cpt_cre murs creusables modifiés<br />
 				$cpt_tan murs tangibles modifiés<br />
+				$cpt_ter terrains modifiés<br />
+				$cpt_dep bonus/malus de déplacement modifiés<br />
 				$cpt_erreur erreurs détectées<br /></p>";
 
             $req = "select init_automap($admin_etage) ";
