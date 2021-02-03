@@ -176,10 +176,10 @@ switch ($methode) {
         </div>
 
         <div id="vueEtage"></div>
-        <script type="text/javascript" src="../scripts/admin_etage_code.js"></script>
-        <script type="text/javascript" src="../scripts/admin_etage_pinceau.js"></script>
-        <script type="text/javascript" src="../scripts/manip_css.js"></script>
-        <script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php echo $admin_etage; ?>"></script>
+        <script type="text/javascript" src="../scripts/admin_etage_code.js?v=<?php echo $__VERSION; ?>"></script>
+        <script type="text/javascript" src="../scripts/admin_etage_pinceau.js?v=<?php echo $__VERSION; ?>"></script>
+        <script type="text/javascript" src="../scripts/manip_css.js?v=<?php echo $__VERSION; ?>"></script>
+        <script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php echo $admin_etage; ?>&v=<?php echo $__VERSION; ?>"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 console.log("Lancement des JS");
