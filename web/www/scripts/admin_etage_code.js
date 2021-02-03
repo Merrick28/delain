@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain") return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -61,11 +61,30 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
 		break;
+		case 'terrain-dep':
+			var  ter_cod = $("#select-terrain-dep").val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.ter_cod == ter_cod) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
 		case 'terrain':
 			var  ter_cod = $("#select-terrain").val();
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
 				var classe = (donneesCourantes.ter_cod == ter_cod) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
+		case 'deplacement':
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.pa_dep != 0) ? 'pinceauOn' : 'pinceauOff';
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
@@ -341,6 +360,11 @@ Etage.changeCase = function (objet, idx, nvlleValeur) {
 	}
 };
 
+Etage.changeCaseCSS = function (objet, idx, nvlleValeur) {
+	var divCourante = Etage.getDivFromType (objet.type, idx);
+	ManipCss.remplaceClasse(divCourante, nvlleValeur ? "pinceauOff" : "pinceauOn" , nvlleValeur ? "pinceauOn" : "pinceauOff");
+};
+
 Etage.getCoucheAction = function(i) {
 	var div = document.createElement("div");
 	div.id = 'actions_' + Etage.Cases[i].id;
@@ -373,8 +397,10 @@ Etage.ecrireModifs = function () {
 		var modif_pio = Etage.Cases[c.idx].creusable != c.creusable;
 		var modif_tan = Etage.Cases[c.idx].tangible != c.tangible;
 		var modif_arn = Etage.Cases[c.idx].entree_arene != c.entree_arene;
+		var modif_ter = Etage.Cases[c.idx].ter_cod != c.ter_cod;
+		var modif_dep = Etage.Cases[c.idx].pa_dep != c.pa_dep;
 
-		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_arn)
+		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_arn || modif_ter || modif_dep)
 		{
 			valeur += c.id + "|";
 			if (modif_mur) valeur += "m=" + c.mur + ",";
@@ -386,6 +412,8 @@ Etage.ecrireModifs = function () {
 			if (modif_pio) valeur += "c=" + ((c.creusable) ? "1" : "0") + ",";
 			if (modif_tan) valeur += "t=" + ((c.tangible) ? "1" : "0") + ",";
 			if (modif_arn) valeur += "a=" + ((c.entree_arene) ? "1" : "0") + ",";
+			if (modif_ter) valeur += "g=" + c.ter_cod + ",";
+			if (modif_dep) valeur += "b=" + c.pa_dep + ",";
 			valeur += ";";
 		}
 	}
