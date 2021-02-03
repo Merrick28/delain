@@ -10,7 +10,7 @@ $req_factions = "SELECT pfac_fac_cod, pfac_points, pfac_date_mission, fac_nom
 	FROM faction_perso
 	INNER JOIN factions ON fac_cod = pfac_fac_cod
 	WHERE pfac_perso_cod = $perso_cod
-	ORDER BY pfac_points desc";
+	ORDER BY pfac_points desc, pfac_date_mission desc";
 $stmt         = $pdo->query($req_factions);
 
 if ($stmt->rowCount() > 0)
@@ -28,6 +28,20 @@ if ($stmt->rowCount() > 0)
         }
 
     }
+
+    if (isset($methode) && $methode == 'renonce_mission' && isset($_REQUEST['fac_cod']))
+    {
+        $fac_cod = (int)$_REQUEST['fac_cod'];
+        $req_mission = "select mission_renoncer($perso_cod, $fac_cod) as resultat";
+        $stmt2       = $pdo->query($req_mission);
+        $result2     = $stmt2->fetch();
+        if ($result2['resultat'] != '')
+        {
+            $contenu_page .= "<div class='bordiv' style='margin:10px;'>Résultats de renonciation :<br />" . $result2['resultat'] . "</div>";
+        }
+
+    }
+
     $contenu_page .= '<table><tr><td valign="top">';
     while ($result = $stmt->fetch())
     {
@@ -108,10 +122,15 @@ if ($stmt->rowCount() > 0)
         }
         $contenu_page .= '</table></div>';
 
-        if ($revalider)
+        if ($revalider) {
             $contenu_page .= "<div>Vous avez une mission en cours. Vous pouvez <a href='?m=5&methode=valide_mission'>vérifier si elle est réalisée.</a></div>";
-        if ($avalider)
+            $contenu_page .= "<div>Ou <a href='?m=5&methode=renonce_mission&fac_cod=$fac_cod'>renoncer à cette mission.</a>.</div>";
+            $contenu_page .= "<div><u><b>ATTENTION</b></u>: <span style='font-size: 9px'>en renonçant vous perdrez le double de la renommée que vous auriez gagné en la menant à terme.</span></div>";
+        }
+
+        if ($avalider) {
             $contenu_page .= "<div>Vous avez une ou plusieurs mission(s) réalisée(s) mais non validée(s). Retournez voir un représentant de la faction pour obtenir votre récompense.</div>";
+        }
     }
 
     while ($colonne != 0)
