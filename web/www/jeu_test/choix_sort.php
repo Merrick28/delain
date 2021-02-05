@@ -124,7 +124,7 @@ if ($erreur == 0)
     }
 
     $portee      = $sort->sort_distance;
-    $nom_sort    = $sort->sort_nom;
+    $nom_sort    = isset( $_REQUEST["objsort_name"] ) ? $_REQUEST["objsort_name"] : $sort->sort_nom;
     $sort_niveau = $sort->sort_niveau;
     /***********************/
     /* E N L U M I N U R E */
@@ -148,7 +148,7 @@ if ($erreur == 0)
         }
     }
     $pnb = new perso_nb_sorts();
-    if ($pnb->getByPersoSort($perso_cod, $sort_cod))
+    if ($pnb->getByPersoSort($perso_cod, $sort_cod) || isset( $_REQUEST["objsort_name"] ))
     {
         echo "<br /><p> Vous vous apprêtez à lancer le sort <strong>" . $nom_sort . "</strong>.<br></p>";
     }

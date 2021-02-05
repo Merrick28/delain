@@ -68,6 +68,7 @@ $menus = '<p>Choisissez l’étage à modifier :</p>
 	<a href='modif_etage4.php'>Positionnement des composants de potion</a> / <a href='Composants_positions.php'>Modif en masse des Positions des composants de potion</a><br />
 	<a href='modif_etage5.php'>Mines, murs tangibles ou non et Interdiction du sort passage</a><br />
 	<a href='modif_etage7.php'>Créer / Modifier les conditions de terrain d'un étage</a><br />
+	Créer / Modifier : <a href='admin_piege.php'>les pièges</a> / <a href='admin_cachette.php'> les cachettes</a> / <a href='admin_fontaine.php'>les fontaine de jouvence </a><br />
 	</p>";
 
 // Récupération des images existantes
