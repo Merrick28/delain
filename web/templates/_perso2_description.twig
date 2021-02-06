@@ -23,7 +23,7 @@
                     {% endif %}
                     <tr>
                         <td rowspan="12">
-                            <img src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom|raw }}">
+                            <img style="max-height: 500px; max-width: 500px;" src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom|raw }}">
                             {% if MEMEPERSO %}
                                 {% if VISU_PERSO.perso_crapaud == 0 %}
                                     <br>
