@@ -228,7 +228,7 @@ switch ($methode) {
 
         // validation des modifs Version 2: preg_match ne supporte qu'un taille limité pour la chaine d'entrée
         $split=explode(";",$modifs);
-        $schema = "/^\d+\|([dmsfpvctgb]=\d+,)/i";
+        $schema = "/^\d+\|([dmsfpvctgba]=[-0123456789]+,)/i";
         foreach ($split as $s) {
             if ($s!=""){
                 if (!preg_match($schema, $s)) {
@@ -347,8 +347,9 @@ switch ($methode) {
                         $req = "update murs set $set_req where mur_pos_cod = $case";
                         $pdo->query($req);
                     }
-                } else
+                } else {
                     $cpt_erreur++;
+                }
             }
             echo "<p>Modifications effectuées ! Résumé :<br />
 				$cpt_mur murs modifiés<br />

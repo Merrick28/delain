@@ -3254,6 +3254,23 @@ class perso
     }
 
     /**
+     *regarde si une monture est chevauché et retour ne perso_cod du cavalier?
+     */
+    public function est_chevauche()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select p.perso_cod
+                    from perso m 
+                    join perso p on p.perso_monture = m.perso_cod and p.perso_type_perso=1
+                    join monstre_generique on gmon_cod = m.perso_gmon_cod
+                    where m.perso_cod=:perso and m.perso_type_perso=2  and gmon_monture = 'O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["perso_cod"];
+    }
+
+    /**
      *regarde si une monture est disponible pour être montée?
      */
     public function monture_chevauchable()
