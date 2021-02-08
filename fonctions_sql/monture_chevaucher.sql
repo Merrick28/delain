@@ -13,13 +13,18 @@ AS $_$declare
   v_monture_pos_cod integer;
   v_monture_nom text;
   v_perso_pos_cod integer;
+  v_perso_type_perso integer;
   v_gmon_monture text;
 begin
 
 
-  select ppos_pos_cod, perso_pa into v_perso_pos_cod, v_perso_pa from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod=v_perso ;
+  select ppos_pos_cod, perso_pa, perso_type_perso into v_perso_pos_cod, v_perso_pa, v_perso_type_perso from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod=v_perso ;
   if not found then
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
+  end if;
+
+  if v_perso_type_perso = 3 then
+    return '<p>Erreur ! Les familiers ne peuvent pas chevaucher !';
   end if;
 
   if v_perso_pa < 4 then
