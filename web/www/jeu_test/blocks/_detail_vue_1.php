@@ -1,5 +1,6 @@
 <?php
 $comment = "";
+$titre = "";
 
 if ($result['t_decor'] != 0)
 {
