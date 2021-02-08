@@ -130,6 +130,15 @@
                             <td colspan="2" style="text-align:left" class="soustitre2"> <img height="60px" src="{{ MONTURE_IMG }}" alt="Avatar de {{ MONTURE.perso_nom|raw }}"></td>
                         </tr>
                     {% endif %}
+                    {% if CAVALIER.perso_cod %}
+                        <tr>
+                            <td colspan="3" class="titre">Cavalier</td>
+                        </tr>
+                        <tr>
+                            <td><a href="visu_desc_perso.php?visu={{ CAVALIER.perso_cod }}">{{ CAVALIER.perso_nom }}</a></td>
+                            <td colspan="2" style="text-align:left" class="soustitre2"> <img height="60px" src="{{CAVALIER_IMG }}" alt="Avatar de {{ CAVALIER.perso_nom|raw }}"></td>
+                        </tr>
+                    {% endif %}
                     {% if TITRES|length > 0 %}
 
                                 <tr>

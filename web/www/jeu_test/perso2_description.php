@@ -97,6 +97,13 @@ if ($visu_perso->perso_monture > 0)
     $monture_avatar = $chemin . $visu_monture->perso_avatar ;
 }
 
+$visu_cavalier = new perso();
+$perso_cod_cavalier = $visu_perso->est_chevauche();
+if ($perso_cod_cavalier)
+{
+    $visu_cavalier->charge($perso_cod_cavalier);
+    $cavalier_avatar = $chemin . $visu_cavalier->perso_avatar ;
+}
 
 
 $template     = $twig->load('_perso2_description.twig');
@@ -118,7 +125,9 @@ $options_twig = array(
     'PLOUCHE'       => $plouche,
     'ISGUILDE'      => $isguilde,
     'MONTURE'       => $visu_monture,
-    'MONTURE_IMG'   => $monture_avatar
+    'MONTURE_IMG'   => $monture_avatar,
+    'CAVALIER'      => $visu_cavalier,
+    'CAVALIER_IMG'  => $cavalier_avatar
 
 
 );
