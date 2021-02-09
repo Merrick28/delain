@@ -355,6 +355,8 @@ if ($erreur == 0)
         {
             $fig_id = $_REQUEST["fig_id"] ;
             // il ne doit y avoir ni fond, ni mur de ce style utilisé pour pouvoir remplacer ...
+
+            /* pour les figurine ont autorise a changer tous les étage les utilisants
             if (isset($tableau_figs[$style][$fig_id]))
             {
                 $req_style = "select count(distinct etage_numero) count from etage where etage_affichage = ?;";
@@ -369,6 +371,7 @@ if ($erreur == 0)
                     $fig_id = "" ;
                 }
             }
+            */
         }
 
         // Upload de l'image
