@@ -34,7 +34,7 @@ begin
   select ppos_pos_cod, gmon_monture, perso_nom into v_monture_pos_cod, v_gmon_monture, v_monture_nom from perso
       join perso_position on ppos_perso_cod=perso_cod
       join monstre_generique on gmon_cod=perso_gmon_cod
-      where perso_cod=v_monture ;
+      where perso_cod=v_monture and perso_actif='O';
   if not found then
     return '<p>Erreur ! La monture n''a pas été trouvée !';
   end if;
