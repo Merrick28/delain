@@ -3280,7 +3280,7 @@ class perso
                     from perso p 
                     join perso_position pp on p.perso_cod=pp.ppos_perso_cod
                     join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
-                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 and m.perso_actif='O'
                     join monstre_generique on gmon_cod = m.perso_gmon_cod
                     where p.perso_cod=:perso and gmon_monture = 'O' and not exists (select * from perso where perso_monture = m.perso_cod )";
         $stmt = $pdo->prepare($req);
