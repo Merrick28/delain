@@ -207,7 +207,7 @@ class objets_sorts
         //$req = "select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod or (objsort_obj_cod=:obj_cod and objsort_parent_cod is null) order by objsort_cod";
         $req = "select objsort_cod from objets_sorts where objsort_obj_cod=:obj_cod 
                     union 
-                select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod and objsort_parent_cod not in (select objsort_cod from objets_sorts where objsort_obj_cod=:obj_cod) 
+                select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod and objsort_cod not in (select objsort_parent_cod from objets_sorts where objsort_obj_cod=:obj_cod) 
                 order by objsort_cod ";
 
 
