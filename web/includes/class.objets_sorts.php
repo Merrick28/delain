@@ -205,9 +205,9 @@ class objets_sorts
         $pdo = new bddpdo;
         // Les sorts, sont tous les générique de l'objet plus eventuellement des spécifiques
         //$req = "select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod or (objsort_obj_cod=:obj_cod and objsort_parent_cod is null) order by objsort_cod";
-        $req = "select * from objets_sorts where objsort_obj_cod=:obj_cod 
+        $req = "select objsort_cod from objets_sorts where objsort_obj_cod=:obj_cod 
                     union 
-                select * from objets_sorts where objsort_gobj_cod=:gobj_cod and objsort_parent_cod not in (select objsort_cod from objets_sorts where objsort_obj_cod=:obj_cod) 
+                select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod and objsort_parent_cod not in (select objsort_cod from objets_sorts where objsort_obj_cod=:obj_cod) 
                 order by objsort_cod ";
 
 
