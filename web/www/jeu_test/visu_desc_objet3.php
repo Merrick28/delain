@@ -244,7 +244,8 @@ if ($autorise == 1)
             foreach ($sorts_attaches as $objsort)
             {
                 echo "<tr><td class=\"soustitre2\">" . ($objsort->objsort_equip_requis ? "Equipé" : "Inventaire") . "</td>";
-                echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->getCout() . " PA)</em></td>";
+                $usage = ($objsort->objsort_nb_utilisation_max == 0 ) ? "" : " - <strong>Charge(s)</strong> : " . ($objsort->objsort_nb_utilisation_max - $objsort->objsort_nb_utilisation) ." / ". $objsort->objsort_nb_utilisation_max ;
+                echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->getCout() . " PA)</em>".$usage."</td>";
                 echo "<tr>";
             }
         }
