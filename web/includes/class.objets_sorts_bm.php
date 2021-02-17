@@ -23,8 +23,15 @@ class objets_sorts_bm
     var $objsortbm_nb_utilisation_max;
     var $objsortbm_nb_utilisation = 0;
     var $objsortbm_equip_requis = false;
+    var $objsortbm_bonus_distance = 0;
+    var $objsortbm_bonus_aggressif = 'N';
+    var $objsortbm_bonus_soutien = 'N';
+    var $objsortbm_bonus_soi_meme = 'O';
+    var $objsortbm_bonus_monstre = 'O';
+    var $objsortbm_bonus_joueur = 'O';
+    var $objsortbm_bonus_case = 'N';
     var $bonus_type;                // Le Type de bonus de rattachement
-    
+
     function __construct()
     {
         $this->bonus_type = new bonus_type();                // Le Type de bonus de rattachement est un objet (vide tant qu'on en à pas réellement besoin
@@ -59,6 +66,13 @@ class objets_sorts_bm
         $this->objsortbm_nb_utilisation_max = $result['objsortbm_nb_utilisation_max'];
         $this->objsortbm_nb_utilisation = $result['objsortbm_nb_utilisation'];
         $this->objsortbm_equip_requis = $result['objsortbm_equip_requis'];
+        $this->objsortbm_bonus_distance = $result['objsortbm_bonus_distance'];
+        $this->objsortbm_bonus_aggressif = $result['objsortbm_bonus_aggressif'];
+        $this->objsortbm_bonus_soutien = $result['objsortbm_bonus_soutien'];
+        $this->objsortbm_bonus_soi_meme = $result['objsortbm_bonus_soi_meme'];
+        $this->objsortbm_bonus_monstre = $result['objsortbm_bonus_monstre'];
+        $this->objsortbm_bonus_joueur = $result['objsortbm_bonus_joueur'];
+        $this->objsortbm_bonus_case = $result['objsortbm_bonus_case'];
         return true;
     }
 
@@ -84,7 +98,14 @@ class objets_sorts_bm
             objsortbm_malchance,
             objsortbm_nb_utilisation_max,
             objsortbm_nb_utilisation,
-            objsortbm_equip_requis                        )
+            objsortbm_equip_requis,
+            objsortbm_bonus_distance,
+            objsortbm_bonus_aggressif,
+            objsortbm_bonus_soutien,
+            objsortbm_bonus_soi_meme,
+            objsortbm_bonus_monstre,
+            objsortbm_bonus_joueur,
+            objsortbm_bonus_case                        )
                     values
                     (
                         :objsortbm_parent_cod,
@@ -98,7 +119,14 @@ class objets_sorts_bm
                         :objsortbm_malchance,
                         :objsortbm_nb_utilisation_max,
                         :objsortbm_nb_utilisation,
-                        :objsortbm_equip_requis                        )
+                        :objsortbm_equip_requis,
+                        :objsortbm_bonus_distance,
+                        :objsortbm_bonus_aggressif,
+                        :objsortbm_bonus_soutien,
+                        :objsortbm_bonus_soi_meme,
+                        :objsortbm_bonus_monstre,
+                        :objsortbm_bonus_joueur,
+                        :objsortbm_bonus_case                        )
     returning objsortbm_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -114,6 +142,13 @@ class objets_sorts_bm
                 ":objsortbm_nb_utilisation_max" => $this->objsortbm_nb_utilisation_max,
                 ":objsortbm_nb_utilisation" => $this->objsortbm_nb_utilisation,
                 ":objsortbm_equip_requis" => $this->objsortbm_equip_requis,
+                ":objsortbm_bonus_distance" => $this->objsortbm_bonus_distance,
+                ":objsortbm_bonus_aggressif" => $this->objsortbm_bonus_aggressif,
+                ":objsortbm_bonus_soutien" => $this->objsortbm_bonus_soutien,
+                ":objsortbm_bonus_soi_meme" => $this->objsortbm_bonus_soi_meme,
+                ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
+                ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
+                ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
             ),$stmt);
 
 
@@ -135,7 +170,14 @@ class objets_sorts_bm
             objsortbm_malchance = :objsortbm_malchance,
             objsortbm_nb_utilisation_max = :objsortbm_nb_utilisation_max,
             objsortbm_nb_utilisation = :objsortbm_nb_utilisation,
-            objsortbm_equip_requis = :objsortbm_equip_requis                        where objsortbm_cod = :objsortbm_cod ";
+            objsortbm_equip_requis = :objsortbm_equip_requis,
+            objsortbm_bonus_distance = :objsortbm_bonus_distance,
+            objsortbm_bonus_aggressif = :objsortbm_bonus_aggressif,
+            objsortbm_bonus_soutien = :objsortbm_bonus_soutien,
+            objsortbm_bonus_soi_meme = :objsortbm_bonus_soi_meme,
+            objsortbm_bonus_monstre = :objsortbm_bonus_monstre,
+            objsortbm_bonus_joueur = :objsortbm_bonus_joueur,
+            objsortbm_bonus_case = :objsortbm_bonus_case                        where objsortbm_cod = :objsortbm_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objsortbm_cod" => $this->objsortbm_cod,
@@ -151,6 +193,13 @@ class objets_sorts_bm
                 ":objsortbm_nb_utilisation_max" => $this->objsortbm_nb_utilisation_max,
                 ":objsortbm_nb_utilisation" => $this->objsortbm_nb_utilisation,
                 ":objsortbm_equip_requis" => $this->objsortbm_equip_requis,
+                ":objsortbm_bonus_distance" => $this->objsortbm_bonus_distance,
+                ":objsortbm_bonus_aggressif" => $this->objsortbm_bonus_aggressif,
+                ":objsortbm_bonus_soutien" => $this->objsortbm_bonus_soutien,
+                ":objsortbm_bonus_soi_meme" => $this->objsortbm_bonus_soi_meme,
+                ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
+                ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
+                ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
             ),$stmt);
         }
     }
@@ -209,7 +258,7 @@ class objets_sorts_bm
         return $retour;
     }
 
-    
+
     /***
      * Retourne la liste des sorts d'un ojet
      * @return array|bool
@@ -240,7 +289,7 @@ class objets_sorts_bm
         return $retour;
     }
 
-    
+
 
     /***
      * retourne le nom du sort
@@ -277,7 +326,8 @@ class objets_sorts_bm
 
         return true;
     }
-    
+
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo

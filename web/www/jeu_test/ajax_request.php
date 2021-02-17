@@ -78,7 +78,7 @@ switch($_REQUEST["request"])
             "sort1" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,1])",
             "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])",
             "sort5" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,5,$misc_cod])",
-            "sort6" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsortbm_cod'],[$sort_cod,6,$misc_cod])"
+            "sort6" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,6,$misc_cod])"
         );
 
         if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris sans nom."}');

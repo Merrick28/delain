@@ -20,10 +20,12 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
     include "../includes/constantes.php";
     require_once G_CHE . "includes/fonctions.php";
 
+    /* maintenant fait en amont
     $req_sort  = "select sort_distance from sorts where sort_cod = $sort_cod ";
     $stmt      = $pdo->query($req_sort);
     $result    = $stmt->fetch();
     $dist_sort = $result['sort_distance'];
+    */
 
     // On cherche la coterie du perso
     $coterie_perso_lanceur = -1;

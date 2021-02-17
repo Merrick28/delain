@@ -402,38 +402,45 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-
             if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
 
-            $sort = new sorts;
-            $sort->charge($sort_cod);
+            /* cas particulier d'un bonus/malus lancé comme un sort */
+            if ($type_lance == 6)
+            {
+                $contenu_page = "vous avez lancé le sort Bonus!!!" ;
+            }
+            else
+            {
+                $sort = new sorts;
+                $sort->charge($sort_cod);
 
-            if ($perso_cible->is_refuge() and $sort->sort_aggressif == 'O')
-            {
-                $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
-                break;
+                if ($perso_cible->is_refuge() and $sort->sort_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
+                    break;
+                }
+                if ($perso_cod == $perso_cible->perso_cod and $sort->sort_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
+                    break;
+                }
+                $prefixe = 'nv_';
+                if ($type_lance == 3)
+                {
+                    $prefixe = 'dv_';
+                }
+                require "blocks/_action_sort_objet.php";
+                $stmt = $pdo->execute(
+                    array(':perso_cod'  => $perso_cod,
+                          ':cible'      => $perso_cible->perso_cod,
+                          ':type_lance' => $type_lance), $stmt
+                );
+                require "blocks/_action_sort_objet2.php";
             }
-            if ($perso_cod == $perso_cible->perso_cod and $sort->sort_aggressif == 'O')
-            {
-                $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
-                break;
-            }
-            $prefixe = 'nv_';
-            if ($type_lance == 3)
-            {
-                $prefixe = 'dv_';
-            }
-            require "blocks/_action_sort_objet.php";
-            $stmt = $pdo->execute(
-                array(':perso_cod'  => $perso_cod,
-                      ':cible'      => $perso_cible->perso_cod,
-                      ':type_lance' => $type_lance), $stmt
-            );
-            require "blocks/_action_sort_objet2.php";
             break;
 
         case 'magie_case':

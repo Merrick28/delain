@@ -65,6 +65,13 @@ include_once '../includes/tools.php';
                    $("#objsortbm_cout").val(data.objsortbm_cout ? data.objsortbm_cout : "");
                    $("#objsortbm_bonus_valeur").val(data.objsortbm_bonus_valeur ? data.objsortbm_bonus_valeur : "1");
                    $("#objsortbm_bonus_nb_tours").val(data.objsortbm_bonus_nb_tours ? data.objsortbm_bonus_nb_tours : "1");
+                   $("#objsortbm_bonus_soi_meme").val((!data.objsortbm_bonus_soi_meme || data.objsortbm_bonus_soi_meme =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_monstre").val((!data.objsortbm_bonus_monstre || data.objsortbm_bonus_monstre =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_joueur").val((!data.objsortbm_bonus_joueur || data.objsortbm_bonus_joueur =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_case").val((!data.objsortbm_bonus_case || data.objsortbm_bonus_case =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_distance").val(data.objsortbm_bonus_distance ? data.objsortbm_bonus_distance : "0");
+                   $("#objsortbm_bonus_aggressif").val((!data.objsortbm_bonus_aggressif || data.objsortbm_bonus_aggressif =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_soutien").val((!data.objsortbm_bonus_soutien || data.objsortbm_bonus_soutien =='N') ? 'N' : 'O');
                    $("#objsortbm_malchance").val(data.objsortbm_malchance ? data.objsortbm_malchance : "0");
                    $("#objsortbm_nb_utilisation_max").val(data.objsortbm_nb_utilisation_max ? data.objsortbm_nb_utilisation_max : "");
                    $("#objsortbm_equip_requis").val((!data.objsortbm_equip_requis || data.objsortbm_equip_requis =='false') ? 'N' : 'O');
@@ -137,10 +144,18 @@ if ($erreur == 0)
                 $objsortsbm->objsortbm_cout = $_REQUEST["objsortbm_cout"]=='' ? null : 1*(int)$_REQUEST["objsortbm_cout"];
                 $objsortsbm->objsortbm_bonus_valeur = $_REQUEST["objsortbm_bonus_valeur"]=='' ? "1" : $_REQUEST["objsortbm_bonus_valeur"];
                 $objsortsbm->objsortbm_bonus_nb_tours = $_REQUEST["objsortbm_bonus_nb_tours"]=='' ? "1" : $_REQUEST["objsortbm_bonus_nb_tours"];
+                $objsortsbm->objsortbm_bonus_distance = $_REQUEST["objsortbm_bonus_distance"]=='' ?  0 : (int)$_REQUEST["objsortbm_bonus_distance"];
+                $objsortsbm->objsortbm_bonus_aggressif = $_REQUEST["objsortbm_bonus_aggressif"]=='' ? "N" : $_REQUEST["objsortbm_bonus_aggressif"];
+                $objsortsbm->objsortbm_bonus_soutien = $_REQUEST["objsortbm_bonus_soutien"]=='' ? "N" : $_REQUEST["objsortbm_bonus_soutien"];
+                $objsortsbm->objsortbm_bonus_soi_meme = $_REQUEST["objsortbm_bonus_soi_meme"]=='' ? "O" : $_REQUEST["objsortbm_bonus_soi_meme"];
+                $objsortsbm->objsortbm_bonus_monstre = $_REQUEST["objsortbm_bonus_monstre"]=='' ? "O" : $_REQUEST["objsortbm_bonus_monstre"];
+                $objsortsbm->objsortbm_bonus_joueur = $_REQUEST["objsortbm_bonus_joueur"]=='' ? "O" : $_REQUEST["objsortbm_bonus_joueur"];
+                $objsortsbm->objsortbm_bonus_case = $_REQUEST["objsortbm_bonus_case"]=='' ? "N" : $_REQUEST["objsortbm_bonus_case"];
                 $objsortsbm->objsortbm_malchance = $_REQUEST["objsortbm_malchance"]=='' ? 0 : 1*(float)$_REQUEST["objsortbm_malchance"];
                 $objsortsbm->objsortbm_nb_utilisation_max = $_REQUEST["objsortbm_nb_utilisation_max"]=='' ? null : 1*(int)$_REQUEST["objsortbm_nb_utilisation_max"];
                 $objsortsbm->objsortbm_nb_utilisation = 0 ;
                 $objsortsbm->objsortbm_equip_requis = $_REQUEST["objsortbm_equip_requis"]=="O" ? "true" : "false" ;
+
                 $objsortsbm->stocke($new);
 
                 // Logger les infos pour suivi admin
@@ -196,10 +211,21 @@ if ($erreur == 0)
                 <tr><td>Nom du sort BM :</td><td><input type="text" id="objsortbm_nom" name="objsortbm_nom" size="50">&nbsp;<em> si vide, le nom réel du BM sera utilisé</em></td></tr>
                 <tr><td>Cout (en PA) :</td><td><input type="text" id="objsortbm_cout" name="objsortbm_cout" size="4">&nbsp;</td></tr>
                 <tr><td>Puissance :</td><td><input type="text" id="objsortbm_bonus_valeur" name="objsortbm_bonus_valeur" size="4">&nbsp;<em> (format Dé rolliste) </em></td></tr>
-                <tr><td>Nombre de tour(s):</td><td><input type="text" id="objsortbm_bonus_nb_tours" name="objsortbm_bonus_nb_tours" size="4">&nbsp;<em> (format Dé rolliste) </em></td></tr>
+                <tr><td>Nombre de tour(s):</td><td><input type="text" id="objsortbm_bonus_nb_tours" name="objsortbm_bonus_nb_tours" size="4">&nbsp;<em> (format Dé rolliste) </em></td></tr>              
+                <tr><td>Ciblage:</td><td>
+                        Soi-même: '.create_selectbox("objsortbm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soi_meme")).'
+                        Monstres: '.create_selectbox("objsortbm_bonus_monstre", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_monstre")).'
+                        Joueurs: '.create_selectbox("objsortbm_bonus_joueur", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_joueur")).'
+                        Une case: '.create_selectbox("objsortbm_bonus_case", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_bonus_case")).'
+                    </td></tr>
+                <tr><td>Distance de la cible:</td><td><input type="text" id="objsortbm_bonus_distance" name="objsortbm_bonus_distance" size="4">&nbsp;</td></tr>                                  
+                <tr><td>Type de Bonus/Malus:</td><td>
+                        Soutien: '.create_selectbox("objsortbm_bonus_soutien", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soutien")).'
+                        Agressif: '.create_selectbox("objsortbm_bonus_aggressif", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_aggressif")).'
+                    </td></tr>                
                 <tr><td>Malchance :</td><td><input type="text" id="objsortbm_malchance" name="objsortbm_malchance" size="4">&nbsp;<em> au format 99.99 c\'est le % d\'échec possible (0 ou vide = toujours réussi)</em></td></tr>
                 <tr><td>Nb Utilisation :</td><td><input type="text" id="objsortbm_nb_utilisation_max" name="objsortbm_nb_utilisation_max" size="4">&nbsp;<em> nombre d\'utilisation possible (illimité si vide)</em></td></tr>
-                <tr><td>Equip. requis :</td><td>'.create_selectbox("objsortbm_equip_requis", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être quipé pour pourvoir utiliser le sort?</em></td></tr>
+                <tr><td>Equip. requis :</td><td>'.create_selectbox("objsortbm_equip_requis", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être équipé pour pourvoir utiliser le sort?</em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                 </table>
                 </form>';
@@ -217,6 +243,9 @@ if ($erreur == 0)
                       <td><strong>Coût</strong></td>
                       <td><strong>Puissance</strong></td>
                       <td><strong>Nb de tours(s)</strong></td>
+                      <td><strong>Ciblage</strong></td>
+                      <td><strong>Distance</strong></td>
+                      <td><strong>Type</strong></td>
                       <td><strong>Malchance</strong></td>
                       <td><strong>Utilis.</strong></td>
                       <td><strong>Equip.</strong></td></tr>";
@@ -231,6 +260,13 @@ if ($erreur == 0)
                       <td>".$os->objsortbm_cout." PA</td>
                       <td>".$os->objsortbm_bonus_valeur."</td>
                       <td>".$os->objsortbm_bonus_nb_tours."</td>
+                      <td>" .( $os->objsortbm_bonus_soi_meme =="O" ? "Soit-même," : "" )
+                            .( $os->objsortbm_bonus_monstre =="O" ? "Monstre," : "" )
+                            .( $os->objsortbm_bonus_joueur =="O" ? "Joueurs," : "" )
+                            .( $os->objsortbm_bonus_case =="O" ? "Case," : "" )."</td>
+                      <td>" .$os->objsortbm_bonus_distance."</td>
+                      <td>" .( $os->objsortbm_bonus_soutien =="O" ? "Soutien," : "" )
+                            .( $os->objsortbm_bonus_aggressif =="O" ? "Agressif," : "" )."</td>                                          
                       <td>{$os->objsortbm_malchance}</td>
                       <td>{$os->objsortbm_nb_utilisation_max}</td>
                       <td>".( $os->objsortbm_equip_requis ? "O" : "N" )."</td></tr>";
