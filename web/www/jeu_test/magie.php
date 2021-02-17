@@ -128,54 +128,94 @@ if ($erreur == 0) {
 		
 	<table width="100%">' . $mess_viderec;
     // -------------------------
-    // début objets magique (2019-01-07@Marlyza)
+    // début objets magique Sorts (2019-01-07@Marlyza)
     // -------------------------
+    $objsortbm = new objets_sorts_bm();
+    $liste_sorts_bm = $objsortbm->get_perso_objets_sorts_bm($perso_cod);
     $objsort = new objets_sorts();
-    if ($liste_sorts = $objsort->get_perso_objets_sorts($perso_cod))
+    $liste_sorts = $objsort->get_perso_objets_sorts($perso_cod);
+
+    // Header des objest magiques
+    if ($liste_sorts || $liste_sorts_bm)
     {
         $contenu_page .= '
 		<tr>
 		<td class="titre">
-		<span class="titre">Objets magiques ('.count($liste_sorts).'):<a class="titre" href="javascript:montre(\'objmag\')">(Montrer/Cacher)</a></span>
+		<span class="titre">Objets magiques (' . (count($liste_sorts_bm)+count($liste_sorts)) . '):<a class="titre" href="javascript:montre(\'objmag\')">(Montrer/Cacher)</a></span>
 		</td>
 		</tr>
 		
 		<tr>
 		<td>
 		<table id="objmag">';
-        $pdo    = new bddpdo;
-        foreach ($liste_sorts as $sorts_attaches)
+
+        if ($liste_sorts)
         {
-            $objet = new objets();
-            $objet->charge($sorts_attaches->objsort_obj_cod);
-
-            $req  = "SELECT count(*) count FROM perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod and pfav_type='sort5' and  pfav_misc_cod=:pfav_misc_cod ";
-
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":pfav_perso_cod" => $perso_cod, ":pfav_misc_cod" => $sorts_attaches->objsort_cod), $stmt);
-            $result = $stmt->fetch() ;
-            if ( (int)$result["count"]==0)
+            $pdo = new bddpdo;
+            foreach ($liste_sorts as $sorts_attaches)
             {
-                $fav_add_style = '' ;
-                $fav_del_style = 'style="display:none;"' ;
-            }
-            else
-            {
-                $fav_add_style = 'style="display:none;"' ;
-                $fav_del_style = '' ;
-            }
-            $favoris = '<a ' . $fav_add_style . ' id="fav-add-sort-5-' . $sorts_attaches->objsort_cod . '" href="javascript:addSortFavoris(5,' . $sorts_attaches->objsort_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
-            $favoris .= '<a ' . $fav_del_style . ' id="fav-del-sort-5-' . $sorts_attaches->objsort_cod . '" href="javascript:delSortFavoris(5,' . $sorts_attaches->objsort_cod . ');"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+                $objet = new objets();
+                $objet->charge($sorts_attaches->objsort_obj_cod);
 
-            $contenu_page .= '<tr><td class="soustitre2">' . $favoris . '</td>
-            <td class="soustitre2"><a href="javascript:document.sort_obj.objsort_cod.value=' . $sorts_attaches->objsort_cod . ';document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.objsort_name.value=\'' . str_replace("'", "‘", $sorts_attaches->getNom()) . '\';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->getCout() . ' PA)</td>
-			<td><a href="visu_desc_objet3.php?&origine=i&objet=' . $objet->obj_cod . '">' . $objet->obj_nom . ' (' . $objet->obj_cod . ')</a></td>
-			<td>Charge: <strong>'.($sorts_attaches->objsort_nb_utilisation_max>0 ? ($sorts_attaches->objsort_nb_utilisation_max-$sorts_attaches->objsort_nb_utilisation) : 'illimitée' ).'</strong></td>
-			</tr>';
-        }    
+                $req = "SELECT count(*) count FROM perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod and pfav_type='sort5' and  pfav_misc_cod=:pfav_misc_cod ";
+
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":pfav_perso_cod" => $perso_cod, ":pfav_misc_cod" => $sorts_attaches->objsort_cod), $stmt);
+                $result = $stmt->fetch();
+                if ((int)$result["count"] == 0) {
+                    $fav_add_style = '';
+                    $fav_del_style = 'style="display:none;"';
+                } else {
+                    $fav_add_style = 'style="display:none;"';
+                    $fav_del_style = '';
+                }
+                $favoris = '<a ' . $fav_add_style . ' id="fav-add-sort-5-' . $sorts_attaches->objsort_cod . '" href="javascript:addSortFavoris(5,' . $sorts_attaches->objsort_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
+                $favoris .= '<a ' . $fav_del_style . ' id="fav-del-sort-5-' . $sorts_attaches->objsort_cod . '" href="javascript:delSortFavoris(5,' . $sorts_attaches->objsort_cod . ');"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+
+                $contenu_page .= '<tr><td class="soustitre2">' . $favoris . '</td>
+                <td class="soustitre2"><a href="javascript:document.sort_obj.objsort_cod.value=' . $sorts_attaches->objsort_cod . ';document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.objsort_name.value=\'' . str_replace("'", "‘", $sorts_attaches->getNom()) . '\';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->getCout() . ' PA)</td>
+                <td><a href="visu_desc_objet3.php?&origine=i&objet=' . $objet->obj_cod . '">' . $objet->obj_nom . ' (' . $objet->obj_cod . ')</a></td>
+                <td>Charge: <strong>' . ($sorts_attaches->objsort_nb_utilisation_max > 0 ? ($sorts_attaches->objsort_nb_utilisation_max - $sorts_attaches->objsort_nb_utilisation) : 'illimitée') . '</strong></td>
+                </tr>';
+            }
+        }
+
+        // -------------------------
+        // début objets magique Bonus/malus(2020-02-16@Marlyza)
+        // -------------------------
+        if ($liste_sorts_bm)
+        {
+            foreach ($liste_sorts_bm as $sorts_attaches)
+            {
+                $objet = new objets();
+                $objet->charge($sorts_attaches->objsortbm_obj_cod);
+
+                $req = "SELECT count(*) count FROM perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod and pfav_type='sort6' and  pfav_misc_cod=:pfav_misc_cod ";
+
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":pfav_perso_cod" => $perso_cod, ":pfav_misc_cod" => $sorts_attaches->objsortbm_cod), $stmt);
+                $result = $stmt->fetch();
+                if ((int)$result["count"] == 0) {
+                    $fav_add_style = '';
+                    $fav_del_style = 'style="display:none;"';
+                } else {
+                    $fav_add_style = 'style="display:none;"';
+                    $fav_del_style = '';
+                }
+                $favoris = '<a ' . $fav_add_style . ' id="fav-add-sort-6-' . $sorts_attaches->objsortbm_cod . '" href="javascript:addSortFavoris(6,' . $sorts_attaches->objsortbm_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
+                $favoris .= '<a ' . $fav_del_style . ' id="fav-del-sort-6-' . $sorts_attaches->objsortbm_cod . '" href="javascript:delSortFavoris(6,' . $sorts_attaches->objsortbm_cod . ');"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+
+                $contenu_page .= '<tr><td class="soustitre2">' . $favoris . '</td>
+                <td class="soustitre2"><a href="javascript:document.sort_obj.objsortbm_cod.value=' . $sorts_attaches->objsortbm_cod . ';document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.objsort_name.value=\'' . str_replace("'", "‘", $sorts_attaches->getNom()) . '\';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->objsortbm_cout . ' PA)</td>
+                <td><a href="visu_desc_objet3.php?&origine=i&objet=' . $objet->obj_cod . '">' . $objet->obj_nom . ' (' . $objet->obj_cod . ')</a></td>
+                <td>Charge: <strong>' . ($sorts_attaches->objsortbm_nb_utilisation_max > 0 ? ($sorts_attaches->objsortbm_nb_utilisation_max - $sorts_attaches->objsortbm_nb_utilisation) : 'illimitée') . '</strong></td>
+                </tr>';
+            }
+        }
+
         $contenu_page .= '</table>
-		</td>
-		</tr>';
+        </td>
+        </tr>';
     }
     // -------------------------
     // Fin objets magiques

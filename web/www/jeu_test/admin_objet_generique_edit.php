@@ -705,8 +705,24 @@ if ($erreur == 0)
                 echo 'Aucun: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
+            $objsortbms = new objets_sorts_bm();
+            echo "<tr><td class=\"soustitre2\">Sort(s) BM rattaché(s)</td><td>";
+            if ($list = $objsortbms->getBy_objsortbm_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objsortbm) {
+                    $bonus = new bonus_type();
+                    $bonus->charge($objsortbm->objsortbm_tbonus_cod);
+                    echo $bonus->tonbus_libelle." (".$objsortbm->objsortbm_cout."PA), ";
+                }
+                echo ': <a target="_blanck" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">éditer</a>';
+            }
+            else
+            {
+                echo 'Aucun: <a target="_blanck" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
             $objbm = new objets_bm();
-            echo "<tr><td class=\"soustitre2\">Bonus/malus rattaché(s)</td><td>";
+            echo "<tr><td class=\"soustitre2\">Bonus/malus permanent rattaché(s)</td><td>";
             if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))
             {
                 foreach ($list as $objbm) {
