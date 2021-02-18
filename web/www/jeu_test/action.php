@@ -411,7 +411,29 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             /* cas particulier d'un bonus/malus lancé comme un sort */
             if ($type_lance == 6)
             {
-                $contenu_page = "vous avez lancé le sort Bonus!!!" ;
+                $objsortbm = new objets_sorts_bm();
+                $objsortbm->charge($_REQUEST["objsort_cod"]);
+
+                if ($perso_cible->is_refuge() and $objsortbm->objsortbm_bonus_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
+                    break;
+                }
+                if ($perso_cod == $perso_cible->perso_cod and $objsortbm->objsortbm_bonus_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
+                    break;
+                }
+
+                $req  =  'select sort_lance_bonus(:perso_cod,:cible,:objsortbm_cod) as resultat ';
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(
+                    array(  ':perso_cod'     => $perso_cod,
+                            ':cible'         => $perso_cible->perso_cod,
+                            ':objsortbm_cod' => $objsortbm_cod->objsortbm_cod), $stmt
+                );
+                $result       = $stmt->fetch();
+                $contenu_page .= $result['resultat'];
             }
             else
             {

@@ -30,6 +30,7 @@ class objets_sorts_bm
     var $objsortbm_bonus_monstre = 'O';
     var $objsortbm_bonus_joueur = 'O';
     var $objsortbm_bonus_case = 'N';
+    var $objsortbm_bonus_mode = 'S';
     var $bonus_type;                // Le Type de bonus de rattachement
 
     function __construct()
@@ -73,6 +74,7 @@ class objets_sorts_bm
         $this->objsortbm_bonus_monstre = $result['objsortbm_bonus_monstre'];
         $this->objsortbm_bonus_joueur = $result['objsortbm_bonus_joueur'];
         $this->objsortbm_bonus_case = $result['objsortbm_bonus_case'];
+        $this->objsortbm_bonus_mode = $result['objsortbm_bonus_mode'];
         return true;
     }
 
@@ -105,7 +107,8 @@ class objets_sorts_bm
             objsortbm_bonus_soi_meme,
             objsortbm_bonus_monstre,
             objsortbm_bonus_joueur,
-            objsortbm_bonus_case                        )
+            objsortbm_bonus_case ,
+            objsortbm_bonus_mode                        )
                     values
                     (
                         :objsortbm_parent_cod,
@@ -126,7 +129,8 @@ class objets_sorts_bm
                         :objsortbm_bonus_soi_meme,
                         :objsortbm_bonus_monstre,
                         :objsortbm_bonus_joueur,
-                        :objsortbm_bonus_case                        )
+                        :objsortbm_bonus_case,
+                        :objsortbm_bonus_mode                        )
     returning objsortbm_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -149,6 +153,7 @@ class objets_sorts_bm
                 ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
                 ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
                 ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
+                ":objsortbm_bonus_mode" => $this->objsortbm_bonus_mode,
             ),$stmt);
 
 
@@ -177,7 +182,8 @@ class objets_sorts_bm
             objsortbm_bonus_soi_meme = :objsortbm_bonus_soi_meme,
             objsortbm_bonus_monstre = :objsortbm_bonus_monstre,
             objsortbm_bonus_joueur = :objsortbm_bonus_joueur,
-            objsortbm_bonus_case = :objsortbm_bonus_case                        where objsortbm_cod = :objsortbm_cod ";
+            objsortbm_bonus_case = :objsortbm_bonus_case,
+            objsortbm_bonus_mode = :objsortbm_bonus_mode                        where objsortbm_cod = :objsortbm_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objsortbm_cod" => $this->objsortbm_cod,
@@ -200,6 +206,7 @@ class objets_sorts_bm
                 ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
                 ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
                 ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
+                ":objsortbm_bonus_mode" => $this->objsortbm_bonus_mode,
             ),$stmt);
         }
     }
@@ -316,7 +323,7 @@ class objets_sorts_bm
     function delete($code)
     {
         $pdo    = new bddpdo;
-        $req    = "DELETE from objets_sorts where objsort_cod = ?";
+        $req    = "DELETE from objets_sorts_bm where objsortbm_cod = ?";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($code), $stmt);
         if ($stmt->rowCount()==0)

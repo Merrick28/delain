@@ -146,11 +146,19 @@ if (($erreur == 0) && ($type_lance == 6))
     $nom_sort    = isset( $_REQUEST["objsort_name"] ) ? $_REQUEST["objsort_name"] : $objsortbm->getNom()   ;
     echo "<br /><p> Vous vous apprêtez à lancer le sort <strong>" . $nom_sort . "</strong>.<br></p>";
 
-    $aggressif   = 'O';
-    $soi_meme    = 'O';
-    $sort_joueur = 'O';
-    $dist_sort   = 1 ;
-    $type_cible  = "0,1,2,3";
+    $aggressif   = $objsortbm->objsortbm_bonus_aggressif;
+    $soi_meme    = $objsortbm->objsortbm_bonus_soi_meme;
+    $sort_joueur = $objsortbm->objsortbm_bonus_joueur;
+    $dist_sort   = $objsortbm->objsortbm_bonus_distance ;
+    $type_cible  = "0";
+    if ($objsortbm->objsortbm_bonus_monstre == 'O')
+    {
+        $type_cible = $type_cible . ",2,3";
+    }
+    if ($objsortbm->objsortbm_bonus_joueur == 'O')
+    {
+        $type_cible = $type_cible . ",1";
+    }
     include "include_magie.php";
 
 } else if ($erreur == 0)

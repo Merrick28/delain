@@ -72,6 +72,7 @@ include_once '../includes/tools.php';
                    $("#objsortbm_bonus_distance").val(data.objsortbm_bonus_distance ? data.objsortbm_bonus_distance : "0");
                    $("#objsortbm_bonus_aggressif").val((!data.objsortbm_bonus_aggressif || data.objsortbm_bonus_aggressif =='N') ? 'N' : 'O');
                    $("#objsortbm_bonus_soutien").val((!data.objsortbm_bonus_soutien || data.objsortbm_bonus_soutien =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_mode").val(data.objsortbm_bonus_mode ? data.objsortbm_bonus_mode : "S");
                    $("#objsortbm_malchance").val(data.objsortbm_malchance ? data.objsortbm_malchance : "0");
                    $("#objsortbm_nb_utilisation_max").val(data.objsortbm_nb_utilisation_max ? data.objsortbm_nb_utilisation_max : "");
                    $("#objsortbm_equip_requis").val((!data.objsortbm_equip_requis || data.objsortbm_equip_requis =='false') ? 'N' : 'O');
@@ -128,7 +129,7 @@ if ($erreur == 0)
             // Cas d'une suppression
             if (($_REQUEST["supprimer"] == "supprimer") && ($objsortbm_cod>0))
             {
-                $log.="supression de l'objet_sort #".$objsortsbm->objsortbm_cod."\n".obj_diff(new objets_sorts, $objsortsbm);
+                $log.="supression de l'objet_sort #".$objsortsbm->objsortbm_cod."\n".obj_diff(new objets_sorts_bm, $objsortsbm);
                 $objsortsbm->delete($objsortbm_cod);
             }
             else
@@ -151,6 +152,7 @@ if ($erreur == 0)
                 $objsortsbm->objsortbm_bonus_monstre = $_REQUEST["objsortbm_bonus_monstre"]=='' ? "O" : $_REQUEST["objsortbm_bonus_monstre"];
                 $objsortsbm->objsortbm_bonus_joueur = $_REQUEST["objsortbm_bonus_joueur"]=='' ? "O" : $_REQUEST["objsortbm_bonus_joueur"];
                 $objsortsbm->objsortbm_bonus_case = $_REQUEST["objsortbm_bonus_case"]=='' ? "N" : $_REQUEST["objsortbm_bonus_case"];
+                $objsortsbm->objsortbm_bonus_mode = $_REQUEST["objsortbm_bonus_mode"]=='' ? "S" : $_REQUEST["objsortbm_bonus_mode"];
                 $objsortsbm->objsortbm_malchance = $_REQUEST["objsortbm_malchance"]=='' ? 0 : 1*(float)$_REQUEST["objsortbm_malchance"];
                 $objsortsbm->objsortbm_nb_utilisation_max = $_REQUEST["objsortbm_nb_utilisation_max"]=='' ? null : 1*(int)$_REQUEST["objsortbm_nb_utilisation_max"];
                 $objsortsbm->objsortbm_nb_utilisation = 0 ;
@@ -220,6 +222,7 @@ if ($erreur == 0)
                     </td></tr>
                 <tr><td>Distance de la cible:</td><td><input type="text" id="objsortbm_bonus_distance" name="objsortbm_bonus_distance" size="4">&nbsp;</td></tr>                                  
                 <tr><td>Type de Bonus/Malus:</td><td>
+                        Mode: '.create_selectbox("objsortbm_bonus_mode", array("S"=>"Standard","C"=>"Cumulatif"), 'S', array("id"=>"objsortbm_bonus_mode")).'
                         Soutien: '.create_selectbox("objsortbm_bonus_soutien", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soutien")).'
                         Agressif: '.create_selectbox("objsortbm_bonus_aggressif", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_aggressif")).'
                     </td></tr>                
@@ -265,7 +268,8 @@ if ($erreur == 0)
                             .( $os->objsortbm_bonus_joueur =="O" ? "Joueurs," : "" )
                             .( $os->objsortbm_bonus_case =="O" ? "Case," : "" )."</td>
                       <td>" .$os->objsortbm_bonus_distance."</td>
-                      <td>" .( $os->objsortbm_bonus_soutien =="O" ? "Soutien," : "" )
+                      <td>" .( $os->objsortbm_bonus_mode != "S" ? "Cumulatif," : "" )
+                            .( $os->objsortbm_bonus_soutien =="O" ? "Soutien," : "" )
                             .( $os->objsortbm_bonus_aggressif =="O" ? "Agressif," : "" )."</td>                                          
                       <td>{$os->objsortbm_malchance}</td>
                       <td>{$os->objsortbm_nb_utilisation_max}</td>
