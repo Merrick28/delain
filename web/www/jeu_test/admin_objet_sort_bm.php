@@ -160,6 +160,27 @@ if ($erreur == 0)
 
                 $objsortsbm->stocke($new);
 
+                // mise à jour des repliques déjà en jeu !
+                $req = "UPDATE objets_sorts_bm osb1 SET 
+                            objsortbm_nom=osb2.objsortbm_nom,
+                            objsortbm_cout=osb2.objsortbm_cout,
+                            objsortbm_bonus_valeur=osb2.objsortbm_bonus_valeur,
+                            objsortbm_bonus_nb_tours=osb2.objsortbm_bonus_nb_tours,
+                            objsortbm_bonus_distance=osb2.objsortbm_bonus_distance,
+                            objsortbm_bonus_aggressif=osb2.objsortbm_bonus_aggressif,
+                            objsortbm_bonus_soutien=osb2.objsortbm_bonus_soutien,
+                            objsortbm_bonus_soi_meme=osb2.objsortbm_bonus_soi_meme,
+                            objsortbm_bonus_monstre=osb2.objsortbm_bonus_monstre,
+                            objsortbm_bonus_joueur=osb2.objsortbm_bonus_joueur,
+                            objsortbm_bonus_case=osb2.objsortbm_bonus_case,
+                            objsortbm_bonus_mode=osb2.objsortbm_bonus_mode,
+                            objsortbm_malchance=osb2.objsortbm_malchance,
+                            objsortbm_nb_utilisation_max=osb2.objsortbm_nb_utilisation_max
+                            FROM objets_sorts_bm osb2
+                            WHERE osb2.objsortbm_cod=:objsortbm_cod and osb1.objsortbm_parent_cod=osb2.objsortbm_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":objsortbm_cod" => $objsortsbm->objsortbm_cod), $stmt);
+
                 // Logger les infos pour suivi admin
                 $log.="ajoute/modifie de l'objet_sort #".$objsortsbm->objsortbm_cod."\n".obj_diff($clone_os, $objsortsbm);
             }

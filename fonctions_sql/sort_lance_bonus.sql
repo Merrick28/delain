@@ -49,6 +49,7 @@ declare
 	v_bonus_nb_tours varchar(4);		-- nb de DLT au format dé rollist
   v_bonmal_valeur numeric ;   -- valeur du BM
   v_bonmal_duree integer;  -- durer du BM
+  v_nb_utilisation_dlt integer;  -- durer du BM
 
 	aggressif varchar(2);		-- sort aggressif ?
 	soutien varchar(2);		-- sort soutien ?
@@ -89,8 +90,8 @@ begin
     and ppos_pos_cod = pos_cod;
 
 	-- vérifier que le perso possède toujours l'objet
-  select into v_tbonus_libc, v_bonus_valeur, v_bonus_nb_tours, nom_bonus, nom_sort, cout_pa, distance_sort, aggressif, soutien, soi_meme, sur_perso, sur_monstre, facteur_malchance
-      CASE WHEN objsortbm_bonus_mode='C' THEN tbonus_libc||'+' ELSE tbonus_libc END, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, tonbus_libelle, coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance
+  select into v_tbonus_libc, v_bonus_valeur, v_bonus_nb_tours, nom_bonus, nom_sort, cout_pa, distance_sort, aggressif, soutien, soi_meme, sur_perso, sur_monstre, facteur_malchance, v_nb_utilisation_dlt
+      CASE WHEN objsortbm_bonus_mode='C' THEN tbonus_libc||'+' ELSE tbonus_libc END, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, tonbus_libelle, coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance, objsortbm_nb_utilisation_dlt
   from objets_sorts_bm
   join objets on obj_cod=objsortbm_obj_cod
   join perso_objets on perobj_obj_cod=obj_cod and perobj_perso_cod=lanceur
@@ -104,6 +105,12 @@ begin
     code_retour := 'Erreur : vous ne possédez plus l''objet, ou il n''est plus équipé, ou il est engagé dans une transaction ou il ne dispose plus de charge.';
     return code_retour;
   end if;
+
+	-- nombre de pa suffisant ?
+	if v_nb_utilisation_dlt >= 2 then
+		code_retour := code_retour||'<p>Erreur : Vous ne pouvez pas lancer le même plus de 2 fois dans le même tour !</p>';
+		return code_retour;
+	end if;
 
 
 	-- nombre de pa suffisant ?
@@ -185,7 +192,7 @@ begin
   code_retour := code_retour||'en utilisant un objet.<br><br>';
 
   -- pour les sorts lancés à partir d'objet on met a jour le compteur (et on supprime le sort préparé)
-  update objets_sorts set objsort_nb_utilisation=objsort_nb_utilisation+1 from objets_sorts_magie where objsortm_perso_cod = lanceur  and objsortm_objsort_cod=objsort_cod;
+  update objets_sorts_bm set objsortbm_nb_utilisation=objsortbm_nb_utilisation+1, objsortbm_nb_utilisation_dlt=objsortbm_nb_utilisation_dlt+1 where objsortbm_cod = v_objsortbm_cod;
 
   -- Il y a certains objets qui possède un facteur de malchance, faisant échoué le lancement du sort
   if facteur_malchance >0 then
