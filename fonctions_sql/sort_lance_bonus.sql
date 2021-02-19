@@ -23,11 +23,6 @@ declare
 -- variables concernant le lanceur
 -------------------------------------------------------------
 	lanceur alias for $1;		-- perso_cod du lanceur
-	nb_sort_niveau integer; 	-- nombre de sorts du même niveau déjà lancés
-	bonus_pa integer;
-	v_reussite integer;		-- reussite ou non dans le cadre de la distorsion
-	bonmal integer;			-- bonus malus au lancé de des
-	malus integer;
 	type_attaquant integer;		-- Aventurier ou monstre (ou familier)
 -------------------------------------------------------------
 -- variables concernant la cible
@@ -39,16 +34,24 @@ declare
 	type_cible integer;		-- Aventurier ou monstre (ou familier)
 	v_pos_pvp character;		-- Si la cible est en zone de droit
 	v_gmon_cod integer;		-- Type de monstre ciblé
-	v_immunise character;		-- Si la cible est immunisé à ce sort
-	v_immunise_valeur numeric;	-- Le taux d’immunité de la cible
-	v_immunise_texte varchar(500);	-- Texte relatif à l’immunité
+
 -------------------------------------------------------------
 -- variables concernant le sort
 -------------------------------------------------------------
 	v_objsortbm_cod alias for $3;	-- type de lancer (memo ou rune)
 	cout_pa integer;		-- Cout en PA du sort
+	lanceur_pa integer;		-- Nombre de PA du lanceur
+	distance_sort integer;		-- portée du sort BM
+	nom_bonus varchar(50);		-- nom du bonus
 	nom_sort varchar(50);		-- nom du sort
-	offensif varchar(2);		-- sort offensif ?
+	v_tbonus_libc varchar(4);		-- sort aggressif ?
+	v_bonus_valeur varchar(4);		-- valeur au format dé rollist
+	v_bonus_nb_tours varchar(4);		-- nb de DLT au format dé rollist
+  v_bonmal_valeur numeric ;   -- valeur du BM
+  v_bonmal_duree integer;  -- durer du BM
+
+	aggressif varchar(2);		-- sort aggressif ?
+	soutien varchar(2);		-- sort soutien ?
 	temp integer;			-- fourre tout
 	soi_meme text;			-- Détermine si on peut lancer le sort sur soi
 	sur_perso text;			-- Détermine si on peut lancer le sort sur un autre perso
@@ -56,22 +59,16 @@ declare
 -------------------------------------------------------------
 -- variables de contrôle
 -------------------------------------------------------------
-	deb_res_controle text;		-- partie 1 du controle sort
-	res_controle text;		-- totalité du contrôle sort
+	pos_lanceur integer;	-- distance entre lanceur et cible
 	v_etage_lanceur integer;	-- distance entre lanceur et cible
 	v_etage_cible integer;	-- distance entre lanceur et cible
 	distance_cibles integer;	-- distance entre lanceur et cible
-	ligne_rune record;		-- record des rune à dropper
-	temp_ameliore_competence text;	-- chaine temporaire pour amélioration
 -------------------------------------------------------------
 -- variables de calcul
 -------------------------------------------------------------
 	des integer;			-- lancer de dés
 	compt integer;			-- fourre tout
-	facteur_reussite integer;
-	facteur_reussite_pur integer;
 	facteur_malchance numeric ;  -- facteur de malchance sur certains objets magiques
-	v_special integer;
 	resultat text;			-- recuperation du code de la fonction cout_pa
 begin
 -------------------------------------------------------------
@@ -85,22 +82,22 @@ begin
 -------------------------------------------------------------
 	-- sur le lanceur
 	select into  type_attaquant,lanceur_pa,pos_lanceur,v_etage_lanceur
-	  perso_type_persoperso_pa,ppos_pos_cod,pos_etage
+	  perso_type_perso,perso_pa,ppos_pos_cod,pos_etage
     from perso,perso_position,positions
     where perso_cod = lanceur
-    and ppos_perso_cod = lanceur
+    and ppos_perso_cod = perso_cod
     and ppos_pos_cod = pos_cod;
 
-
 	-- vérifier que le perso possède toujours l'objet
-  select into nom_sort, cout_pa, sort_distance, offensif, soi_meme, sur_perso, sur_monstre, facteur_malchance
-      coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance
+  select into v_tbonus_libc, v_bonus_valeur, v_bonus_nb_tours, nom_bonus, nom_sort, cout_pa, distance_sort, aggressif, soutien, soi_meme, sur_perso, sur_monstre, facteur_malchance
+      CASE WHEN objsortbm_bonus_mode='C' THEN tbonus_libc||'+' ELSE tbonus_libc END, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, tonbus_libelle, coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance
+  from objets_sorts_bm
   join objets on obj_cod=objsortbm_obj_cod
-  join perso_objets on perobj_obj_cod=obj_cod and perobj_perso_cod=objsortm_perso_cod
+  join perso_objets on perobj_obj_cod=obj_cod and perobj_perso_cod=lanceur
   join bonus_type on tbonus_cod=objsortbm_tbonus_cod
   where objsortbm_cod = v_objsortbm_cod
     and perobj_identifie = 'O'
-    and (perobj_equipe='O' or objsort_equip_requis=false)
+    and (perobj_equipe='O' or objsortbm_equip_requis=false)
     and (objsortbm_nb_utilisation_max>objsortbm_nb_utilisation or COALESCE(objsortbm_nb_utilisation_max,0) = 0)
     and not exists (select 1 from transaction where tran_obj_cod = perobj_obj_cod);
   if not found then
@@ -108,14 +105,18 @@ begin
     return code_retour;
   end if;
 
-	-- sur les conditions de cibles
-	if soi_meme = 'O' and sur_perso = 'N' and sur_monstre = 'N' and lanceur != cible then
-		code_retour := code_retour||'0;<p>Erreur : ce sort ne peut être lancé que sur soi-même !</p>';
+
+	-- nombre de pa suffisant ?
+	if lanceur_pa < cout_pa then
+		code_retour := code_retour||'<p>Erreur : Vous n''avez pas suffisament de PA !</p>';
 		return code_retour;
 	end if;
 
-
-	bonus_pa := valeur_bonus(lanceur, 'PAM');
+	-- sur les conditions de cibles
+	if soi_meme = 'O' and sur_perso = 'N' and sur_monstre = 'N' and lanceur != cible then
+		code_retour := code_retour||'<p>Erreur : ce sort ne peut être lancé que sur soi-même !</p>';
+		return code_retour;
+	end if;
 
 	-- sur la position du lanceur
 	select into v_pos_protegee 	coalesce(lieu_refuge, 'N')
@@ -124,7 +125,7 @@ begin
 	left outer join lieu ON lieu_cod = lpos_lieu_cod
 	where ppos_perso_cod = lanceur;
 	if v_pos_protegee = 'O' then
-		code_retour := '0;<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas lancer de sorts.</p>';
+		code_retour := '<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas lancer de sorts.</p>';
 		return code_retour;
 	end if;
 
@@ -139,18 +140,18 @@ begin
 	left outer join lieu ON lieu_cod = lpos_lieu_cod
 	where perso_cod = cible and perso_actif = 'O';
 	if not found then
-		code_retour := code_retour||'0;<p>Erreur : cible non trouvée !</p>';
+		code_retour := code_retour||'<p>Erreur : cible non trouvée !</p>';
 		return code_retour;
 	end if;
-	if type_attaquant != 2 and type_cible != 2 and v_pos_pvp = 'N' and offensif = 'O' then
-		code_retour := '0;<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort offensif car elle n’est pas une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
+	if type_attaquant != 2 and type_cible != 2 and v_pos_pvp = 'N' and aggressif = 'O' then
+		code_retour := '<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort aggressif car elle n’est pas une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
 		return code_retour;
-	elsif type_attaquant != 2 and type_cible = 2 and v_pos_pvp = 'N' and offensif = 'N' then
-		code_retour := '0;<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort de soutien car elle est une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
+	elsif type_attaquant != 2 and type_cible = 2 and v_pos_pvp = 'N' and aggressif = 'N' then
+		code_retour := '<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort de soutien car elle est une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
 		return code_retour;
 	end if;
-	if v_pos_protegee = 'O' and offensif = 'O' then
-		code_retour := '0;<p>Erreur ! Cette cible est sur un lieu protégé ! Elle ne peut pas être la cible d’un sort offensif.</p>';
+	if v_pos_protegee = 'O' and aggressif = 'O' then
+		code_retour := '<p>Erreur ! Cette cible est sur un lieu protégé ! Elle ne peut pas être la cible d’un sort aggressif.</p>';
 		return code_retour;
 	end if;
 
@@ -158,7 +159,7 @@ begin
 -- on vérifie les distances
 	select into pos_cible,v_etage_cible
 		ppos_pos_cod,pos_etage
-		from perso_position,sorts,positions
+		from perso_position,positions
 		where ppos_perso_cod = cible
 		and ppos_pos_cod = pos_cod;
 	if(v_etage_lanceur != v_etage_cible) then
@@ -171,7 +172,7 @@ begin
 		return code_retour;
 	end if;
 
-	if distance_sort > 1 and trajectoire_vue_murs(pos_lanceur,pos_cible) != 1 then
+	if distance_cibles > 1 and trajectoire_vue_murs(pos_lanceur,pos_cible) != 1 then
 		code_retour := 'Votre sort arrive dans un mur.';
 		return code_retour;
 	end if;
@@ -203,7 +204,6 @@ begin
         end if;
 
         update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
-        code_retour := '0;'||code_retour;
         return code_retour;
       end if;
   end if;
@@ -211,7 +211,7 @@ begin
 
 	-- La cible est sous défense magique ?
 	if valeur_bonus(cible, 'DFM') != 0 then
-		code_retour := '0;'||code_retour||'Votre sort est rejeté car la cible est sous le coup d’une protection magique.<br />';
+		code_retour := code_retour||'Votre sort est rejeté car la cible est sous le coup d’une protection magique.<br />';
 		update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
 		texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] qui est protégé par un Défense magique.';
 		insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
@@ -226,13 +226,31 @@ begin
 -------------------------
 -- Lancer le Bonus/Malus !!!!
 ---------------------------
+  -- retirer les PA
+  update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur ;
+
+  -- calculé la valeur du bonus et la durée
+  v_bonmal_valeur :=  f_lit_des_roliste(v_bonus_valeur);
+  v_bonmal_duree :=  f_lit_des_roliste(v_bonus_nb_tours);
+
+    -- appliquer le bonus réel
+  if v_bonmal_duree!=0 and v_bonmal_valeur!=0 then
+      perform ajoute_bonus(cible, v_tbonus_libc::text, v_bonmal_duree, v_bonmal_valeur);
+
+      -- Le texte résultat à afficher
+      if aggressif = 'O' then
+        code_retour := code_retour||'vous lui donnez un malus  `'|| nom_bonus || '` de valeur '|| v_bonmal_valeur::text || ' pendant '|| v_bonmal_duree::text || ' tour(s).<br>';
+      else
+        code_retour := code_retour||'vous lui donnez un bonus  `'|| nom_bonus || '` de valeur '|| v_bonmal_valeur::text || ' pendant '|| v_bonmal_duree::text || ' tour(s).<br>';
+      end if;
+  end if;
 
 -------------------------
 -- les EA liés au lancement d'un sort (avec protagoniste cible+null+lanceur)
 ---------------------------
-  code_retour := code_retour || execute_fonctions(lanceur, null, 'MAL', json_build_object('num_sort', num_sort) );
-  code_retour := code_retour || execute_fonctions(lanceur, cible, 'MAL', json_build_object('num_sort', num_sort) );
-  code_retour := code_retour || execute_fonctions(cible, lanceur, 'MAC', json_build_object('num_sort', num_sort) );
+  code_retour := code_retour || execute_fonctions(lanceur, null, 'MAL', json_build_object('sort_aggressif', aggressif, 'sort_soutien', soutien) );
+  code_retour := code_retour || execute_fonctions(lanceur, cible, 'MAL', json_build_object('sort_aggressif', aggressif, 'sort_soutien', soutien) );
+  code_retour := code_retour || execute_fonctions(cible, lanceur, 'MAC', json_build_object('sort_aggressif', aggressif, 'sort_soutien', soutien) );
 
 -- ---------------------------
 	return code_retour;

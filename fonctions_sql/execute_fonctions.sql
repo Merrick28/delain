@@ -138,8 +138,12 @@ begin
         end if;
 
     elseif v_evenement = 'MAL' then -- ---------------------------------------------------------------------------------
-        -- Rechercher les infos sur le sorts
-        select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        -- Rechercher les infos sur le sorts si code fourni ou si on les a directement (cas des objets bonus)
+        if (v_param->>'num_sort'::text)::numeric is not null then
+            select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        else
+            select v_param->>'sort_aggressif'::text, v_param->>'sort_soutien'::text into v_sort_aggressif, v_sort_soutien ;
+        end if;
 
         if NOT (
                 (
@@ -160,8 +164,12 @@ begin
         end if;
 
     elseif v_evenement = 'MAC' then -- ---------------------------------------------------------------------------------
-        -- Rechercher les infos sur le sorts
-        select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        -- Rechercher les infos sur le sorts si code fourni ou si on les a directement (cas des objets bonus)
+        if (v_param->>'num_sort'::text)::numeric is not null then
+            select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        else
+            select v_param->>'sort_aggressif'::text, v_param->>'sort_soutien'::text into v_sort_aggressif, v_sort_soutien ;
+        end if;
 
         if NOT (
                 (row.fonc_trigger_param->>'fonc_trig_type_benefique'::text = 'O' and v_sort_soutien = 'O')

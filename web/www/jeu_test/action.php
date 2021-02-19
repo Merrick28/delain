@@ -430,7 +430,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $stmt = $pdo->execute(
                     array(  ':perso_cod'     => $perso_cod,
                             ':cible'         => $perso_cible->perso_cod,
-                            ':objsortbm_cod' => $objsortbm_cod->objsortbm_cod), $stmt
+                            ':objsortbm_cod' => $objsortbm->objsortbm_cod), $stmt
                 );
                 $result       = $stmt->fetch();
                 $contenu_page .= $result['resultat'];
