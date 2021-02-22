@@ -50,6 +50,7 @@ declare
   v_bonmal_valeur numeric ;   -- valeur du BM
   v_bonmal_duree integer;  -- durer du BM
   v_nb_utilisation_dlt integer;  -- durer du BM
+  v_ojsortbm_cod_reel integer;  -- sortbm du générique si le sort n'est pas lancé spécifiquement par l'objet
 
 	aggressif varchar(2);		-- sort aggressif ?
 	soutien varchar(2);		-- sort soutien ?
@@ -90,8 +91,8 @@ begin
     and ppos_pos_cod = pos_cod;
 
 	-- vérifier que le perso possède toujours l'objet
-  select into v_tbonus_libc, v_bonus_valeur, v_bonus_nb_tours, nom_bonus, nom_sort, cout_pa, distance_sort, aggressif, soutien, soi_meme, sur_perso, sur_monstre, facteur_malchance, v_nb_utilisation_dlt
-      CASE WHEN objsortbm_bonus_mode='C' THEN tbonus_libc||'+' ELSE tbonus_libc END, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, tonbus_libelle, coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance, objsortbm_nb_utilisation_dlt
+  select into v_ojsortbm_cod_reel, v_tbonus_libc, v_bonus_valeur, v_bonus_nb_tours, nom_bonus, nom_sort, cout_pa, distance_sort, aggressif, soutien, soi_meme, sur_perso, sur_monstre, facteur_malchance
+      COALESCE(objsortbm_parent_cod, objsortbm_cod), CASE WHEN objsortbm_bonus_mode='C' THEN tbonus_libc||'+' ELSE tbonus_libc END, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, tonbus_libelle, coalesce(objsortbm_nom, tonbus_libelle), objsortbm_cout, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_joueur, objsortbm_bonus_monstre, objsortbm_malchance
   from objets_sorts_bm
   join objets on obj_cod=objsortbm_obj_cod
   join perso_objets on perobj_obj_cod=obj_cod and perobj_perso_cod=lanceur
@@ -106,12 +107,17 @@ begin
     return code_retour;
   end if;
 
-	-- nombre de pa suffisant ?
-	if v_nb_utilisation_dlt >= 2 then
-		code_retour := code_retour||'<p>Erreur : Vous ne pouvez pas lancer le même plus de 2 fois dans le même tour !</p>';
-		return code_retour;
-	end if;
+	-- nombre d'utilisation 2 max par tour ?
+  if not exists (select 1 from perso_nb_sorts_bm where pnbsbm_perso_cod = lanceur and pnbsbm_objsortbm_cod = v_ojsortbm_cod_reel) then
+			insert into perso_nb_sorts_bm (pnbsbm_perso_cod,pnbsbm_objsortbm_cod,pnbsbm_nombre) 	values (lanceur,v_ojsortbm_cod_reel,0);
+  end if;
 
+	select into v_nb_utilisation_dlt pnbsbm_nombre from perso_nb_sorts_bm where pnbsbm_perso_cod = lanceur and pnbsbm_objsortbm_cod = v_ojsortbm_cod_reel;
+  if v_nb_utilisation_dlt >= 2 then
+    code_retour := 'Erreur : Vous ne pouvez pas lancer le même plus de 2 fois dans le même tour !';
+    return code_retour;
+  end if;
+  update perso_nb_sorts_bm set pnbsbm_nombre = pnbsbm_nombre + 1 	where pnbsbm_perso_cod = lanceur and pnbsbm_objsortbm_cod = v_ojsortbm_cod_reel;
 
 	-- nombre de pa suffisant ?
 	if lanceur_pa < cout_pa then
@@ -192,7 +198,7 @@ begin
   code_retour := code_retour||'en utilisant un objet.<br><br>';
 
   -- pour les sorts lancés à partir d'objet on met a jour le compteur (et on supprime le sort préparé)
-  update objets_sorts_bm set objsortbm_nb_utilisation=objsortbm_nb_utilisation+1, objsortbm_nb_utilisation_dlt=objsortbm_nb_utilisation_dlt+1 where objsortbm_cod = v_objsortbm_cod;
+  update objets_sorts_bm set objsortbm_nb_utilisation=objsortbm_nb_utilisation+1 where objsortbm_cod = v_objsortbm_cod;
 
   -- Il y a certains objets qui possède un facteur de malchance, faisant échoué le lancement du sort
   if facteur_malchance >0 then

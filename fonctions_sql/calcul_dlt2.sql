@@ -642,10 +642,9 @@ begin
     where pnbs_perso_cod = personnage;
 
         /* nombre sort objet bonus  */
-    update objets_sorts_bm
-    set objsortbm_nb_utilisation_dlt = 0
-    from perso_objets
-    where perobj_obj_cod=objsortbm_obj_cod and perobj_perso_cod = personnage;
+    update perso_nb_sorts_bm
+    set pnbsbm_nombre = 0
+    where pnbsbm_perso_cod = personnage;
 
     /* transactions */
     update transaction
