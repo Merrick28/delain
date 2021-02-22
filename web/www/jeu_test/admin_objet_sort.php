@@ -98,8 +98,8 @@ if ($erreur == 0)
                 $clone_os = clone $objsorts;
 
                 $objsorts->objsort_parent_cod = null ;
-                $objsorts->objsort_gobj_cod = 1*(int)$_REQUEST["objsort_gobj_cod"];
-                $objsorts->objsort_obj_cod = null ;
+                $objsorts->objsort_gobj_cod = $_REQUEST["objsort_gobj_cod"]=="" ? null : 1*(int)$_REQUEST["objsort_gobj_cod"];
+                $objsorts->objsort_obj_cod = $_REQUEST["objsort_obj_cod"]=="" ? null : 1*(int)$_REQUEST["objsort_obj_cod"]; ;
                 $objsorts->objsort_sort_cod = 1*(int)$_REQUEST["objsort_sort_cod"];
                 $objsorts->objsort_nom = $_REQUEST["objsort_nom"]=='' ? null : $_REQUEST["objsort_nom"] ;
                 $objsorts->objsort_cout = $_REQUEST["objsort_cout"]=='' ? null : 1*(int)$_REQUEST["objsort_cout"];
@@ -134,24 +134,37 @@ if ($erreur == 0)
     echo "<hr>";
 
     $objsort_gobj_cod = 1*(int)$_REQUEST["objsort_gobj_cod"] ;
-    if ($objsort_gobj_cod>0)
+    $objsort_obj_cod = 1*(int)$_REQUEST["objsort_obj_cod"] ;
+    if ($objsort_gobj_cod>0 || $objsort_obj_cod>0)
     {
-        $gobj = new objet_generique();
-        $gobj->charge($objsort_gobj_cod);
-        echo "Détail des sorts sur l'objet générique: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
-        $exemplaires = $gobj->getNombreExemplaires();
-        echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
-        echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
-        echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
-        echo "<br>";
+        if ($objsort_gobj_cod>0)
+        {
+            $gobj = new objet_generique();
+            $gobj->charge($objsort_gobj_cod);
+            echo "Détail des sorts sur l'objet générique: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+            $exemplaires = $gobj->getNombreExemplaires();
+            echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
+            echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>" . $exemplaires->total . "</strong><br>";
+            echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>" . $exemplaires->inventaire . "</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
+            echo "<br>";
+        }
+        else
+        {
+            $obj = new objets();
+            $obj->charge($objsort_obj_cod);
+            echo "Détail des conditions d'équipement sur l'<u>OBJET SPECIFIQUE</u>: <strong>#{$obj->obj_cod} - {$obj->obj_nom}</strong><br>";
+            echo "L'objet:<br>";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>".$obj->trouve_objet()."</strong><br>";
+            echo "<br>";
+        }
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
         echo '<form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
              <input type="hidden" name="methode" value="sauve">
              <input type="hidden" id="objsort_cod" name="objsort_cod" value="0">
-             <input type="hidden" id="objsort_gobj_cod" name="objsort_gobj_cod" value="' . $objsort_gobj_cod . '">
-             <input type="hidden" id="objsort_obj_cod" name="objsort_obj_cod" value="">
+             <input type="hidden" id="objsort_gobj_cod" name="objsort_gobj_cod" value="' . ($objsort_gobj_cod>0 ? $objsort_gobj_cod : "") . '">
+             <input type="hidden" id="objsort_obj_cod" name="objsort_obj_cod" value="' . ($objsort_obj_cod>0 ? $objsort_obj_cod : "") . '">
              ';
         echo '<table width="100%" class=\'bordiv\'><tr><td>Sélection de sort (<em>sort_cod</em>) :</td><td>
                 <input data-entry="val" name="objsort_sort_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'misc_nom\', \'sort\', $(\'#' . $row_id . 'misc_cod\').val());">
@@ -169,7 +182,11 @@ if ($erreur == 0)
 
         echo "<strong><br>Liste des sorts sur l'objet</strong> :<br>";
         $objsorts = new objets_sorts();
-        $lsorts = $objsorts->getBy_objsort_gobj_cod($gobj->gobj_cod);
+        if ( $objsort_gobj_cod>0) {
+            $lsorts = $objsorts->getBy_objsort_gobj_cod($objsort_gobj_cod);
+        }else{
+            $lsorts = $objsorts->getBy_objsort_obj_cod($objsort_obj_cod);
+        }
         if ($lsorts)
         {
             echo '<table width="100%" class=\'bordiv\'>';
@@ -185,8 +202,13 @@ if ($erreur == 0)
             {
                 $sort = new sorts();
                 $sort->charge($os->objsort_sort_cod);
-                echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSort({$k}, {$os->objsort_cod});'></td>
-                      <td>{$os->objsort_cod}</td>
+                if((int)$os->objsort_gobj_cod==0 && (int)$os->objsort_parent_cod>0) {
+                    echo "<tr id='sortlist-{$k}'><td>Générique</td>";
+                }else{
+                    echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSort({$k}, {$os->objsort_cod});'></td>";
+                }
+                
+                echo "<td>{$os->objsort_cod}</td>
                       <td>{$os->objsort_sort_cod} ({$sort->sort_nom} - {$sort->sort_cout}PA) </td>
                       <td>".$os->getNom()."</td>
                       <td>".$os->getCout()." PA</td>
@@ -201,15 +223,26 @@ if ($erreur == 0)
             echo "<em>Il n'y a pas de sort sur cet objet</em>";
         }
     }
-?>
-<br> <strong><u>Remarques</u></strong>:<br>
-    * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
-    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront immédiatement ensorcellés<br>
-    * Il y a des objets qui ne peuvent pas être équipé <em>(ce n'est pas contrôlé ici)</em><br>
-    * Les familiers pourront aussi lancer les sorts si l'objet n'a pas besoin d'être équipé<br>
-    * L'IA des monstres ne sait pas utiliser ces objets<br>
-<br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objsort_gobj_cod"];?>">Retour au modification d'objets génériques</a>
-<?php
+    if ($objsortbm_gobj_cod>0)
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+            * N’oubliez pas que TOUS les exemplaires d’un objet générique seront immédiatement ensorcellés<br>
+            * Il y a des objets qui ne peuvent pas être équipé <em>(ce n’est pas contrôlé ici)</em><br>
+            * Les familiers pourront aussi lancer les sorts si l’objet n’a pas besoin d’être équipé<br>
+            * L’IA des monstres ne sait pas utiliser ces objets<br>
+            <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objsort_gobj_cod"];?>">Retour au modification d’objets génériques</a>';
+    }
+    else
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+            * N’oubliez pas que sort ajouté ici, le seront en plus de ceux du générique<br>
+            * Il y a des objets qui ne peuvent pas être équipé <em>(ce n’est pas contrôlé ici)</em><br>
+            * Les familiers pourront aussi lancer les sorts BM si l’objet n’a pas besoin d’être équipé<br>
+            * L’IA des monstres ne sait pas utiliser ces objets<br>
+        <br><p style="text-align:center;"><a href="admin_objet_edit.php?&methode=objet&num_objet='.$_REQUEST["objsort_obj_cod"].'">Retour aux modifications de l’objets</a>';
+    }
 
 }
 

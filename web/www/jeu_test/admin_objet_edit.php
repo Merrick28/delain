@@ -58,7 +58,7 @@ if ($erreur == 0)
 				obj_description,obj_valeur,obj_etat,obj_des_degats,obj_val_des_degats,obj_bonus_degats,obj_armure,
 				obj_distance,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,obj_bonus_vue,obj_critique,
 				obj_critique,obj_seuil_force,obj_seuil_dex,obj_chance_drop,obj_enchantable,obj_desequipable, trouve_objet(obj_cod) as obj_position,
-				obj_niveau_min
+				obj_niveau_min, gobj_cod
 				from objets,objet_generique,type_objet
 				where obj_cod = ' . $num_objet . '
 				and obj_gobj_cod = gobj_cod
@@ -66,6 +66,7 @@ if ($erreur == 0)
             $stmt        = $pdo->query($req);
             $result      = $stmt->fetch();
             $tobj_cod    = $result['tobj_cod'];
+            $gobj_cod    = $result['gobj_cod'];
             $is_distance = ($result['obj_distance'] == 'O');
             ?>
             <table>
@@ -266,6 +267,78 @@ if ($erreur == 0)
                         </select>
                     </td>
                 </tr>
+
+                <?php
+                $objsorts = new objets_sorts();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Sort(s) rattaché(s)</td><td>";
+                if ($list = $objsorts->getBy_objsort_obj_cod($num_objet))
+                {
+                    foreach ($list as $objsort) {
+                        $sort = new sorts();
+                        $sort->charge($objsort->objsort_sort_cod);
+                        echo $sort->sort_nom." (".$objsort->getCout()."PA), ";
+                    }
+                    echo ': <a target="_blank" href="admin_objet_sort.php?objsort_obj_cod='.$num_objet.'">éditer</a>';
+                }
+                else
+                {
+                    echo 'Aucun: <a target="_blank" href="admin_objet_sort.php?objsort_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                echo "</td></tr>";
+                $objsortbms = new objets_sorts_bm();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Sort(s) BM rattaché(s)</td><td>";
+                if ($list = $objsortbms->getBy_objsortbm_obj_cod($num_objet))
+                {
+                    foreach ($list as $objsortbm) {
+                        $bonus = new bonus_type();
+                        $bonus->charge($objsortbm->objsortbm_tbonus_cod);
+                        echo $bonus->tonbus_libelle." (".$objsortbm->objsortbm_cout."PA), ";
+                    }
+                    echo ': <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_obj_cod='.$num_objet.'">éditer</a>';
+                }
+                else
+                {
+                    echo 'Aucun: <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                echo "</td></tr>";
+                /* A FAIRE
+                $objbm = new objets_bm();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Bonus/malus permanent rattaché(s)</td><td>";
+                if ($list = $objbm->getBy_objbm_obj_cod($num_objet))
+                {
+                    foreach ($list as $objbm) {
+                        $bonus = new bonus_type();
+                        $bonus->charge($objbm->objbm_tbonus_cod);
+                        echo $bonus->tonbus_libelle." (".$objbm->objbm_bonus_valeur."),";
+                    }
+                    echo ': <a target="_blank" href="admin_objet_bm.php?objbm_obj_cod='.$num_objet.'">éditer</a>';
+                }
+                else
+                {
+                    echo 'Aucun: <a target="_blank" href="admin_objet_bm.php?objbm_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                */
+                $objelem = new objet_element();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Condition(s) d'équipement</td><td>";
+                if ($list = $objelem->getBy_objelem_obj_cod($num_objet))
+                {
+                    foreach ($list as $objelem) {
+                        $carac = new aquete_type_carac();
+                        $carac->charge($objelem->objelem_misc_cod);
+                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    }
+                    echo ': <a target="_blank" href="admin_objet_equip.php?objelem_obj_cod='.$num_objet.'">éditer</a>';
+                }
+                else
+                {
+                    echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?objelem_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                echo "</td></tr>";
+                echo '<tr><td class="soustitre2">Caractéristiques de l\'objet générique</td><td><a target="_blank" href="admin_objet_generique_edit.php?gobj_cod='.$gobj_cod.'">Mofidier</a></td></tr>';
+
+                ?>
+
                 <tr>
                     <td colspan="2"><input type="submit" class="test centrer" value="Valider !"></td>
                 </tr>

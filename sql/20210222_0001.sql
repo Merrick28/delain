@@ -18,3 +18,7 @@ COMMENT ON TABLE public.perso_nb_sorts_bm  IS 'Nb de fois où un sort BM est uti
 ALTER TABLE perso_nb_sorts_bm  ADD CONSTRAINT uniq_pnbsbm_perso_cod_objsortbm_cod UNIQUE (pnbsbm_perso_cod, pnbsbm_objsortbm_cod);
 
 
+
+
+  INSERT INTO quetes.aquete_type_carac(aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type, aqtypecarac_description, aqtypecarac_aff)
+    VALUES (27, 'Code du Perso', 'CARAC', '','N° de perso');

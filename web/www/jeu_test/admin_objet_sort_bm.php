@@ -138,8 +138,8 @@ if ($erreur == 0)
                 $clone_os = clone $objsortsbm;
 
                 $objsortsbm->objsortbm_parent_cod = null ;
-                $objsortsbm->objsortbm_gobj_cod = 1*(int)$_REQUEST["objsortbm_gobj_cod"];
-                $objsortsbm->objsortbm_obj_cod = null ;
+                $objsortsbm->objsortbm_gobj_cod = $_REQUEST["objsortbm_gobj_cod"]== "" ? null : 1*(int)$_REQUEST["objsortbm_gobj_cod"];
+                $objsortsbm->objsortbm_obj_cod = $_REQUEST["objsortbm_obj_cod"]== "" ? null : 1*(int)$_REQUEST["objsortbm_obj_cod"] ;
                 $objsortsbm->objsortbm_tbonus_cod = 1*(int)$_REQUEST["objsortbm_tbonus_cod"];
                 $objsortsbm->objsortbm_nom = $_REQUEST["objsortbm_nom"]=='' ? null : $_REQUEST["objsortbm_nom"] ;
                 $objsortsbm->objsortbm_cout = $_REQUEST["objsortbm_cout"]=='' ? null : 1*(int)$_REQUEST["objsortbm_cout"];
@@ -160,27 +160,29 @@ if ($erreur == 0)
 
                 $objsortsbm->stocke($new);
 
-                // mise à jour des repliques déjà en jeu !
-                $req = "UPDATE objets_sorts_bm osb1 SET 
-                            objsortbm_nom=osb2.objsortbm_nom,
-                            objsortbm_cout=osb2.objsortbm_cout,
-                            objsortbm_bonus_valeur=osb2.objsortbm_bonus_valeur,
-                            objsortbm_bonus_nb_tours=osb2.objsortbm_bonus_nb_tours,
-                            objsortbm_bonus_distance=osb2.objsortbm_bonus_distance,
-                            objsortbm_bonus_aggressif=osb2.objsortbm_bonus_aggressif,
-                            objsortbm_bonus_soutien=osb2.objsortbm_bonus_soutien,
-                            objsortbm_bonus_soi_meme=osb2.objsortbm_bonus_soi_meme,
-                            objsortbm_bonus_monstre=osb2.objsortbm_bonus_monstre,
-                            objsortbm_bonus_joueur=osb2.objsortbm_bonus_joueur,
-                            objsortbm_bonus_case=osb2.objsortbm_bonus_case,
-                            objsortbm_bonus_mode=osb2.objsortbm_bonus_mode,
-                            objsortbm_malchance=osb2.objsortbm_malchance,
-                            objsortbm_nb_utilisation_max=osb2.objsortbm_nb_utilisation_max
-                            FROM objets_sorts_bm osb2
-                            WHERE osb2.objsortbm_cod=:objsortbm_cod and osb1.objsortbm_parent_cod=osb2.objsortbm_cod";
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":objsortbm_cod" => $objsortsbm->objsortbm_cod), $stmt);
-
+                // dans le cas d'un generique mise à jour des repliques déjà en jeu !
+                if ($_REQUEST["objsortbm_gobj_cod"]!="")
+                {
+                    $req = "UPDATE objets_sorts_bm osb1 SET 
+                                    objsortbm_nom=osb2.objsortbm_nom,
+                                    objsortbm_cout=osb2.objsortbm_cout,
+                                    objsortbm_bonus_valeur=osb2.objsortbm_bonus_valeur,
+                                    objsortbm_bonus_nb_tours=osb2.objsortbm_bonus_nb_tours,
+                                    objsortbm_bonus_distance=osb2.objsortbm_bonus_distance,
+                                    objsortbm_bonus_aggressif=osb2.objsortbm_bonus_aggressif,
+                                    objsortbm_bonus_soutien=osb2.objsortbm_bonus_soutien,
+                                    objsortbm_bonus_soi_meme=osb2.objsortbm_bonus_soi_meme,
+                                    objsortbm_bonus_monstre=osb2.objsortbm_bonus_monstre,
+                                    objsortbm_bonus_joueur=osb2.objsortbm_bonus_joueur,
+                                    objsortbm_bonus_case=osb2.objsortbm_bonus_case,
+                                    objsortbm_bonus_mode=osb2.objsortbm_bonus_mode,
+                                    objsortbm_malchance=osb2.objsortbm_malchance,
+                                    objsortbm_nb_utilisation_max=osb2.objsortbm_nb_utilisation_max
+                                    FROM objets_sorts_bm osb2
+                                    WHERE osb2.objsortbm_cod=:objsortbm_cod and osb1.objsortbm_parent_cod=osb2.objsortbm_cod";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(":objsortbm_cod" => $objsortsbm->objsortbm_cod), $stmt);
+                }
                 // Logger les infos pour suivi admin
                 $log.="ajoute/modifie de l'objet_sort #".$objsortsbm->objsortbm_cod."\n".obj_diff($clone_os, $objsortsbm);
             }
@@ -206,24 +208,37 @@ if ($erreur == 0)
     echo "<hr>";
 
     $objsortbm_gobj_cod = 1*(int)$_REQUEST["objsortbm_gobj_cod"] ;
-    if ($objsortbm_gobj_cod>0)
+    $objsortbm_obj_cod = 1*(int)$_REQUEST["objsortbm_obj_cod"] ;
+    if ($objsortbm_gobj_cod>0 || $objsortbm_obj_cod>0)
     {
-        $gobj = new objet_generique();
-        $gobj->charge($objsortbm_gobj_cod);
-        echo "Détail des sorts sur l'objet générique: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
-        $exemplaires = $gobj->getNombreExemplaires();
-        echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
-        echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
-        echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
-        echo "<br>";
+        if ($objsortbm_gobj_cod>0)
+        {
+            $gobj = new objet_generique();
+            $gobj->charge($objsortbm_gobj_cod);
+            echo "Détail des sorts sur l'objet générique: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+            $exemplaires = $gobj->getNombreExemplaires();
+            echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
+            echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>" . $exemplaires->total . "</strong><br>";
+            echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>" . $exemplaires->inventaire . "</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
+            echo "<br>";
+        }
+        else
+        {
+            $obj = new objets();
+            $obj->charge($objsortbm_obj_cod);
+            echo "Détail des conditions d'équipement sur l'<u>OBJET SPECIFIQUE</u>: <strong>#{$obj->obj_cod} - {$obj->obj_nom}</strong><br>";
+            echo "L'objet:<br>";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>".$obj->trouve_objet()."</strong><br>";
+            echo "<br>";
+        }
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
         echo '<form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
              <input type="hidden" name="methode" value="sauve">
              <input type="hidden" id="objsortbm_cod" name="objsortbm_cod" value="0">
-             <input type="hidden" id="objsortbm_gobj_cod" name="objsortbm_gobj_cod" value="' . $objsortbm_gobj_cod . '">
-             <input type="hidden" id="objsortbm_obj_cod" name="objsortbm_obj_cod" value="">
+             <input type="hidden" id="objsortbm_gobj_cod" name="objsortbm_gobj_cod" value="' . ($objsortbm_gobj_cod>0 ? $objsortbm_gobj_cod : "") . '">
+             <input type="hidden" id="objsortbm_obj_cod" name="objsortbm_obj_cod" value="'. ($objsortbm_obj_cod>0 ? $objsortbm_obj_cod : "") .'">
              ';
         echo '<table width="100%" class=\'bordiv\'><tr><td>Sélection du type de bonus/malus CODE (<em> ou tbonus_cod</em>) :</td><td>
                 <input data-entry="val" name="objsortbm_tbonus_libc" id="' . $row_id . 'libc" type="text" size="5" value="" onChange="setNomByBMLibc(\'' . $row_id . 'misc_nom\', \'bonus_type2\', $(\'#' . $row_id . 'libc\').val().toUpperCase());">
@@ -256,7 +271,12 @@ if ($erreur == 0)
 
         echo "<strong><br>Liste des sorts BM sur l'objet</strong> :<br>";
         $objsortsbm = new objets_sorts_bm();
-        $lsorts = $objsortsbm->getBy_objsortbm_gobj_cod($gobj->gobj_cod);
+
+        if ( $objsortbm_gobj_cod>0) {
+            $lsorts = $objsortsbm->getBy_objsortbm_gobj_cod($objsortbm_gobj_cod);
+        }else {
+            $lsorts = $objsortsbm->getBy_objsortbm_obj_cod($objsortbm_obj_cod);
+        }
         if ($lsorts)
         {
             echo '<table width="100%" class=\'bordiv\'>';
@@ -277,8 +297,12 @@ if ($erreur == 0)
             {
                 $bonus = new bonus_type();
                 $bonus->charge($os->objsortbm_tbonus_cod);
-                echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSortBM({$k}, {$os->objsortbm_cod});'></td>
-                      <td>{$os->objsortbm_cod}</td>
+                if((int)$os->objsortbm_gobj_cod==0 && (int)$os->objsortbm_parent_cod>0){
+                    echo "<tr id='sortlist-{$k}'><td>Générique</td>";
+                } else{
+                    echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSortBM({$k}, {$os->objsortbm_cod});'></td>";
+                }
+                echo "<td>{$os->objsortbm_cod}</td>
                       <td>{$os->objsortbm_tbonus_cod} ({$bonus->tonbus_libelle}) </td>
                       <td>".$os->getNom()."</td>
                       <td>".$os->objsortbm_cout." PA</td>
@@ -303,16 +327,26 @@ if ($erreur == 0)
             echo "<em>Il n'y a pas de sort BM sur cet objet</em>";
         }
     }
-?>
-<br> <strong><u>Remarques</u></strong>:<br>
-    * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
-    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront immédiatement ensorcellés<br>
-    * Il y a des objets qui ne peuvent pas être équipé <em>(ce n'est pas contrôlé ici)</em><br>
-    * Les familiers pourront aussi lancer les sorts BM si l'objet n'a pas besoin d'être équipé<br>
-    * L'IA des monstres ne sait pas utiliser ces objets<br>
-<br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objsortbm_gobj_cod"];?>">Retour au modification d'objets génériques</a>
-<?php
-
+    if ($objsortbm_gobj_cod>0)
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+            * N’oubliez pas que TOUS les exemplaires d’un objet générique seront immédiatement ensorcellés<br>
+            * Il y a des objets qui ne peuvent pas être équipé <em>(ce n’est pas contrôlé ici)</em><br>
+            * Les familiers pourront aussi lancer les sorts BM si l’objet n’a pas besoin d’être équipé<br>
+            * L’IA des monstres ne sait pas utiliser ces objets<br>
+        <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod='.$_REQUEST["objsortbm_gobj_cod"].'">Retour au modification d’objets génériques</a>';
+    }
+    else
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+            * N’oubliez pas que sort ajouté ici, le seront en plus de ceux du générique<br>
+            * Il y a des objets qui ne peuvent pas être équipé <em>(ce n’est pas contrôlé ici)</em><br>
+            * Les familiers pourront aussi lancer les sorts BM si l’objet n’a pas besoin d’être équipé<br>
+            * L’IA des monstres ne sait pas utiliser ces objets<br>
+        <br><p style="text-align:center;"><a href="admin_objet_edit.php?&methode=objet&num_objet='.$_REQUEST["objsortbm_obj_cod"].'">Retour aux modifications de l’objets</a>';
+    }
 }
 
 $contenu_page = ob_get_contents();

@@ -698,11 +698,11 @@ if ($erreur == 0)
                     $sort->charge($objsort->objsort_sort_cod);
                     echo $sort->sort_nom." (".$objsort->getCout()."PA), ";
                 }
-                echo ': <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">éditer</a>';
+                echo ': <a target="_blank" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">éditer</a>';
             }
             else
             {
-                echo 'Aucun: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucun: <a target="_blank" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
             $objsortbms = new objets_sorts_bm();
@@ -714,11 +714,11 @@ if ($erreur == 0)
                     $bonus->charge($objsortbm->objsortbm_tbonus_cod);
                     echo $bonus->tonbus_libelle." (".$objsortbm->objsortbm_cout."PA), ";
                 }
-                echo ': <a target="_blanck" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">éditer</a>';
+                echo ': <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">éditer</a>';
             }
             else
             {
-                echo 'Aucun: <a target="_blanck" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucun: <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
             $objbm = new objets_bm();
@@ -730,11 +730,11 @@ if ($erreur == 0)
                     $bonus->charge($objbm->objbm_tbonus_cod);
                     echo $bonus->tonbus_libelle." (".$objbm->objbm_bonus_valeur."),";
                 }
-                echo ': <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">éditer</a>';
+                echo ': <a target="_blank" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">éditer</a>';
             }
             else
             {
-                echo 'Aucun: <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucun: <a target="_blank" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             $objelem = new objet_element();
             echo "<tr><td class=\"soustitre2\">Condition(s) d'équipement</td><td>";
@@ -746,11 +746,11 @@ if ($erreur == 0)
                     $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
                     echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
                 }
-                echo ': <a target="_blanck" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                echo ': <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
             }
             else
             {
-                echo 'Aucune: <a target="_blanck" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
             ?>
