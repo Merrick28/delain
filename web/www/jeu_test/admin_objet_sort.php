@@ -112,6 +112,7 @@ if ($erreur == 0)
                 if ($_REQUEST["objsort_gobj_cod"]!="")
                 {
                     $req = "UPDATE objets_sorts os1 SET 
+                                    objsort_sort_cod=os2.objsort_sort_cod,
                                     objsort_nom=os2.objsort_nom,
                                     objsort_cout=os2.objsort_cout,                                
                                     objsort_malchance=os2.objsort_malchance,
@@ -237,7 +238,7 @@ if ($erreur == 0)
             echo "<em>Il n'y a pas de sort sur cet objet</em>";
         }
     }
-    if ($objsortbm_gobj_cod>0)
+    if ($objsort_gobj_cod>0)
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
             * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
@@ -245,7 +246,7 @@ if ($erreur == 0)
             * Il y a des objets qui ne peuvent pas être équipé <em>(ce n’est pas contrôlé ici)</em><br>
             * Les familiers pourront aussi lancer les sorts si l’objet n’a pas besoin d’être équipé<br>
             * L’IA des monstres ne sait pas utiliser ces objets<br>
-            <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objsort_gobj_cod"];?>">Retour au modification d’objets génériques</a>';
+            <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod='.$_REQUEST["objsort_gobj_cod"].'">Retour au modification d’objets génériques</a>';
     }
     else
     {
