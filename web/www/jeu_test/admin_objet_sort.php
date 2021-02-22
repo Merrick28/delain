@@ -109,6 +109,20 @@ if ($erreur == 0)
                 $objsorts->objsort_equip_requis = $_REQUEST["objsort_equip_requis"]=="O" ? "true" : "false" ;
                 $objsorts->stocke($new);
 
+                if ($_REQUEST["objsort_gobj_cod"]!="")
+                {
+                    $req = "UPDATE objets_sorts os1 SET 
+                                    objsort_nom=os2.objsort_nom,
+                                    objsort_cout=os2.objsort_cout,                                
+                                    objsort_malchance=os2.objsort_malchance,
+                                    objsort_nb_utilisation_max=os2.objsort_nb_utilisation_max,
+                                    objsort_equip_requis=os2.objsort_equip_requis
+                                    FROM objets_sorts os2
+                                    WHERE os2.objsort_cod=:objsort_cod and os1.objsort_parent_cod=os2.objsort_cod";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(":objsort_cod" => $objsorts->objsort_cod), $stmt);
+                }
+                
                 // Logger les infos pour suivi admin
                 $log.="ajoute/modifie de l'objet_sort #".$objsorts->objsort_cod."\n".obj_diff($clone_os, $objsorts);
             }
