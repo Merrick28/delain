@@ -13,7 +13,7 @@ CREATE TABLE perso_nb_sorts_bm
 );
 ALTER TABLE perso_nb_sorts_bm  OWNER TO delain;
 GRANT ALL ON TABLE perso_nb_sorts_bm TO delain;
-COMMENT ON TABLE public.perso_nb_sorts_bm  IS 'Nb de fois où un sort BM est utilisée par un joueur (tour)';
+COMMENT ON TABLE public.perso_nb_sorts_bm  IS 'Nb de fois où un sort BM est utilisé par un joueur (tour)';
 
 ALTER TABLE perso_nb_sorts_bm  ADD CONSTRAINT uniq_pnbsbm_perso_cod_objsortbm_cod UNIQUE (pnbsbm_perso_cod, pnbsbm_objsortbm_cod);
 
