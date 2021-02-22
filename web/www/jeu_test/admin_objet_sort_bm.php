@@ -164,6 +164,7 @@ if ($erreur == 0)
                 if ($_REQUEST["objsortbm_gobj_cod"]!="")
                 {
                     $req = "UPDATE objets_sorts_bm osb1 SET 
+                                    objsortbm_tbonus_cod=osb2.objsortbm_tbonus_cod,
                                     objsortbm_nom=osb2.objsortbm_nom,
                                     objsortbm_cout=osb2.objsortbm_cout,
                                     objsortbm_bonus_valeur=osb2.objsortbm_bonus_valeur,
@@ -254,7 +255,7 @@ if ($erreur == 0)
                         Soi-même: '.create_selectbox("objsortbm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soi_meme")).'
                         Monstres: '.create_selectbox("objsortbm_bonus_monstre", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_monstre")).'
                         Joueurs: '.create_selectbox("objsortbm_bonus_joueur", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_joueur")).'
-                        Une case: '.create_selectbox("objsortbm_bonus_case", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_bonus_case")).'
+                        <input type="hidden" name="objsortbm_bonus_case" value="N"><!--Une case: '.create_selectbox("objsortbm_bonus_case", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_bonus_case")).'-->
                     </td></tr>
                 <tr><td>Distance de la cible:</td><td><input type="text" id="objsortbm_bonus_distance" name="objsortbm_bonus_distance" size="4">&nbsp;</td></tr>                                  
                 <tr><td>Type de Bonus/Malus:</td><td>
