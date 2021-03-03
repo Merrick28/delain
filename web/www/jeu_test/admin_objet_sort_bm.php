@@ -275,7 +275,7 @@ if ($erreur == 0)
 
         if ( $objsortbm_gobj_cod>0) {
             $lsorts = $objsortsbm->getBy_objsortbm_gobj_cod($objsortbm_gobj_cod);
-        }else {
+        } else {
             $lsorts = $objsortsbm->getBy_objsortbm_obj_cod($objsortbm_obj_cod);
         }
         if ($lsorts)
