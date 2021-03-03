@@ -59,16 +59,26 @@ switch($_REQUEST["request"])
             if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur la recherche de l\objet magique"}');
             $sort_cod = (int)$result["objsort_sort_cod"];
         }
+        else if ($type=="sort6")
+        {
+            $req  = "select objsortbm_tbonus_cod from objets_sorts_bm join perso_objets on perobj_obj_cod=objsortbm_obj_cod where perobj_perso_cod=:perso_cod and objsortbm_cod=:objsortbm_cod;";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod, ":objsortbm_cod" => $misc_cod), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur la recherche de l\objet magique"}');
+            $sort_cod = (int)$result["objsortbm_tbonus_cod"];
+        }
 
         $list_function_cout_pa = array(
             "sort1" =>   "cout_pa_magie($perso_cod,$misc_cod,1)",
             "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)",
-            "sort5" =>   "cout_pa_objet_sort($perso_cod,$misc_cod)"
+            "sort5" =>   "cout_pa_objet_sort($perso_cod,$misc_cod)",
+            "sort6" =>   "cout_pa_objet_sort_bm($perso_cod,$misc_cod)"
         );
         $list_link = array(
             "sort1" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,1])",
             "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])",
-            "sort5" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,5,$misc_cod])"
+            "sort5" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,5,$misc_cod])",
+            "sort6" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,6,$misc_cod])"
         );
 
         if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris sans nom."}');
@@ -86,13 +96,24 @@ switch($_REQUEST["request"])
         if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le comptage des favoris"}');
         if ($result["count"]*1>=10) die('{"resultat":1, "message":"Le nombre maximum de favoris est déjà atteint."}');
 
-
-        $req  = "SELECT sort_nom nom,  $list_function_cout_pa[$type] as cout_pa FROM sorts WHERE sort_cod=:sort_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":sort_cod" => $misc_cod), $stmt);
-        if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
-        //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
-        $cout_pa = $result["cout_pa"] ;
+        if ($type=="sort6")
+        {
+            $req  = "SELECT tonbus_libelle nom,  $list_function_cout_pa[$type] as cout_pa FROM bonus_type WHERE tbonus_cod=:sort_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":sort_cod" => $misc_cod), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
+            //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
+            $cout_pa = $result["cout_pa"] ;
+        }
+        else
+        {
+            $req  = "SELECT sort_nom nom,  $list_function_cout_pa[$type] as cout_pa FROM sorts WHERE sort_cod=:sort_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":sort_cod" => $misc_cod), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
+            //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
+            $cout_pa = $result["cout_pa"] ;
+        }
 
         $req   = "INSERT INTO public.perso_favoris(pfav_perso_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link) 
                     VALUES(:pfav_perso_cod, :pfav_type, :pfav_misc_cod, :pfav_nom, :pfav_function_cout_pa, :pfav_link) RETURNING pfav_cod";
@@ -352,6 +373,10 @@ switch($_REQUEST["request"])
             if ($params["objet_generique_bm"]=="true")
             {  // limitation aux objet avec des bonus/malus de rattachés
                 $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_bm where objbm_gobj_cod=gobj_cod) ";
+            }
+            if ($params["objet_generique_sort_bm"]=="true")
+            {  // limitation aux objet avec des bonus/malus de rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_sorts_bm where objsortbm_gobj_cod=gobj_cod) ";
             }
             if ($params["objet_generique_equipe"]=="true")
             {  // limitation aux objet avec des bonus/malus de rattachés
@@ -764,6 +789,13 @@ switch($_REQUEST["request"])
                 $req = "select * from objets_sorts where objsort_cod = ?  ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["objsort_cod"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
+            case 'objets_sorts_bm':     // sort sur objet
+                $req = "select * from objets_sorts_bm where objsortbm_cod = ?  ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["objsortbm_cod"]), $stmt);
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 

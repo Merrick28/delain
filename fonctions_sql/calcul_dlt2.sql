@@ -641,6 +641,11 @@ begin
     set pnbs_nombre = 0
     where pnbs_perso_cod = personnage;
 
+        /* nombre sort objet bonus  */
+    update perso_nb_sorts_bm
+    set pnbsbm_nombre = 0
+    where pnbsbm_perso_cod = personnage;
+
     /* transactions */
     update transaction
     set tran_nb_tours = tran_nb_tours - 1

@@ -414,6 +414,21 @@ class objets
         return false ;
     }
 
+    /**
+     * Retourne vrai si le perso passé en paramètre peu equiper l'objet, et false sinon
+     * @return boolean
+     */
+    function trouve_objet()
+    {
+        $pdo = new bddpdo;
+        $req = "select trouve_objet(:obj_cod) as trouve_objet; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        return $result["trouve_objet"] ;
+    }
+
     /***
      * Retourne l'état d'un objet
      * @return string

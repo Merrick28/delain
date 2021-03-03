@@ -28,7 +28,7 @@ if ($erreur == 0) {
     {
         //echo "<pre>";  print_r($_REQUEST); echo "</pre>";
 
-        $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ajout/modification de conditions d'équipement sur objets génériques:\n";
+        $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ajout/modification de conditions d'équipement sur objets / objets génériques:\n";
 
         // Sauvegarde des elements créés pour l'étape
         $log_elements = ""; // pour loger la différence sur les éléments
@@ -78,18 +78,31 @@ if ($erreur == 0) {
             }
         }
 
-        $element = new objet_element;
-        if ($result = $element->clean( $_REQUEST["objelem_gobj_cod"], $element_list))        // supprimer tous les elements qui ne sont pas dans la liste.
-        {
-            // Logguer les supressions
-            foreach ($result as $k => $e)
+        if ($_REQUEST["objelem_obj_cod"]=="") {
+            if ($result = $element->clean_generique( $_REQUEST["objelem_gobj_cod"], $element_list))        // supprimer tous les elements du generique qui ne sont pas dans la liste.
             {
-                $log_elements.="Suppression element #".$e->objelem_cod."\n".obj_diff($element, $e);
+                // Logguer les supressions
+                foreach ($result as $k => $e)
+                {
+                    $log_elements.="Suppression element #".$e->objelem_cod."\n".obj_diff($element, $e);
+                }
             }
+            // Logger les infos pour suivi admin
+            $log .= "ajoute/modifie des conditions d'équipement objet générique #" . $_REQUEST["objelem_gobj_cod"] . "\n" . $log_elements;
+        } else {
+            if ($result = $element->clean_specifique( $_REQUEST["objelem_obj_cod"], $element_list))        // supprimer tous les elements du specifique qui ne sont pas dans la liste.
+            {
+                // Logguer les supressions
+                foreach ($result as $k => $e)
+                {
+                    $log_elements.="Suppression element #".$e->objelem_cod."\n".obj_diff($element, $e);
+                }
+            }
+            // Logger les infos pour suivi admin
+            $log .= "ajoute/modifie des conditions d'équipement objet  #" . $_REQUEST["objelem_obj_cod"] . "\n" . $log_elements;
         }
 
-        // Logger les infos pour suivi admin
-        $log.="ajoute/modifie des conditions d'équipement objet générique #".$_REQUEST["objelem_gobj_cod"]."\n".$log_elements;
+
         writelog($log,'objet_edit');
         echo "<div class='bordiv'><pre>$log</pre></div>";
     }
@@ -109,24 +122,38 @@ if ($erreur == 0) {
 
     echo "<hr>";
 
-    $objelem_gobj_cod = 1*(int)$_REQUEST["objelem_gobj_cod"] ;
-    if ($objelem_gobj_cod>0)
+    $objelem_gobj_cod = 1*(int)$_REQUEST["objelem_gobj_cod"] ;      // Le generique
+    $objelem_obj_cod = 1*(int)$_REQUEST["objelem_obj_cod"] ;        // Le specifique
+    if ($objelem_gobj_cod>0 || $objelem_obj_cod>0)
     {
-        $gobj = new objet_generique();
-        $gobj->charge($objelem_gobj_cod);
-        echo "Détail des conditions d'équipement sur l'objet générique: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
-        $exemplaires = $gobj->getNombreExemplaires();
-        echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
-        echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
-        echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
-        echo "<br>";
+
+        if ($objelem_gobj_cod>0)
+        {
+            $gobj = new objet_generique();
+            $gobj->charge($objelem_gobj_cod);
+            echo "Détail des conditions d'équipement sur l'<u>OBJET GENERIQUE</u>: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+            $exemplaires = $gobj->getNombreExemplaires();
+            echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
+            echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
+            echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
+            echo "<br>";
+        }
+        else
+        {
+            $obj = new objets();
+            $obj->charge($objelem_obj_cod);
+            echo "Détail des conditions d'équipement sur l'<u>OBJET SPECIFIQUE</u>: <strong>#{$obj->obj_cod} - {$obj->obj_nom}</strong><br>";
+            echo "L'objet:<br>";
+            echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>".$obj->trouve_objet()."</strong><br>";
+            echo "<br>";
+        }
 
 
         // Mise en forme de l'étape pour la saisie des infos.
         echo '  <br>
                     <form  method="post"><input type="hidden" name="methode" value="sauve" />
-                    <input type="hidden" name="objelem_gobj_cod" value="' . $objelem_gobj_cod . '" />
-                    <input type="hidden" name="objelem_obj_cod" value="" />
+                    <input type="hidden" name="objelem_gobj_cod" value="' . ($objelem_gobj_cod>0 ?  $objelem_gobj_cod : "")  . '" />
+                    <input type="hidden" name="objelem_obj_cod" value="' . ($objelem_obj_cod>0 ?  $objelem_obj_cod : "") . '" />
                     <table width="80%" align="center">';
         echo '<table width="80%" align="center">';
 
@@ -139,7 +166,11 @@ if ($erreur == 0) {
         $param['M'] = "0" ;
 
         $element=new objet_element();
-        $elements = $element->getBy_objelem_gobj_cod($objelem_gobj_cod);
+        if ($objelem_gobj_cod>0){
+            $elements = $element->getBy_objelem_gobj_cod($objelem_gobj_cod);
+        } else {
+            $elements = $element->getBy_objelem_obj_cod($objelem_obj_cod);
+        }
         while ( !$elements || sizeof($elements) < (1*$param['n']) )   $elements[] =  new objet_element;
         $add_buttons = (1*$param['M']==1*$param['n'] && 1*$param['M']>0) ? false : true;
 
@@ -188,17 +219,30 @@ if ($erreur == 0) {
         echo '<hr>';
     }
 
-?>
-<br> <strong><u>Remarques</u></strong>:<br>
-    * N'oubliez pas que TOUS les exemplaires d'un objet générique possèdederont immédiatement ces conditions d'équipement.<br>
-    * S'il n'y a aucune condition, les conditions d'usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
-    * Par défaut un familier ne peut jamais vérifier les contions d'équipement d'un objet, <b>SAUF</b>:<br>
-    &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
-    * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l'objet:<br>
-    &nbsp;&nbsp;-> L'objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
-    &nbsp;&nbsp;-> Lorsqu'il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
-<br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objelem_gobj_cod"];?>">Retour au modification d'objets génériques</a>
-<?php
+    if ($objelem_gobj_cod>0)
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * N’oubliez pas que TOUS les exemplaires d’un objet générique possèdederont immédiatement ces conditions d’équipement.<br>
+            * S’il n’y a aucune condition, les conditions d’usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
+            * Par défaut un familier ne peut jamais vérifier les contions d’équipement d’un objet, <b>SAUF</b>:<br>
+            &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
+            * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l’objet:<br>
+            &nbsp;&nbsp;-> L’objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
+            &nbsp;&nbsp;-> Lorsqu’il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
+        <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod='.$_REQUEST["objelem_gobj_cod"].'">Retour aux modificationx d’objets génériques</a>';
+    } else {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * N’oubliez pas les conditions ici seront appliquées <u>en plus</u> des conditions de l’objet générique.<br>
+            * S’il n’y a aucune condition, les conditions d’usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
+            * Par défaut un familier ne peut jamais vérifier les contions d’équipement d’un objet, <b>SAUF</b>:<br>
+            &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
+            * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l’objet:<br>
+            &nbsp;&nbsp;-> L’objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
+            &nbsp;&nbsp;-> Lorsqu’il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
+            <br><p style="text-align:center;"><a href="admin_objet_edit.php?&methode=objet&num_objet='.$_REQUEST["objelem_obj_cod"].'">Retour aux modifications de l’objets</a>';
+        
+    }
+
 
 }
 

@@ -55,7 +55,8 @@ begin
   (23, 'Niveau Forgemage', 'COMPETENCE'),
   (24, 'Niveau Enluminure', 'COMPETENCE'),
   (25, 'A terminé l''étape de QA', 'QUETE'),
-  (26, 'Nombre de lock', 'VARIABLE');
+  (26, 'Nombre de lock', 'VARIABLE'),
+  (27, 'Code du perso', 'CARAC');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -177,6 +178,9 @@ begin
 
   elsif (v_carac_cod = 26) then                  --    (26, 'Nombre de lock', 'VARIABLE')
     select into v_perso_carac count(*) from lock_combat where lock_cible = v_perso_cod or lock_attaquant = v_perso_cod ;
+
+  elsif (v_carac_cod = 27) then                  --   (27, 'Code du perso', 'CARAC');
+    select into v_perso_carac perso_cod::text from perso where perso_cod = v_perso_cod ;
 
   else
     return 0 ;    -- erreur dans les paramètres

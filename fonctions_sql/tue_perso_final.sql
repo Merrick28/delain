@@ -35,6 +35,7 @@ CREATE OR REPLACE FUNCTION tue_perso_final(integer, integer) RETURNS text
 /*                            l'étage                        */
 /* Modif Marlyza 16/05/2018 : ajout de la fonction rappel    */
 /*                            du familier                    */
+/* Modif Marlyza 03/03/2021 : détachement monture            */
 /*************************************************************/
 declare
 	code_retour text;
@@ -271,6 +272,9 @@ end if;
 	end if;
        -- 2.1 : la cible est un monstre :
 	if type_cible = 2 then
+		  -- avant toute chose on détache le perso de sa monture (si le monstre décédé en était une)
+	  update perso set perso_monture=null where perso_monture = v_cible ;
+
 		-- Gestion de la perte des objets (1 == mort définitive)
 		v_corps := tue_perso_perd_objets(v_cible, 1);
 
@@ -330,6 +334,10 @@ end if;
 		end if;
 	-- 2.2 : la cible est un joueur
 	elsif type_cible = 1 then
+	
+	  -- avant toute chose on détache le perso de sa monture (s'il en avait une), le perso respawnera sans elle
+	  update perso set perso_monture=null where perso_cod = v_cible ;
+
                 /* Modif Kahlann */
 		-- si un perso meurt en arène, on remet familier impalpable de la durée d'impalpabilité parametrée pour l'étage
 		if v_etage_arene = 'O' then
