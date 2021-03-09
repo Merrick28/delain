@@ -30,13 +30,17 @@ if ($erreur == 0)
               join perso_position on ppos_perso_cod=preg_perso_cod
               where preg_perso_cod=$perso_cod ";
 
-    $db->query($req);
-    if ($db->next_record())
+    $pdo = new bddpdo;
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array(), $stmt);
+    $result = $stmt->fetch();
+
+    if ($result)
     {
-        $date_inscription = $db->f("preg_date_inscription");
-        $checkpoint       = $db->f("checkpoint");
-        $preg_pos_cod     = $db->f("preg_pos_cod");
-        $ppos_pos_cod     = $db->f("ppos_pos_cod");
+        $date_inscription = $result["preg_date_inscription"];
+        $checkpoint       = $result["checkpoint"];
+        $preg_pos_cod     = $result["preg_pos_cod"];
+        $ppos_pos_cod     = $result["ppos_pos_cod"];
         if ($date_inscription != '')
         {
             echo "<br>Vous êtes bien inscrit(e) dans nos registres. <br>";
