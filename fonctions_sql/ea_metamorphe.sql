@@ -150,7 +150,7 @@ begin
             from perso_objets
             inner join objets on obj_cod=perobj_obj_cod
             inner join objet_generique on gobj_cod=obj_gobj_cod 
-            where perobj_equipe='O';
+            where perobj_equipe='O' and perobj_perso_cod =  v_code_perso ;
 
         /*****************************************/
         /* choix d'une arme            */
