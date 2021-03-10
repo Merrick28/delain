@@ -143,14 +143,19 @@ begin
             perso_gmon_cod = v_gmon
             where perso_cod = v_source;
 
-        /* *************************************** */
+        /* *************************************************************************** */
         /* on supprime l'équipement, pour recréer en conformité avec le nouveau monstre*/
-        /* *************************************** */
+        /* *************************************************************************** */
         perform f_del_objet(obj_cod)
             from perso_objets
             inner join objets on obj_cod=perobj_obj_cod
             inner join objet_generique on gobj_cod=obj_gobj_cod 
             where perobj_equipe='O' and perobj_perso_cod =  v_code_perso ;
+
+        /* ******************************************************************************* */
+        /* on supprime les EA qui a généré la métamorphose si elle n'est pas lié au générique*/
+        /* ******************************************************************************* */
+        delete from fonction_specifique where fonc_nom = 'ea_metamorphe' and fonc_perso_cod = v_code_perso ;
 
         /*****************************************/
         /* choix d'une arme            */
