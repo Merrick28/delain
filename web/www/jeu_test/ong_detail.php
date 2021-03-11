@@ -96,7 +96,7 @@
                             {
                                 $monture_list .= ",".$result['monture_cod'];
                                 echo "<span style='font-size: 11px; color:darkblue'>sur ". $result['monture'];
-                                if (($result['bless_monture'] != "indemne") && ($result['bless'] != "égratigné"))
+                                if (($result['bless_monture'] != "indemne") && ($result['bless_monture'] != "égratigné"))
                                     echo "<em> - " . $result['bless_monture'], "</em>";
                                 echo "</span><br>";
                             }
