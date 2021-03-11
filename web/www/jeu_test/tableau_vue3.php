@@ -102,7 +102,7 @@ if (!isset($tab_vue))
     }
 
 </script>
-<script src="/scripts/filtres.js?v20190318" type="text/javascript"></script>
+<script src="/scripts/filtres.js?v<?php echo $__VERSION; ?>" type="text/javascript"></script>
 
 <table width="100%" cellspacing="0" cellpadding="0">
     <?php
