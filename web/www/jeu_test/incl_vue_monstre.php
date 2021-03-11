@@ -28,11 +28,14 @@
 		perso_pv_max, pos_cod, is_surcharge(perso_cod,$perso_cod) as surcharge, pgroupe_groupe_cod, l1.lock_nb_tours as lock1,
 		l2.lock_nb_tours as lock2, coalesce(compt_monstre, 'N') as compt_monstre, coalesce(compt_cod, -1) as compt_cod, perso_dirige_admin,
 		perso_type_perso,
-		case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette
+		case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette,
+		COALESCE(gmon_monture, 'N') as gmon_monture,
+		COALESCE(f_perso_cavalier(perso_cod), 0) as cavalier 
 	FROM perso
 	INNER JOIN perso_position ON ppos_perso_cod = perso_cod
 	INNER JOIN positions ON pos_cod = ppos_pos_cod
 	INNER JOIN race ON perso_race_cod = race_cod
+	LEFT OUTER JOIN monstre_generique ON gmon_cod = perso_gmon_cod
 	LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 	LEFT OUTER JOIN lock_combat l1 ON l1.lock_cible = perso_cod AND l1.lock_attaquant = $perso_cod
 	LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
@@ -40,6 +43,8 @@
 	LEFT OUTER JOIN compte ON compt_cod = pcompt_compt_cod 
     LEFT OUTER JOIN (
                     select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
+                    union 
+                    select f_perso_monture(perso_cod) triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod and f_perso_monture(perso_cod) is not null where compt_cod=$compt_cod and perso_actif='O'                    
                 ) as triplette on triplette_perso_cod = perso_cod
 	WHERE pos_etage = $etage
 		and perso_type_perso in (2,3)
@@ -69,12 +74,15 @@
                    onkeyup="filtre_table_search('tableMonstres');">
             &nbsp;&nbsp;<strong>Limiter aux:&nbsp;&nbsp;</strong>
             &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="3" type="radio"
-                               onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Familiers <span
+                               onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Familiers/Montures <span
                         id="ft-familier"></span></em>
             &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="2"
                                type="radio" <?php if ($tab_vue != 5) echo "checked"; ?>
                                onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Monstres <span
                         id="ft-monstre"></span></em>
+            &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="-2" type="radio"
+                               onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Montures <span
+                        id="ft-monture"></span></em>
             &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="0" type="radio"
                                onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Partisans <span
                         id="ft-partisan"></span></em>
@@ -181,6 +189,8 @@
                 $cdata = "";
                 $cdata .= "data-partisans='" . (($coterie > 0 && $result['pgroupe_groupe_cod'] == $coterie) || ($result['triplette'] == 1) ? "O" : "N") . "' ";
                 $cdata .= "data-type='" . ($result['perso_type_perso']) . "' ";
+                $cdata .= "data-monture='" . ($result['gmon_monture']) . "' ";
+                $cdata .= "data-chevauche='" . ($result['cavalier']) . "' ";
                 echo '<tr id="row-' . $row . '" ' . $cdata . '>
 				<td ' . $ch_style . '><div style="text-align:center;">' . $result['distance'] . '</div></td>';
 
