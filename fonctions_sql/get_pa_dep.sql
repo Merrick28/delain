@@ -40,14 +40,13 @@ begin
 		where ppos_perso_cod = personnage
 		and ppos_pos_cod = pos_cod;
 
+  select into v_type_perso perso_type_perso
+    from perso
+    where perso_cod = personnage;
+
 	-- cas de l'étage de l'araigné, un malus de deplacement sur tous l'étage pour les joueurs
-	if v_etage = 16 then
-		select into v_type_perso perso_type_perso
-			from perso
-			where perso_cod = personnage;
-		if v_type_perso != 2 then
+	if v_etage = 16 and v_type_perso != 2 then
 			code_retour := code_retour + 2;
-		end if;
 	end if;
 	code_retour := code_retour + v_pos_modif_pa_dep;
 
@@ -73,6 +72,11 @@ begin
   -- seuil minimum de 1 pour les déplacements!
 	if code_retour < 1 then
 		code_retour := 1;
+	end if;
+
+	-- Marlyza le 16/03/2021 : modification du seuil minimal (sauf monstre) 2PA si terrain standard/malus et 1PA si terrains à bonus
+	if code_retour=1 and v_pos_modif_pa_dep>=0 and v_type_perso != 2  then
+	  code_retour := 2;
 	end if;
 
 	-- fin de traitement, retourner le nombre de PA
