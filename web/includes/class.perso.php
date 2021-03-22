@@ -1811,6 +1811,15 @@ class perso
     }
 
     /**
+     * @return integer
+     */
+    public function getNbEvtNonLu()
+    {
+        $levt = new ligne_evt();
+        return $levt->getNbEvtByPersoNonLu($this->perso_cod);
+    }
+
+    /**
      * @return ligne_evt[]
      */
     public function getEvtNonLu()

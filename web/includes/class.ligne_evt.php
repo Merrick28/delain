@@ -192,15 +192,32 @@ class ligne_evt
      * @param $perso_cod
      * @return ligne_evt[]
      */
+    public function getNbEvtByPersoNonLu($perso_cod)
+    {
+        $pdo    = new bddpdo;
+        $req  = "SELECT count(*) as count  FROM ligne_evt WHERE levt_perso_cod1 = ?  AND levt_lu = 'N'";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return 0;
+        return $result["count"] ;
+
+    }
+
+    /**
+     * @param $perso_cod
+     * @return ligne_evt[]
+     */
     public function getByPersoNonLu($perso_cod)
     {
         $retour = array();
         $pdo    = new bddpdo;
+        // Marlysa - 2021-03-22 - Il arrive qu'un monstre possède plusieurs milliers d'evenement non-lu (comme un boss de defis léno par exemple)
+        // Lire ses milliers d'evenement n'apporte rien et ralenti l'nterface de l'admin, on limit au 100 derniers events! 
         $req
                 = "SELECT levt_cod  FROM ligne_evt
           WHERE levt_perso_cod1 = ?
           AND levt_lu = 'N'
-          ORDER BY levt_cod DESC";
+          ORDER BY levt_cod DESC LIMIT 100";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso_cod), $stmt);
         while ($result = $stmt->fetch())
