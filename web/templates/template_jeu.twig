@@ -73,8 +73,8 @@
     <div style="float: left;  width:12.5%;">
         <a href="/jeu_test/evenements.php">
             <img title="Evénements" src="{{ G_IMAGES }}events.png"></a>
-        {% if PERSO.has_evt_non_lu %}
-            <span class="badge">{{ PERSO.getEvtNonLu|length }}</span>
+        {% if PERSO.getNbEvtNonLu > 0 %}
+            <span class="badge">{{ PERSO.getNbEvtNonLu }}</span>
         {% endif %}
     </div>
     <div style="float: left;  width:12.5%;">

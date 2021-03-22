@@ -47,7 +47,7 @@ if ($mg->getByPersoCod($perso->perso_cod))
 
 
 $transaction        = $perso->transactions();
-$nb_evt_non_lu      = sizeof($perso->getEvtNonLu());
+$nb_evt_non_lu      = $perso->getNbEvtNonLu();
 
 
 // Gestion des droits
