@@ -168,13 +168,23 @@ end if;
 	/* Etape 1 : on récupère les infos de la cible    */
 	/**************************************************/
 	texte_prison := '';
-	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_etage_arene, v_perso_mortel, v_type_arene
-		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, etage_arene, perso_mortel, etage_type_arene
+	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_perso_mortel, v_type_arene
+		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, perso_mortel, etage_type_arene
 	from perso_position, perso, positions, etage
 	where ppos_perso_cod = v_cible
 		and perso_cod = v_cible
 		and ppos_pos_cod = pos_cod
 		and pos_etage = etage_numero;
+
+  /*
+  marlyza - 2021-03-24 :
+  Il y a bien un BUG qui arrive parfois (rarement) lorsque dans une arène le familier meure durant la même attaque que son maitre sur un EA ou un sort de zone.
+    * Le système fait une liste de tous les persos concernés par l'effet de zone et puis réalise la perte de PV, perso par perso:
+    * Traitement de la perte de PV sur le perso, il meure, il est en arène pas de perte de matos on le renvoi au bat admin (avec son familier)
+    * Traitement de la perte de PV sur le Familier, le familier est sortie de l'arène puisqu'il a suivi son maitre au bat admin et donc subit une mort normale.
+      ==> Pour corriger le problème, on va prendre le type d'arène sur le perso tueur plutot que sur le perso tué.
+   */
+	select etage_arene into v_etage_arene from perso_position, perso, positions, etage where ppos_perso_cod = v_attaquant and perso_cod = v_attaquant and ppos_pos_cod = pos_cod and pos_etage = etage_numero;
 
 	select into malediction ptitre_type
 	from perso_titre
