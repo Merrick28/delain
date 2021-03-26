@@ -84,11 +84,12 @@ function get_ea_trigger_param($post, $numero)
     foreach ($post as $key => $val) {
         if ((substr($key, 0, 10) == "fonc_trig_") && (substr($key, -strlen("{$numero}")) == $numero) && !isset($_POST['checkbox_' . $key])) {
             if (is_array($val)) {
-                // regarder s'il y a des objets à imbriquer (nom = object_[fonc_trig_nom+n°]_XXXXX
+                // regarder s'il y a des objets à imbriquer (nom = obj_[fonc_trig_nom+n°]_XXXXX
                 $base = substr($key, 0, -strlen("{$numero}"));
+
                 foreach ($_POST as $k => $v) {
                     if (substr($k, 0, strlen("obj_{$key}_")) == "obj_{$key}_") {
-                        $name = substr($k, strlen("obj_{$base}_") + 1);
+                        $name = substr($k, strlen("obj_{$base}_") + strlen("{$numero}"));
                         foreach ($v as $kk => $vv) {
                             if (!is_array($val[$kk])) $val[$kk] = [];
                             $val[$kk][$name] = $vv;
@@ -107,6 +108,7 @@ function get_ea_trigger_param($post, $numero)
         }
     }
 
+    //echo "<pre>"; print_r(array("post"=>$post, "numero"=>$numero, "fonc_trigger_param"=>$fonc_trigger_param)); echo "</pre>";
     return $fonc_trigger_param;
 }
 
