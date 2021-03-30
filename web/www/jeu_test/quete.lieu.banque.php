@@ -5,9 +5,6 @@ $verif_connexion::verif_appel();
 
 $methode2 = get_request_var('methode2', 'debut');
 
-$perso        = new perso;
-$perso        = $verif_connexion->perso;
-
 switch ($methode2)
 {
     case "debut":
