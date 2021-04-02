@@ -15,6 +15,7 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   v_gmon_monture text;
+  v_equitation integer;
 begin
 
 
@@ -50,6 +51,13 @@ begin
   select perso_cod into v_perso_cod from perso where perso_monture=v_monture ;
   if found then
     return '<p>Erreur ! Cette monture a déjà un cavalier !';
+  end if;
+
+  -- si le perso n'a pas de compétence équitation, on lui met 30% par défaut
+  select pcomp_modificateur into v_equitation from perso_competences where pcomp_perso_cod = v_perso and pcomp_pcomp_cod=104 ;
+  if not found then
+      v_equitation:= 30 ;
+      INSERT INTO perso_competences( pcomp_perso_cod, pcomp_pcomp_cod, pcomp_modificateur) VALUES (v_perso, 104, v_equitation);
   end if;
 
   -- Réaliser les actions du chevauchement !!!
