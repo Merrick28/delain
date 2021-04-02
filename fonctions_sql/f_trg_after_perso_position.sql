@@ -15,20 +15,30 @@ declare
 	v_ppos_cod integer;
 	v_perso_cod integer;    -- perso_cod de la monture ou du cavalier
 	v_familier integer;    -- perso_cod du familier s'il y en a un
+	v_p_etage integer;    -- etage du perso
+	v_m_etage integer;    -- etage de la monture
 begin
 
   -- cas d'un joueur qui se déplace
-  select ppos_cod, m.perso_cod into v_ppos_cod, v_perso_cod
+  select ppos_cod, m.perso_cod, pp.pos_etage, mp.pos_etage into v_ppos_cod, v_perso_cod, v_p_etage, v_m_etage
       from perso as p
       join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
       join perso_position on ppos_perso_cod = m.perso_cod
+      join positions mp on mp.pos_cod=ppos_pos_cod
+      join positions pp on pp.pos_cod=NEW.ppos_pos_cod
       where p.perso_cod=NEW.ppos_perso_cod and p.perso_type_perso=1 and ppos_pos_cod<>NEW.ppos_pos_cod ;
   if found then
-      -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture !
-      update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
-      delete from lock_combat where lock_attaquant = v_perso_cod;
-      delete from lock_combat where lock_cible = v_perso_cod;
-      delete from riposte where riposte_attaquant = v_perso_cod;
+      -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture (seulement s'il n'y a pas de changement d'étage)!
+      if v_p_etage = v_m_etage then
+          -- on deplace la monture sur la case du joueur
+          update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
+          delete from lock_combat where lock_attaquant = v_perso_cod;
+          delete from lock_combat where lock_cible = v_perso_cod;
+          delete from riposte where riposte_attaquant = v_perso_cod;
+      else
+          -- le joueur change d'étage on le détache de sa monture
+          update perso set perso_monture=null where perso_cod = NEW.ppos_perso_cod ;
+      end if;
   end if;
 
   -- cas d'une monture qui se déplace

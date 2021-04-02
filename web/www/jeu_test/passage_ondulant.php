@@ -37,5 +37,10 @@ if ($erreur == 0)
     {
         echo("<p><strong>Il semblerait bien que vous ne puissiez pas le prendre en étant tangible.</strong> Certainement une propriété de la matière qui pourrait vous empêcher de le prendre.");
     }
-    echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $cout_pa . " PA)</a></p>");
+    if ($perso->perso_monture > 0) {
+        echo("<p><strong>Vous ne pouvez pas prendre ce passage <u>avec une monture</u>.</strong></p>");
+    }
+    else {
+        echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $cout_pa . " PA)</a></p>");
+    }
 }
