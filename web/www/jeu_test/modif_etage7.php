@@ -26,7 +26,7 @@ $chemin = '../images/';
 if ( isset($_REQUEST["pos_etage"]) )
 {
     //cahrger les type de terrains
-    $req_m_terrain= "select ter_cod, ter_nom from terrain order by ter_nom";
+    $req_m_terrain= "select ter_cod, ter_nom from terrain where ter_cod>0 order by ter_nom";
     $stmt_m_terrain = $pdo->query($req_m_terrain);
     $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
 

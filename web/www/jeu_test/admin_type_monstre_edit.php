@@ -1226,7 +1226,7 @@ if ($erreur == 0)
 
                                     $req_m_terrain= "select ter_cod, ter_nom 
                                                                 from terrain 
-                                                                where not exists(select 1 from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod) order by ter_nom";
+                                                                where not exists(select 1 from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod) order by CASE WHEN ter_cod=0 then 1 ELSE 0 END, ter_nom";
                                     $stmt_m_terrain      = $pdo->query($req_m_terrain);
                                     while ($result_m_terrain = $stmt_m_terrain->fetch())
                                     {

@@ -38,6 +38,10 @@ begin
       else
           -- le joueur change d'étage on le détache de sa monture
           update perso set perso_monture=null where perso_cod = NEW.ppos_perso_cod ;
+
+          -- evenement chevaucher (108)
+          perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture [cible].', 'O', NULL);
+
       end if;
   end if;
 

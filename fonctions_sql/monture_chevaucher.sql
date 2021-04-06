@@ -63,6 +63,9 @@ begin
   -- Réaliser les actions du chevauchement !!!
   update perso set perso_pa = perso_pa - 4, perso_monture=v_monture where perso_cod=v_perso ;
 
+  -- evenement chevaucher (105)
+  perform insere_evenement(v_perso, v_monture, 105, '[attaquant] monte sur sa monture [cible].', 'O', NULL);
+
   return '<p>Désormais, vous chevauchez: ' || v_monture_nom || ' !';
 
 end;

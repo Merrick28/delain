@@ -24,12 +24,15 @@ begin
 
   select perso_nom into v_monture_nom from perso where perso_cod=v_monture ;
   if not found then
-    v_monture_nom := 'monture inconnue' ;
+    return '<p>Erreur ! la monture n''a pas été trouvée !';
   end if;
 
 
   -- Réaliser les actions du dé-chevauchement !!!
   update perso set perso_pa = perso_pa - 4, perso_monture=null where perso_cod=v_perso ;
+
+  -- evenement déchevaucher (106)
+  perform insere_evenement(v_perso, v_monture, 106, '[attaquant] est descendu de sa monture [cible].', 'O', NULL);
 
   return '<p>Désormais, vous ne chevauchez plus: ' || v_monture_nom || ' !';
 

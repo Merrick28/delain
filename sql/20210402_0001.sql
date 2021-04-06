@@ -27,4 +27,14 @@ update public.type_ia set ia_nom='Monture à ordre', ia_fonction='ia_monture([pe
 update public.type_ia set ia_nom='Monture mixte', ia_fonction='ia_monture([perso], 2)' where ia_type=19 ;
 delete from public.type_ia where ia_type in (20, 21) ;
 
-INSERT INTO public.competences(  comp_typc_cod, comp_libelle, comp_modificateur, comp_connu) VALmUES ( 2, 'Equitation', 0, 'N');
+INSERT INTO public.competences(  comp_typc_cod, comp_libelle, comp_modificateur, comp_connu) VALUES ( 2, 'Equitation', 0, 'N');
+
+INSERT INTO perso_competences( pcomp_perso_cod, pcomp_pcomp_cod, pcomp_modificateur)
+	SELECT perso_cod as pcomp_perso_cod, 104 as pcomp_pcomp_cod, 30 as pcomp_modificateur  FROM  perso WHERE perso_monture IS NOT null ;
+
+
+insert into  type_evt (tevt_libelle, tevt_texte) VALUES
+  ('Equitation', '[attaquant] monte sur sa monture [cible].'),
+  ('Equitation', '[attaquant] est descendu de sa monture [cible].'),
+  ('Equitation', '[attaquant] donne un ordre à sa monture [cible].') ,
+  ('Equitation', '[attaquant] a été éjecté de sa monture [cible].') ;

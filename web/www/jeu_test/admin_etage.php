@@ -32,7 +32,7 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 
 //cahrger les type de terrains
 $pdo = new bddpdo();
-$req_m_terrain= "select ter_cod, ter_nom from terrain order by ter_nom";
+$req_m_terrain= "select ter_cod, ter_nom from terrain where ter_cod > 0 order by ter_nom";
 $stmt_m_terrain = $pdo->query($req_m_terrain);
 $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
 
