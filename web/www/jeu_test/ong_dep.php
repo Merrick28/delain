@@ -1,7 +1,7 @@
 <?php
 if (!isset($position))
     $position = '';
-$req_position_actuelle = "select perso_nom,pos_cod,pos_x,pos_y,perso_pa,pos_etage from perso_position,positions,perso ";
+$req_position_actuelle = "select perso_nom,pos_cod,pos_x,pos_y,perso_pa,pos_etage,pos_modif_pa_dep from perso_position,positions,perso ";
 $req_position_actuelle = $req_position_actuelle . "where ppos_perso_cod = $perso_cod ";
 $req_position_actuelle = $req_position_actuelle . "and ppos_pos_cod = pos_cod ";
 $req_position_actuelle = $req_position_actuelle . "and perso_cod = $perso_cod";
@@ -18,6 +18,7 @@ if ($stmt->rowCount())
     $nom = $result['perso_nom'];
     $etage = $result['pos_etage'];
     $position_actuelle = $result['pos_cod'];
+    $pos_modif_pa_dep = $result['pos_modif_pa_dep'] + (new parametres())->getparm(9);
     ?>
     <div class="centrer">
         <form name="ong_dep" id="ong_dep" method="post" action="action.php">
@@ -39,6 +40,7 @@ if ($stmt->rowCount())
                         $req_pos = $req_pos . "and pos_y = $y[$cpty] ";
                         $req_pos = $req_pos . "and pos_etage = $etage ";
                         $req_pos = $req_pos . "and not exists (select 1 from murs where mur_pos_cod = pos_cod) ";
+                        $req_pos = $req_pos . "and ( ($pos_modif_pa_dep>12) OR (get_pa_dep_terrain($perso_cod, pos_cod) BETWEEN 0 AND 12))";
                         $stmt = $pdo->query($req_pos);
                         $num_pos = $stmt->rowCount();
                         echo '<td class="soustitre2" class="centrer">';

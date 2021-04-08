@@ -86,11 +86,12 @@ declare
 	force_affichage integer;
 	temp integer;
 	v_anticip integer;
-	pa_deplace integer;			-- Coût du déplacement
+	v_pa_dep integer;			-- Coût du déplacement suivant le terrain
+	v_modif_pa_dep integer;			-- cout du déplacement hors bonus/malus
+	pa_deplace integer;			-- Coût final du déplacement
 	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
 	v_cavalier integer;			-- si c'est une monture qui emène un joueur
 	v_pa_terrain integer;			-- si c'est un perso joueur qui chevauche une monture
-
 begin
 	force_affichage := 0;
 	code_retour := '';
@@ -124,13 +125,21 @@ begin
 		return code_retour;
 	end if;
 
+  v_pa_dep :=  get_pa_dep(num_perso);  -- memo pour eviter de le recalculer à chaque fois
+
+  -- verifier si le perso est en danger dans une zone normalement innacesible: il a une exception pour bouger à 12 PA
+   select  getparm_n(9) + pos_modif_pa_dep into v_modif_pa_dep from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=num_perso and perso_monture is null ;
+   if not found then
+      v_modif_pa_dep := 0 ;
+   end if;
+
 	select into ancien_code_pos, ancien_x, ancien_y, ancien_etage, v_type_perso, v_perso_pnj
 		pos_cod, pos_x, pos_y, pos_etage, perso_type_perso, perso_pnj
 	from perso_position, positions, perso
 	where ppos_perso_cod = num_perso
 		and ppos_pos_cod = pos_cod
 		and perso_cod = num_perso;
-	if pa < get_pa_dep(num_perso) then
+	if (pa < v_pa_dep) and ((v_modif_pa_dep<=12) or (v_modif_pa_dep>12 and pa<12))  then
 		code_retour := code_retour || E'1#Erreur : pas assez de PA pour effectuer ce déplacement.'; /* pas assez de pa */
 		return code_retour;
 	end if;
@@ -145,7 +154,7 @@ begin
 	end if;
 
   v_pa_terrain = get_pa_dep_terrain(num_perso, v_pos) ;
-	if v_pa_terrain > 14 then
+	if v_pa_terrain > 12 and v_modif_pa_dep<=12 then
 		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu’il est préférable de ne pas s’y rendre!!';
 		return code_retour;
   elsif v_pa_terrain < 0 then
@@ -211,7 +220,7 @@ begin
 -- on déplace
 ---------------------------
 		-- Coût normal
-		pa_deplace := get_pa_dep(num_perso);
+		pa_deplace := LEAST(12, v_pa_dep) ;
 
 		update perso_position
 		set ppos_pos_cod = cast(v_pos as integer)

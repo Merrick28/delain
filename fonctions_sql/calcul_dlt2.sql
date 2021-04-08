@@ -136,6 +136,9 @@ declare
   v_limite_quatriemes smallint;   -- Vaut 1 pour limiter les quatrième persos, 0 sinon.
   v_duree_vie interval;   -- Durée de vie, utilisé pour les monstres.
   texte_evt text;				-- texte de l evenement
+  v_perso_nom text;   -- nom du perso
+  v_modif_pa_dep integer;   -- cout du depacement hors BM
+  v_ter_cod integer;      -- cod du terrain
 
 begin
   v_limite_quatriemes := 1;
@@ -145,8 +148,8 @@ begin
   -----------------------------------------------------------------
   -- calcul dlt
   -----------------------------------------------------------------
-  select into dlt_actuelle,v_niveau_vampire,v_type_perso,v_perso_priere,v_effets_auto,v_perso_pnj,v_actif,v_perso_mortel,v_perso_px
-    perso_dlt,perso_niveau_vampire,perso_type_perso,perso_priere,perso_effets_auto,perso_pnj,perso_actif,perso_mortel,perso_px
+  select into dlt_actuelle,v_niveau_vampire,v_type_perso,v_perso_priere,v_effets_auto,v_perso_pnj,v_actif,v_perso_mortel,v_perso_px,v_perso_nom, v_pv_max
+    perso_dlt,perso_niveau_vampire,perso_type_perso,perso_priere,perso_effets_auto,perso_pnj,perso_actif,perso_mortel,perso_px,perso_nom,perso_pv_max
   from perso
   where perso_cod = personnage for update;
 
@@ -458,6 +461,31 @@ begin
 
       delete from groupe_perso where pgroupe_perso_cod = personnage and pgroupe_statut = 2;
     end if;
+
+
+    /* gestion des terrains normalement innacessibles: le perso doit sortir en 3 tours avec des mouvements à 12PA */
+    v_modif_pa_dep := 0 ;
+    select  getparm_n(9) + pos_modif_pa_dep, coalesce(pos_ter_cod,0) into v_modif_pa_dep, v_ter_cod
+      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_monture is null and perso_type_perso=1;
+    if v_modif_pa_dep>12 then
+
+      -- checher le text d'ambiance spécifique au terrain
+      select ter_msg_inaccessible into texte_evt from terrain where ter_cod=v_ter_cod ;
+      code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Vous devez sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+
+      -- perte de PV lié au terrains
+      v_dgm_int := floor(v_pv_max / 3) ;   -- dommage de terrain = 1/3 des PV max, soit 4 tours max avec une bonne REG :-) !
+      update perso set perso_pv = perso_pv - v_dgm_int where perso_cod = personnage;
+      code_retour := code_retour || '<br>A cause de ce terrain est trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
+
+      select into pv_actuel perso_pv from perso where perso_cod = personnage;
+      if pv_actuel <= 0 then
+        temp_tue := tue_perso_final(personnage,personnage);
+        code_retour := code_retour || '<br>Vous êtes <b>mort !</b><br>';
+      end if;
+
+    end if;
+
     /* garde manger */
     if valeur_bonus(personnage, 'DGM') != 0 then
       v_dgm := valeur_bonus(personnage, 'DGM');

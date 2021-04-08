@@ -160,27 +160,23 @@
             </div>
             <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
                 <strong>{{ POSITION.pos_y }}</strong>
+                {%  set pa_dep = PERSO.get_pa_dep() %}
                 {% if not PERSO.is_fam %}
 
                     {% if PERSO.perso_monture %}&nbsp;
 
-                        {%  if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
-                                                            src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">:
-                                                          <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {%  else %}&nbsp;<img src="{{ G_IMAGES }}horse.png" title="Déplacement"
-                                                      alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {%  if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span>
+                                                    <img src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">: strong>{{ pa_dep }}</strong>
+                        {%  else %}&nbsp;<img src="{{ G_IMAGES }}horse.png" title="Déplacement"    alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% endif %}
 
-                    {% elseif PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
-                            src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">:
-                        <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% elseif PERSO.is_locked() %}&nbsp; <span class="badge-profil">{{ PERSO.nb_locks() }}</span>
+                                                    <img src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">: <strong>{{ pa_dep }}</strong>
                     {% else %}
-                        {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"
-                                                           alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"
-                                                              alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">:
-                            <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% if pa_dep==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% elseif pa_dep<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% elseif pa_dep>12 %}<img src="{{ G_IMAGES }}skullred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% endif %}
                     {% endif %}
                 {% endif %}
