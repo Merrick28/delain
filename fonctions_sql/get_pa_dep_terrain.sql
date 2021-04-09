@@ -20,6 +20,7 @@ declare
 	v_gmon_cod integer;  -- monstre générique de la monture
 	v_monture_pa integer;  -- modificateur de pa de la monture
 	v_accessible character varying (1) ;  -- terrain accessible ?
+	v_chevauchable character varying (1) ;  -- terrain accessible avec un cavalier ?
 
 begin
 
@@ -29,14 +30,19 @@ begin
   -- s'il y a un terrain specifique a cette position, on regarde si c'est une monture avec des caracs speciales sur ce terrain
   if v_ter_cod is not null then
 
-      select perso_gmon_cod into v_gmon_cod
+      -- s'il s'agit d'une monture qui a des modificateurs sur ce terrain
+      select tmon_chevauchable, tmon_accessible, tmon_terrain_pa into v_chevauchable, v_accessible, v_monture_pa
           from perso
           join monstre_generique on gmon_cod=perso_gmon_cod and gmon_monture='O'
           join monstre_terrain on tmon_gmon_cod = gmon_cod and tmon_ter_cod = v_ter_cod
-          where perso_cod=personnage and tmon_accessible = 'N' limit 1;
+          where perso_cod=personnage and perso_type_perso=2 limit 1;
       if found then
-          -- il s'agit d'une monture qui n'a pas la capacité d'aller sur ce terrain!
-          return -1;    -- terrain innacessible !
+          -- il s'agit d'une monture qui n'a pas la capacité d'aller sur ce terrain !
+          if (v_accessible = 'N') AND ((v_chevauchable = 'N') OR (f_perso_cavalier(personnage) IS NULL) ) then
+              return -1;    -- terrain innacessible !
+          end if;
+          code_retour := GREATEST(0, code_retour + v_monture_pa) ;
+          return code_retour ;
       end if;
 
       select m.perso_gmon_cod into v_gmon_cod
@@ -45,10 +51,10 @@ begin
           where p.perso_cod=personnage and p.perso_type_perso=1 limit 1;
       if found then
           -- cas d'un joueur qui se déplace avec une monture sur un terrain avec une monture !
-          select tmon_chevauchable, tmon_terrain_pa into v_accessible, v_monture_pa from monstre_terrain where tmon_gmon_cod = v_gmon_cod and tmon_ter_cod = v_ter_cod limit 1 ;
+          select tmon_chevauchable, tmon_terrain_pa into v_chevauchable, v_monture_pa from monstre_terrain where tmon_gmon_cod = v_gmon_cod and tmon_ter_cod = v_ter_cod limit 1 ;
           if found then
               -- la monture a un comportement spécial sur ce terrain.
-              if v_accessible = 'N' then
+              if v_chevauchable = 'N' then
                   return -1;    -- terrain innacessible !
               end if;
               code_retour := GREATEST(0, code_retour + v_monture_pa) ;
@@ -56,7 +62,7 @@ begin
       end if;
   end if;
 
-	return code_retour;
+	return GREATEST(0,code_retour);
 end;
 	$_$;
 

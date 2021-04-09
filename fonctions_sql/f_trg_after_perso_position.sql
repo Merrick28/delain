@@ -17,6 +17,7 @@ declare
 	v_familier integer;    -- perso_cod du familier s'il y en a un
 	v_p_etage integer;    -- etage du perso
 	v_m_etage integer;    -- etage de la monture
+	v_pa_terrain integer;    -- etat du terrain de la zone d'arrivée!
 begin
 
   -- cas d'un joueur qui se déplace
@@ -29,18 +30,24 @@ begin
       where p.perso_cod=NEW.ppos_perso_cod and p.perso_type_perso=1 and ppos_pos_cod<>NEW.ppos_pos_cod ;
   if found then
       -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture (seulement s'il n'y a pas de changement d'étage)!
-      if v_p_etage = v_m_etage then
+      -- ou la zone ciblé est innacessible à la monture (à cause du terrain)
+      v_pa_terrain := get_pa_dep_terrain(v_perso_cod, NEW.ppos_pos_cod);
+      if v_p_etage = v_m_etage and v_pa_terrain >0 and v_pa_terrain <=12 then
           -- on deplace la monture sur la case du joueur
           update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
           delete from lock_combat where lock_attaquant = v_perso_cod;
           delete from lock_combat where lock_cible = v_perso_cod;
           delete from riposte where riposte_attaquant = v_perso_cod;
       else
-          -- le joueur change d'étage on le détache de sa monture
+          -- le joueur change d'étage, ou il va sur un terrain innacessible à la monture on le détache de sa monture
           update perso set perso_monture=null where perso_cod = NEW.ppos_perso_cod ;
 
           -- evenement chevaucher (108)
-          perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture [cible].', 'O', NULL);
+          if v_p_etage = v_m_etage then
+              perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture, [cible] refuse d’aller sur ce terrain.', 'O', NULL);
+          else
+              perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture, [cible] ne peut pas changer d’étage.', 'O', NULL);
+          end if;
 
       end if;
   end if;
