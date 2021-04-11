@@ -21,7 +21,8 @@ update terrain set ter_msg_inaccessible='Le feu inflige de lourdes brûlure à [
 update terrain set ter_msg_inaccessible='Le terrain cache de nombreux pièges mortels, [cible] tombe dans l’un d’eux.' where ter_nom='terre';
 
 insert into terrain (ter_cod, ter_nom, ter_desc, ter_msg_inaccessible) values
-(0, '~~~ tous les autres ~~~', 'Tous les autres terrains non définis', 'La zone cache de nombreux pièges mortels, [cible] tombe dans l’un d’eux.');
+  (0, '~~~ sans terrain ~~~', 'Sans terrain', 'La zone cache de nombreux pièges mortels, [cible] tombe dans l’un d’eux.'),
+  (-1, '~~~ tous les autres ~~~', 'Tous les autres terrains non définis', 'La zone cache de nombreux pièges mortels, [cible] tombe dans l’un d’eux.');
 
 
 update public.type_ia set ia_nom='Monture docile', ia_fonction='ia_monture([perso], 0)' where ia_type=17 ;

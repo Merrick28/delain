@@ -32,7 +32,7 @@ begin
       -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture (seulement s'il n'y a pas de changement d'étage)!
       -- ou la zone ciblé est innacessible à la monture (à cause du terrain)
       v_pa_terrain := get_pa_dep_terrain(v_perso_cod, NEW.ppos_pos_cod);
-      if v_p_etage = v_m_etage and v_pa_terrain >0 and v_pa_terrain <=12 then
+      if v_p_etage = v_m_etage and v_pa_terrain >=0 and v_pa_terrain <=12 then
           -- on deplace la monture sur la case du joueur
           update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
           delete from lock_combat where lock_attaquant = v_perso_cod;
