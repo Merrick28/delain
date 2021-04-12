@@ -30,6 +30,7 @@ update public.type_ia set ia_nom='Monture à ordre', ia_fonction='ia_monture([pe
 update public.type_ia set ia_nom='Monture mixte', ia_fonction='ia_monture([perso], 2)' where ia_type=19 ;
 delete from public.type_ia where ia_type in (20, 21) ;
 
+-- Compétence #104
 INSERT INTO public.competences(  comp_typc_cod, comp_libelle, comp_modificateur, comp_connu) VALUES ( 2, 'Equitation', 0, 'N');
 
 INSERT INTO perso_competences( pcomp_perso_cod, pcomp_pcomp_cod, pcomp_modificateur)
@@ -41,3 +42,6 @@ insert into  type_evt (tevt_libelle, tevt_texte) VALUES
   ('Equitation', '[attaquant] est descendu de sa monture [cible].'),
   ('Equitation', '[attaquant] donne un ordre à sa monture [cible].') ,
   ('Equitation', '[attaquant] a été éjecté de sa monture [cible].') ;
+
+INSERT INTO public.bonus_type( tbonus_libc, tonbus_libelle, tbonus_gentil_positif, tbonus_nettoyable, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur)
+    VALUES( 'EQI', 'Equitation', true,   'O', 'O', 50, 'Equitation: Chaque point positif d’Equitation augmente la compétence équitation d’autant.',  'N');
