@@ -153,16 +153,19 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
             when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_dlt=0) then 'masqué'
             else NULL end perso_dlt,
         dlt_passee(perso_cod)::text as perso_dlt_passee,
-        coalesce(pgroupe_texte,'') palimpseste
+        coalesce(pgroupe_texte,'') palimpseste,
+        perso_cavalier_cod, perso_cavalier
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
 	inner join race on race_cod = perso_race_cod
 	LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 and pgroupe_groupe_cod=$coterie_perso_lanceur
     LEFT OUTER JOIN (
-                    select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
+                    select perso_cod triplette_perso_cod, null as perso_cavalier_cod, null as perso_cavalier from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
                     union
-                    select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
+                    select perso_monture triplette_perso_cod, perso_cod as perso_cavalier_cod, perso_nom as perso_cavalier from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
+                    union
+                    select perso_cod triplette_perso_cod, null as perso_cavalier_cod, null as perso_cavalier from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
                 ) as triplette on triplette_perso_cod = perso_cod
 	where pos_x between ($x-$distance_vue) and ($x+$distance_vue)
 		and pos_y between ($y-$distance_vue) and ($y+$distance_vue)
@@ -211,7 +214,7 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
             $perso_bonus =
                 $result['perso_bonus']; // le reste n'a pas été approuvé => $result['perso_dlt_passee']==0 ? $result['perso_bonus'] : ( $result['perso_bonus']=="" ? "" : "<strong>".$result['perso_bonus']."</strong>" ) ;
             $perso_style =
-                $perso_bonus == NULL ? "" : ($result['triplette'] == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
+                $perso_bonus == NULL ? "" : ($result['triplette'] == 1 ? ($result['perso_cavalier_cod'] == $perso_cod ? "background-color:darkseagreen;" : "background-color:#CCC;") : "background-color:#BA9C6C;");
 
             $cdata = "";
             $cdata .= "data-partisans='" . (($result['meme_coterie'] == 1) || ($result['triplette'] == 1) ? "O" : "N") . "' ";
@@ -225,8 +228,10 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
                 $iconPalimp = "<span style='float: right;'><img src='/images/guilde.gif'></span>";
             }
 
+            $info_type = $perso_type_perso[$type_perso] ;
+            if ($type_perso==2 && $result['perso_cavalier']!="" ) $info_type = "monture de ".$result['perso_cavalier'];
             echo "<tr id='row-{$row}' {$cdata} {$onclick}>
-				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $result['perso_nom'] . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>{$iconPalimp}</td>
+				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $result['perso_nom'] . "</a></strong> <em>(" . $info_type . "<strong>" . $niveau_blessures . "</strong>)</em>{$iconPalimp}</td>
 				<td style=\"{$perso_style}\">" . $result['race_nom'] . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $result['pos_x'] . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $result['pos_y'] . "</td>
