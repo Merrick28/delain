@@ -38,7 +38,7 @@ $methode          = get_request_var('methode', '');
 $menu_deplacement = isset($_POST['menu_deplacement']) ? $_POST['menu_deplacement'] : '';
 $inc_vue          = ($methode == 'deplacement') && (!$menu_deplacement);
 
-if (!$compte->is_admin() && $perso->perso_type_perso == 2 && $perso->est_chevauche())
+if (!$compte->is_admin() && !$compte->is_admin_monstre() && $perso->perso_type_perso == 2 && $perso->est_chevauche())
 {
     $contenu_page .= '<p>Vous ne pouvez pas effectuer des actions avec une monture !';
 }
