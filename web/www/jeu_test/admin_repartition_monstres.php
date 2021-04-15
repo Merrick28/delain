@@ -33,17 +33,17 @@ if ($erreur == 0)
 			break;
 
 			case "modifier_proportion":
-				$req = "select rjmon_repart,rjmon_type from rep_mon_joueur where  rjmon_etage = $pos_etage";
+				$req = "select rjmon_repart,rjmon_type,rjmon_monture from rep_mon_joueur where  rjmon_etage = $pos_etage";
 				$stmt = $pdo->query($req);
 				if($result = $stmt->fetch())
 				{
 					// UPDATE
-					$req = "update rep_mon_joueur set rjmon_repart =  $rjmon_repart,rjmon_type = '$rjmon_type' where  rjmon_etage = $pos_etage";
+					$req = "update rep_mon_joueur set rjmon_repart =  $rjmon_repart,rjmon_type = '$rjmon_type', rjmon_monture='$rjmon_monture' where  rjmon_etage = $pos_etage";
 					$stmt = $pdo->query($req);
 				} else
 				{
 					// INSERT
-					$req = "insert into rep_mon_joueur (rjmon_repart,rjmon_type,rjmon_etage) values ($rjmon_repart,'$rjmon_type',$pos_etage)";
+					$req = "insert into rep_mon_joueur (rjmon_repart,rjmon_monture,rjmon_type,rjmon_etage) values ($rjmon_repart,$rjmon_monture,'$rjmon_type',$pos_etage)";
 					$stmt = $pdo->query($req);
 
 				}
@@ -72,9 +72,10 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 		group by etage_libelle";
 	$stmt = $pdo->query($req);
 	$result = $stmt->fetch();
-	$req_monstre = "select etage_libelle,count(ppos_perso_cod) as perso_presents from etage,perso_position,positions,perso where  etage_numero = $pos_etage
+	$req_monstre = "select etage_libelle,sum(CASE WHEN gmon_monture='N' THEN 1 ELSE 0 END) as monstre_presents, sum(CASE WHEN gmon_monture!='N' THEN 1 ELSE 0 END) as monture_presentes from etage,perso_position,positions,perso,monstre_generique where  etage_numero = $pos_etage
 		and ppos_pos_cod = pos_cod and pos_etage = etage_numero
 		and ppos_perso_cod = perso_cod
+		and gmon_cod = perso_gmon_cod
 		and perso_type_perso = 2
 		and perso_actif = 'O'
 		group by etage_libelle";
@@ -82,30 +83,33 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 	$result2 = $stmt2->fetch();
 	?>
 <p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $result['etage_libelle'];?></strong>
-/ Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $result['perso_presents'];?></p><br>
+/ Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $result2['monstre_presents'];?> / Nombre de montures présentes : <?php  echo $result2['monture_presentes'];?></p><br>
 <p>
 <?php
 $rjmon_repart = 0.0;
 $rjmon_type = '';
-$req = "select rjmon_repart, rjmon_type from rep_mon_joueur where rjmon_etage = $pos_etage";
+$req = "select rjmon_repart, rjmon_type, rjmon_monture from rep_mon_joueur where rjmon_etage = $pos_etage";
 $stmt = $pdo->query($req);
 if($result = $stmt->fetch())
 {
 	$rjmon_repart = $result['rjmon_repart'];
 	$rjmon_type = $result['rjmon_type'];
+	$rjmon_monture = $result['rjmon_monture'];
 }
 ?>
 	<form method="post" name="modif_proportion">
 		<input type="hidden" name="methode" value="modifier_proportion">
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
-		Proportion de monstres pour cet étage : Ratio = <input type="text" name="rjmon_repart" value="<?php  echo $rjmon_repart; ?>">
-		Type(P ou H) = <input type="text" name="rjmon_type" value="<?php  echo $rjmon_type; ?>"> <input type="submit" value="Mettre à jour" class='test'>
+		Proportion de monstres pour cet étage : Ratio Monstre = <input type="text" name="rjmon_repart" value="<?php  echo $rjmon_repart; ?>">
+		Type(P ou H) = <input type="text" name="rjmon_type" value="<?php  echo $rjmon_type; ?>">
+        Ratio Monture = <input type="text" name="rjmon_monture" value="<?php  echo $rjmon_monture; ?>">
+        <input type="submit" value="Mettre à jour" class='test'>
 	</form>
 </p>
 <p>
 	<table width="80%" border="1">
 		<TR>
-			<TH width="20%" align="center" valign="top" nowrap="nowrap">Monstre</TH>
+			<TH width="20%" align="center" valign="top" nowrap="nowrap">Monstre / Monture</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Poids / nombre présents</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Nombre maximal (0 = pas de maximum)</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Modifier</TH>

@@ -43,5 +43,11 @@ insert into  type_evt (tevt_libelle, tevt_texte) VALUES
   ('Equitation', '[attaquant] donne un ordre à sa monture [cible].') ,
   ('Equitation', '[attaquant] a été éjecté de sa monture [cible].') ;
 
-INSERT INTO public.bonus_type( tbonus_libc, tonbus_libelle, tbonus_gentil_positif, tbonus_nettoyable, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur)
+INSERT INTO bonus_type( tbonus_libc, tonbus_libelle, tbonus_gentil_positif, tbonus_nettoyable, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur)
     VALUES( 'EQI', 'Equitation', true,   'O', 'O', 50, 'Equitation: Chaque point positif d’Equitation augmente la compétence équitation d’autant.',  'N');
+
+INSERT INTO  lieu_type(tlieu_libelle, tlieu_url) VALUES ('Portail à montures', 'portail_demoniaque.php');
+
+ALTER TABLE rep_mon_joueur ADD COLUMN rjmon_monture numeric NOT NULL DEFAULT 0 ;
+
+DROP FUNCTION choix_monstre_etage(integer) ;

@@ -59,12 +59,13 @@ declare
 	v_pv integer;
   v_nb_recep integer;
   v_voie_magique integer;   --Marlyza - 2018-08-14 - ajout de la voie magique sur les mosntres generique
+  v_type_portail integer;        -- portail à monture (41) ou à monstre (8) ?
 -- variables globales
 	compt integer;
 	v_code_perso integer;
 	retour_cree_perso integer;
 	nb_portail integer;
-	num_portail integer;
+	-- num_portail integer;     -- utilité ?
 	pos_portail integer;
 	ligne record;
 	ligne_objet record;
@@ -80,7 +81,7 @@ begin
 /**********************************************/
 	code_retour := 0;
 	v_code_perso := nextval('seq_perso');
-	select into compt gmon_cod from monstre_generique
+	select into compt,v_type_portail gmon_cod,  CASE WHEN gmon_monture='N' THEN 8 ELSE 41 END from monstre_generique
 		where gmon_cod = v_gmon;
 	if not found then
 		code_retour := -1;
@@ -89,35 +90,30 @@ begin
 	/*******************************/
 	/* Position                    */
 	/*******************************/
+	/*
+	Marlyza - 2021-04-15 - On calcul un nombre de portail mais on ne s'en sert pas? => supression de cette portion de code
 	select into nb_portail count(*)
 		from lieu,lieu_position,positions
-		where lieu_tlieu_cod = 8
+		where lieu_tlieu_cod = v_type_portail
 		and lpos_lieu_cod = lieu_cod
 		and lpos_pos_cod = pos_cod
 		and pos_etage = v_level;
 	num_portail := lancer_des(1,nb_portail);
 	num_portail := num_portail - 1;
-	if lancer_des(1,100) >= 50 then
-		select into pos_portail pos_cod
-			from lieu,lieu_position,positions
-			where lieu_tlieu_cod = 8
-			and lpos_lieu_cod = lieu_cod
-			and lpos_pos_cod = pos_cod
-			and pos_etage = v_level
-			order by random()
-			limit 1;
-	else
-		select into pos_portail pos_cod
-			from lieu,lieu_position,positions
-			where lieu_tlieu_cod = 8
-			and lpos_lieu_cod = lieu_cod
+  */
 
-			and lpos_pos_cod = pos_cod
-			and pos_etage = v_level
-			order by random()
-			limit 1;
-	end if;
-	if pos_portail is null then
+  -- choisir un portail
+  select into pos_portail pos_cod
+    from lieu,lieu_position,positions
+    where lieu_tlieu_cod = v_type_portail
+    and lpos_lieu_cod = lieu_cod
+    and lpos_pos_cod = pos_cod
+    and pos_etage = v_level
+    order by random()
+    limit 1;
+
+  -- Si pas de portail trouvé, pour les monstre on pop au hazard (pas pour les montures)
+	if pos_portail is null and v_type_portail=8 then
 		pos_portail := pos_aleatoire(v_level);
 	end if;
 	if pos_portail is null then 
