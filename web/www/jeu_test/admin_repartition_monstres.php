@@ -83,7 +83,7 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 	$result2 = $stmt2->fetch();
 	?>
 <p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $result['etage_libelle'];?></strong>
-/ Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $result2['monstre_presents'];?> / Nombre de montures présentes : <?php  echo $result2['monture_presentes'];?></p><br>
+/ Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $result2['monstre_presents'];?> / <span style="background-color:gold;">Nombre de montures présentes : <?php  echo $result2['monture_presentes'];?></span></p><br>
 <p>
 <?php
 $rjmon_repart = 0.0;
@@ -102,7 +102,7 @@ if($result = $stmt->fetch())
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
 		Proportion de monstres pour cet étage : Ratio Monstre = <input type="text" name="rjmon_repart" value="<?php  echo $rjmon_repart; ?>">
 		Type(P ou H) = <input type="text" name="rjmon_type" value="<?php  echo $rjmon_type; ?>">
-        Ratio Monture = <input type="text" name="rjmon_monture" value="<?php  echo $rjmon_monture; ?>">
+    <span  style="background-color:gold;">Ratio Monture = <input type="text" name="rjmon_monture" value="<?php  echo $rjmon_monture; ?>"></span>
         <input type="submit" value="Mettre à jour" class='test'>
 	</form>
 </p>
@@ -116,7 +116,7 @@ if($result = $stmt->fetch())
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Supprimer</TH>
 		</TR>
 <?php
-	$req = "select rmon_cod, mg.gmon_cod, mg.gmon_nom, rmon_poids, rmon_max, coalesce(monstres.nombre, 0) as nombre
+	$req = "select rmon_cod, mg.gmon_cod, mg.gmon_nom, rmon_poids, rmon_max, coalesce(monstres.nombre, 0) as nombre, mg.gmon_monture
 		from repart_monstre
 		inner join monstre_generique mg ON mg.gmon_cod = rmon_gmon_cod
 		left outer join
@@ -130,16 +130,17 @@ if($result = $stmt->fetch())
 			group by gmon_cod, gmon_nom) monstres
 			on monstres.gmon_cod = rmon_gmon_cod
 		where rmon_etage_cod = $pos_etage
-		order by mg.gmon_nom";
+		order by mg.gmon_monture, mg.gmon_nom";
 	$stmt = $pdo->query($req);
 	while($result = $stmt->fetch())
 	{
+        $style = ($result['gmon_monture'] == 'O' ) ? 'style="background-color:gold;"' : "" ;
 ?>
 	<form method="post" name="modif_mon_<?php  echo  $result['rmon_cod']; ?>">
 		<input type="hidden" name="methode" value="modifier">
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
 		<input type="hidden" name="rmon_cod" value="<?php  echo  $result['rmon_cod']; ?>">
-		<TR>
+		<TR <?php echo $style; ?>>
 			<TD><?php echo '<strong>' . $result['gmon_nom'] . '</strong><em> (code = ' . $result['gmon_cod'] . ')</em>';?></TD>
 			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $result['rmon_poids']; ?>"> / <?php  echo  $result['nombre']; ?></p></TD>
 			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $result['rmon_max']; ?>"></p></TD>
