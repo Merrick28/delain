@@ -60,6 +60,7 @@ declare
   v_nb_recep integer;
   v_voie_magique integer;   --Marlyza - 2018-08-14 - ajout de la voie magique sur les mosntres generique
   v_type_portail integer;        -- portail à monture (41) ou à monstre (8) ?
+  v_gmon_cod integer;        -- cod generique
 -- variables globales
 	compt integer;
 	v_code_perso integer;
@@ -81,7 +82,7 @@ begin
 /**********************************************/
 	code_retour := 0;
 	v_code_perso := nextval('seq_perso');
-	select into compt,v_type_portail gmon_cod,  CASE WHEN gmon_monture='N' THEN 8 ELSE 41 END from monstre_generique
+	select into v_gmon_cod,v_type_portail gmon_cod,  CASE WHEN gmon_monture='N' THEN 8 ELSE 41 END from monstre_generique
 		where gmon_cod = v_gmon;
 	if not found then
 		code_retour := -1;
@@ -103,14 +104,34 @@ begin
   */
 
   -- choisir un portail
-  select into pos_portail pos_cod
-    from lieu,lieu_position,positions
-    where lieu_tlieu_cod = v_type_portail
-    and lpos_lieu_cod = lieu_cod
-    and lpos_pos_cod = pos_cod
-    and pos_etage = v_level
-    order by random()
-    limit 1;
+  if v_type_portail = 8 then
+      -- recherche d'un portail démoniaque
+      select into pos_portail pos_cod
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 8
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level
+        order by random()
+        limit 1;
+  else
+      -- recherche d'un portail à monture compatible avecles terrains accessibles pour la monture
+      select into pos_portail pos_cod
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 41
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level
+        and coalesce(pos_ter_cod,0) in (
+              select ter_cod from terrain
+              left join monstre_terrain mt on mt.tmon_ter_cod=ter_cod and mt.tmon_gmon_cod=v_gmon_cod
+              left join monstre_terrain mtd on mtd.tmon_ter_cod=-1 and mtd.tmon_gmon_cod=v_gmon_cod
+              where ter_cod>=0 and coalesce(coalesce(mt.tmon_accessible, mtd.tmon_accessible), CASE WHEN ter_cod=0 THEN 'O' else 'N'end) = 'O'
+              order by random()
+        )
+        order by random()
+        limit 1;
+  end if;
 
   -- Si pas de portail trouvé, pour les monstre on pop au hazard (pas pour les montures)
 	if pos_portail is null and v_type_portail=8 then
