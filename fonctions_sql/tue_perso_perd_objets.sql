@@ -97,22 +97,23 @@ begin
 			v_chance_sac := v_chance_sac + (ligne_objet.obj_poids * -1);
 		end loop;
 
+  -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
 		for ligne_objet in
 			select perobj_cod, perobj_obj_cod, gobj_deposable, obj_nom, obj_poids,
 				case
 					when perobj_equipe = 'N' AND obj_chance_drop > 0 then obj_chance_drop + v_chance_sac
 					else obj_chance_drop
 				end as obj_chance_drop,
-				tobj_libelle, perobj_equipe, perobj_identifie, perobj_equipe
+				tobj_libelle, perobj_equipe, perobj_identifie, perobj_equipe, obj_gobj_cod
 			from perso_objets
 			inner join objets on obj_cod = perobj_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			where perobj_perso_cod = v_cible
 		loop
-			if ligne_objet.gobj_deposable = 'N' then
+			if ligne_objet.gobj_deposable = 'N' or ligne_objet.obj_gobj_cod = 642 then
 			  -- ajout 02-05-2018 - marlyza - le familier ne perd pas son equipement non déposable s'il est équipé (c'est son equipement de base: griffes, etc...)
-			  if type_cible!=3 or ligne_objet.perobj_equipe!='O' then
+			  if type_cible!=3 or ligne_objet.perobj_equipe!='O' or ligne_objet.obj_gobj_cod = 642 then
           delete from perso_objets where perobj_cod = ligne_objet.perobj_cod;
           delete from perso_identifie_objet where pio_obj_cod = ligne_objet.perobj_obj_cod;
           delete from objets where obj_cod = ligne_objet.perobj_obj_cod;

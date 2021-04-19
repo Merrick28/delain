@@ -207,18 +207,20 @@ switch ($methode2)
         $possede_pochette = ($stmt->rowCount() != 0);
 
 		// Pochette déjà échangée ?
-		$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
-		$stmt = $pdo->query($req);
-		if (!$result = $stmt->fetch())
-		{
-			$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
-			$stmt = $pdo->query($req);
-			$deja_fait = false;
-		}
-		else
-		{
-			$deja_fait = ($result['ppoch_valeur'] > 0);
-		}
+		//$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
+		//$stmt = $pdo->query($req);
+		//if (!$result = $stmt->fetch())
+		//{
+		//	$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
+		//	$stmt = $pdo->query($req);
+		//	$deja_fait = false;
+		//}
+		//else
+		//{
+		//	$deja_fait = ($result['ppoch_valeur'] > 0);
+		//}
+        // Marlyza - 19/04/2021 - Suppression de la limitation à 1 pochette par distrib - https://forum.jdr-delain.net/viewtopic.php?f=7&t=20103#p281851
+        $deja_fait = false;
 
 		if ($type_perso_ok && $possede_pochette && !$deja_fait)
 		{
@@ -233,7 +235,8 @@ switch ($methode2)
 				<br>Ce tirage ne peut être fait qu’<strong>une seule fois</strong>, si vous possédez votre pochette surprise.
 				<br><br><br><strong>Faites tourner la roue pour découvrir votre cadeau !</strong> <em>(cliquez dessus)</em></td></table>
 			</form>
-		<?php 		}
+		<?php
+		}
 	break;
 
 	case "mission":
@@ -287,18 +290,20 @@ switch ($methode2)
 		}
 
 		// Pochette déjà échangée ?
-		$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
-		$stmt = $pdo->query($req);
-		if (!$result = $stmt->fetch())
-		{
-			$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
-			$stmt = $pdo->query($req);
-			$deja_fait = false;
-		}
-		else
-		{
-			$deja_fait = ($result['ppoch_valeur'] > 0);
-		}
+		//$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
+		//$stmt = $pdo->query($req);
+		//if (!$result = $stmt->fetch())
+		//{
+		//	$req = "insert into perso_pochette (ppoch_perso_cod, ppoch_valeur) values ($perso_cod, 0)";
+		//	$stmt = $pdo->query($req);
+		//	$deja_fait = false;
+		//}
+		//else
+		//{
+		//	$deja_fait = ($result['ppoch_valeur'] > 0);
+		//}
+        // Marlyza - 19/04/2021 - Suppression de la limitation à 1 pochette par distrib - https://forum.jdr-delain.net/viewtopic.php?f=7&t=20103#p281851
+        $deja_fait = false;
 
 		if ($type_perso_ok && $possede_pochette && !$deja_fait)
 		{

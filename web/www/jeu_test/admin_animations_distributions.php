@@ -271,9 +271,9 @@ $allgobj = $gobj->getAll();
 
 foreach ($allgobj as $result)
 {
-    $clef        = $result['gobj_cod'];
-    $clef_tobj   = $result['gobj_tobj_cod'];
-    $valeur      = $result['gobj_nom'];
+    $clef        = $result->gobj_cod;
+    $clef_tobj   = $result->gobj_tobj_cod;
+    $valeur      = $result->gobj_nom;
     $script_gobj .= "tableauObjetsDistribution[$clef_tobj][$clef] = \"" . str_replace('"', '', $valeur) . "\";\n";
 
 }
@@ -325,7 +325,7 @@ echo $html->etage_select();
             $allgmon = $gmon->getAll();
             foreach ($allgmon as $result)
             {
-                echo '<option value="' . $result['gmon_cod'] . '">' . $result['gmon_nom'] . ' (Niv. ' . $result['gmon_niveau'] . ' )</option>';
+                echo '<option value="' . $result->gmon_cod . '">' . $result->gmon_nom . ' (Niv. ' . $result->gmon_niveau . ' )</option>';
             }
             ?>
         </select></td>
