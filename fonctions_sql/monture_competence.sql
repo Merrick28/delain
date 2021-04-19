@@ -32,10 +32,23 @@ declare
 -- variables servant pour la sortie
 -------------------------------------------------------------
 	v_perso_cod alias for $1;		-- perso_cod du lanceur
-	v_action alias for $2;		-- perso_cod du lanceur
+	v_action alias for $2;		-- type action du lanceur
 	v_perso_cible alias for $3;		-- perso_cod de la cible si désarçonnage
 	v_difficulte alias for $4;		-- difficulté de la compétence
+	v_retour integer;		-- code retour 0 raté / 1 réussi
 	code_retour text;		-- chaine html de sortie
+
+  v_pos_pvp varchar(1);   -- zone PvP
+  v_pos_protegee varchar(1);  -- Lieu protégé
+  v_comp integer; -- valeur de base du perso sur la compétence
+  v_comp_modifie integer; -- valeur de la compétence avec les bonus/malus
+  v_special integer; -- valeur de la compétence avec les bonus/malus
+	bonmal integer;			-- bonus malus au lancé de des
+	temp_ameliore_competence text;	-- chaine temporaire pour amélioration
+  px_gagne numeric;		-- px gagnes pour ce sort
+	v_perso_pa integer;		-- nombre de PA du perso
+	cout_pa integer;		-- Cout en PA de la compétence
+	v_perso_cible_nom text;		-- perso cible ou monture
 
 begin
 -------------------------------------------------------------
@@ -43,164 +56,212 @@ begin
 -------------------------------------------------------------
 	code_retour := '';
 -- les px
-	px_gagne := 0;
+	px_gagne := 0.33::numeric ;
+
+
+  if v_action = 1 then
+   -- 'chevaucher';
+    cout_pa := 4 ;
+  elsif v_action = 2 then
+    -- 'mettre pied à terre';
+    cout_pa := 4 ;
+  elsif v_action = 3 then
+    -- 'donner un ordre à la monture';
+    cout_pa := 4 ;
+  elsif v_action = 4 then
+    -- 'désarçonner';
+    cout_pa := 6 ;
+  else
+  	return := '0;<p>Erreur ! action inconnue.</p>';
+  end if;
+
+
 -------------------------------------------------------------
 -- Etape 2 : contrôles
 -------------------------------------------------------------
-	-- sur le lanceur
 
-	-- sur la position du lanceur
-	select into v_pos_protegee
-		coalesce(lieu_refuge, 'N')
-	from perso_position
-	left outer join lieu_position ON lpos_pos_cod = ppos_pos_cod
-	left outer join lieu ON lieu_cod = lpos_lieu_cod
-	where ppos_perso_cod = lanceur;
-	if v_pos_protegee = 'O' then
-		code_retour := '0;<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas lancer de sorts.</p>';
-		return code_retour;
-	end if;
+  select perso_pa into v_perso_pa from perso where pero_cod=v_perso_cod;
+  if not found then
+      return '0;<p>Erreur ! Perso introuvable </p>';
+  end if;
 
-	-- sur la cible + zone de droit
-	select into
-		nom_cible, pos_cible, type_cible, v_pos_pvp, v_gmon_cod, v_pos_protegee
-		perso_nom, ppos_pos_cod, perso_type_perso, pos_pvp, perso_gmon_cod, coalesce(lieu_refuge, 'N')
-	from perso
-	inner join perso_position on ppos_perso_cod = perso_cod
-	inner join positions on pos_cod = ppos_pos_cod
-	left outer join lieu_position ON lpos_pos_cod = pos_cod
-	left outer join lieu ON lieu_cod = lpos_lieu_cod
-	where perso_cod = cible
-		and perso_actif = 'O';	-- Bleda 27/2/11 On ne cible pas les morts !
-	if not found then
-		code_retour := code_retour||'0;<p>Erreur : cible non trouvée !</p>';
-		return code_retour;
-	end if;
-	if type_attaquant != 2 and type_cible != 2 and v_pos_pvp = 'N' and offensif = 'O' then
-		code_retour := '0;<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort offensif car elle n’est pas une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
-		return code_retour;
-	elsif type_attaquant != 2 and type_cible = 2 and v_pos_pvp = 'N' and offensif = 'N' then
-		code_retour := '0;<p>Erreur ! Cette cible est en zone de droit, il vous est impossible de lui lancer un sort de soutien car elle est une engeance de Malkiar !<br />La zone de droit couvre tout l’Ouest de l’étage, et est séparée de la zone de non-droit, dans laquelle vous pouvez vous en prendre à n’importe quelle cible, par une frontière physique visible (Fils barbelés ou rivière)</p>';
-		return code_retour;
-	end if;
-	if v_pos_protegee = 'O' and offensif = 'O' then
-		code_retour := '0;<p>Erreur ! Cette cible est sur un lieu protégé ! Elle ne peut pas être la cible d’un sort offensif.</p>';
-		return code_retour;
-	end if;
+  if v_perso_pa<cout_pa then
+    return '0;<p>Erreur ! Vous n’avez pas assez de PA pour effectuer cette action.</p>';
+  end if;
 
-	-- sur la compétence
-	select into
-		v_comp, nom_comp
-		pcomp_modificateur, comp_libelle
-	from perso_competences
-	inner join competences on comp_cod = pcomp_pcomp_cod
-	where pcomp_perso_cod = lanceur and pcomp_pcomp_cod = v_comp_cod;
-	if not found and type_lancer != -1 then
-		code_retour := code_retour||'0;<p>Erreur : infos compétence non trouvées !</p>';
-		return code_retour;
-	end if;
+ if v_action = 1 and  v_perso_cible is null then
+
+    return '0;<p>Erreur ! Vous devez cibler une monture à chevaucher</p>';
+
+ elsif v_action = 4 then
+
+    -- verification PvP autorisé pour les actions belliqeuses (désarçonner)
+    -- sur la position du lanceur
+    select into v_pos_protegee coalesce(lieu_refuge, 'N') from perso_position
+        left outer join lieu_position ON lpos_pos_cod = ppos_pos_cod
+        left outer join lieu ON lieu_cod = lpos_lieu_cod
+        where ppos_perso_cod = v_perso_cod;
+    if v_pos_protegee = 'O' then
+      return '0;<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas désarconner une cible</p>';
+    end if;
+
+    if v_perso_cible is null then
+      return '0;<p>Erreur ! Vous devez donner une cible pour désarconner</p>';
+    end if;
+
+    if f_perso_monture(v_perso_cible) is null then
+      return '0;<p>Erreur ! Cette cible n’a pas de monture, il vous est impossible de la désarconner</p>';
+    end if;
+
+    -- sur la cible + zone de droit
+    select into v_pos_pvp, v_pos_protegee pos_pvp, coalesce(lieu_refuge, 'N')
+        from perso_position
+        inner join positions on pos_cod = ppos_pos_cod
+        left outer join lieu_position ON lpos_pos_cod = pos_cod
+        left outer join lieu ON lieu_cod = lpos_lieu_cod
+        where ppos_perso_cod = v_perso_cible and perso_actif = 'O';
+    if not found then
+      return '0;<p>Erreur : cible non trouvée !</p>';
+    end if;
+
+    if  v_pos_pvp = 'N' || v_pos_protegee = 'O'then
+      return '0;<p>Erreur ! Cette cible est en zone de droit ou sur un lieu protégé, il vous est impossible de la désarconner</p>';
+    end if;
+
+ end if;
+
 
 ------------------------------------------------------------
 -- les controles semblent bons, on peut passer à la suite
 ------------------------------------------------------------
+  if v_perso_cible is null then
+    v_perso_cible := f_perso_monture(v_perso_cod) ;
+  end if;
+
+  select perso_nom into v_perso_cible_nom from perso where perso_cod = v_perso_cible ;
+  if not found then
+      return '0;<p>Erreur ! ce n’est pas possible de faire ça!!!!!</p>';
+  end if;
+
+  if v_action = 1 then
+   -- 'chevaucher';
+    code_retour := code_retour || 'Vous tentez de chevaucher '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
+  elsif v_action = 2 then
+    -- 'mettre pied à terre';
+    code_retour := code_retour || 'Vous tentez de descendre de '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
+    cout_pa := 4 ;
+  elsif v_action = 3 then
+    code_retour := code_retour || 'Vous tentez de donner un ordre à '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
+    cout_pa := 4 ;
+  elsif v_action = 4 then
+    code_retour := code_retour || 'Vous tentez de désarconner '|| v_perso_cible_nom || ' de sa monture en utilisant votre compétence équitation.<br>';
+    cout_pa := 6 ;
+  end if;
 
 
+	-- calcul dla compétence de base
+	select pcomp_modificateur into v_comp from perso_competences where pcomp_perso_cod = v_perso_cod and pcomp_pcomp_cod = 104;
+	if not found then
+      v_comp := 30 ;    -- 30% de base mini pour chaque perso
+      INSERT INTO perso_competences( pcomp_perso_cod, pcomp_pcomp_cod, pcomp_modificateur) VALUES (v_perso_cod, 104, v_comp);
+	end if;
 
-      -- on regarde s il y a concentration
-      select into compt concentration_perso_cod from concentrations  where concentration_perso_cod = v_perso_cod;
-      if found then
-        v_comp_modifie := v_comp_modifie + 20;
-        delete from concentrations where concentration_perso_cod = v_perso_cod;
+  -- ajout des bonus / malus
+  v_comp_modifie := v_comp + bonus_equitation(v_perso_cod);
+
+  -- pour l'action chevaucher, on ajoute aussi le bonus/malus de la monture que l'on souhaite monter!
+  if action = 1 then
+      v_comp_modifie := v_comp_modifie + bonus_equitation(v_perso_cible);
+  end if;
+
+  -- on regarde s il y a concentration
+  select into compt concentration_perso_cod from concentrations  where concentration_perso_cod = v_perso_cod;
+  if found then
+    v_comp_modifie := v_comp_modifie + 20;
+    delete from concentrations where concentration_perso_cod = v_perso_cod;
+  end if;
+
+  -- Mini à 1%
+  if v_comp_modifie < 1 then
+      v_comp_modifie := 1;
+  end if;
+
+  code_retour := code_retour||'Votre chance de réussir (en tenant compte des modificateurs) est de <b>'||trim(to_char(v_comp_modifie,'9999'))||'</b> ';
+
+  -- calcul d'une reussite spécial (20% de la comp avec bonus/malus)
+  v_special := floor(v_comp_modifie/5);
+
+  -- etape  on regarde si la cible est bénie ou maudite
+  bonmal := valeur_bonus(v_perso_cible, 'BEN') + valeur_bonus(v_perso_cible, 'MAU');
+  if bonmal <> 0 then
+    des := lancer_des3(1,100,bonmal);
+  else
+    des := lancer_des(1,100);
+  end if;
+  code_retour := code_retour||'et votre lancer de dés est de <b>'||trim(to_char(des,'9999'))||'</b>.<br>';
+
+
+  -- cas d'un echec critique ------------------------------------------------------
+  if des > 96 then
+
+      px_gagne := 0 ;
+      v_retour = 0;
+      code_retour := code_retour||'Il s’agit donc d’un <b>échec critique</b>.<br><br>';
+
+  -- cas d'un echec normal ------------------------------------------------------
+  elsif des > v_comp_modifie then
+
+      px_gagne := 0 ;
+      v_retour = 0;
+      code_retour := code_retour||'Vous avez donc <b>échoué</b>.<br><br>';
+
+  -- cas d'une réussite critique------------------------------------------------------
+  elsif des <= 5 then
+
+      code_retour := code_retour||'il s’agit donc d’une <b>réussite critique</b>.<br><br>';
+      px_gagne := px_gagne + 1;
+      v_retour = 1;
+      cout_pa := floor(cout_pa/2);
+
+  -- cas d'une réussite speciale ------------------------------------------------------
+  elsif des <= v_special then
+
+      code_retour := code_retour||'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
+      v_retour = 1;
+      cout_pa := cout_pa - 1;
+
+  -- cas d'une réussite standard ------------------------------------------------------
+  else
+
+      code_retour := code_retour||'Vous avez donc <b>réussi</b>.<br><br>';
+      v_retour = 1;
+
+  end if;
+
+  -- ------------------------------------------------------
+  -- on regarde si on améliore la comp
+  if (v_comp <= getparm_n(1) and des <= 96) or (v_retour = 1) then
+
+      code_retour := code_retour||'Votre compétence est inférieure à '||trim(to_char(getparm_n(1),'9999'))||' %. Vous tentez une amélioration.<br>';
+      temp_ameliore_competence := ameliore_competence_px(v_perso_cible,104,v_comp);
+      code_retour := code_retour||'Votre lancer de dés est de <b>'||split_part(temp_ameliore_competence,';',1)||'</b>, ';
+      if split_part(temp_ameliore_competence,';',2) = '1' then
+        code_retour := code_retour||'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>'||split_part(temp_ameliore_competence,';',3)||'</b><br><br>.';
+      else
+        code_retour := code_retour||'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
       end if;
 
-      -- Mini à 1%
-      if v_comp_modifie < 1 then
-        v_comp_modifie := 1;
-      end if;
+  end if;
 
-      code_retour := code_retour||'Votre chance de réussir (en tenant compte des modificateurs) est de <b>'||trim(to_char(v_comp_modifie,'9999'))||'</b> ';
-
-        -- on regarde si le sort est lancé
-        v_special := floor(v_comp_modifie/5);
-
-        -- etape  on regarde si la cible est bénie ou maudite
-        bonmal := valeur_bonus(lanceur, 'BEN') + valeur_bonus(lanceur, 'MAU');
-        if bonmal <> 0 then
-          des := lancer_des3(1,100,bonmal);
-        else
-          des := lancer_des(1,100);
-        end if;
-        code_retour := code_retour||'et votre lancer de dés est de <b>'||trim(to_char(des,'9999'))||'</b>.<br>';
-
-        if des > 96 then
-          -- echec critique
-
-          code_retour := '0;'||code_retour;
-          return code_retour;
-        end if;
-
-        if des > v_comp_modifie then
-          -- echec
-
-          code_retour := code_retour||'Vous avez donc <b>échoué</b>.<br><br>';
-
-          -- on regarde si on améliore la comp
-          if v_comp <= getparm_n(1) then
-            code_retour := code_retour||'Votre compétence est inférieure à '||trim(to_char(getparm_n(1),'9999'))||' %. Vous tentez une amélioration.<br>';
-            temp_ameliore_competence := ameliore_competence_px(lanceur,v_comp_cod,v_comp);
-            code_retour := code_retour||'Votre lancer de dés est de <b>'||split_part(temp_ameliore_competence,';',1)||'</b>, ';
-            if split_part(temp_ameliore_competence,';',2) = '1' then
-              code_retour := code_retour||'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>'||split_part(temp_ameliore_competence,';',3)||'</b><br><br>.';
-            else
-              code_retour := code_retour||'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
-            end if;
-          end if;
-
-
-          code_retour := '0;'||code_retour;
-          return code_retour;
-        end if;
-
-        if des <= 5 then
-          code_retour := code_retour||'il s’agit donc d’une <b>réussite critique</b>.<br><br>';
-          px_gagne := px_gagne + 1;
-          cout_pa := floor(cout_pa/2);
-        else
-          if des <= v_special then
-            code_retour := code_retour||'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
-            cout_pa := cout_pa - 1;
-          else
-            code_retour := code_retour||'Vous avez donc <b>réussi</b>.<br><br>';
-          end if;
-        end if;
-
-        facteur_reussite := v_comp_modifie - des;
-        facteur_reussite_pur := v_comp_modifie - des;
-
-
-        -- renomme magique
-        update perso set perso_renommee_magie = perso_renommee_magie + temp_renommee where perso_cod = lanceur;
-
-        -- px
-          px_gagne := px_gagne + ((niveau_sort - 1)/3.0::numeric);
-
-
-        -- on tente l amélioration
-        temp_ameliore_competence := ameliore_competence_px(lanceur,v_comp_cod,v_comp);
-        code_retour := code_retour||'Votre jet d’amélioration est de <b>'||split_part(temp_ameliore_competence,';',1)||'</b>, ';
-        if split_part(temp_ameliore_competence,';',2) = '1' then
-          code_retour := code_retour||'Vous avez amélioré cette compétence. Sa nouvelle valeur est <b>'||split_part(temp_ameliore_competence,';',3)||'</b>.<br><br>';
-        else
-          code_retour := code_retour||'Vous n’avez pas réussi à améliorer cette compétence.<br><br>';
-        end if;
-
-        -- on attribue les PX
-        update perso set perso_px = perso_px + px_gagne where perso_cod = lanceur;
-
+  -- ------------------------------------------------------
+  -- Ajout des px, et retrait des PA
+  update perso set perso_px = perso_px + px_gagne, perso_pa = perso_pa  - cout_pa where perso_cod = v_perso_cod;
+  if px_gagne > 0 then
+      code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99.99'))||' PX pour cette action.<br>';
+  end if;
 
   -- ---------------------------
-	code_retour := code_retour||';'||trim(to_char(px_gagne,'999999990.99'))||';'||trim(to_char(facteur_reussite,'99999999999'));
-	return code_retour;
+	return v_retour::text || ';' || code_retour;
 end;$_$;
 
 
