@@ -39,7 +39,7 @@ echo '<table><tr><td class="titre"><strong>Fonctionnement générique</strong></
 			<td class="titre"><strong>Actions</strong></td></tr>
 		<tr><td style="padding:2px; width:30%"><p>Les pochettes surprises sont des documents donnés à chaque personnage. Les personnages peuvent les apporter dans un bâtiment administratif, où ils leurs seront échangés contre un cadeau, parmi :</p>
 		<ul><li>- Trois runes</li><li>- Une rune et deux composants de forgeamagie</li><li>- Une rune et un œuf de basilic</li><li>- Une rune et deux parchemins</li><li>- Une rune et deux potions</li><li>- Une rune et de 5000 à 9000 brouzoufs</li></ul>
-		<p>Suite à une distribution, un aventurier peut ourir ça pochette dans un batiment administratif. Le pochette ne peuvent pas tomber au sol. Typiquement, les pochettes sont distribuées lors des fêtes de fin d’année (fêtes de Léno dans le jeu).</p></td>';
+		<p>Suite à une distribution, un aventurier peut ouvrir sa pochette dans un batiment administratif. Les pochettes ne peuvent pas tomber au sol. Typiquement, les pochettes sont distribuées lors des fêtes de fin d’année (fêtes de Léno dans le jeu).</p></td>';
 echo '<td style="padding:2px; width:30%"><p>(les distributions sont enregistrées depuis début 2012)</p><ul>';
 
 $req =
