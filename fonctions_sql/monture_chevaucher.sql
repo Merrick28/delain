@@ -55,9 +55,9 @@ begin
   end if;
 
 
-  -- Test de compétence équitation (difficulté 0)
+  -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
   temp_competence := monture_competence(v_perso, 1, v_monture, 0);
-  code_retour := code_retour||split_part(temp_competence,';',2);
+  code_retour := code_retour||split_part(temp_competence,';',3);
 
   -- Test sur le jet de compétence
   if split_part(temp_competence,';',1) = '1' then

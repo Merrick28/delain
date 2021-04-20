@@ -21,7 +21,13 @@ CREATE OR REPLACE FUNCTION monture_competence(integer, integer, integer, integer
     1 = compétence réussi ?
         0 = non
         1 = oui
-    2 = chaine html de sortie
+    2 = niveau de reussite
+        0 échec critique
+        1 raté
+        2 reussi
+        3 special
+        4 reussite critique
+    3 = chaine html de sortie
 */
 /*****************************************************************/
 /* Créé le 16/04/2021                                            */
@@ -36,6 +42,7 @@ declare
 	v_perso_cible alias for $3;		-- perso_cod de la cible si désarçonnage
 	v_difficulte alias for $4;		-- difficulté de la compétence
 	v_retour integer;		-- code retour 0 raté / 1 réussi
+	v_criticite integer;		-- niveau de reussite echec de 0 à 4
 	code_retour text;		-- chaine html de sortie
 
   v_pos_pvp varchar(1);   -- zone PvP
@@ -76,7 +83,7 @@ begin
       -- 'désarçonner';
       cout_pa := 6 ;
   else
-  	  return '0;<p>Erreur ! action inconnue.</p>';
+  	  return '0;0;<p>Erreur ! action inconnue.</p>';
   end if;
 
 
@@ -86,16 +93,16 @@ begin
 
   select perso_pa into v_perso_pa from perso where perso_cod=v_perso_cod;
   if not found then
-      return '0;<p>Erreur ! Perso introuvable </p>';
+      return '0;0;<p>Erreur ! Perso introuvable </p>';
   end if;
 
   if v_perso_pa<cout_pa then
-    return '0;<p>Erreur ! Vous n’avez pas assez de PA pour effectuer cette action.</p>';
+    return '0;0;<p>Erreur ! Vous n’avez pas assez de PA pour effectuer cette action.</p>';
   end if;
 
  if v_action = 1 and  v_perso_cible is null then
 
-    return '0;<p>Erreur ! Vous devez cibler une monture à chevaucher</p>';
+    return '0;0;<p>Erreur ! Vous devez cibler une monture à chevaucher</p>';
 
  elsif v_action = 4 then
 
@@ -106,15 +113,15 @@ begin
         left outer join lieu ON lieu_cod = lpos_lieu_cod
         where ppos_perso_cod = v_perso_cod;
     if v_pos_protegee = 'O' then
-      return '0;<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas désarconner une cible</p>';
+      return '0;0;<p>Erreur ! Vous êtes sur un lieu refuge et ne pouvez donc pas désarconner une cible</p>';
     end if;
 
     if v_perso_cible is null then
-      return '0;<p>Erreur ! Vous devez donner une cible pour désarconner</p>';
+      return '0;0;<p>Erreur ! Vous devez donner une cible pour désarconner</p>';
     end if;
 
     if f_perso_monture(v_perso_cible) is null then
-      return '0;<p>Erreur ! Cette cible n’a pas de monture, il vous est impossible de la désarconner</p>';
+      return '0;0;<p>Erreur ! Cette cible n’a pas de monture, il vous est impossible de la désarconner</p>';
     end if;
 
     -- sur la cible + zone de droit
@@ -125,11 +132,11 @@ begin
         left outer join lieu ON lieu_cod = lpos_lieu_cod
         where ppos_perso_cod = v_perso_cible and perso_actif = 'O';
     if not found then
-      return '0;<p>Erreur : cible non trouvée !</p>';
+      return '0;0;<p>Erreur : cible non trouvée !</p>';
     end if;
 
     if  v_pos_pvp = 'N' or v_pos_protegee = 'O'then
-      return '0;<p>Erreur ! Cette cible est en zone de droit ou sur un lieu protégé, il vous est impossible de la désarconner</p>';
+      return '0;0;<p>Erreur ! Cette cible est en zone de droit ou sur un lieu protégé, il vous est impossible de la désarconner</p>';
     end if;
 
   end if;
@@ -141,7 +148,7 @@ begin
 
   select perso_nom into v_perso_cible_nom from perso where perso_cod = v_perso_cible ;
   if not found then
-      return '0;<p>Erreur ! ce n’est pas possible de faire ça!!!!!</p>';
+      return '0;0;<p>Erreur ! ce n’est pas possible de faire ça!!!!!</p>';
   end if;
 
 ------------------------------------------------------------
@@ -205,9 +212,11 @@ begin
   end if;
   code_retour := code_retour||'et votre lancer de dés est de <b>'||trim(to_char(des,'9999'))||'</b>.<br>';
 
+
   -- cas d'un echec critique ------------------------------------------------------
   if des > 96 then
 
+      v_criticite := 0 ;
       px_gagne := 0 ;
       v_retour = 0;
       code_retour := code_retour||'Il s’agit donc d’un <b>échec critique</b>.<br><br>';
@@ -215,6 +224,7 @@ begin
   -- cas d'un echec normal ------------------------------------------------------
   elsif des > v_comp_modifie then
 
+      v_criticite := 1 ;
       px_gagne := 0 ;
       v_retour = 0;
       code_retour := code_retour||'Vous avez donc <b>échoué</b>.<br><br>';
@@ -222,6 +232,7 @@ begin
   -- cas d'une réussite critique------------------------------------------------------
   elsif des <= 5 then
 
+      v_criticite := 4 ;
       code_retour := code_retour||'il s’agit donc d’une <b>réussite critique</b>.<br><br>';
       px_gagne := px_gagne + 1;
       v_retour = 1;
@@ -230,13 +241,14 @@ begin
   -- cas d'une réussite speciale ------------------------------------------------------
   elsif des <= v_special then
 
+      v_criticite := 3 ;
       code_retour := code_retour||'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
       v_retour = 1;
       cout_pa := cout_pa - 1;
 
   -- cas d'une réussite standard ------------------------------------------------------
   else
-
+      v_criticite := 2 ;
       code_retour := code_retour||'Vous avez donc <b>réussi</b>.<br><br>';
       v_retour = 1;
 
@@ -298,7 +310,7 @@ begin
 
 
   -- ---------------------------
-	return v_retour::text || ';' || code_retour;
+	return v_retour::text || ';' || v_criticite::text || ';' || code_retour;
 end;$_$;
 
 
