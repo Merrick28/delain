@@ -15,7 +15,6 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   v_gmon_monture text;
-  v_equitation integer;
   temp_competence text;   -- text du jet de compétence
 begin
 	code_retour := '';

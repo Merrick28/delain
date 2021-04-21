@@ -41,7 +41,8 @@ insert into  type_evt (tevt_libelle, tevt_texte) VALUES
   ('Equitation', '[attaquant] monte sur sa monture [cible].'),
   ('Equitation', '[attaquant] est descendu de sa monture [cible].'),
   ('Equitation', '[attaquant] donne un ordre à sa monture [cible].') ,
-  ('Equitation', '[attaquant] a été éjecté de sa monture [cible].') ;
+  ('Equitation', '[attaquant] a été éjecté de sa monture [cible].') ,
+  ('Equitation', '[cible] a été désarçonner de sa monture par [attaquant].') ;
 
 INSERT INTO bonus_type( tbonus_libc, tonbus_libelle, tbonus_gentil_positif, tbonus_nettoyable, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur)
     VALUES( 'EQI', 'Equitation', true,   'O', 'O', 50, 'Equitation: Chaque point positif d’Equitation augmente la compétence équitation d’autant.',  'N');
@@ -51,3 +52,15 @@ INSERT INTO  lieu_type(tlieu_libelle, tlieu_url) VALUES ('Portail à montures', 
 ALTER TABLE rep_mon_joueur ADD COLUMN rjmon_monture numeric NOT NULL DEFAULT 0 ;
 
 DROP FUNCTION choix_monstre_etage(integer) ;
+
+CREATE TABLE perso_nb_action
+(
+  pnbact_perso_cod integer NOT NULL,
+  pnbact_action character varying(8) NOT NULL,
+  pnbact_nombre integer NOT NULL,
+  pnbact_date_derniere_action timestamp with time zone,
+  CONSTRAINT fk_pnbact_perso_cod FOREIGN KEY (pnbact_perso_cod) REFERENCES public.perso (perso_cod) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT uniq_pnbact_perso_cod_action UNIQUE (pnbact_perso_cod, pnbact_action)
+);
+
+ALTER TABLE public.perso_nb_action OWNER TO delain;

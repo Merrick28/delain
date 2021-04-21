@@ -1050,6 +1050,10 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
             $contenu_page .= $perso->monture_dechevaucher();
             break;
 
+        case 'desarconner':
+            $contenu_page .= $perso->monture_desarconner($_REQUEST['cavalier']);
+            break;
+
         default :
             /* si aucune methode n'est passée..... */
             $contenu_page .= '<p>Erreur : action non définie !';

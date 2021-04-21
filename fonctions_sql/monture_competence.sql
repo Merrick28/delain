@@ -128,6 +128,7 @@ begin
     select into v_pos_pvp, v_pos_protegee pos_pvp, coalesce(lieu_refuge, 'N')
         from perso_position
         inner join positions on pos_cod = ppos_pos_cod
+        inner join perso on perso_cod=ppos_perso_cod
         left outer join lieu_position ON lpos_pos_cod = pos_cod
         left outer join lieu ON lieu_cod = lpos_lieu_cod
         where ppos_perso_cod = v_perso_cible and perso_actif = 'O';
@@ -275,13 +276,13 @@ begin
   if v_action = 4 and v_retour = 1 then
 
       -- calcul de la compétence de base
-      select pcomp_modificateur into v_comp_cible from perso_competences where pcomp_perso_cod = v_perso_cod_cible and pcomp_pcomp_cod = 104;
+      select pcomp_modificateur into v_comp_cible from perso_competences where pcomp_perso_cod = v_perso_cible and pcomp_pcomp_cod = 104;
       if not found then
           v_comp_cible := 30 ;    -- 30% de base mini pour chaque perso
       end if;
 
       -- ajout des bonus / malus
-      v_comp_cible := GREATEST(1, v_comp_cible + bonus_equitation(v_perso_cod_cible));
+      v_comp_cible := GREATEST(1, v_comp_cible + bonus_equitation(v_perso_cible));
 
       -- on regarde si la cible est bénie ou maudite
       bonmal := valeur_bonus(v_perso_cible, 'BEN') + valeur_bonus(v_perso_cible, 'MAU');
@@ -293,10 +294,10 @@ begin
 
       -- le jet de l'oposant à réussi: si sa compétence est reussie et s'il y a une plus grande difference de dé par rapport au seuil de reussite
       if (des_cible <= v_comp_cible) and (v_comp_cible - des_cible) > (v_comp_modifie - des) then
-          code_retour := code_retour||v_perso_cible_nom || ' a réussi son jet d’opposition, vous n’arrivez pas à le désarçonner!</b><br>';
+          code_retour := code_retour||v_perso_cible_nom || ' <b>a réussi son jet d’opposition</b>, vous n’arrivez pas à le désarçonner!</b><br>';
           v_retour := 0 ;
       else
-          code_retour := code_retour||v_perso_cible_nom || ' a raté son jet d’opposition, vous arrivez à le désarçonner!</b><br>';
+          code_retour := code_retour||v_perso_cible_nom || ' <b>a raté son jet d’opposition</b>, vous arrivez à le désarçonner!</b><br>';
       end if;
 
   end if;
