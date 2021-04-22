@@ -3280,6 +3280,43 @@ class perso
     }
 
     /**
+     *regarde si la monture est chevauché est ordonable par le joueur (le joueur peut lui donner des ordres)
+     */
+    public function monture_ordonable()
+    {
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["ordonable"] == 'O';
+    }
+
+
+    /**
+     *regarde si la monture est chevauché est controlable par le joueur (le joueur peut se déplacer la monture suivra) ou le joueur n'a pas de monture
+     */
+    public function monture_controlable()
+    {
+        if ( !$this->perso_monture) return true ;
+
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18) THEN 'N' ELSE 'O' END as controlable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["controlable"] == 'O';
+    }
+
+    /**
      *regarde si une monture est disponible pour être montée?
      */
     public function monture_chevauchable()

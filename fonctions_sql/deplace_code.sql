@@ -128,10 +128,15 @@ begin
   v_pa_dep :=  get_pa_dep(num_perso);  -- memo pour eviter de le recalculer à chaque fois
 
   -- verifier si le perso est en danger dans une zone normalement innacesible: il a une exception pour bouger à 12 PA
-   select  getparm_n(9) + pos_modif_pa_dep into v_modif_pa_dep from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=num_perso and perso_monture is null ;
-   if not found then
-      v_modif_pa_dep := 0 ;
-   end if;
+  select  getparm_n(9) + pos_modif_pa_dep into v_modif_pa_dep from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=num_perso and perso_type_perso=1 and perso_monture is null ;
+  if not found then
+    -- vérifier aussi pour une monture
+    select get_pa_dep_terrain(perso_cod, pos_cod) into v_modif_pa_dep from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=num_perso and perso_type_perso=2 ;
+    if not found then
+       v_modif_pa_dep := 0 ;
+    end if;
+  end if;
+
 
 	select into ancien_code_pos, ancien_x, ancien_y, ancien_etage, v_type_perso, v_perso_pnj
 		pos_cod, pos_x, pos_y, pos_etage, perso_type_perso, perso_pnj

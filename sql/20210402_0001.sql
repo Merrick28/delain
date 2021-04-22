@@ -56,7 +56,7 @@ DROP FUNCTION choix_monstre_etage(integer) ;
 CREATE TABLE perso_nb_action
 (
   pnbact_perso_cod integer NOT NULL,
-  pnbact_action character varying(8) NOT NULL,
+  pnbact_action character varying(24) NOT NULL,
   pnbact_nombre integer NOT NULL,
   pnbact_date_derniere_action timestamp with time zone,
   CONSTRAINT fk_pnbact_perso_cod FOREIGN KEY (pnbact_perso_cod) REFERENCES public.perso (perso_cod) ON UPDATE CASCADE ON DELETE CASCADE,

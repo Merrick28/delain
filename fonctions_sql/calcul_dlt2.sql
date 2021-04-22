@@ -684,32 +684,23 @@ begin
     update lock_combat set lock_nb_tours = lock_nb_tours - 1 where lock_attaquant = personnage;
 
     /* ripostes */
-    update riposte set riposte_nb_tours = riposte_nb_tours - 1
-    where riposte_cible = personnage;
+    update riposte set riposte_nb_tours = riposte_nb_tours - 1 where riposte_cible = personnage;
 
     /* nombre competences */
-    update perso_nb_comp
-    set pnb_nombre = 0
-    where pnb_perso_cod = personnage;
+    update perso_nb_comp set pnb_nombre = 0  where pnb_perso_cod = personnage;
 
     /* nombre sorts */
-    update perso_nb_sorts
-    set pnbs_nombre = 0
-    where pnbs_perso_cod = personnage;
+    update perso_nb_sorts set pnbs_nombre = 0 where pnbs_perso_cod = personnage;
 
-        /* nombre sort objet bonus  */
-    update perso_nb_sorts_bm
-    set pnbsbm_nombre = 0
-    where pnbsbm_perso_cod = personnage;
+    /* nombre sort objet bonus  */
+    update perso_nb_sorts_bm set pnbsbm_nombre = 0 where pnbsbm_perso_cod = personnage;
+
+    /* nombre autres actions */
+    update perso_nb_action set pnbact_nombre = 0 where pnbact_perso_cod = personnage;
 
     /* transactions */
-    update transaction
-    set tran_nb_tours = tran_nb_tours - 1
-    where tran_acheteur = personnage;
-
-    delete from transaction
-    where tran_acheteur = personnage
-          and tran_nb_tours <= 0;
+    update transaction set tran_nb_tours = tran_nb_tours - 1 where tran_acheteur = personnage;
+    delete from transaction  where tran_acheteur = personnage  and tran_nb_tours <= 0;
 
     /* bonus */
     update bonus

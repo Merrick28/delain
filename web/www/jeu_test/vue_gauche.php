@@ -19,9 +19,31 @@ if ($stmt->rowCount())
     $x_actuel     = $result['pos_x'];
     $y_actuel     = $result['pos_y'];
 }
+
+
 ?>
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php echo $etage_actuel ?>" title="essai">
 <script type="text/javascript">    //# sourceURL=vue_gauche.js
+
+<?php
+if ( !$perso->monture_controlable() )
+{   // Fonction clic, spécial pour les persos qui possédent une monture qui ne peut pas être dirigé par le déplacement du perso
+?>
+    function vue_clic(pos_cod, distance) {
+        document.getElementsByName('position').value = pos_cod;
+        document.forms['destdroite'].dist.value = distance;
+        if (document.forms['destdroite'].action.value != 'action.php') // En cas de déplacement, on vérifie la distance
+        {
+            voirList(document.forms['destdroite'], document.forms['destdroite'].action.value + '?position=' + pos_cod + '&t_frdr=<?php echo $t_frdr; ?>', document.forms['destdroite'].destcadre.value);
+            document.getElementById("cell" + pos_cod).className = 'vu';
+            window.setTimeout("cligno_fin('cell" + pos_cod + "')", 1000);	// clic pour détails
+        }
+    }
+<?php
+}
+else
+{   // Fonction clic, standard, autorise le déplacement sur clic!
+?>
     function vue_clic(pos_cod, distance) {
 
         document.getElementsByName('position').value = pos_cod;
@@ -55,6 +77,9 @@ if ($stmt->rowCount())
         }
 
     }
+<?php
+}
+?>
 
     function clignoter(cell, nombre) {
         nombre--;

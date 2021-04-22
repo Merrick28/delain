@@ -226,6 +226,13 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                 if ($menu_deplacement === '') include('frame_vue.php');
                 die('');
             }
+            if (! $perso->monture_controlable() )
+            {
+                $contenu_page .= '<p>Votre monture n’accepte pas ce mode de déplacement !</p>';
+                $resultat_dep = $contenu_page;
+                if ($menu_deplacement === '') include('frame_vue.php');
+                die('');
+            }
             if (isset($_POST['position']))
             {
                 $position = $_POST['position'];

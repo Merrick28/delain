@@ -15,6 +15,7 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   temp_competence text;   -- text du jet de compétence
+  v_nb_action integer;   -- nombre de désarçonnage déjà fait dans le tour
 begin
 	code_retour := '';
 
@@ -40,6 +41,16 @@ begin
 
   if v_cavalier_pos_cod <> v_perso_pos_cod then
     return '<p>Erreur ! Le cavalier à désarçonner est trop loin !';
+  end if;
+
+  -- verification du nombre de désarçonnage par tour !
+  select pnbact_nombre into v_nb_action from perso_nb_action where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-desarconner' ;
+  if not found then
+      insert into perso_nb_action(pnbact_perso_cod, pnbact_action, pnbact_nombre, pnbact_date_derniere_action) values(v_perso, 'EQI-desarconner', 1, now());
+  elsif v_nb_action > 0 then
+      return '<p>Erreur ! Vous ne pouvez désarçonner qu’une seule fois par tour !';
+  else
+      update perso_nb_action set pnbact_nombre=pnbact_nombre+1, pnbact_date_derniere_action=now() where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-desarconner' ;
   end if;
 
   -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
