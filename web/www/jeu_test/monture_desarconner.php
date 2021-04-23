@@ -19,7 +19,7 @@ if ($perso->perso_type_perso == 3){
     if (count($liste_cavalier)>1)
         $contenu_page .= "<br><p>Choisissez le cavalier à désarçonner:</p><br>";
     else
-        $contenu_page .= "<br><p>Voulez-vous désarçonner cette ce cavalier:</p><br>";
+        $contenu_page .= "<br><p>Voulez-vous désarçonner ce cavalier:</p><br>";
     foreach ($liste_cavalier as $c => $cavalier) {
         $contenu_page .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"action.php?methode=desarconner&cavalier={$cavalier["perso_cod"]}\">{$cavalier["perso_nom"]}</a> monté sur {$cavalier["monture_perso_nom"]}</p>";
     }

@@ -3284,6 +3284,8 @@ class perso
      */
     public function monture_ordonable()
     {
+        if ( !$this->perso_monture) return false ;
+
         $pdo  = new bddpdo;
         $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
                          from perso 
@@ -3389,6 +3391,20 @@ class perso
         $req    = "select monture_desarconner(:perso, :cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":cible" => $cavalier), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
+    /**
+     * donne un ordre à la monture (l'ia se chargera de le réaliser)
+     */
+    public function monture_ordre($ordre, $parametres)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_ordonner(:perso, :ordre, :param) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":ordre" => $ordre, ":param" => json_encode($parametres)), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }

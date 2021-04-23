@@ -78,7 +78,7 @@ begin
       cout_pa := 4 ;
   elsif v_action = 3 then
       -- 'donner un ordre à la monture';
-      cout_pa := 4 ;
+      cout_pa := 2 ;
   elsif v_action = 4 then
       -- 'désarçonner';
       cout_pa := 6 ;
@@ -162,13 +162,10 @@ begin
   elsif v_action = 2 then
     -- 'mettre pied à terre';
     code_retour := code_retour || 'Vous tentez de descendre de '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
-    cout_pa := 4 ;
   elsif v_action = 3 then
     code_retour := code_retour || 'Vous tentez de donner un ordre à '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
-    cout_pa := 4 ;
   elsif v_action = 4 then
     code_retour := code_retour || 'Vous tentez de désarconner '|| v_perso_cible_nom || ' de sa monture en utilisant votre compétence équitation.<br>';
-    cout_pa := 6 ;
   end if;
 
 
