@@ -165,7 +165,7 @@ begin
   elsif v_action = 3 then
     code_retour := code_retour || 'Vous tentez de donner un ordre à '|| v_perso_cible_nom || ' en utilisant votre compétence équitation.<br>';
   elsif v_action = 4 then
-    code_retour := code_retour || 'Vous tentez de désarconner '|| v_perso_cible_nom || ' de sa monture en utilisant votre compétence équitation.<br>';
+    code_retour := code_retour || 'Vous tentez de désarçonner '|| v_perso_cible_nom || ' de sa monture en utilisant votre compétence équitation.<br>';
   end if;
 
 
@@ -176,8 +176,8 @@ begin
       INSERT INTO perso_competences( pcomp_perso_cod, pcomp_pcomp_cod, pcomp_modificateur) VALUES (v_perso_cod, 104, v_comp);
 	end if;
 
-  -- ajout des bonus / malus
-  v_comp_modifie := v_comp + bonus_equitation(v_perso_cod);
+  -- ajout des bonus / malus et de la difficulté de l'action
+  v_comp_modifie := v_comp + bonus_equitation(v_perso_cod) - v_difficulte ;
 
   -- pour l'action chevaucher, on ajoute aussi le bonus/malus de la monture que l'on souhaite monter!
   if v_action = 1 then
@@ -305,7 +305,6 @@ begin
   if px_gagne > 0 then
       code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'99.99'))||' PX pour cette action.<br>';
   end if;
-
 
   -- ---------------------------
 	return v_retour::text || ';' || v_criticite::text || ';' || code_retour;

@@ -22,6 +22,7 @@ AS $_$declare
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_difficulte integer ;     -- difficulté de l'ordre
+  v_nb_action integer;   -- nombre d'echec d'ordre
 
 begin
 	code_retour := '';
@@ -42,11 +43,22 @@ begin
 
 	select count(*), coalesce(max(f_to_numeric(value->>'ordre')) , 0) into v_nb_ordre, v_num_ordre from json_array_elements (v_param_ia);
 
+
+  -- On autorise un seul échec d'ajout d'ordre par DLT, après celui-ci la monture refuse tout ordre supplémentaire !!!!
+  select pnbact_nombre into v_nb_action from perso_nb_action where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
+  if not found then
+      insert into perso_nb_action(pnbact_perso_cod, pnbact_action, pnbact_nombre, pnbact_date_derniere_action) values(v_perso, 'EQI-ordonner', 0, now());
+  elsif v_nb_action > 0 then
+      return '<p>Votre monture est <b>devenue incontrolable</b>, vous ne pouvez plus modifier ses ordres pendant cette DLT !';
+  end if;
+
+
   -- traitement de la difficulté de l'ordre
   if v_ordre = 'ADD' then
-      v_difficulte := v_nb_ordre ;
+      v_difficulte := 5 * v_nb_ordre ;    -- 5% de difficulté par ordre au dessus du premier
+
   elsif v_ordre = 'DEL'  then
-      v_difficulte := 0 ;
+      v_difficulte := 0 ;                 -- pas de difficulté pour la supression
   else
       return '<p>Erreur ! Type d''ordre inconnu !';
   end if;
@@ -60,10 +72,10 @@ begin
 
       -- réaliser l'action !!!
       if v_ordre = 'ADD' then
-          code_retour := code_retour || '<p>Vous avez donner un ordre avec succès pour ' || v_monture_nom || ' !<br>';
+          code_retour := code_retour || '<p>Vous avez donner un ordre avec succès à ' || v_monture_nom || ' !<br>';
 
           -- evenement déchevaucher (107)
-          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a donné un ordre à sa monture [cible].', 'O', NULL);
+          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a donné un ordre à [cible].', 'O', NULL);
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
@@ -76,10 +88,10 @@ begin
               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
       else
-          code_retour := code_retour || '<p>Vous avez supprimer un ordre avec succès pour ' || v_monture_nom || ' !<br>';
+          code_retour := code_retour || '<p>Vous avez supprimé avec succès un ordre qui avait été à ' || v_monture_nom || ' !<br>';
 
           -- evenement déchevaucher (107)
-          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a supprimé un ordre à sa monture [cible].', 'O', NULL);
+          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a supprimé un ordre qui avait été à [cible].', 'O', NULL);
 
           -- supprimer un ordre de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;    -- ordre à supprimer
@@ -95,7 +107,29 @@ begin
   else
       -- si echec du jet de compétence
       if v_ordre = 'ADD' then
-          code_retour := code_retour||'<br><p>Vous n’avez pas réussi à donner un ordre à ' || v_monture_nom || '!<br>';
+
+          if v_num_ordre > 0 then
+              update perso_nb_action set pnbact_nombre=pnbact_nombre+1, pnbact_date_derniere_action=now() where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
+          end if;
+
+          -- en cas d'echc critique on donne un ordre aléatoire
+          if split_part(temp_competence,';',2) = '0' then
+                code_retour := code_retour||'<br><p>Vous avez donné un ordre à ' || v_monture_nom || ', mais <b>votre monture ne l''a pas compris!</b><br>';
+
+                -- evenement déchevaucher (107)
+                perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a donné un ordre à sa monture [cible] qui ne l''a pas compris.', 'O', NULL);
+
+                -- mise à jour des ordres de la monture
+                v_num_ordre := v_num_ordre + 1 ;
+                dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
+                update perso
+                    set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
+                    where perso_cod=v_monture ;
+
+           else
+                code_retour := code_retour||'<br><p>Vous n’avez pas réussi à donner un ordre à ' || v_monture_nom || '!<br>';
+          end if;
+
       else
           code_retour := code_retour||'<br><p>Vous n’avez pas réussi à supprimer un ordre de ' || v_monture_nom || '!<br>';
       end if;

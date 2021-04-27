@@ -6,14 +6,15 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 
 $arr_img = [
-    "1:0"=> "N.png",
-    "-1:0"=> "S.png",
-    "0:1"=> "E.png",
-    "0:-1"=> "W.png",
-    "1:1"=> "NE.png",
-    "1:-1"=> "NW.png",
-    "-1:1"=> "SE.png",
-    "-1:-1"=> "SW.png",
+    "1:0"   => "N.png",
+    "-1:0"  => "S.png",
+    "0:1"   => "E.png",
+    "0:-1"  => "W.png",
+    "1:1"   => "NE.png",
+    "1:-1"  => "NW.png",
+    "-1:1"  => "SE.png",
+    "-1:-1" => "SW.png",
+    "0:0"   => "Q.png",
 ];
 
 $contenu_page = '';
