@@ -31,27 +31,27 @@ if ($perso->perso_type_perso == 3){
 
     $monture = new perso();
     $monture->charge( $perso->perso_monture );
+    $dist_max = 2 * max(3, $monture->perso_vue) ;
     $contenu_page .= "<br><p>Vous chevaucher actuellement: <a href=\"visu_desc_perso.php?visu=".$monture->perso_cod."\">".$monture->perso_nom."</a></p>";
 
-    // traitment des nouveau ordres:
+    // traitment des nouveaux ordres: ==================================================================================
     if (isset($_REQUEST["ORDRE_ADD"]))
     {
         $contenu_page .= "<hr><b>ACTION</b>: Donner un ordre à la monture<br>";
-        // check validité :
         $msg = "";
-        if ( !isset($_REQUEST["distance"]) || (int)$_REQUEST["distance"]<=0 ) $msg .= "La distance de l'ordre n'est pas valide! ";
-        if ( !isset($_REQUEST["direction"]) ) $msg .= "Vous n'avez pas sélectionné de direction! ";
         $dir=explode(":", $_REQUEST["direction"]);
         $dir_x = (int)$dir[0];
         $dir_y = (int)$dir[1];
-        if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "Vous avez donné un mauvaise ordre de direction! ";
+        $dist = (int)$_REQUEST["distance"];
+        if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
+        if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>de 2x la vue de base</b> de votre monture! ";
         if ($msg != "")
         {
             $contenu_page .= $msg."<br>L'ordre n'est <b>pas valide</b>, les PA n'ont pas été depensés!<br>";
         }
         else
         {
-            $contenu_page .= $perso->monture_ordre( "ADD", [ "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => (int)$_REQUEST["distance"] ] );
+            $contenu_page .= $perso->monture_ordre( "ADD", [ "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist ] );
             $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
         }
 
@@ -59,24 +59,48 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= "<hr>";
     }
 
-    // traitment des nouveau ordres:
+    // traitment de la supression d'ordres =============================================================================
     if (isset($_REQUEST["ORDRE_DEL"]))
     {
         $contenu_page .= "<hr><b>ACTION</b>: Supprimer un ordre de la monture<br>";
-        // check validité :
         $msg = "";
 
-        $contenu_page .= print_r($_REQUEST, true);
+        $foundOrdre = false ;
+        $num_ordre = $_REQUEST["num_ordre"];
+        $ordres = json_decode($monture->perso_misc_param) ;
+        if (sizeof($ordres->ia_monture_ordre) >0)
+        {
 
-        //print_r($_REQUEST);die();
+            foreach ($ordres->ia_monture_ordre as $k => $o)
+            {
+                if ($o->ordre == $num_ordre)
+                {
+                    $foundOrdre = true;
+                    break;
+                }
+            }
+        }
+        if ( !$foundOrdre  ) $msg .= "<br>L'ordre que vous essayez de supprimer est <b>innexistant</b>! ";
+
+        if ($msg != "")
+        {
+            $contenu_page .= $msg."<br>L'ordre n'est <b>pas valide</b>, les PA n'ont pas été depensés!<br>";
+        }
+        else
+        {
+            $contenu_page .= $perso->monture_ordre( "DEL", [ "num_ordre" => $num_ordre ] );
+            $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
+        }
+
         $contenu_page .= "<hr>";
     }
 
-    $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br>";
+    // affichage des ordres actifs =====================================================================================
+    $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br> <br>";
     $ordres = json_decode($monture->perso_misc_param) ;
     if (sizeof($ordres->ia_monture_ordre) >0)
     {
-        $contenu_page .= '<form name="monture_dep" id="monture_dep" method="post" action="monture_ordre.php">';
+        $contenu_page .= '<form name="monture_dep" id="monture_dep" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
         $contenu_page .= '<input type="hidden" name="num_ordre" id="num_ordre" value="">';
         $a_ordres = [] ;
         foreach ($ordres->ia_monture_ordre as $k => $o)
@@ -87,23 +111,17 @@ if ($perso->perso_type_perso == 3){
         {
             $o = $ordres->ia_monture_ordre[$k] ;
             $img = "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img[$o->dir_y.":".$o->dir_x]."'>";
-            $contenu_page .=  "<br><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (2 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
+            $contenu_page .=  "<tr><td><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (2 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
             for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
-            $contenu_page .= "&nbsp;&nbsp;</span>"; ;
+            $contenu_page .= "&nbsp;&nbsp;</span></td></tr>" ;
         }
-        $contenu_page .= '</form>';
+        $contenu_page .= '</table></form>';
     }
 
 
-    $contenu_page .= "<br><b><u>Donner un nouvel ordre</u></b>: <br>Sélectionner la direction et la distance à parcourir:<br><br>";
-
-
-
-    //$contenu_page .= 'Direction&nbsp;:&nbsp;'.create_selectbox("monture_dir", $directions, "N");
-    //$contenu_page .= '&nbsp;&nbsp;Distance:&nbsp;<input name="monture_dist" size="4" value="1" >';
-    //$contenu_page .= '&nbsp;&nbsp;<input type="submit" value="Ordoner (2 PA)"  class="test">';
-
-    $contenu_page .= '<form name="monture_order" id="monture_order" method="post" action="monture_ordre.php"><table>';
+    // PDonner un ordre ================================================================================================
+    $contenu_page .= "<br><b><u>Donner un nouvel ordre</u></b>: <br>Sélectionner la direction et la distance<sup>*</sup> à parcourir:<br><br>";
+    $contenu_page .= '<form name="monture_order" id="monture_order" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
     for ($l=1; $l<=3; $l++) {
         $contenu_page .= '<tr>';
         for ($c=1; $c<=3; $c++) {
@@ -119,7 +137,7 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= '</tr>';
     }
 
-    $contenu_page .= '</table></form>';
+    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à '.$dist_max.' cases.<span></form>';
 
     $contenu_page .= "<br><br><hr><br></br>";
     include('vue_gauche.php');
