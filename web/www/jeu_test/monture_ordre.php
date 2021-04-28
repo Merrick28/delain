@@ -108,6 +108,7 @@ if ($perso->perso_type_perso == 3){
         {
             $a_ordres[$o->ordre] = $k ;
         }
+        ksort($a_ordres);
         foreach ($a_ordres as $k)
         {
             $o = $ordres->ia_monture_ordre[$k] ;

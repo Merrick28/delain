@@ -80,8 +80,8 @@ begin
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
-          dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: distance
-          dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: distance
+          dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
+          dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
 
           -- mise à jour des ordres de la monture
           update perso
@@ -95,7 +95,7 @@ begin
 
           -- supprimer un ordre de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;    -- ordre à supprimer
-          select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v from perso where perso_cod=v_monture ) s where v->>'ordre' <> v_num_ordre ;
+          select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
 
 
           -- mise à jour des ordres de la monture
