@@ -142,6 +142,17 @@ if ($perso->perso_type_perso == 3){
     $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à '.$dist_max.' cases.<span></form>';
 
     $contenu_page .= "<br><br><hr><br></br>";
+
+    // charger la liste des terrains innacessible à la monture
+    $terrain = [] ;
+    $mt = new monstre_terrain();
+    $monture_terrain = $mt->getBy_tmon_gmon_cod($monture->perso_gmon_cod);
+    foreach ($monture_terrain as $t)
+    {
+        $terrain[$t->tmon_ter_cod] = $t->tmon_chevauchable ;
+    }
+    //$contenu_page.= print_r($terrain, true);
+
     include('vue_gauche.php');
     $contenu_page .= $vue_gauche ;
 }

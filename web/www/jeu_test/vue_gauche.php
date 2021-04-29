@@ -130,6 +130,26 @@ if (isset($etage_actuel))
         $isobjet    = 0;
         $comment    = '';
         $code_image = 0;
+        $terrain_chevauchable = true ;
+
+        // calcul si un terrain accessible pour une montre chevauchée
+        if (is_array($terrain))
+        {
+            $t_pos_ter_cod = (int) $result['t_pos_ter_cod'] ;
+            if ( isset($terrain[$t_pos_ter_cod]) )
+            {
+                if ($terrain[$t_pos_ter_cod] == 'N')  $terrain_chevauchable = false;
+            }
+            else if ( isset($terrain[-1]) )
+            {
+                if ($terrain[-1] == 'N')  $terrain_chevauchable = false;
+            }
+            else
+            {
+                if ($t_pos_ter_cod != 0) $terrain_chevauchable = false;
+            }
+        }
+
         if ($y_encours != $result['t_y'])
         {
             $y_encours = $result['t_y'];

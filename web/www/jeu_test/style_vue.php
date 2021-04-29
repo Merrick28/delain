@@ -84,6 +84,26 @@ else
 .pinceauOff.murSimple{ background: darkred; }
 .pinceauOn.pasMurSimple { background: lightgreen; }
 .pinceauOff.pasMurSimple{ background: pink; }
+
+.horseBlink {
+    animation: blinkingBackGroundHorse 2s infinite;
+}
+@keyframes blinkingBackGroundHorse{
+    0% {
+        background-image: url(/images/interface/horse-w.png);
+        background-repeat: no-repeat;
+        background-position-x: 11px;
+        background-position-y: 14px;
+    }
+    100% {
+        background-image: url(/images/interface/horse-b.png);
+        background-repeat: no-repeat;
+        background-position-x: 11px;
+        background-position-y: 14px;
+
+    }
+}
+
 <?php 
 if (empty($source) || ($source != 'bdd' && $source != 'fichiers'))
 	$source = 'bdd';

@@ -64,3 +64,38 @@ CREATE TABLE perso_nb_action
 );
 
 ALTER TABLE public.perso_nb_action OWNER TO delain;
+
+
+
+--
+-- Name: type_vue7; Type: TYPE; Schema: public; Owner: delain
+--
+CREATE TYPE public.type_vue7 AS (
+	tvue_num integer,
+	t_pos_cod integer,
+	t_x integer,
+	t_y integer,
+	t_nb_perso integer,
+	t_nb_monstre integer,
+	t_type_aff integer,
+	t_nb_obj integer,
+	t_or integer,
+	t_dist integer,
+	t_type_mur integer,
+	t_type_case integer,
+	t_type_bat integer,
+	t_decor integer,
+	t_traj integer,
+	t_decor_dessus integer,
+	t_nb_lock integer,
+	t_pos_ter_cod integer,
+);
+
+
+ALTER TYPE public.type_vue7 OWNER TO delain;
+
+--
+-- Name: TYPE type_vue2; Type: COMMENT; Schema: public; Owner: delain
+--
+
+COMMENT ON TYPE public.type_vue7 IS 'Type pour faciliter le traitement JS des données de la vue';
