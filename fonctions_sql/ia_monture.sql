@@ -55,6 +55,7 @@ declare
 -------------------------------------------------------
 	temp integer;					-- fourre tout
 	temp_txt text;					-- texte temporaire
+	text_evt text;					-- texte evenement
 	compt_loop integer;			-- comptage de boucle pour sortie
 	dep_aleatoire integer;		-- variable de calcul de dep aleatoire
 
@@ -174,6 +175,7 @@ begin
   dir_x :=  f_to_numeric(v_ordre->>'dir_x') ;     --  ordre: dir x
   dir_y :=  f_to_numeric(v_ordre->>'dir_y') ;     --  ordre: dir y
 
+  temp_txt := '';
   if dir_x = 0 and dir_y = 0 then
       -- le perso a fait un echech critique, il a programmé un mauvais ordre, on realise un déplacement aléatoire
       dep_aleatoire := f_deplace_aleatoire(v_monstre,v_pos);
@@ -185,17 +187,41 @@ begin
           temp_txt := deplace_code(v_monstre, v_pos_ordre);
       else
           code_retour := code_retour||'Positions de l''ordre non trouvé.<br>';
+          temp_txt := '0#0#9';
       end if;
   end if;
 
   -- verifier si le déplacement a été effectué (non effectué en cas: de mur, de PA insuffisants, ou hors map)
   select perso_pa into v_perso_pa  from perso,perso_position,positions where perso_cod = v_monstre 	and ppos_perso_cod = v_monstre and ppos_pos_cod = pos_cod;
 	if v_perso_pa = v_pa then
+
 	      -- le monstre a essayé de ce déplacer, il n'a pas réussi, on lui consomme quand même des PA liés à la tentative
-          if dir_x <> 0 or dir_y <> 0 then
-              temp_txt := '[cible] refuse d’emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
+          text_evt := '[cible] refuse d’emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
+          if temp_txt = '' then
+              temp := '0' ;
+          else
+              temp := split_part(temp_txt,'#',3) ;
           end if;
-          perform insere_evenement(v_cavalier, v_monstre, 2, temp_txt, 'O', 'N', null);
+
+          if temp = '2' then
+              text_evt := text_evt || ' (mur)';
+          elsif temp = '6' then
+              text_evt := text_evt || ' (innacessible)';
+          elsif temp = '7' then
+              text_evt := text_evt || ' (terrain)';
+          elsif temp = '8' then
+              text_evt := text_evt || ' (poids)';
+          elsif temp = '9' then
+              text_evt := text_evt || ' (hors étage)';
+          elsif temp = '10' then
+              text_evt := text_evt || ' (fuite)';
+          else
+              text_evt := '';
+          end if;
+
+          if text_evt <> '' then
+              perform insere_evenement(v_cavalier, v_monstre, 2, text_evt, 'O', 'N', null);
+          end if;
 
 
 	    update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;

@@ -27,6 +27,20 @@ CREATE OR REPLACE FUNCTION deplace_code(integer, integer) RETURNS text
 /*    11/11/2013 : Enregistrement de la position de départ dans  */
 /* la table ligne_evt (levt_parametres)				 */
 /*****************************************************************/
+/*
+2021-04-29 - Malyza : ajout d'un 3eme parmaetre de sortie (code erreur):
+#0   : OK
+#1   : Perso non trouvé
+#2   : Mur
+#3   : Pas assez de PA
+#4   : Déplacement sur sa propre position
+#5   : Trop loin
+#6   : Case trop dangeureuse
+#7   : Terrain (monture)
+#8   : Trop de poids
+#9   : Hors map
+#10  : fuite raté
+ */
 declare
 ------------------------------------------------
 -- variables de retour
@@ -103,7 +117,7 @@ begin
 		pos_x, pos_y, pos_etage, trim(pos_fonction_arrivee), pos_anticipation
 	from positions where pos_cod = v_pos;
 	if not found then
-		code_retour := code_retour || E'1#Erreur : position de destination non trouvée !';
+		code_retour := code_retour || E'1#Erreur : position de destination non trouvée !#9';
 		return code_retour;
 	end if;
 
@@ -116,12 +130,12 @@ begin
 	end if;
 
 	if (v_poids_actu >= (v_poids_max * 2)) then
-		code_retour := code_retour || E'1#Erreur : vous êtes trop encombré pour vous déplacer !';
+		code_retour := code_retour || E'1#Erreur : vous êtes trop encombré pour vous déplacer !#8';
 		return code_retour;
 	end if;
 
 	if exists (select 1 from murs where mur_pos_cod = v_pos) then
-		code_retour := code_retour || E'1#Erreur : vous ne pouvez vous rendre sur la destination ciblée. Il s’agit soit d’un mur, soit d’un endroit inaccessible par là...';
+		code_retour := code_retour || E'1#Erreur : vous ne pouvez vous rendre sur la destination ciblée. Il s’agit soit d’un mur, soit d’un endroit inaccessible par là...#2';
 		return code_retour;
 	end if;
 
@@ -145,25 +159,25 @@ begin
 		and ppos_pos_cod = pos_cod
 		and perso_cod = num_perso;
 	if (pa < v_pa_dep) and ((v_modif_pa_dep<=12) or (v_modif_pa_dep>12 and pa<12))  then
-		code_retour := code_retour || E'1#Erreur : pas assez de PA pour effectuer ce déplacement.'; /* pas assez de pa */
+		code_retour := code_retour || E'1#Erreur : pas assez de PA pour effectuer ce déplacement.#3'; /* pas assez de pa */
 		return code_retour;
 	end if;
 
 	if ancien_code_pos = v_pos then
-		code_retour := code_retour || E'1#Erreur : position d’arrivée égale à la position de départ.';
+		code_retour := code_retour || E'1#Erreur : position d’arrivée égale à la position de départ.#4';
 		return code_retour;
 	end if;
 	if distance(ancien_code_pos,v_pos) > 1 then
-		code_retour := code_retour || E'1#Erreur : distance trop importante entre la position de départ et d’arrivée.';
+		code_retour := code_retour || E'1#Erreur : distance trop importante entre la position de départ et d’arrivée.#5';
 		return code_retour;
 	end if;
 
   v_pa_terrain = get_pa_dep_terrain(num_perso, v_pos) ;
 	if v_pa_terrain > 12 and v_modif_pa_dep<=12 then
-		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu’il est préférable de ne pas s’y rendre!!';
+		code_retour := code_retour || E'1#Le coût de déplacement depuis la case d''arrivée est tel, qu’il est préférable de ne pas s’y rendre!!#6';
 		return code_retour;
   elsif v_pa_terrain < 0 then
-		code_retour := code_retour || E'1#Votre monture ne peut aller sur ce terrain là!!';
+		code_retour := code_retour || E'1#Votre monture ne peut aller sur ce terrain là!!#7';
 		return code_retour;
 	end if;
 
@@ -183,7 +197,7 @@ begin
 		select into fuite_texte fuite(num_perso);
 		if split_part(fuite_texte, '#', 1) = '1' then  --la fuite est ratée, on renvoie directement le code_retour
 			code_retour := '1#' || code_retour || split_part(fuite_texte,'#',2);
-			return code_retour;
+			return code_retour  || '#10';
 		else --La fuite est réussie, on continue
 			code_retour := code_retour || split_part(fuite_texte,'#',2);
 		end if;
@@ -357,7 +371,7 @@ begin
 			end if;
 		end if;
 	end if;
-	code_retour := trim(to_char(force_affichage,'9')) || '#' || code_retour;
+	code_retour := trim(to_char(force_affichage,'9')) || '#' || code_retour || '#0';
 	return code_retour;
 end;$_$;
 
