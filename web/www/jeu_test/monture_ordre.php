@@ -34,7 +34,8 @@ if ($perso->perso_type_perso == 3){
     $monture->charge( $perso->perso_monture );
     $dist_max = 2 * max(3, $monture->perso_vue) ;
     $contenu_page .= "<br><p>Vous chevaucher actuellement: <a href=\"visu_desc_perso.php?visu=".$monture->perso_cod."\">".$monture->perso_nom."</a></p>";
-
+    $contenu_page .= "<hr>";
+    
     // traitment des nouveaux ordres: ==================================================================================
     if (isset($_REQUEST["ORDRE_ADD"]))
     {
@@ -119,7 +120,7 @@ if ($perso->perso_type_perso == 3){
         }
         $contenu_page .= '</table></form>';
     }
-
+    $contenu_page .= "<hr>";
 
     // PDonner un ordre ================================================================================================
     $contenu_page .= "<br><b><u>Donner un nouvel ordre</u></b>: <br>Sélectionner la direction et la distance<sup>*</sup> à parcourir:<br><br>";
@@ -140,8 +141,7 @@ if ($perso->perso_type_perso == 3){
     }
 
     $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à '.$dist_max.' cases.<span></form>';
-
-    $contenu_page .= "<br><br><hr><br></br>";
+    $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
     $terrain = [] ;
@@ -152,9 +152,11 @@ if ($perso->perso_type_perso == 3){
         $terrain[$t->tmon_ter_cod] = $t->tmon_chevauchable ;
     }
     //$contenu_page.= print_r($terrain, true);
-
+    $contenu_page .= "<b><u>La carte</u></b>: <br> <br><table style=\"border: 1px solid black;\"><tr><td>";
     include('vue_gauche.php');
     $contenu_page .= $vue_gauche ;
+    $contenu_page .= '<div style="font-size: 10px;">&nbsp;&nbsp;<div style="display:inline-block;" class="horseBlink"><div class="pasvu caseVue" title=""><img src="/images/del.gif" width="28" height="28" alt=""></div></div> = Terrain innacessible avec la monture.</div>';
+    $contenu_page .= "</td></tr></table>";
 }
 
 
