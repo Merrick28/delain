@@ -88,10 +88,10 @@ begin
               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
       else
-          code_retour := code_retour || '<p>Vous avez supprimé avec succès un ordre qui avait été à ' || v_monture_nom || ' !<br>';
+          code_retour := code_retour || '<p>Vous avez supprimé avec succès un ordre qui avait été donné à ' || v_monture_nom || ' !<br>';
 
           -- evenement déchevaucher (107)
-          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a supprimé un ordre qui avait été à [cible].', 'O', NULL);
+          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a supprimé un ordre qui avait été donné à [cible].', 'O', NULL);
 
           -- supprimer un ordre de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;    -- ordre à supprimer
