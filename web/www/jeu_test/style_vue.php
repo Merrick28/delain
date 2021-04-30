@@ -92,14 +92,14 @@ else
     0% {
         background-image: url(/images/interface/horse-w.png);
         background-repeat: no-repeat;
-        background-position-x: 11px;
-        background-position-y: 14px;
+        background-position-x: 8px;
+        background-position-y: 8px;
     }
     100% {
         background-image: url(/images/interface/horse-b.png);
         background-repeat: no-repeat;
-        background-position-x: 11px;
-        background-position-y: 14px;
+        background-position-x: 8px;
+        background-position-y: 8px;
 
     }
 }

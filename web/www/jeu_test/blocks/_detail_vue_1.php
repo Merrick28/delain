@@ -2,7 +2,7 @@
 $comment = "";
 $titre = "";
 
-if (!$terrain_chevauchable) echo '<div class="horseBlink">';
+
 
 if ($result['t_decor'] != 0)
 {
@@ -91,9 +91,13 @@ if ($result['t_type_bat'] != 0)
     echo '<div class="caseVue lieu' . $result['t_type_bat'] . '">';
 }
 
+if (!$terrain_chevauchable) echo '<div class="horseBlink">';
+
 echo '<div id="cell' . $result['t_pos_cod'] . '" class="pasvu caseVue" title="' . $titre . '">';
 echo '<img src="' . G_IMAGES . 'del.gif" width="28" height="28" alt="' . $comment . '" />';
 echo '</div>';
+
+if (!$terrain_chevauchable) echo '</div>';
 
 if ($result['t_type_bat'] != 0)
 {
@@ -152,4 +156,3 @@ if ($result['t_decor'] != 0)
     echo '</div>';
 }
 
-if (!$terrain_chevauchable) echo '</div>';
