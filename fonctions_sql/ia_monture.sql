@@ -196,7 +196,7 @@ begin
 	if v_perso_pa = v_pa then
 
 	      -- le monstre a essayé de ce déplacer, il n'a pas réussi, on lui consomme quand même des PA liés à la tentative
-          text_evt := '[cible] refuse d’emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
+          text_evt := '[cible] ne peut pas emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
           if temp_txt = '' then
               temp := '0' ;
           else

@@ -25,10 +25,15 @@ insert into terrain (ter_cod, ter_nom, ter_desc, ter_msg_inaccessible) values
   (-1, '~~~ tous les autres ~~~', 'Tous les autres terrains non définis', 'La zone cache de nombreux pièges mortels, [cible] tombe dans l’un d’eux.');
 
 
+update monstre_generique set gmon_type_ia=17 where gmon_type_ia in (18,19,20,21) ;
+update perso_ia set pia_ia_type=17 where pia_ia_type in (18,19,20,21) ;
+
 update public.type_ia set ia_nom='Monture docile', ia_fonction='ia_monture([perso], 0)' where ia_type=17 ;
 update public.type_ia set ia_nom='Monture à ordre', ia_fonction='ia_monture([perso], 1)' where ia_type=18 ;
 update public.type_ia set ia_nom='Monture mixte', ia_fonction='ia_monture([perso], 2)' where ia_type=19 ;
 delete from public.type_ia where ia_type in (20, 21) ;
+
+
 
 -- Compétence #104
 INSERT INTO public.competences(  comp_typc_cod, comp_libelle, comp_modificateur, comp_connu) VALUES ( 2, 'Equitation', 0, 'N');

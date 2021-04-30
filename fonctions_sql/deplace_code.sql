@@ -106,6 +106,8 @@ declare
 	v_monture integer;			-- si c'est un perso joueur qui chevauche une monture
 	v_cavalier integer;			-- si c'est une monture qui emène un joueur
 	v_pa_terrain integer;			-- si c'est un perso joueur qui chevauche une monture
+	v_pa_cavalier integer;			-- nombre de PA du cavalier
+	v_perso_fuite integer;			-- c'ets le perso qui ralise la fuite (cavalier dans le cas d'une monture chevauchée)
 begin
 	force_affichage := 0;
 	code_retour := '';
@@ -181,59 +183,77 @@ begin
 		return code_retour;
 	end if;
 
+  v_cavalier := f_perso_cavalier(num_perso) ;
+
+  -- s'il y a un cavalier, c'est lui qui doit fuire ses combats
+  if v_cavalier is null then
+      v_perso_fuite := num_perso ;
+  else
+      v_perso_fuite := v_cavalier ;
+      -- en cas de fuite raté, ce sont les PA du perso qui sont consommés, on s'assure qu'il en a sinon, c'est un ratage directe!
+  end if;
 
 ---------------------------
 -- on regarde si lock
 ---------------------------
-	select count(lock_cod) into nb_lock_cible from lock_combat where lock_cible = num_perso;
-	select count(lock_cod) into nb_lock_attaquant from lock_combat where lock_attaquant = num_perso;
+	select count(lock_cod) into nb_lock_cible from lock_combat where lock_cible = v_perso_fuite;
+	select count(lock_cod) into nb_lock_attaquant from lock_combat where lock_attaquant = v_perso_fuite;
 	nb_lock := nb_lock_cible + nb_lock_attaquant;
 
 ---------------------------
 -- si lock on passe à la fuite
 ---------------------------
 	if nb_lock != 0 then
-		force_affichage := 1;
-		select into fuite_texte fuite(num_perso);
-		if split_part(fuite_texte, '#', 1) = '1' then  --la fuite est ratée, on renvoie directement le code_retour
-			code_retour := '1#' || code_retour || split_part(fuite_texte,'#',2);
-			return code_retour  || '#10';
-		else --La fuite est réussie, on continue
-			code_retour := code_retour || split_part(fuite_texte,'#',2);
-		end if;
+
+	    -- s'il y a un cavalier, il doit avoir des PA pour tenter de fuir, car il lui seront décomptés en cas d'échec!
+      if v_cavalier is not null then
+           select perso_pa into v_pa_cavalier from  perso where perso_cod = v_cavalier and perso_pa >= getparm_n(19) ;
+           if not found then
+              return '1#' || code_retour || ' une monture ne peut fuir un combat si le cavalier est engagé dans un combat et qu''il n''a pas de PA' || '#10' ;
+           end if;
+      end if;
+
+      force_affichage := 1;
+      select into fuite_texte fuite(v_perso_fuite);
+      if split_part(fuite_texte, '#', 1) = '1' then  --la fuite est ratée, on renvoie directement le code_retour
+          code_retour := '1#' || code_retour || split_part(fuite_texte,'#',2);
+          return code_retour  || '#10';
+      else --La fuite est réussie, on continue
+          code_retour := code_retour || split_part(fuite_texte,'#',2);
+      end if;
 	end if;
 
 ---------------------------
 -- on vérifie les effets de pré-déplacement
 ---------------------------
 	if v_anticip > 0 and v_type_perso = 1 then
-		-- 1 = Case plouf : Pas de déplacement réel
-		if v_anticip = 1 then
-			-- Coût
-			pa_deplace := 2;
-			-- Evènement
-			texte := '[perso_cod1] s’est embourbé et a été contraint de reculer.';
-			insert into ligne_evt (
-				levt_cod,
-				levt_tevt_cod,
-				levt_date,
-				levt_type_per1,
-				levt_perso_cod1,
-				levt_texte,
-				levt_lu,
-				levt_visible)
-			values (nextval('seq_levt_cod'),
-				88,
-				'now()',
-				1,
-				num_perso,
-				texte,
-				'O',
-				'O');
-			-- Texte
-			code_retour := code_retour || 'Vous vous enfoncez soudainement dans le marais ! Pataugeant lourdement, vous parvenez tout juste à reculer et à reprendre pied.';
-			force_affichage := 1;
-		end if;
+      -- 1 = Case plouf : Pas de déplacement réel
+      if v_anticip = 1 then
+        -- Coût
+        pa_deplace := 2;
+        -- Evènement
+        texte := '[perso_cod1] s’est embourbé et a été contraint de reculer.';
+        insert into ligne_evt (
+          levt_cod,
+          levt_tevt_cod,
+          levt_date,
+          levt_type_per1,
+          levt_perso_cod1,
+          levt_texte,
+          levt_lu,
+          levt_visible)
+        values (nextval('seq_levt_cod'),
+          88,
+          'now()',
+          1,
+          num_perso,
+          texte,
+          'O',
+          'O');
+        -- Texte
+        code_retour := code_retour || 'Vous vous enfoncez soudainement dans le marais ! Pataugeant lourdement, vous parvenez tout juste à reculer et à reprendre pied.';
+        force_affichage := 1;
+      end if;
 	else
 ---------------------------
 -- on déplace
@@ -255,13 +275,13 @@ begin
 ---------------------------
 -- les EA liés au déplacement de la monture
 ---------------------------
-  select m.perso_cod into v_monture
-      from perso as p
-      join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
-      where p.perso_cod=num_perso and p.perso_type_perso=1 ;
-  if found then
-      code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
-	end if;
+    select m.perso_cod into v_monture
+        from perso as p
+        join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
+        where p.perso_cod=num_perso and p.perso_type_perso=1 ;
+    if found then
+        code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+    end if;
 
 ---------------------------
 -- on met un évènement
@@ -271,27 +291,21 @@ begin
     insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
     values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
 
-    select p.perso_cod into v_cavalier
-          from perso as m
-          join monstre_generique on gmon_cod=m.perso_gmon_cod and gmon_monture='O'
-          join perso as p on p.perso_monture=m.perso_cod and p.perso_actif = 'O' and p.perso_type_perso=1
-          where m.perso_cod=num_perso and m.perso_type_perso=2 limit 1;
-      if found then
 
-          -- cas particulier d'un monstre qui se déplace avec un joueur sur le dos. (event=54 effet auto)
-          texte := '[attaquant] c’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
-          perform insere_evenement(num_perso, v_cavalier, 54, texte, 'O', 'N', null);
+    if v_cavalier is not null then
 
-      end if;
+        -- cas particulier d'un monstre qui se déplace avec un joueur sur le dos. (event=54 effet auto)
+        texte := '[attaquant] c’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+        perform insere_evenement(num_perso, v_cavalier, 54, texte, 'O', 'N', null);
+
+    end if;
 	end if;
 
 
 ---------------------------
 -- on enlève les PA
 ---------------------------
-	update perso
-	set perso_pa = pa - pa_deplace
-	where perso_cod = num_perso;
+	update perso set perso_pa = pa - pa_deplace	where perso_cod = num_perso;
 
 ---------------------------
 -- si on se déplace avec une monture, traiter le comportement particulier de la monture sur certain terrain
