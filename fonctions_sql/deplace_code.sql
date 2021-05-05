@@ -289,7 +289,7 @@ begin
     -- cas normal montre seul ou joueur avec ou sans monture
     texte := 'Déplacement de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
     insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_parametres)
-    values (nextval('seq_levt_cod'), 2, 'now()', 1, num_perso, texte, 'O', 'O', ancien_code_pos);
+    values (nextval('seq_levt_cod'), 2, now(), 1, num_perso, texte, 'O', 'O', ancien_code_pos);
 
 
     if v_cavalier is not null then
