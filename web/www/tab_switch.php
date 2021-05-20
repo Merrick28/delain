@@ -416,7 +416,7 @@ if (count($perso_sittes) != 0)
             $fam_sit = new perso;
             $fam_sit->charge($detail_fam_sit['perso_cod']);
             echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-            affiche_perso($detail_fam_sit);
+            affiche_perso($fam_sit->perso_cod);
             echo '</div>';
             unset($fam_sit);
         }
