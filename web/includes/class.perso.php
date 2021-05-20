@@ -1596,7 +1596,7 @@ class perso
                 $critere_tri = 'mpf_statut desc';
                 break;
             case 'date':
-                $critere_tri = 'mpf_date_debut desc';
+                $critere_tri = 'mpf_date_debut::date desc';
                 break;
             default:
                 break;
