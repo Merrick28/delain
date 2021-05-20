@@ -133,7 +133,7 @@ if (isset($etage_actuel))
         $terrain_chevauchable = true ;
 
         // calcul si un terrain accessible pour une montre chevauchée
-        if (is_array($terrain))
+        if (isset($terrain) && is_array($terrain))
         {
             $t_pos_ter_cod = (int) $result['t_pos_ter_cod'] ;
             if ( isset($terrain[$t_pos_ter_cod]) )
