@@ -18,6 +18,3 @@ union
   and (perso_dlt < now() or perso_pa >= 4)
   and perso_quete in ('quete_ratier.php','enchanteur.php','quete_chasseur.php','quete_dispensaire.php','quete_alchimiste.php','quete_groquik.php', 'quete_accompagnateur.php')
 ) t1 order by random()
-
-
-
