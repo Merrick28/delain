@@ -168,7 +168,7 @@ begin
   select v into v_ordre from ( select json_array_elements(v_param) as v from perso where perso_cod=v_monstre ) as s order by v->>'ordre' limit 1 ;
   if not found  then
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
-      update perso set perso_pa = GRETEAST(0, perso_pa - 4) where perso_cod=v_monstre ;
+      update perso set perso_pa = GREATEST(0, perso_pa - 4) where perso_cod=v_monstre ;
       return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine!<br>';
   end if;
 
