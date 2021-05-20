@@ -38,8 +38,11 @@ $methode          = get_request_var('methode', '');
 $menu_deplacement = isset($_POST['menu_deplacement']) ? $_POST['menu_deplacement'] : '';
 $inc_vue          = ($methode == 'deplacement') && (!$menu_deplacement);
 
-
-if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
+if (!$compte->is_admin() && !$compte->is_admin_monstre() && $perso->perso_type_perso == 2 && $perso->est_chevauche())
+{
+    $contenu_page .= '<p>Vous ne pouvez pas effectuer des actions avec une monture !';
+}
+else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
 {
     switch ($methode)
     {
@@ -219,6 +222,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if ($perso->perso_type_perso == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
+                $resultat_dep = $contenu_page;
+                if ($menu_deplacement === '') include('frame_vue.php');
+                die('');
+            }
+            if (! $perso->monture_controlable() )
+            {
+                $contenu_page .= '<p>Votre monture n’accepte pas ce mode de déplacement !</p>';
                 $resultat_dep = $contenu_page;
                 if ($menu_deplacement === '') include('frame_vue.php');
                 die('');
@@ -1045,6 +1055,10 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
         case 'dechevaucher':
             $contenu_page .= $perso->monture_dechevaucher();
+            break;
+
+        case 'desarconner':
+            $contenu_page .= $perso->monture_desarconner($_REQUEST['cavalier']);
             break;
 
         default :

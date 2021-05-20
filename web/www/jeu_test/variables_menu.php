@@ -5,7 +5,7 @@
  * le moteur de template de phplib
  *
  */
-$__VERSION = "20210311";    // A changer aussi dans constante.php
+$__VERSION = "20210414";    // A changer aussi dans constante.php
 
 $benchmark       = $profiler->start('Variables menu');
 $verif_connexion = new verif_connexion();
@@ -143,7 +143,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
                JOIN (
                     select perso_cod as p_perso_cod, 1 as type, perso_cod ordre
                     from compte  
-                    join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                    join perso_compte on compt_cod=:compt_cod and pcompt_compt_cod=compt_cod 
                     join perso on perso_cod=pcompt_perso_cod
                     where perso_actif='O'
                     
@@ -151,7 +151,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
                     
                     select perso_cod as p_perso_cod, 1 as type, pfam_perso_cod ordre 
                     from compte  
-                    join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                    join perso_compte on compt_cod=:compt_cod and pcompt_compt_cod=compt_cod 
                     join perso_familier on pfam_perso_cod=pcompt_perso_cod 
                     join perso on perso_cod=pfam_familier_cod where perso_actif='O' 
                     
@@ -159,7 +159,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
                     
                     select perso_cod as p_perso_cod, 2 as type, perso_cod ordre 
                     from compte_sitting
-                    join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                    join perso_compte on csit_compte_sitteur=:compt_cod and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                     join perso on perso_cod=pcompt_perso_cod 
                     where perso_actif='O'
                     
@@ -167,25 +167,47 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
                     
                     select perso_cod as p_perso_cod, 2 as type, pfam_perso_cod ordre 
                     from compte_sitting  
-                    join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                    join perso_compte on csit_compte_sitteur=:compt_cod and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                     join perso_familier on pfam_perso_cod=pcompt_perso_cod 
                     join perso on perso_cod=pfam_familier_cod where perso_actif='O'
+                    
+                    union                    
+                    
+                    select perso_monture as p_perso_cod, 3 as type, perso_cod ordre
+                    from compte  
+                    join perso_compte on compt_cod=:compt_cod and pcompt_compt_cod=compt_cod 
+                    join perso on perso_cod=pcompt_perso_cod
+                    where perso_actif='O' 
+
+                    union 
+                    
+                    select perso_monture as p_perso_cod, 3 as type, perso_cod ordre 
+                    from compte_sitting
+                    join perso_compte on csit_compte_sitteur=:compt_cod and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                    join perso on perso_cod=pcompt_perso_cod 
+                    where perso_actif='O'
+                                        
+                    
                 ) as p on p_perso_cod = perso_cod
                 ORDER BY type, ordre, perso_type_perso ";
     $stmt  = $pdo->prepare($req);
-    $stmt  = $pdo->execute(array($compt_cod, $compt_cod, $compt_cod, $compt_cod), $stmt);
+    $stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
     $count = 1 * $stmt->rowCount();
     $rows  = $stmt->fetchAll();
 
     // pour optimiser l'affichage on compte le nombre de perso et de fam
     $nb_perso    = 0;
     $nb_familier = 0;
+    $nb_monstre = 0;
     $nb_button   = sizeof($rows);
     foreach ($rows as $result)
     {
         if ((1 * $result["perso_type_perso"]) == 3)
         {
             $nb_familier++;
+        } else  if ((1 * $result["perso_type_perso"]) == 2)
+        {
+            $nb_monstre++;
         } else
         {
             $nb_perso++;
@@ -335,6 +357,7 @@ $var_twig_defaut = array(
     'G_IMAGES'            => G_IMAGES,
     'G_URL'               => G_URL,
     'PERSO'               => $perso,
+    'CAVALIER'            => $perso->est_chevauche(),
     'BARRE_MENU_ICONE'    => $barre_menu_icone,
     'TYPE_FLUX'           => $type_flux,
     'DEG_MIN'             => $deg_min,

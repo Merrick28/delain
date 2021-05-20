@@ -38,5 +38,6 @@ if ($erreur == 0)
         echo "<p><strong>$nom_lieu</strong><br>$desc_lieu ";
         echo "<p><a href=\"action.php?methode=passage\">Prendre " . $desc_passage . " ! (" . $param->getparm(13) . " PA)</a></p>";
     }
+    if ($perso->perso_monture>0) echo "<strong>ATTENTION: vous ne pouvez prendre cet escalier <u>avec votre monture</u>!</strong>";
 }
 

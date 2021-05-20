@@ -195,6 +195,21 @@ class compte
         {
             return true;
         }
+        //pas trouvé on regarde les montures
+        $req
+            = "SELECT perso_monture FROM perso
+						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+						WHERE pcompt_compt_cod = ? 
+						AND perso_actif = 'O'
+						AND perso_monture = ? 
+						ORDER BY pcompt_perso_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+        if ($stmt->fetch())
+        {
+            return true;
+        }
+
         // pas trouvé, on regarde dans les sittings
         if ($sit)
         {
@@ -228,6 +243,26 @@ class compte
               AND pfam_familier_cod = perso_cod 
               AND perso_actif = 'O' 
               AND pfam_familier_cod = ?";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+            if ($stmt->fetch())
+            {
+                return true;
+            }
+
+            // toujours pas trouvé on regarde les montures sittés
+            $req
+                = "SELECT perso_monture
+                FROM perso,perso_compte,compte_sitting
+                WHERE csit_compte_sitteur = ?
+                AND csit_compte_sitte = pcompt_compt_cod
+                AND csit_ddeb <= now()
+                AND csit_dfin >= now()
+                AND pcompt_perso_cod = perso_cod
+                AND perso_actif = 'O'
+                AND perso_type_perso = 1
+                AND perso_monture = ? ";
+
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
             if ($stmt->fetch())

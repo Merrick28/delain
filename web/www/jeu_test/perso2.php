@@ -1,6 +1,11 @@
 <?php
 // perso2.php
 include "blocks/_header_page_jeu.php";
+
+$perso = $verif_connexion->perso;
+$cavalier = $perso->est_chevauche();
+
+
 //
 // initialisation tableau
 //
@@ -9,12 +14,19 @@ $mess[1] = 'Compétences';
 $mess[2] = 'Bonus / malus';
 $mess[3] = 'Combat';
 $mess[4] = 'Description';
-$mess[5] = 'Quêtes et trophées';
-$mess[6] = 'Divers';
+if (! $cavalier)
+{
+    // menu specifique non acessibles aux montures
+    $mess[5] = 'Quêtes et trophées';
+    $mess[6] = 'Divers';
+} else {
+    // placeholder du menu pour les montures
+    $mess[5] = '';
+    $mess[6] = '';
+}
 $nb      = count($mess);
 $size    = round(100 / $nb);
 
-$perso = $verif_connexion->perso;
 
 //
 // Si pas de parametres passés
@@ -57,10 +69,10 @@ if ($m == 0)  // Caractéristiques
 {
     $visu = $perso_cod;
     include "perso2_description.php";
-} else if ($m == 5) // Chasse et quêtes
+} else if ($m == 5 && ! $cavalier) // Chasse et quêtes
 {
     include "perso3_divers.php";
-} else if ($m == 6)     // Divers
+} else if ($m == 6 & !$cavalier)     // Divers
 {
     include "perso2_divers.php";
 }

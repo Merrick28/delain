@@ -117,6 +117,7 @@ if ($erreur == 0)
             echo "<input type=\"submit\" value=\"Entrer (4 PA)\" />";
             echo "</form>";
 
+            if ($perso->perso_monture>0) echo "<strong>ATTENTION: vous ne pouvez pas rentrer dans une arène <u>avec votre monture</u>!</strong> (<em>Si vous rentrez, votre monture restera ici!</em>)";
             echo "<hr>";
 
             // Recherche d'une inscription dans les registres pour retour rapide en arene
