@@ -15,8 +15,6 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   v_gmon_monture text;
-	v_temps_tour integer;		-- temps du tour de base
-	v_temps_tour_actuel integer;		-- temps du tour actuel
 	v_max_pa integer ;  -- PA max  de la monture après chevauchement
   temp_competence text;   -- text du jet de compétence
   temp_txt text;   -- text divers
