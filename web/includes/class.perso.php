@@ -3280,6 +3280,45 @@ class perso
     }
 
     /**
+     *regarde si la monture est chevauché est ordonable par le joueur (le joueur peut lui donner des ordres)
+     */
+    public function monture_ordonable()
+    {
+        if ( !$this->perso_monture) return false ;
+
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["ordonable"] == 'O';
+    }
+
+
+    /**
+     *regarde si la monture est chevauché est controlable par le joueur (le joueur peut se déplacer la monture suivra) ou le joueur n'a pas de monture
+     */
+    public function monture_controlable()
+    {
+        if ( !$this->perso_monture) return true ;
+
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18) THEN 'N' ELSE 'O' END as controlable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["controlable"] == 'O';
+    }
+
+    /**
      *regarde si une monture est disponible pour être montée?
      */
     public function monture_chevauchable()
@@ -3299,6 +3338,25 @@ class perso
     }
 
     /**
+     *donne la liste des couple/monture est disponible pour être désarconner?
+     */
+    public function monture_desarconnable()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select m.perso_cod, m.perso_nom , mm.perso_cod as monture_perso_cod, mm.perso_nom monture_perso_nom
+                    from perso p 
+                    join perso_position pp on p.perso_cod=pp.ppos_perso_cod
+                    join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=1 and m.perso_actif='O'
+                    join perso mm on mm.perso_cod=m.perso_monture and mm.perso_type_perso=2 and mm.perso_actif='O'
+                    where p.perso_cod=:perso";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
+    /**
      *regarde si une monture est disponible pour être montée?
      */
     public function monture_chevaucher($monture)
@@ -3306,9 +3364,7 @@ class perso
         $pdo    = new bddpdo();
         $req    = "select monture_chevaucher(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $monture), $stmt);
+        $stmt   = $pdo->execute(array( ":perso" => $this->perso_cod, ":cible" => $monture), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -3321,8 +3377,34 @@ class perso
         $pdo    = new bddpdo();
         $req    = "select monture_dechevaucher(:perso) as resultat";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    /**
+     *regarde si une monture est disponible pour être montée?
+     */
+    public function monture_desarconner($cavalier)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_desarconner(:perso, :cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":cible" => $cavalier), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
+    /**
+     * donne un ordre à la monture (l'ia se chargera de le réaliser)
+     */
+    public function monture_ordre($ordre, $parametres)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_ordonner(:perso, :ordre, :param) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":ordre" => $ordre, ":param" => json_encode($parametres)), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }

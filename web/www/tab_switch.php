@@ -213,9 +213,11 @@ if ($callapi->call(API_URL . '/compte/persos?horsFam=true', 'GET', $_SESSION['ap
 }
 $perso_normaux = array();
 $quatriemes    = array();
+$perso_monture = array();
 
 $cpt_normaux    = 0;
 $cpt_quatriemes = 0;
+$cpt_monture    = 0;
 
 if (!isset($origine_switch))
 {
@@ -233,6 +235,12 @@ foreach ($persos_compte['persos'] as $num_perso)
     {
         $perso_normaux[] = $detail_perso->perso_cod;
     }
+
+    if ($detail_perso->perso_monture)
+    {
+        $perso_monture[] = $detail_perso->perso_monture ;
+    }
+
     unset($detail_perso);
 }
 
@@ -348,6 +356,24 @@ if (count($persos_compte['persos']) != 0)
     echo '</div>';
 }
 
+if (count($perso_monture) != 0)
+{
+    //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
+    echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Montures : </div></div>';
+
+    echo '<div class="row row-eq-height">';   //Debut ligne des familiers
+
+    $alias_perso = 0;
+    //for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
+    foreach ($perso_monture as $num_perso)
+    {
+        echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+        affiche_perso($num_perso);
+        echo '</div>';
+    }
+    echo '</div>';
+}
+
 /******************************************/
 /* Comptes sittés ?					   */
 /******************************************/
@@ -364,13 +390,14 @@ if (count($perso_sittes) != 0)
 
     echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
 
-
+    $perso_monture_sitte = array() ;
     foreach ($perso_sittes as $detail_perso_sit)
     {
         $sit = new perso;
         $sit->charge($detail_perso_sit['perso_cod']);
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
         affiche_perso($sit->perso_cod);
+        if ($sit->perso_monture) $perso_monture_sitte[] = $sit->perso_monture ;
         echo '</div>';
         unset($sit);
     }
@@ -394,5 +421,19 @@ if (count($perso_sittes) != 0)
             unset($fam_sit);
         }
     }
+
+
+    if (count($perso_monture_sitte) != 0)
+    {
+        $nb_perso    = $nb_perso_max;
+        $alias_perso = 0;
+        foreach ($perso_monture_sitte as $detail_mon_sit)
+        {
+            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+            affiche_perso($detail_mon_sit);
+            echo '</div>';
+        }
+    }
+
     echo '</div>';               //Fin de ligne des persos+familiers sittés
 }

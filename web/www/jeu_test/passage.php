@@ -26,7 +26,12 @@ if ($erreur == 0)
 	$desc_lieu = $tab_lieu['lieu']->lieu_description;
 	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
 	echo("<p>Vous voyez un passage vers un autre lieu.");
-	echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $param->getparm(13) . " PA)</a></p>");
+	if ($perso->perso_monture > 0) {
+        echo("<p><strong>Vous ne pouvez pas prendre ce passage <u>avec une monture</u>.</strong></p>");
+    }
+	else {
+        echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $param->getparm(13) . " PA)</a></p>");
+    }
 }
 
 

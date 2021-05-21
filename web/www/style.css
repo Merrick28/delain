@@ -798,3 +798,67 @@ div#colonne1:hover   {
     text-align: center;
     padding: 0px;
 }
+
+
+/* Marlyza add spech bube */
+
+p.bubble {
+	position: relative;
+	text-align: center;
+	background-color: #fff;
+	border: 2px solid #333;
+	border-radius: 30px;
+	font-family: sans-serif;
+	padding: 5px;
+}
+
+p.thought {
+	width: 300px;
+	border-radius: 200px;
+	padding: 30px;
+}
+
+p.bubble:before,
+p.bubble:after {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+}
+
+p.speech:before {
+	left: 30px;
+	bottom: -25px;
+	border: 12px solid;
+	border-color: #333 transparent transparent #333;
+}
+
+p.speech:after {
+	left: 32px;
+	bottom: -21px;
+	border: 12px solid;
+	border-color: #fff transparent transparent #fff;
+}
+
+p.thought:before,
+p.thought:after {
+	left: 10px;
+	bottom: -30px;
+	width: 40px;
+	height: 40px;
+	background-color: #fff;
+	border: 8px solid #333;
+	-webkit-border-radius: 28px;
+	-moz-border-radius: 28px;
+	border-radius: 28px;
+}
+
+p.thought:after {
+	width: 20px;
+	height: 20px;
+	left: 5px;
+	bottom: -40px;
+	-webkit-border-radius: 18px;
+	-moz-border-radius: 18px;
+	border-radius: 18px;
+}
