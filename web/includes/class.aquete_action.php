@@ -1844,7 +1844,7 @@ class aquete_action
         $param_ordre = 0 ;
         for ($k=0; $k<$nbmonstre ; $k++)
         {
-            $req = "select cree_monstre_pos(choix_monstre_etage(:etage_numero),pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $req = "select cree_monstre_pos(choix_monstre_etage(:etage_numero, 0),pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(  ":etage_numero" => $etage_numero ,
                                             ":pos_cod" => $pos_cod ,

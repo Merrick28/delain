@@ -33,6 +33,7 @@ declare
 ------------------------------------------------
 	personnage alias for $1;	-- perso_cod
 	familier integer;	-- familier rattaché au perso
+	v_monture integer;	-- monture rattaché au perso
 	pa integer;						-- PA du perso
 	nb_lock integer;			-- nombre de locks
 	nb_lock_attaquant integer;
@@ -85,9 +86,13 @@ begin
 		return code_retour;
 	end if;
 
-	select into pa,v_poids_max,v_poids_actu,v_tangible perso_pa,perso_enc_max,get_poids(perso_cod),perso_tangible from perso where perso_cod = personnage;
+	select into pa,v_poids_max,v_poids_actu,v_tangible,v_monture perso_pa,perso_enc_max,get_poids(perso_cod),perso_tangible,perso_monture from perso where perso_cod = personnage;
 	if not found then
 		code_retour := code_retour||'Erreur : Perso non trouvé !#1#';
+		return code_retour;
+	end if;
+	if v_monture is not null then
+		code_retour := code_retour||'Erreur : Vous ne pouvez pas prendre un passage avec une monture !#1#';
 		return code_retour;
 	end if;
 	if (v_poids_actu >= (v_poids_max * 2)) then

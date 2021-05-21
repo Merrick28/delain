@@ -2,6 +2,8 @@
 $comment = "";
 $titre = "";
 
+
+
 if ($result['t_decor'] != 0)
 {
     echo '<div class="caseVue decor' . $result['t_decor'] . '">';
@@ -27,6 +29,7 @@ if ($result['t_nb_monstre'] != 0)
 {
     $titre .= $result['t_nb_monstre'] . ' monstres.';
 }
+
 echo '<div id="dep' . $result['t_pos_cod'] . '" class="main caseVue" onClick="javascript:vue_clic(' . $result['t_pos_cod'] . ', ' . $result['t_dist'] . ');" title="' . $titre . '">';
 
 if (($result['t_traj'] == 0) && ($result['t_type_aff'] != 1))
@@ -88,9 +91,13 @@ if ($result['t_type_bat'] != 0)
     echo '<div class="caseVue lieu' . $result['t_type_bat'] . '">';
 }
 
+if (!$terrain_chevauchable) echo '<div class="horseBlink">';
+
 echo '<div id="cell' . $result['t_pos_cod'] . '" class="pasvu caseVue" title="' . $titre . '">';
 echo '<img src="' . G_IMAGES . 'del.gif" width="28" height="28" alt="' . $comment . '" />';
 echo '</div>';
+
+if (!$terrain_chevauchable) echo '</div>';
 
 if ($result['t_type_bat'] != 0)
 {
@@ -148,3 +155,4 @@ if ($result['t_decor'] != 0)
 {
     echo '</div>';
 }
+

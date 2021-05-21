@@ -15,8 +15,11 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   v_gmon_monture text;
+	v_max_pa integer ;  -- PA max  de la monture après chevauchement
+  temp_competence text;   -- text du jet de compétence
+  temp_txt text;   -- text divers
 begin
-
+	code_retour := '';
 
   select ppos_pos_cod, perso_pa, perso_type_perso into v_perso_pos_cod, v_perso_pa, v_perso_type_perso from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod=v_perso ;
   if not found then
@@ -52,11 +55,33 @@ begin
     return '<p>Erreur ! Cette monture a déjà un cavalier !';
   end if;
 
-  -- Réaliser les actions du chevauchement !!!
-  update perso set perso_pa = perso_pa - 4, perso_monture=v_monture where perso_cod=v_perso ;
 
-  return '<p>Désormais, vous chevauchez: ' || v_monture_nom || ' !';
+  -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
+  temp_competence := monture_competence(v_perso, 1, v_monture, 0);
+  code_retour := code_retour||split_part(temp_competence,';',3);
 
+  -- Test sur le jet de compétence
+  if split_part(temp_competence,';',1) = '1' then
+      -- faire l'action (jet de compétence reussi)
+      code_retour := code_retour||'<br><p>Désormais, vous chevauchez: ' || v_monture_nom || ' !<br>';
+
+      -- Réaliser les actions du chevauchement !!!
+      update perso set perso_monture=v_monture where perso_cod=v_perso ;
+
+      -- on va s'assurer que la monture n'a pas trop de PA dispo par rapport à sa DLT (sinon ça pourrait permettre un rush)
+      temp_txt := calcul_dlt2(v_monture);
+      select  (EXTRACT(EPOCH FROM ( perso_dlt - now()))::int/60::numeric / f_temps_tour_perso(perso_cod) * 12)::int into v_max_pa from perso where perso_cod = v_monture ;
+      update perso set perso_pa=GREATEST(0, LEAST(perso_pa, v_max_pa)) where perso_cod=v_monture ;
+
+      -- evenement chevaucher (105)
+      perform insere_evenement(v_perso, v_monture, 105, '[attaquant] monte sur sa monture [cible].', 'O', NULL);
+
+  else
+      -- si echec du jet de compétence
+      code_retour := code_retour||'<br><p>Vous n’avez pas réussi à chevaucher: ' || v_monture_nom || ' !<br>';
+  end if;
+
+  return code_retour ;
 end;
 $_$;
 
