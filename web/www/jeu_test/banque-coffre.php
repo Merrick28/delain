@@ -7,6 +7,7 @@ define("APPEL", 1);
 $type_lieu = 1;
 $nom_lieu  = 'une banque';
 include "blocks/_test_lieu.php";
+include "fonctions.php";
 
 $perso     = $verif_connexion->perso;
 $perso_cod = $verif_connexion->perso_cod;
@@ -53,7 +54,7 @@ echo '<script type="text/javascript">
 // 42 = Grisbi
 $types_ventes_gros = "(5, 11, 12, 17, 18, 19, 21, 22, 28, 30, 34, 42)";
 
-print_r($_REQUEST);
+//print_r($_REQUEST);
 
 // ====================== Constantes
 $tarif_base = 1000 ;
@@ -82,7 +83,7 @@ if ($erreur == 0)
 
     if ($cc->ccompt_cod)
     {
-        echo "Vous possedez un coffre de stockage de <b>".$stockage[$cc->ccompt_taille]." Kg</b>";
+        echo "Votre capacité de stockage : <b>".$stockage[$cc->ccompt_taille]." Kg</b> Max";
     }
 
     if (! in_array($_REQUEST["methode"], ["deposer", "retirer"]))
@@ -122,11 +123,11 @@ if ($erreur == 0)
     }
     else if ($_REQUEST["methode"] == "deposer")
     {
-        echo '<br><div style="font-size: 24px; text-align: center; font-family: fantasy;">DEPOT DANS LE COFFRE</div>';
+        echo '<br><div style="font-size: 24px; text-align: center; color: #4D0505; font-family: MedievalSharp;">DEPOT DANS LE COFFRE</div>';
     }
     else if ($_REQUEST["methode"] == "retirer")
     {
-        echo '<br><div style="font-size: 24px; text-align: center; font-family: fantasy;">RETRAIT DU COFFRE</div>';
+        echo '<br><div style="font-size: 24px; text-align: center; color: #4D0505; font-family: MedievalSharp;">RETRAIT DU COFFRE</div>';
     }
     echo '</div><br>';
 
@@ -156,6 +157,18 @@ if ($erreur == 0)
     }
     else if ($_REQUEST["methode"] == "depot2")
     {
+        // Calcul du poids stocké au coffre
+        $req_coffre = "select sum(obj_poids) as poids
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod ";
+        $stmt      = $pdo->prepare($req_coffre);
+        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+        $result = $stmt->fetch() ;
+        $poids_au_coffre =  (int)$result["poids"];
+        $poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
+
         // calcul du poids du dépot et du poids dispo au coffre
         $nb_obj = 0 ;
         $obj_cod_list = "" ;
@@ -223,9 +236,9 @@ if ($erreur == 0)
         {
             echo "<br>Les objets a déposer n'ont pas été trouvé!<br><br>";
         }
-        else if ($result["sum_poids"] < 0 )
+        else if ((int)$result["sum_poids"] > $poids_diso )
         {
-            echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> à déposer!<br><br>";
+            echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> à déposer $poids_diso!<br><br>";
         }
         else if  ($perso->perso_pa<4)
         {
@@ -255,11 +268,19 @@ if ($erreur == 0)
                 }
                 $result = $stmt->fetch();
 
+                // les supprimer les transactions sur les objet (s'il y en avait)
+                $req_delete = "delete from transaction where tran_obj_cod in ($obj_cod_list)";
+                $stmt      = $trpdo->prepare($req_delete);
+                if (!$stmt->execute(array())) {
+                    throw new Exception('Requete dépot 2 invalide !!');
+                }
+                $result = $stmt->fetch();
+
                 // les supprimer de l'inventaire du perso!
                 $req_delete = "delete from perso_objets where perobj_obj_cod in ($obj_cod_list)";
                 $stmt      = $trpdo->prepare($req_delete);
                 if (!$stmt->execute(array())) {
-                    throw new Exception('Requete dépot 2 invalide !!');
+                    throw new Exception('Requete dépot 3 invalide !!');
                 }
                 $result = $stmt->fetch();
 
@@ -285,7 +306,127 @@ if ($erreur == 0)
             }
         }
     }
+    else if ($_REQUEST["methode"] == "retrait2")
+    {
+        // calcul du poids du retrait et verifiction des objets dans le coffre
+        $nb_obj = 0 ;
+        $obj_cod_list = "" ;
+        if ( isset($_REQUEST['obj']) )  {   // Liste des objets à la piece
+            foreach ($_REQUEST['obj'] as $obj_cod => $val)  {
+                $obj_cod_list .= "," . (int)$obj_cod;
+            }
+            if ($obj_cod_list != "") {
+                // vérifier que les objets demandés sont bien au coffre
+                $obj_cod_list = substr($obj_cod_list, 1);
+                $req_objets = "select obj_cod from coffre_objets
+                            inner join objets on obj_cod = coffre_obj_cod
+                            inner join objet_generique on gobj_cod = obj_gobj_cod
+                            inner join type_objet on tobj_cod = gobj_tobj_cod
+                            where coffre_compt_cod = :compt_cod
+                                and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
+                                and obj_cod in ({$obj_cod_list})";
+                $stmt      = $pdo->prepare($req_objets);
+                $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+                $obj_cod_list = "" ;
+                while ($result = $stmt->fetch()) {
+                    $nb_obj ++ ;
+                    $obj_cod_list .= "," . (int)$result['obj_cod'];
+                }
+            }
+        }
 
+        if ( isset($_REQUEST['gobj']) && isset($_REQUEST['qtegros']) )  {   // Liste des objets en gros
+            foreach ($_REQUEST['gobj'] as $gobj_cod => $val)  {
+                if (isset($_REQUEST['qtegros'][$gobj_cod]) && ( $_REQUEST['qtegros'][$gobj_cod]>0)) {
+                    $qte_obj = (int)$_REQUEST['qtegros'][$gobj_cod] ;
+                    $req_objets = "select obj_cod
+							from coffre_objets
+							inner join objets on obj_cod = coffre_obj_cod
+							inner join objet_generique on gobj_cod = obj_gobj_cod
+							where coffre_compt_cod = :compt_cod
+								and gobj_cod = :gobj_cod
+								and obj_nom = gobj_nom
+							limit $qte_obj";
+                    $stmt      = $pdo->prepare($req_objets);
+                    $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod"  => $gobj_cod), $stmt);
+                    while ($result = $stmt->fetch()) {
+                        $nb_obj ++ ;
+                        $obj_cod_list .= "," . (int)$result['obj_cod'];
+                    }
+                }
+            }
+        }
+        if ($obj_cod_list != "")  { $obj_cod_list = substr($obj_cod_list, 1); }
+        if ($obj_cod_list != "")
+        {
+            $req_objets = "select sum(obj_poids) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
+            $stmt      = $pdo->prepare($req_objets);
+            $stmt      = $pdo->execute(array(), $stmt);
+            $result = $stmt->fetch();
+        }
+
+        if ($obj_cod_list=="" || !$result)
+        {
+            echo "<br>Les objets a retirer n'ont pas été trouvé!<br><br>";
+        }
+        else if  ($perso->perso_pa<4)
+        {
+            echo "<br>Vous n'avez pas assez de PA pour faire le dépot!<br><br>";
+        }
+        else
+        {
+            $poids_retrait = $result["sum_poids"];
+            $done = false ;
+
+            // Passer en transactionnel pour éviter, qu'une partie soit faite et pas l'autre
+            $trpdo = $pdo->pdo;
+            try {
+                $trpdo->beginTransaction();
+
+                // Ajouter tous les objets dans l'invetaire du perso
+                $req_insert = "insert into perso_objets( perobj_perso_cod, perobj_obj_cod, perobj_identifie,  perobj_equipe)VALUES ";
+                $obj_cod_tab = explode(",", $obj_cod_list);
+                foreach ($obj_cod_tab as $obj) {
+                    $req_insert.="({$perso_cod}, {$obj}, 'O', 'N'),";
+
+                }
+                $req_insert = substr($req_insert, 0, -1);
+                $stmt      = $trpdo->prepare($req_insert);
+                if (!$stmt->execute(array())) {
+                    throw new Exception('Requete retrait 1 invalide !!');
+                }
+                $result = $stmt->fetch();
+
+                // les supprimer de l'inventaire du perso!
+                $req_delete = "delete from coffre_objets where coffre_obj_cod in ($obj_cod_list)";
+                $stmt      = $trpdo->prepare($req_delete);
+                if (!$stmt->execute(array())) {
+                    throw new Exception('Requete retrait 2 invalide !!');
+                }
+                $result = $stmt->fetch();
+
+                $trpdo->commit();
+                $done = true ;
+
+            } catch (\Exception $e) {
+                echo 'Error ' . $e->getMessage();
+                $trpdo->rollBack();
+            }
+
+            # le paiement des pa
+            if (!$done)
+            {
+                echo "<br>Il y a eu un problème pendant le retrait!<br><br>";
+            }
+            else
+            {
+                //retirer les PA
+                // $perso->perso_pa = $perso->perso_pa - 4 ;
+                $perso->stocke();
+                echo "<br>Félicitation vous venez de retirer <b>".(int)$nb_obj." objet(s)</b> du coffre pour un poids total de <b>{$poids_retrait} Kg</b>!<br>";
+            }
+        }
+    }
 
     // Interface utilisateur ========================
 
@@ -307,12 +448,19 @@ if ($erreur == 0)
             </form>';
         }
     }
+    else  if ($_REQUEST["methode"] == "extension")
+    {
+        echo "<div class=\"titre\">Achat d'une extension de stockage</div>";
+        echo "<br><br>Il n'est <b>pas encore possible</b> de prendre des extensions de stockage.!";
+        echo "<br>Revenez nous voir dans quelques mois....<br><br><hr>";
+    }
     else  if ($_REQUEST["methode"] == "deposer")
     {
         // ======================== Interface DEPOT ================================================
         echo "<div class=\"titre\">Sélection des objets à déposer</div>";
         echo "<form name=\"tran\" method=\"post\" action=\"\">";
         echo "<input type=\"hidden\" name=\"methode\" value=\"depot2\">";
+
 
         $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, perobj_identifie, obj_poids
 			from perso_objets
@@ -425,16 +573,139 @@ if ($erreur == 0)
     }
     else  if ($_REQUEST["methode"] == "retirer")
     {
-        echo 'retirer';
+        // ======================== Interface DEPOT ================================================
+        echo "<div class=\"titre\" style=\"background-color: #555555\">Sélection des objets à retirer</div>";
+        echo "<form name=\"tran\" method=\"post\" action=\"\">";
+        echo "<input type=\"hidden\" name=\"methode\" value=\"retrait2\">";
+
+
+        $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			inner join type_objet on tobj_cod = gobj_tobj_cod
+			where coffre_compt_cod = :compt_cod
+				and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
+			order by gobj_tobj_cod, obj_nom";
+
+
+        // Affichage des objets en vente à l’unité
+        $stmt      = $pdo->prepare($req_objets_unitaires);
+        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+        $nb_objets = 0;
+        if ($stmt->rowCount() > 0)
+        {
+            $etat = '';
+            echo "<div style=\"text-align:center;\" id='vente_detail'>Retrait au détail : cliquez sur les objets que vous souhaitez retirer. Les runes et composants d’alchimie se retirent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
+            echo("<center><table>");
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+            echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
+            echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
+            while ($result = $stmt->fetch())
+            {
+                if ($result['perobj_identifie'] == 'O')
+                {
+                    $nom_objet = $result['obj_nom'];
+                } else
+                {
+                    $nom_objet = $result['obj_nom_generique'];
+                }
+                $si_identifie = $result['perobj_identifie'];
+                echo "<tr>";
+                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
+                if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
+                {
+                    echo "  - " . get_etat($result['obj_etat']);
+                }
+                echo "</label></td>";
+
+                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "</tr>";
+            }
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+
+            echo "</table></center>";
+            $nb_objets++;
+        }
+
+        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, count(*) as nombre
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod
+				and gobj_tobj_cod in $types_ventes_gros		  
+			group by gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids
+			order by gobj_tobj_cod, gobj_nom";
+        // Affichage des objets en vente en gros
+        $stmt           = $pdo->prepare($req_objets_gros);
+        $stmt           = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+        $nb_objets_gros = 0;
+        if ($stmt->rowCount() > 0)
+        {
+            echo "<div style=\"text-align:center;\" id='vente_detail'>Retirer en gros : cliquez sur les objets que vous souhaitez retirer, indiquez-en le nombre. Les autres objets se retirent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
+            echo("<center><table>");
+            echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à retirer</strong></td>';
+            echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
+            echo '</tr>';
+            while ($result = $stmt->fetch())
+            {
+                $nom_objet      = $result['gobj_nom'];
+                $quantite_dispo = $result['nombre'];
+                $gobj_cod       = $result['gobj_cod'];
+                $id_chk         = "gobj[$gobj_cod]";
+                $id_qte         = "qtegros[$gobj_cod]";
+                $id_prx         = "prixgros[$gobj_cod]";
+                echo "<tr>";
+                echo "<td class='soustitre2'><input type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
+                echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
+                echo "<td><input type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
+					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
+                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "</tr>";
+            }
+
+            echo "</table></center>";
+            $nb_objets_gros++;
+        }
+
+        if ($nb_objets + $nb_objets_gros > 0)
+        {
+            echo "<div><center><input class=\"test\" type=\"submit\" value=\"Retirer (4PA)\" /></center></div></form>";
+        } else
+        {
+            echo 'Vous n’avez aucun objet dans votre coffre.<br>';
+        }
     }
 
     if ($cc->ccompt_cod)
     {
         echo '<br><br><strong>Que voulez-vous faire ?</strong>';
-        echo '<br>&nbsp;&nbsp;&nbsp;<a href="inventaire_persos.php">Consulter le contenu</a>';
         if ($_REQUEST["methode"] != "deposer") echo '<br>&nbsp;&nbsp;&nbsp;<a href="banque-coffre.php?methode=deposer">Déposer des objets</a> (4PA)';
         if ($_REQUEST["methode"] != "retirer") echo '<br>&nbsp;&nbsp;&nbsp;<a href="banque-coffre.php?methode=retirer">Retirer des objets</a> (4PA)';
-        echo '<br>&nbsp;&nbsp;&nbsp;<a href="banque-coffre.php?methode=extension">Prendre une extension de stockage</a>';
+        if ($_REQUEST["methode"] != "extension") echo '<br>&nbsp;&nbsp;&nbsp;<a href="banque-coffre.php?methode=extension">Prendre une extension de stockage</a>';
+        echo '<br>&nbsp;&nbsp;&nbsp;<a target="_blank" href="inventaire_persos.php">Consulter le contenu</a>';
+
+        // Calcul du poids stocké au coffre
+        $req_coffre = "select sum(obj_poids) as poids, count(*) as nombre
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod ";
+
+        $stmt      = $pdo->prepare($req_coffre);
+        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+        $result = $stmt->fetch() ;
+        $poids =  (int)$result["poids"];
+        $nbobj = (int)$result["nombre"];
+
+
+        echo "<hr>Votre stockage : <b>{$poids} Kg</b> / ".$stockage[$cc->ccompt_taille]." Kg";
+        if ($nbobj>0) echo " <em style='font-size:9px;'>(<b>$nbobj</b> objet(s) dans le coffre)</em>";
+
     }
 
 
