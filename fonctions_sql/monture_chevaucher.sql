@@ -15,7 +15,9 @@ AS $_$declare
   v_perso_pos_cod integer;
   v_perso_type_perso integer;
   v_gmon_monture text;
+	v_max_pa integer ;  -- PA max  de la monture après chevauchement
   temp_competence text;   -- text du jet de compétence
+  temp_txt text;   -- text divers
 begin
 	code_retour := '';
 
@@ -65,6 +67,11 @@ begin
 
       -- Réaliser les actions du chevauchement !!!
       update perso set perso_monture=v_monture where perso_cod=v_perso ;
+
+      -- on va s'assurer que la monture n'a pas trop de PA dispo par rapport à sa DLT (sinon ça pourrait permettre un rush)
+      temp_txt := calcul_dlt2(v_monture);
+      select  (EXTRACT(EPOCH FROM ( perso_dlt - now()))::int/60::numeric / f_temps_tour_perso(perso_cod) * 12)::int into v_max_pa from perso where perso_cod = v_monture ;
+      update perso set perso_pa=GREATEST(0, LEAST(perso_pa, v_max_pa)) where perso_cod=v_monture ;
 
       -- evenement chevaucher (105)
       perform insere_evenement(v_perso, v_monture, 105, '[attaquant] monte sur sa monture [cible].', 'O', NULL);
