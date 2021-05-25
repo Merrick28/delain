@@ -14,13 +14,41 @@ $perso_cod = $verif_connexion->perso_cod;
 
 // ====================== js script
 echo '<script type="text/javascript" src="../scripts/cocheCase.js"></script>';
-echo '<script type="text/javascript">
+echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
+	function maj_poids_selectionne()
+	{              
+	    var charge = 0 ;
+	    // Charge à la piece
+	    $("[id^=obj]").each(function(idx, value) {
+	        var obj= $(this).parent().parent().attr("id").substr(8) ;
+	        var id_check=document.getElementById("obj[" + obj + "]");
+	        if ($(id_check).prop("checked"))
+            {
+                var id_pds=document.getElementById("poids[" + obj + "]");
+                charge += 1*$(id_pds).text();
+            }	         
+	    })
+	    	    
+        // charge en gros
+	    $("[id^=qtegros]").each(function(idx, value) {
+	        var gobj= $(this).parent().parent().attr("id").substr(9) ;
+	        var id_check=document.getElementById("gobj[" + gobj + "]");
+	        if ($(id_check).prop("checked"))
+            {
+                var id_pds=document.getElementById("poidsgros[" + gobj + "]");
+                charge += 1*$(this).val()*$(id_pds).text();
+            }	         
+	    })
+        $("#selection-poids").text(Math.round(charge*100)/100);
+	}
+	
 	function vendreNombre(gobj_cod, nombre)
 	{
 		var chkbx = document.getElementById("gobj[" + gobj_cod + "]");
 		var inputNombre = document.getElementById("qtegros[" + gobj_cod + "]");
 		chkbx.checked = true;
 		inputNombre.value = nombre;
+		maj_poids_selectionne();
 	}
 	function vendreNombreIncrement(gobj_cod, nombre, nbmax)
 	{
@@ -36,6 +64,7 @@ echo '<script type="text/javascript">
 			inputNombre.value = 0;
 			chkbx.checked = false;
 		}
+        maj_poids_selectionne();
 	}
 	</script>
 	';
@@ -300,7 +329,7 @@ if ($erreur == 0)
             else
             {
                 //retirer les PA
-                // $perso->perso_pa = $perso->perso_pa - 4 ;
+                $perso->perso_pa = $perso->perso_pa - 4 ;
                 $perso->stocke();
                 echo "<br>Félicitation vous venez déposer <b>".(int)$nb_obj." objet(s)</b> au coffre pour un poids total de <b>{$poids_depot} Kg</b>!<br>";
             }
@@ -421,7 +450,7 @@ if ($erreur == 0)
             else
             {
                 //retirer les PA
-                // $perso->perso_pa = $perso->perso_pa - 4 ;
+                $perso->perso_pa = $perso->perso_pa - 4 ;
                 $perso->stocke();
                 echo "<br>Félicitation vous venez de retirer <b>".(int)$nb_obj." objet(s)</b> du coffre pour un poids total de <b>{$poids_retrait} Kg</b>!<br>";
             }
@@ -429,6 +458,20 @@ if ($erreur == 0)
     }
 
     // Interface utilisateur ========================
+
+    // Calcul du poids stocké au coffre (rafraichir si changement)
+    $req_coffre = "select sum(obj_poids) as poids, count(*) as nombre
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod ";
+
+    $stmt      = $pdo->prepare($req_coffre);
+    $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+    $result = $stmt->fetch() ;
+    $poids_au_coffre =  round($result["poids"],2);
+    $nbobj_au_coffre = (int)$result["nombre"];
+    $poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
 
     if (!$cc->ccompt_cod)
     {
@@ -484,7 +527,7 @@ if ($erreur == 0)
             $etat = '';
             echo "<div style=\"text-align:center;\" id='vente_detail'>Dépot au détail : cliquez sur les objets que vous souhaitez déposer. Les runes et composants d’alchimie se déposent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
             echo("<center><table>");
-            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
             echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
             echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
             while ($result = $stmt->fetch())
@@ -497,8 +540,8 @@ if ($erreur == 0)
                     $nom_objet = $result['obj_nom_generique'];
                 }
                 $si_identifie = $result['perobj_identifie'];
-                echo "<tr>";
-                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<tr id='row-obj-{$result['obj_cod']}'>";
+                echo "<td><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
                 echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
                 if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
@@ -506,10 +549,10 @@ if ($erreur == 0)
                 }
                 echo "</label></td>";
 
-                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
                 echo "</tr>";
             }
-            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
 
             echo "</table></center>";
             $nb_objets++;
@@ -546,15 +589,16 @@ if ($erreur == 0)
                 $id_chk         = "gobj[$gobj_cod]";
                 $id_qte         = "qtegros[$gobj_cod]";
                 $id_prx         = "prixgros[$gobj_cod]";
-                echo "<tr>";
-                echo "<td class='soustitre2'><input type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+                $id_pds         = "poidsgros[$gobj_cod]";
+                echo "<tr id='row-gobj-{$gobj_cod}'>";
+                echo "<td class='soustitre2'><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
-                echo "<td><input type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
+                echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
-                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . $result['obj_poids'] . "</td>";
                 echo "</tr>";
             }
 
@@ -564,7 +608,7 @@ if ($erreur == 0)
 
         if ($nb_objets + $nb_objets_gros > 0)
         {
-            echo "<div><center><input class=\"test\" type=\"submit\" value=\"Déposer (4PA)\" /></center></div></form>";
+            echo "<center><div>Dispo: <b><span id='selection-poids'>0</span></b>&nbsp;/ {$poids_diso} Kg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Déposer (4PA)\" /></div></div></center></form>";
         } else
         {
             echo 'Vous n’avez aucun objet à déposer.<br>';
@@ -598,7 +642,7 @@ if ($erreur == 0)
             $etat = '';
             echo "<div style=\"text-align:center;\" id='vente_detail'>Retrait au détail : cliquez sur les objets que vous souhaitez retirer. Les runes et composants d’alchimie se retirent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
             echo("<center><table>");
-            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
             echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
             echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
             while ($result = $stmt->fetch())
@@ -611,8 +655,8 @@ if ($erreur == 0)
                     $nom_objet = $result['obj_nom_generique'];
                 }
                 $si_identifie = $result['perobj_identifie'];
-                echo "<tr>";
-                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<tr id='row-obj-{$result['obj_cod']}'>";
+                echo "<td><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
                 echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
                 if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
@@ -620,10 +664,10 @@ if ($erreur == 0)
                 }
                 echo "</label></td>";
 
-                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
                 echo "</tr>";
             }
-            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
+            echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
 
             echo "</table></center>";
             $nb_objets++;
@@ -656,15 +700,16 @@ if ($erreur == 0)
                 $id_chk         = "gobj[$gobj_cod]";
                 $id_qte         = "qtegros[$gobj_cod]";
                 $id_prx         = "prixgros[$gobj_cod]";
-                echo "<tr>";
-                echo "<td class='soustitre2'><input type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+                $id_pds         = "poidsgros[$gobj_cod]";
+                echo "<tr id='row-gobj-{$gobj_cod}'>";
+                echo "<td class='soustitre2'><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
-                echo "<td><input type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
+                echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
-                echo "<td style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . $result['obj_poids'] . "</td>";
                 echo "</tr>";
             }
 
@@ -674,7 +719,7 @@ if ($erreur == 0)
 
         if ($nb_objets + $nb_objets_gros > 0)
         {
-            echo "<div><center><input class=\"test\" type=\"submit\" value=\"Retirer (4PA)\" /></center></div></form>";
+            echo "<center><div>Retrait: <b><span id='selection-poids'>0</span></b>&nbspKg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Retirer (4PA)\" /></div></center></form>";
         } else
         {
             echo 'Vous n’avez aucun objet dans votre coffre.<br>';
@@ -689,22 +734,8 @@ if ($erreur == 0)
         if ($_REQUEST["methode"] != "extension") echo '<br>&nbsp;&nbsp;&nbsp;<a href="banque-coffre.php?methode=extension">Prendre une extension de stockage</a>';
         echo '<br>&nbsp;&nbsp;&nbsp;<a target="_blank" href="inventaire_persos.php">Consulter le contenu</a>';
 
-        // Calcul du poids stocké au coffre
-        $req_coffre = "select sum(obj_poids) as poids, count(*) as nombre
-			from coffre_objets
-			inner join objets on obj_cod = coffre_obj_cod
-			inner join objet_generique on gobj_cod = obj_gobj_cod
-			where coffre_compt_cod = :compt_cod ";
-
-        $stmt      = $pdo->prepare($req_coffre);
-        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
-        $result = $stmt->fetch() ;
-        $poids =  (int)$result["poids"];
-        $nbobj = (int)$result["nombre"];
-
-
-        echo "<hr>Votre stockage : <b>{$poids} Kg</b> / ".$stockage[$cc->ccompt_taille]." Kg";
-        if ($nbobj>0) echo " <em style='font-size:9px;'>(<b>$nbobj</b> objet(s) dans le coffre)</em>";
+        echo "<hr>Votre stockage : <b>{$poids_au_coffre} Kg</b> / ".$stockage[$cc->ccompt_taille]." Kg";
+        if ($nbobj_au_coffre>0) echo " <em style='font-size:9px;'>(<b>$nbobj_au_coffre</b> objet(s) dans le coffre)</em>";
 
     }
 
