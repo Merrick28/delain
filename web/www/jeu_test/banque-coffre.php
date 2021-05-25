@@ -608,7 +608,7 @@ if ($erreur == 0)
 
         if ($nb_objets + $nb_objets_gros > 0)
         {
-            echo "<center><div>Dispo: <b><span id='selection-poids'>0</span></b>&nbsp;/ {$poids_diso} Kg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Déposer (4PA)\" /></div></div></center></form>";
+            echo "<center><div>Dépot: <b><span id='selection-poids'>0</span></b>&nbsp;/ {$poids_diso} Kg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Déposer (4PA)\" /></div></div></center></form>";
         } else
         {
             echo 'Vous n’avez aucun objet à déposer.<br>';
