@@ -161,9 +161,18 @@ if ($erreur == 0)
     echo '</div><br>';
 
 
-    // Traitement des actions ========================================================================
+    // =================================================================================================================
+    // ===
+    // ===
+    // ===                  Traitement des actions
+    // ===
+    // ===
+    // =================================================================================================================
+
     // Ouverture d'un coffre si on en a pas déjà un et qu'il a les moyen de payer !
+    // =================================================================================================================
     if (($_REQUEST["methode"] == "ouvrir") && (!$cc->ccompt_cod))
+    // =================================================================================================================
     {
         if  ($perso->perso_po<$tarifs[0])
         {
@@ -183,8 +192,39 @@ if ($erreur == 0)
             echo "<br>Félicitation vous venez d'ouvrir un coffre de stockage!<br><br>";
         }
 
+    }    // =================================================================================================================
+    else if (($_REQUEST["methode"] == "etendre") && ($cc->ccompt_cod))
+    // =================================================================================================================
+    {
+
+        $taille_demande = $cc->ccompt_taille + 1 ;
+
+        if (!isset($tarifs[$taille_demande]) || ($tarifs[$taille_demande]==0))
+        {
+            echo "<br>Vous n'avez atteint la taille limite du coffre, il ne vous est plus possible de l'étendre!<br><br>";
+        }
+        else if  ($perso->perso_po<$tarifs[$taille_demande])
+        {
+            echo "<br>Vous n'avez pas assez d'argent pour étendre votre coffre de stockage!<br><br>";
+        }
+        else
+        {
+            # le paiement
+           $perso->perso_po = $perso->perso_po - $tarifs[$taille_demande] ;
+           $perso->stocke();
+
+           #creation du coffre
+           $cc->ccompt_taille = $taille_demande ;
+           $cc->ccompt_cout += $tarifs[$taille_demande] ;
+           $cc->stocke() ;
+
+            echo "<br>Félicitation vous venez d'étendre votre coffre de stockage à <b>{$stockage[$taille_demande]}</b> Kg<br><br>";
+        }
+
     }
+    // =================================================================================================================
     else if ($_REQUEST["methode"] == "depot2")
+    // =================================================================================================================
     {
         // Calcul du poids stocké au coffre
         $req_coffre = "select sum(obj_poids) as poids
@@ -335,7 +375,9 @@ if ($erreur == 0)
             }
         }
     }
+    // =================================================================================================================
     else if ($_REQUEST["methode"] == "retrait2")
+    // =================================================================================================================
     {
         // calcul du poids du retrait et verifiction des objets dans le coffre
         $nb_obj = 0 ;
@@ -457,7 +499,13 @@ if ($erreur == 0)
         }
     }
 
+    // =================================================================================================================
+    // ===
+    // ===
     // Interface utilisateur ========================
+    // ===
+    // ===
+    // =================================================================================================================
 
     // Calcul du poids stocké au coffre (rafraichir si changement)
     $req_coffre = "select sum(obj_poids) as poids, count(*) as nombre
@@ -491,13 +539,44 @@ if ($erreur == 0)
             </form>';
         }
     }
-    else  if ($_REQUEST["methode"] == "extension")
+    // =================================================================================================================
+    else  if (($_REQUEST["methode"] == "extension") && ($cc->ccompt_cod))
+    // =================================================================================================================
     {
         echo "<div class=\"titre\">Achat d'une extension de stockage</div>";
-        echo "<br><br>Il n'est <b>pas encore possible</b> de prendre des extensions de stockage.!";
-        echo "<br>Revenez nous voir dans quelques mois....<br><br><hr>";
+
+        $taille_actuelle = $cc->ccompt_taille ;
+        $taille_demande = $taille_actuelle+1;
+
+        echo '<form name="ouvrir" method="post" action="banque-coffre.php"><br>La taille actuelle de votre coffre est de '.$stockage[$taille_actuelle].' Kg.';
+
+        if (!isset($tarifs[$taille_demande]) || ($tarifs[$taille_demande]==0))
+        {
+           echo '<br>Vous avez atteint la taille maximale du coffre, l\'achat de nouvelles extensions n\'est plus possible!!';
+        }
+        else
+        {
+            echo '<br>Vous pouvez étendre ce stockage à <b>'.$stockage[$taille_demande].'</b> Kg.<br>Les frais de cette extension de stockage sont de <b>'.$tarifs[$taille_demande].' Bz </b>&nbsp;&nbsp;&nbsp;';
+            if ($perso->perso_po<$tarifs[$taille_demande])
+            {
+                echo '<br><br>Vous ne disposez pas des fonds necessaire pour cet achat!';
+            }
+            else
+            {
+                echo '<input type="hidden" name="methode" value="etendre"><input type="submit" value="Payer et étendre le stockage!" class="test">';
+                echo '<br>Vous disposez de '.($perso->perso_po).' Bz';
+            }
+        }
+
+        echo '</form>';
+
+        //echo "<br><br>Il n'est <b>pas encore possible</b> de prendre des extensions de stockage.!";
+        //echo "<br>Revenez nous voir dans quelques mois....<br><br><hr>";
+        echo "<br><br><hr>";
     }
+    // =================================================================================================================
     else  if ($_REQUEST["methode"] == "deposer")
+    // =================================================================================================================
     {
         // ======================== Interface DEPOT ================================================
         echo "<div class=\"titre\">Sélection des objets à déposer</div>";
@@ -615,7 +694,9 @@ if ($erreur == 0)
         }
 
     }
+    // =================================================================================================================
     else  if ($_REQUEST["methode"] == "retirer")
+    // =================================================================================================================
     {
         // ======================== Interface DEPOT ================================================
         echo "<div class=\"titre\" style=\"background-color: #555555\">Sélection des objets à retirer</div>";
@@ -726,6 +807,9 @@ if ($erreur == 0)
         }
     }
 
+    // =================================================================================================================
+    // Menu des actions
+    // =================================================================================================================
     if ($cc->ccompt_cod)
     {
         echo '<br><br><strong>Que voulez-vous faire ?</strong>';
