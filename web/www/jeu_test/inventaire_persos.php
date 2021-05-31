@@ -41,8 +41,16 @@ foreach ($persos as $p){
 }
 $perso_cod_list=substr($perso_cod_list, 1);
 
+// Ajout du stockage coffre
+$cc = new compte_coffre();
+$cc->loadBy_ccompt_compt_cod($compt_cod);
+$coffre = ($cc->ccompt_cod) ? true : false ;
 
-$req   = "SELECT perobj_perso_cod as perso_cod, obj_nom || ' (' || obj_famille_rune || ')' as obj_nom,sum(obj_poids) as poids,obj_frune_cod,count(*) as count 
+
+#=======================================================================================================================
+# RUNES
+#=======================================================================================================================
+$req   = "SELECT perobj_perso_cod as perso_cod, obj_famille_rune, obj_nom || ' (' || obj_famille_rune || ')' as obj_nom,sum(obj_poids) as poids,obj_frune_cod,count(*) as count
             FROM perso_objets,objets,objet_generique
             WHERE perobj_perso_cod in ($perso_cod_list)
                 AND perobj_obj_cod = obj_cod
@@ -50,9 +58,21 @@ $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom || ' (' || obj_famille_r
 	            AND perobj_identifie = 'O'                 
                 AND gobj_tobj_cod = 5
             GROUP BY obj_frune_cod,obj_famille_rune,obj_nom, perobj_perso_cod
-            ORDER BY obj_frune_cod,obj_famille_rune,obj_nom, perobj_perso_cod";
+            
+          UNION ALL 
+           
+          SELECT 0 as perso_cod, obj_famille_rune, obj_nom || ' (' || obj_famille_rune || ')' as obj_nom,sum(obj_poids) as poids,obj_frune_cod,count(*) as count 
+            FROM coffre_objets,objets,objet_generique
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod             
+                AND gobj_tobj_cod = 5
+            GROUP BY obj_frune_cod,obj_famille_rune,obj_nom
+                        
+            ORDER BY obj_frune_cod,obj_famille_rune,obj_nom, perso_cod            
+            ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $result  = $stmt->fetchAll();
 $runes = array() ;
 $perso_runes = array() ;
@@ -66,6 +86,9 @@ foreach ($result as $r){
 }
 
 
+#=======================================================================================================================
+# OBJETS QUETE
+#=======================================================================================================================
 $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
             FROM perso_objets,objets,objet_generique,type_objet 
             WHERE  perobj_perso_cod in ($perso_cod_list)
@@ -75,9 +98,20 @@ $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids
                 AND gobj_tobj_cod = tobj_cod 
                 AND gobj_tobj_cod in (11,12) 
             GROUP BY obj_nom, perobj_perso_cod
-            ORDER BY obj_nom, perobj_perso_cod ";
+            
+          UNION ALL 
+           
+          SELECT 0 as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM coffre_objets,objets,objet_generique
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod             
+                AND gobj_tobj_cod in (11,12) 
+            GROUP BY obj_nom
+                                                            
+            ORDER BY obj_nom, perso_cod ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $result  = $stmt->fetchAll();
 $quetes = array() ;
 $perso_quetes = array() ;
@@ -90,6 +124,9 @@ foreach ($result as $r){
     $perso_quetes[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
 }
 
+#=======================================================================================================================
+# COMPOS
+#=======================================================================================================================
 $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
             FROM perso_objets,objets,objet_generique,type_objet 
             WHERE  perobj_perso_cod in ($perso_cod_list)
@@ -97,11 +134,22 @@ $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids
                 AND perobj_obj_cod = obj_cod 
                 AND obj_gobj_cod = gobj_cod 
                 AND gobj_tobj_cod = tobj_cod 
-                AND gobj_tobj_cod in (22,28,30,34) 
+                AND gobj_tobj_cod in (28,30,34) 
             GROUP BY obj_nom, perobj_perso_cod
-            ORDER BY obj_nom, perobj_perso_cod ";
+            
+          UNION ALL 
+           
+          SELECT 0 as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM coffre_objets,objets,objet_generique
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod             
+                AND gobj_tobj_cod in (28,30,34) 
+            GROUP BY obj_nom
+                        
+            ORDER BY obj_nom, perso_cod ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $result  = $stmt->fetchAll();
 $compos = array() ;
 $perso_compos = array() ;
@@ -114,6 +162,9 @@ foreach ($result as $r){
     $perso_compos[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
 }
 
+#=======================================================================================================================
+# MONNAIES
+#=======================================================================================================================
 $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
             FROM perso_objets,objets,objet_generique,type_objet 
             WHERE  perobj_perso_cod in ($perso_cod_list)
@@ -123,9 +174,20 @@ $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids
                 AND gobj_tobj_cod = tobj_cod 
                 AND gobj_tobj_cod in (42) 
             GROUP BY obj_nom, perobj_perso_cod
-            ORDER BY obj_nom, perobj_perso_cod ";
+            
+          UNION ALL 
+           
+          SELECT 0 as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM coffre_objets,objets,objet_generique
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod             
+                AND gobj_tobj_cod in (42) 
+            GROUP BY obj_nom
+                                    
+            ORDER BY obj_nom, perso_cod ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $result  = $stmt->fetchAll();
 $monnaies = array() ;
 $perso_monnaies = array() ;
@@ -138,6 +200,9 @@ foreach ($result as $r){
     $perso_monnaies[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
 }
 
+#=======================================================================================================================
+# DIVERS
+#=======================================================================================================================
 $req   = "SELECT tobj_libelle, perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
             FROM perso_objets,objets,objet_generique,type_objet 
             WHERE  perobj_perso_cod in ($perso_cod_list)
@@ -147,9 +212,21 @@ $req   = "SELECT tobj_libelle, perobj_perso_cod as perso_cod, obj_nom, sum(obj_p
                 AND gobj_tobj_cod = tobj_cod 
                 AND gobj_tobj_cod in (17, 18, 19, 20, 21, 22, 24, 39) 
             GROUP BY tobj_libelle, obj_nom, perobj_perso_cod
-            ORDER BY tobj_libelle, obj_nom, perobj_perso_cod ";
+            
+          UNION ALL 
+           
+          SELECT tobj_libelle, 0 as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM coffre_objets,objets,objet_generique,type_objet 
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod    
+                AND gobj_tobj_cod = tobj_cod          
+                AND gobj_tobj_cod in (17, 18, 19, 20, 21, 22, 24, 39) 
+            GROUP BY tobj_libelle, obj_nom
+                          
+            ORDER BY tobj_libelle, obj_nom, perso_cod ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $result  = $stmt->fetchAll();
 $divers = array() ;
 $divers_type = array() ;
@@ -166,11 +243,56 @@ foreach ($result as $r){
     $perso_divers[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
 }
 
+
+#=======================================================================================================================
+# MATOS
+#=======================================================================================================================
+$req   = "SELECT tobj_libelle, perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM perso_objets,objets,objet_generique,type_objet 
+            WHERE  perobj_perso_cod in ($perso_cod_list)
+                AND perobj_identifie = 'O' 
+                AND perobj_obj_cod = obj_cod 
+                AND obj_gobj_cod = gobj_cod 
+                AND gobj_tobj_cod = tobj_cod 
+                AND gobj_tobj_cod not in (5, 11, 12, 17, 18, 19, 20, 21, 22, 24, 39, 42, 28, 30, 34) 
+            GROUP BY tobj_libelle, obj_nom, perobj_perso_cod
+            
+          UNION ALL 
+           
+          SELECT tobj_libelle, 0 as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+            FROM coffre_objets,objets,objet_generique,type_objet 
+            WHERE coffre_compt_cod = :compt_cod
+                AND coffre_obj_cod = obj_cod
+                AND obj_gobj_cod = gobj_cod    
+                AND gobj_tobj_cod = tobj_cod          
+                AND gobj_tobj_cod not in (5, 11, 12, 17, 18, 19, 20, 21, 22, 24, 39, 42, 28, 30, 34) 
+            GROUP BY tobj_libelle, obj_nom
+                          
+            ORDER BY tobj_libelle, obj_nom, perso_cod ";
+$stmt  = $pdo->prepare($req);
+$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+$result  = $stmt->fetchAll();
+$matos = array() ;
+$matos_type = array() ;
+$perso_matos = array() ;
+$last = "" ;
+foreach ($result as $r){
+    if ($r["obj_nom"]!=$last) {
+        $matos[] = $r["obj_nom"] ;
+        $matos_type[$r["obj_nom"]] = $r["tobj_libelle"] ;
+    }
+    $last = $r["obj_nom"] ;
+    if (! isset($perso_matos[$r["perso_cod"]])) $perso_matos[$r["perso_cod"]] = array();
+    $perso_matos[$r["perso_cod"]][$r["obj_nom"]]["count"] = $r["count"] ;
+    $perso_matos[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
+}
+
 $template     = $twig->load('inventaire_persos.twig');
 $options_twig = array(
 
     'PERSO'          => $perso,
     'PERSOS'         => $persos,
+    'COFFRE'         => $coffre,
     'QUATRIEME'      => $quatrieme,
     'RUNES'          => $runes,
     'PERSO_RUNES'    => $perso_runes,
@@ -181,6 +303,9 @@ $options_twig = array(
     'DIVERS'         => $divers,
     'DIVERS_TYPE'    => $divers_type,
     'PERSO_DIVERS'   => $perso_divers,
+    'MATOS'         => $matos,
+    'MATOS_TYPE'    => $matos_type,
+    'PERSO_MATOS'   => $perso_matos,
     'MONNAIES'       => $monnaies,
     'PERSO_MONNAIES' => $perso_monnaies,
     'NBPERSO'        => count($persos),

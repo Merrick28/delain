@@ -237,7 +237,7 @@ $stmt   = $pdo->query($req_id);
             </tr>
             <?php if ($perso_type_perso != 2)
             {
-                echo '<tr><td>Bilan des runes, composants, objets de quête, etc... &nbsp;: <a href="inventaire_persos.php">pour tous mes persos</a>. </td></tr>';
+                echo '<tr><td>Bilan des runes, composants, objets de quête, etc... &nbsp;: <a href="inventaire_persos.php">pour tous mes persos et le coffre</a>. </td></tr>';
 
             }
             if ($is_golem)
