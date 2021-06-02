@@ -228,6 +228,18 @@ if ($erreur != 0)
             $perso_compte = new perso_compte;
             $perso_compte = $perso_compte->getBy_pcompt_perso_cod($destinataire_list[0]->perso_cod)[0];
 
+            // On va supprimer d'eventuelle vieux colis que le perso ciblé n'aurait pas receptionné à temps!
+            $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
+            if ($perso_attend_colis)
+            {
+                foreach ($perso_attend_colis as $k => $objet)
+                {
+                        $objet->Confisque($destinataire_list[0]->perso_cod) ;
+                }
+            }
+            // Recharger après nettoyage
+            $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
+
             //on cherche aussi s'il n'y a pas déjà des colis pour lui
             $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
         }

@@ -99,7 +99,13 @@ for ($i=0; $i<5; $i++){
 $imgbzf = '<img src="/images/smilies/bzf.gif">';
 
 // ====================== Affichage
-if ($erreur == 0)
+if ($perso->is_4eme_perso())
+{
+    echo '<div class="bordiv">
+    <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding:8px; border-radius:10px 10px 0 0; border:solid black 2px;">';
+    echo "<br>Le coffre individuel n'est pas accessible au 4eme perso!<br><br>";
+}
+else if ($erreur == 0)
 {
 
     // variables ========================
@@ -227,7 +233,7 @@ if ($erreur == 0)
     // =================================================================================================================
     {
         // Calcul du poids stocké au coffre
-        $req_coffre = "select sum(obj_poids) as poids
+        $req_coffre = "select sum(GREATEST(0,obj_poids)) as poids
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -295,7 +301,7 @@ if ($erreur == 0)
         if ($obj_cod_list != "")  { $obj_cod_list = substr($obj_cod_list, 1); }
         if ($obj_cod_list != "")
         {
-            $req_objets = "select sum(obj_poids) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
+            $req_objets = "select sum(GREATEST(0,obj_poids)) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
             $stmt      = $pdo->prepare($req_objets);
             $stmt      = $pdo->execute(array(), $stmt);
             $result = $stmt->fetch();
@@ -430,7 +436,7 @@ if ($erreur == 0)
         if ($obj_cod_list != "")  { $obj_cod_list = substr($obj_cod_list, 1); }
         if ($obj_cod_list != "")
         {
-            $req_objets = "select sum(obj_poids) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
+            $req_objets = "select sum(GREATEST(0,obj_poids)) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
             $stmt      = $pdo->prepare($req_objets);
             $stmt      = $pdo->execute(array(), $stmt);
             $result = $stmt->fetch();
@@ -508,7 +514,7 @@ if ($erreur == 0)
     // =================================================================================================================
 
     // Calcul du poids stocké au coffre (rafraichir si changement)
-    $req_coffre = "select sum(obj_poids) as poids, count(*) as nombre
+    $req_coffre = "select sum(GREATEST(0,obj_poids)) as poids, count(*) as nombre
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -628,7 +634,7 @@ if ($erreur == 0)
                 }
                 echo "</label></td>";
 
-                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ) . "</td>";
                 echo "</tr>";
             }
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
@@ -677,7 +683,7 @@ if ($erreur == 0)
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
                 echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
-                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . $result['obj_poids'] . "</td>";
+                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids']) . "</td>";
                 echo "</tr>";
             }
 
@@ -728,13 +734,7 @@ if ($erreur == 0)
             echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
             while ($result = $stmt->fetch())
             {
-                if ($result['perobj_identifie'] == 'O')
-                {
-                    $nom_objet = $result['obj_nom'];
-                } else
-                {
-                    $nom_objet = $result['obj_nom_generique'];
-                }
+                $nom_objet = $result['obj_nom'];
                 $si_identifie = $result['perobj_identifie'];
                 echo "<tr id='row-obj-{$result['obj_cod']}'>";
                 echo "<td><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
@@ -745,7 +745,7 @@ if ($erreur == 0)
                 }
                 echo "</label></td>";
 
-                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ) . "</td>";
                 echo "</tr>";
             }
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
@@ -790,7 +790,7 @@ if ($erreur == 0)
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
                 echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
-                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . $result['obj_poids'] . "</td>";
+                echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ). "</td>";
                 echo "</tr>";
             }
 
