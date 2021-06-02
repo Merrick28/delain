@@ -324,19 +324,38 @@ else if ($erreur == 0)
             $poids_depot = $result["sum_poids"];
             $done = false ;
 
+
+            // Ajouter au coffre tous les objets
+            $req_insert = "insert into coffre_objets(coffre_compt_cod, coffre_obj_cod, coffre_perso_cod) VALUES ";
+            $obj_cod_tab = explode(",", $obj_cod_list);
+            foreach ($obj_cod_tab as $obj) {
+                $req_insert.="({$compt_cod}, {$obj}, {$perso_cod}),";
+
+            }
+            $req_insert = substr($req_insert, 0, -1);
+
+            // ajouter les lignes d'event !
+            $req_event = "INSERT INTO public.ligne_evt(levt_tevt_cod, levt_date, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres) VALUES ";
+            foreach ($obj_cod_tab as $obj) {
+                $objet = new objets();
+                $objet->charge($obj);
+                $gobj = new objet_generique();
+                $gobj->charge($objet->obj_gobj_cod);
+                $tobj = new type_objet();
+                $tobj->charge($gobj->gobj_tobj_cod);
+
+                $texte_evt = str_replace("'","’", "[attaquant] a déposé un objet dans son coffre <i>( {$obj} / {$tobj->tobj_libelle}  /  {$objet->obj_nom} )</i>");
+                $req_event.= "(110, now(), {$perso_cod}, E'{$texte_evt}', 'O', 'O', {$perso_cod}, {$perso_cod}, '[obj_cod]={$obj}'),";
+            }
+            $req_event = substr($req_event, 0, -1);
+
             // Passer en transactionnel pour éviter, qu'une partie soit faite et pas l'autre
             $trpdo = $pdo->pdo;
+
             try {
                 $trpdo->beginTransaction();
 
                 // Ajouter au coffre tous les objets
-                $req_insert = "insert into coffre_objets(coffre_compt_cod, coffre_obj_cod, coffre_perso_cod) VALUES ";
-                $obj_cod_tab = explode(",", $obj_cod_list);
-                foreach ($obj_cod_tab as $obj) {
-                    $req_insert.="({$compt_cod}, {$obj}, {$perso_cod}),";
-
-                }
-                $req_insert = substr($req_insert, 0, -1);
                 $stmt      = $trpdo->prepare($req_insert);
                 if (!$stmt->execute(array())) {
                     throw new Exception('Requete dépot 1 invalide !!');
@@ -356,6 +375,13 @@ else if ($erreur == 0)
                 $stmt      = $trpdo->prepare($req_delete);
                 if (!$stmt->execute(array())) {
                     throw new Exception('Requete dépot 3 invalide !!');
+                }
+                $result = $stmt->fetch();
+
+                // ajouter les lignes d'event !
+                $stmt      = $trpdo->prepare($req_event);
+                if (!$stmt->execute(array())) {
+                    throw new Exception('Requete dépot 4 invalide !!');
                 }
                 $result = $stmt->fetch();
 
@@ -455,19 +481,38 @@ else if ($erreur == 0)
             $poids_retrait = $result["sum_poids"];
             $done = false ;
 
+            // Ajouter tous les objets dans l'invetaire du perso
+            $req_insert = "insert into perso_objets( perobj_perso_cod, perobj_obj_cod, perobj_identifie,  perobj_equipe)VALUES ";
+            $obj_cod_tab = explode(",", $obj_cod_list);
+            foreach ($obj_cod_tab as $obj) {
+                $req_insert.="({$perso_cod}, {$obj}, 'O', 'N'),";
+
+            }
+            $req_insert = substr($req_insert, 0, -1);
+
+            // ajouter les lignes d'event !
+            $req_event = "INSERT INTO public.ligne_evt(levt_tevt_cod, levt_date, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres) VALUES ";
+            foreach ($obj_cod_tab as $obj) {
+                $objet = new objets();
+                $objet->charge($obj);
+                $gobj = new objet_generique();
+                $gobj->charge($objet->obj_gobj_cod);
+                $tobj = new type_objet();
+                $tobj->charge($gobj->gobj_tobj_cod);
+
+                $texte_evt = str_replace("'","’", "[attaquant] a retiré un objet de son coffre <i>( {$obj} / {$tobj->tobj_libelle}  /  {$objet->obj_nom} )</i>");
+                $req_event.= "(111, now(), {$perso_cod}, E'{$texte_evt}', 'O', 'O', {$perso_cod}, {$perso_cod}, '[obj_cod]={$obj}'),";
+            }
+            $req_event = substr($req_event, 0, -1);
+
+
+
             // Passer en transactionnel pour éviter, qu'une partie soit faite et pas l'autre
             $trpdo = $pdo->pdo;
             try {
                 $trpdo->beginTransaction();
 
                 // Ajouter tous les objets dans l'invetaire du perso
-                $req_insert = "insert into perso_objets( perobj_perso_cod, perobj_obj_cod, perobj_identifie,  perobj_equipe)VALUES ";
-                $obj_cod_tab = explode(",", $obj_cod_list);
-                foreach ($obj_cod_tab as $obj) {
-                    $req_insert.="({$perso_cod}, {$obj}, 'O', 'N'),";
-
-                }
-                $req_insert = substr($req_insert, 0, -1);
                 $stmt      = $trpdo->prepare($req_insert);
                 if (!$stmt->execute(array())) {
                     throw new Exception('Requete retrait 1 invalide !!');
@@ -479,6 +524,13 @@ else if ($erreur == 0)
                 $stmt      = $trpdo->prepare($req_delete);
                 if (!$stmt->execute(array())) {
                     throw new Exception('Requete retrait 2 invalide !!');
+                }
+                $result = $stmt->fetch();
+
+                // ajouter les lignes d'event !
+                $stmt      = $trpdo->prepare($req_event);
+                if (!$stmt->execute(array())) {
+                    throw new Exception('Requete retrait 3 invalide !!');
                 }
                 $result = $stmt->fetch();
 
