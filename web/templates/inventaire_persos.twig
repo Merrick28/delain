@@ -143,7 +143,7 @@
                  {% endif %}
              {% endfor %}
 
-             {%  if COFFRE %}<td class="soustitre2" style="text-align:right;">{% if  PERSO_QUETES[0][r].count >0 %}{{ PERSO_QUETES[0][r].count }} <em style="font-size: 8px;">({{ PERSO_QUETES[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
+             {%  if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_QUETES[0][r].count >0 %}{{ PERSO_QUETES[0][r].count }} <em style="font-size: 8px;">({{ PERSO_QUETES[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
              <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
              {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
              {% for p in PERSOS  %}
