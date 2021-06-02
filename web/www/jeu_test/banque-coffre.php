@@ -322,7 +322,7 @@ else if ($erreur == 0)
         }
         else if ((int)$result["sum_poids"] > $poids_diso )
         {
-            echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> à déposer $poids_diso!<br><br>";
+            echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> a déposer (pour seulement $poids_diso Kg de dispo)!<br><br>";
         }
         else if  ($perso->perso_pa<4)
         {
