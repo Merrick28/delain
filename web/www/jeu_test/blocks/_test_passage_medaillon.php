@@ -8,16 +8,16 @@
 $verif_connexion::verif_appel();
 if ($perso->compte_objet(86) != 0)
 {
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
+    echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
     $erreur = 1;
 }
 if ($perso->compte_objet(87) != 0)
 {
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
+    echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
     $erreur = 1;
 }
 if ($perso->compte_objet(88) != 0)
 {
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
+    echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
     $erreur = 1;
 }

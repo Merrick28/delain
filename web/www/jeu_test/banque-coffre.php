@@ -270,7 +270,7 @@ else if ($erreur == 0)
                             inner join type_objet on tobj_cod = gobj_tobj_cod
                             where perobj_perso_cod = :perso_cod
                                 and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
-                                and gobj_tobj_cod<>26
+                                and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)
                                 and perobj_identifie = 'O'
                                 and perobj_equipe = 'N'
                                 and obj_deposable != 'N'
@@ -296,7 +296,7 @@ else if ($erreur == 0)
 							where perobj_perso_cod = :perso_cod
 								and gobj_cod = :gobj_cod
 								and obj_nom = gobj_nom
-                                and gobj_tobj_cod<>26								
+                                and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)							
 				                and perobj_identifie = 'O'								
 								and perobj_equipe = 'N'
 								and obj_deposable != 'N'
@@ -439,7 +439,7 @@ else if ($erreur == 0)
                             inner join type_objet on tobj_cod = gobj_tobj_cod
                             where coffre_compt_cod = :compt_cod
                                 and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)                                
-                                and gobj_tobj_cod<>26		
+                                and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_cod in ({$obj_cod_list})";
                 $stmt      = $pdo->prepare($req_objets);
                 $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
@@ -461,7 +461,7 @@ else if ($erreur == 0)
 							inner join objet_generique on gobj_cod = obj_gobj_cod
 							where coffre_compt_cod = :compt_cod
 								and gobj_cod = :gobj_cod
-								and gobj_tobj_cod<>26		
+								and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_nom = gobj_nom
 							limit $qte_obj";
                     $stmt      = $pdo->prepare($req_objets);
@@ -663,7 +663,7 @@ else if ($erreur == 0)
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			where perobj_perso_cod = :perso_cod
 				and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
-				and gobj_tobj_cod<>26		
+				and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                 and perobj_identifie = 'O'
 				and perobj_equipe = 'N'
 				and obj_deposable != 'N'
@@ -716,7 +716,7 @@ else if ($erreur == 0)
 			inner join objet_generique on gobj_cod = obj_gobj_cod
 			where perobj_perso_cod = :perso_cod
 				and gobj_tobj_cod in $types_ventes_gros
-				and gobj_tobj_cod<>26		
+				and gobj_tobj_cod<>26  and obj_gobj_cod not in (86,87,88)		
                 and perobj_identifie = 'O'				
 				and obj_nom = gobj_nom
 				and perobj_equipe = 'N'
@@ -785,7 +785,7 @@ else if ($erreur == 0)
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			where coffre_compt_cod = :compt_cod
 				and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
-				and gobj_tobj_cod<>26		                                
+				and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		                                
 			order by gobj_tobj_cod, obj_nom";
 
 
@@ -829,7 +829,7 @@ else if ($erreur == 0)
 			inner join objet_generique on gobj_cod = obj_gobj_cod
 			where coffre_compt_cod = :compt_cod
 				and gobj_tobj_cod in $types_ventes_gros		  
-				and gobj_tobj_cod<>26		                                
+				and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)	                                
 			group by gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids
 			order by gobj_tobj_cod, gobj_nom";
         // Affichage des objets en vente en gros
