@@ -77,6 +77,11 @@ if ($erreur != 0)
 } else
 {
     //===========================================================================================
+    // Gestion du coffre avec les relais
+    $cc = new compte_coffre();
+    $cc->loadBy_ccompt_compt_cod($compt_cod);
+
+    //===========================================================================================
     // details de l'objet poste
     $objets_poste = new objets_poste;
     $options_twig = array(); // on affiche rien par defaut!
@@ -538,5 +543,5 @@ if ($erreur != 0)
 
     //---------------------------------------rendering ! ---------------------------------------
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, $options_twig));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, $options_twig, ["COFFRE" => $cc]));
 }

@@ -78,6 +78,7 @@ echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
 	</script>
 	';
 
+// CONTANTE ET VARIABLE ================================================================================================ (Voir aussi relais-coffre.php )
 // Définition des types d’objets qui se vendent en gros.
 // 5 = runes,
 // 11 = objets de quête,
@@ -104,6 +105,7 @@ for ($i=0; $i<5; $i++){
     $tarifs[$i] = $tarif_base * pow(4, $i);
     $stockage[$i] = ($i==0) ? $stockage_base : $stockage[$i-1] + $stockage_base ;
 }
+//======================================================================================================================
 
 
 $imgbzf = '<img src="/images/smilies/bzf.gif">';
@@ -122,6 +124,10 @@ else if ($erreur == 0)
     if ( !isset($_REQUEST["methode"]) )  $_REQUEST["methode"] = "" ;
     $cc = new compte_coffre();
     $cc->loadBy_ccompt_compt_cod($compt_cod);
+
+    $ppos = new perso_position();
+    $ppos->getByPerso($perso->perso_cod);
+    $coffre_pos_cod = $ppos->ppos_pos_cod ;
 
     echo '<div class="bordiv">
     <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding:8px; border-radius:10px 10px 0 0; border:solid black 2px;">';
@@ -338,10 +344,10 @@ else if ($erreur == 0)
 
 
             // Ajouter au coffre tous les objets
-            $req_insert = "insert into coffre_objets(coffre_compt_cod, coffre_obj_cod, coffre_perso_cod) VALUES ";
+            $req_insert = "insert into coffre_objets(coffre_compt_cod, coffre_obj_cod, coffre_perso_cod, coffre_pos_cod) VALUES ";
             $obj_cod_tab = explode(",", $obj_cod_list);
             foreach ($obj_cod_tab as $obj) {
-                $req_insert.="({$compt_cod}, {$obj}, {$perso_cod}),";
+                $req_insert.="({$compt_cod}, {$obj}, {$perso_cod}, {$coffre_pos_cod}),";
 
             }
             $req_insert = substr($req_insert, 0, -1);
@@ -440,7 +446,8 @@ else if ($erreur == 0)
                             where coffre_compt_cod = :compt_cod
                                 and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)                                
                                 and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
-                                and obj_cod in ({$obj_cod_list})";
+                                and obj_cod in ({$obj_cod_list})
+                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() ) ";
                 $stmt      = $pdo->prepare($req_objets);
                 $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
                 $obj_cod_list = "" ;
@@ -463,6 +470,7 @@ else if ($erreur == 0)
 								and gobj_cod = :gobj_cod
 								and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_nom = gobj_nom
+                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() )
 							limit $qte_obj";
                     $stmt      = $pdo->prepare($req_objets);
                     $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod"  => $gobj_cod), $stmt);
@@ -778,7 +786,7 @@ else if ($erreur == 0)
         echo "<input type=\"hidden\" name=\"methode\" value=\"retrait2\">";
 
 
-        $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids
+        $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -800,13 +808,18 @@ else if ($erreur == 0)
             echo("<center><table>");
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
             echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
-            echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
+            echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td>';
+            echo '<td><strong></td></tr>';
             while ($result = $stmt->fetch())
             {
+                $date_dispo = $result['coffre_date_dispo'] ;
+                $relais = $result['coffre_relais_poste'];
+                $dispo = ($relais != 'N' && date("Y-m-d H:i:s") < $date_dispo) ? false : true ;
+
                 $nom_objet = $result['obj_nom'];
                 $si_identifie = $result['perobj_identifie'];
                 echo "<tr id='row-obj-{$result['obj_cod']}'>";
-                echo "<td><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<td><input ".($dispo ? "" : "disabled")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
                 echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
                 if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
@@ -815,6 +828,7 @@ else if ($erreur == 0)
                 echo "</label></td>";
 
                 echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ) . "</td>";
+                echo "<td style='font-size: 10px;'>".($dispo ? "" : "dispo à partir du ".(date("d/m/y H:i:s", strtotime($date_dispo))))."</td>";
                 echo "</tr>";
             }
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
@@ -823,7 +837,8 @@ else if ($erreur == 0)
             $nb_objets++;
         }
 
-        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, count(*) as nombre
+        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, SUM(CASE WHEN coffre_relais_poste='N' OR coffre_date_dispo<=now() THEN 1 ELSE 0 END) as nombre
+                ,SUM(CASE WHEN coffre_relais_poste!='N' AND coffre_date_dispo>now() THEN 1 ELSE 0 END) as nombre_relais, min(coffre_date_dispo) as min_date_dispo, max(coffre_date_dispo) as max_date_dispo
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -842,6 +857,7 @@ else if ($erreur == 0)
             echo("<center><table>");
             echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à retirer</strong></td>';
             echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
+            echo '<td></td></tr>';
             echo '</tr>';
             while ($result = $stmt->fetch())
             {
@@ -852,8 +868,23 @@ else if ($erreur == 0)
                 $id_qte         = "qtegros[$gobj_cod]";
                 $id_prx         = "prixgros[$gobj_cod]";
                 $id_pds         = "poidsgros[$gobj_cod]";
+
+                $min_date_dispo = $result['min_date_dispo'] ;
+                $max_date_dispo = $result['max_date_dispo'] ;
+                $nombre_relais = $result['nombre_relais'];
+                $texte_dispo = "" ;
+
+                if ($nombre_relais>0)
+                {
+                    if ($min_date_dispo == $max_date_dispo) {
+                        $texte_dispo = $nombre_relais." dispo à partir du ".date("d/m/y H:i:s", strtotime($min_date_dispo));
+                    } else {
+                        $texte_dispo = $nombre_relais." dispo entre le ".date("d/m/y H:i:s", strtotime($min_date_dispo))." et ".date("d/m/y H:i:s", strtotime($max_date_dispo));
+                    }
+                }
+
                 echo "<tr id='row-gobj-{$gobj_cod}'>";
-                echo "<td class='soustitre2'><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+                echo "<td class='soustitre2'><input ".($quantite_dispo ==0 ? "disabled" : "")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
@@ -861,6 +892,7 @@ else if ($erreur == 0)
                 echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
                 echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ). "</td>";
+                echo '<td style="font-size: 10px;">'.$texte_dispo.'</td>';
                 echo "</tr>";
             }
 

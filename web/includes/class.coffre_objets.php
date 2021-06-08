@@ -15,11 +15,15 @@ class coffre_objets
     var $coffre_obj_cod;
     var $coffre_perso_cod;
     var $coffre_date_depot;
+    var $coffre_pos_cod;
+    var $coffre_date_dispo;
+    var $coffre_relais_poste = 'N';
 
     function __construct()
     {
 
         $this->coffre_date_depot = date('Y-m-d H:i:s');
+        $this->coffre_date_dispo = date('Y-m-d H:i:s');
     }
 
     /**
@@ -43,6 +47,9 @@ class coffre_objets
         $this->coffre_obj_cod = $result['coffre_obj_cod'];
         $this->coffre_perso_cod = $result['coffre_perso_cod'];
         $this->coffre_date_depot = $result['coffre_date_depot'];
+        $this->coffre_pos_cod = $result['coffre_pos_cod'];
+        $this->coffre_date_dispo = $result['coffre_date_dispo'];
+        $this->coffre_relais_poste = $result['coffre_relais_poste'];
         return true;
     }
 
@@ -60,13 +67,19 @@ class coffre_objets
             coffre_compt_cod,
             coffre_obj_cod,
             coffre_perso_cod,
-            coffre_date_depot                        )
+            coffre_date_depot,
+            coffre_pos_cod,
+            coffre_date_dispo,
+            coffre_relais_poste                        )
                     values
                     (
                         :coffre_compt_cod,
                         :coffre_obj_cod,
                         :coffre_perso_cod,
-                        :coffre_date_depot                        )
+                        :coffre_date_depot,
+                        :coffre_pos_cod,
+                        :coffre_date_dispo,
+                        :coffre_relais_poste                        )
     returning coffre_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -74,6 +87,9 @@ class coffre_objets
                 ":coffre_obj_cod" => $this->coffre_obj_cod,
                 ":coffre_perso_cod" => $this->coffre_perso_cod,
                 ":coffre_date_depot" => $this->coffre_date_depot,
+                ":coffre_pos_cod" => $this->coffre_pos_cod,
+                ":coffre_date_dispo" => $this->coffre_date_dispo,
+                ":coffre_relais_poste" => $this->coffre_relais_poste,
             ),$stmt);
 
 
@@ -87,7 +103,10 @@ class coffre_objets
             coffre_compt_cod = :coffre_compt_cod,
             coffre_obj_cod = :coffre_obj_cod,
             coffre_perso_cod = :coffre_perso_cod,
-            coffre_date_depot = :coffre_date_depot                        where coffre_cod = :coffre_cod ";
+            coffre_date_depot = :coffre_date_depot,
+            coffre_pos_cod = :coffre_pos_cod,
+            coffre_date_dispo = :coffre_date_dispo,
+            coffre_relais_poste = :coffre_relais_poste                        where coffre_cod = :coffre_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":coffre_cod" => $this->coffre_cod,
@@ -95,6 +114,9 @@ class coffre_objets
                 ":coffre_obj_cod" => $this->coffre_obj_cod,
                 ":coffre_perso_cod" => $this->coffre_perso_cod,
                 ":coffre_date_depot" => $this->coffre_date_depot,
+                ":coffre_pos_cod" => $this->coffre_pos_cod,
+                ":coffre_date_dispo" => $this->coffre_date_dispo,
+                ":coffre_relais_poste" => $this->coffre_relais_poste,
             ),$stmt);
         }
     }

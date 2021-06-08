@@ -5,6 +5,7 @@
  * Date: 19/12/18
  * Time: 20:37
  */
+
 $verif_connexion::verif_appel();
 
 $erreur = 0;
