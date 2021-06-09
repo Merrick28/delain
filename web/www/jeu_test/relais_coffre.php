@@ -43,10 +43,16 @@ define('APPEL', 1);
 include "blocks/_test_lieu.php";
 include "fonctions.php";
 
-
+// Test du retour d'erreur de blocks/_test_lieu.php
+if ($erreur != 0){
+    $contenu_page = ob_get_contents();
+    ob_end_clean();
+    include "blocks/_footer_page_jeu.php";
+    die();
+}
 
 // ====================== js script
-echo '<script type="text/javascript" src="../scripts/cocheCase.js"></script>';
+echo '<script type="text/javascript" src="../scripts/cocheCase.js?v'.$__VERSION.'"></script>';
 echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
 	function maj_poids_selectionne()
 	{              
@@ -122,7 +128,7 @@ echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
 	            $("#date-livraison-express").hide();
 	            var fdp = $("#mode-livraison").data("fdp-stardard");	            
         }	    
-	    $("#frais-port").text(fdp*$("#selection-poids").text());
+	    $("#frais-port").text(Math.round(fdp*$("#selection-poids").text(),2));
 	}
 	</script>
 	';
@@ -131,7 +137,7 @@ echo '
 <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding-top:8px; border-radius:10px 10px 0 0; border:solid black 2px;">
     &nbsp; &nbsp;<em>Zone de couverture de ce relais</em>: <strong><FONT color="#8b0000">Les coffres de banques</FONT></strong><br>
     <center><img src="/images/lieu-relais-de-la-poste.png"></center>
-        &nbsp;&nbsp;&nbsp;Vous avez <strong>'.$perso->perso_po.'</strong> brouzoufs<br>
+        &nbsp;&nbsp;&nbsp;
 </div>
 <br>';
 
@@ -200,6 +206,10 @@ for ($i=0; $i<5; $i++){
     $stockage[$i] = ($i==0) ? $stockage_base : $stockage[$i-1] + $stockage_base ;
 }
 //======================================================================================================================
+$param = new parametres();
+$delai_livraison_standard = $param->getparm(143);		//Parametre 143
+$delai_livraison_express = $param->getparm(144);		//Parametre 144
+$facteur_express = $param->getparm(145);		//Parametre 145
 
 
 // Calcul du poids stocké au coffre (rafraichir si changement)
@@ -218,7 +228,10 @@ $poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
 
 $objet_poste = new objets_poste();
 $port_au_kilo = $objet_poste->getFraisDePort(1);
-$port_au_kilo_express = $port_au_kilo * 5 ;
+$port_au_kilo_express = $port_au_kilo * $facteur_express ;
+
+// delai de retour au stock si les objets n'ont pas été retirés!
+$delai_retour_stock = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." -".$objet_poste->_delai_confiscation()));
 
 
 // =================================================================================================================
@@ -242,7 +255,7 @@ if ($_REQUEST["methode"] == "depot2")
     $stmt      = $pdo->prepare($req_coffre);
     $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
     $result = $stmt->fetch() ;
-    $poids_au_coffre =  (int)$result["poids"];
+    $poids_au_coffre =  1*$result["poids"];
     $poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
 
     // calcul du poids du dépot et du poids dispo au coffre
@@ -311,11 +324,11 @@ if ($_REQUEST["methode"] == "depot2")
     }
 
     if (isset($_REQUEST["mode-livraison"])) {   // livraison express
-        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +4 HOURS") );
+        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_express}") );
         $fdp = $port_au_kilo_express ;
     }
     else { // livraison standard
-        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +1 DAY") );
+        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_standard}") );
         $fdp = $port_au_kilo ;
     }
 
@@ -325,15 +338,15 @@ if ($_REQUEST["methode"] == "depot2")
     }
     else if ((int)$result["sum_poids"] > $poids_diso )
     {
-        echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> a déposer (pour seulement $poids_diso Kg de dispo)!<br><br>";
+        echo "<br><strong style='color: #800000'>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> a déposer (pour seulement $poids_diso Kg de dispo)!</strong><br><br>";
     }
     else if  ($perso->perso_po < ($fdp*(int)$result["sum_poids"]))
     {
-        echo "<br>Vous n'avez pas assez de Brouzoufs pour faire le dépot!<br><br>";
+        echo "<br><strong style='color: #800000'>Vous n'avez pas assez de Brouzoufs pour faire cet envoi!</strong><br><br>";
     }
     else if  ($perso->perso_pa<4)
     {
-        echo "<br>Vous n'avez pas assez de PA pour faire le dépot!<br><br>";
+        echo "<br><strong style='color: #800000'>Vous n'avez pas assez de PA pour faire cet envoi!</strong><br><br>";
     }
     else
     {
@@ -445,7 +458,8 @@ else if ($_REQUEST["methode"] == "retrait2")
                             where coffre_compt_cod = :compt_cod
                                 and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)                                
                                 and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
-                                and obj_cod in ({$obj_cod_list})";
+                                and obj_cod in ({$obj_cod_list})
+                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() ) ";
             $stmt = $pdo->prepare($req_objets);
             $stmt = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
             $obj_cod_list = "";
@@ -468,6 +482,151 @@ else if ($_REQUEST["methode"] == "retrait2")
 								and gobj_cod = :gobj_cod
 								and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_nom = gobj_nom
+                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() )
+							limit $qte_obj";
+                $stmt = $pdo->prepare($req_objets);
+                $stmt = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod" => $gobj_cod), $stmt);
+                while ($result = $stmt->fetch()) {
+                    $nb_obj++;
+                    $obj_cod_list .= "," . (int)$result['obj_cod'];
+                }
+            }
+        }
+    }
+    if ($obj_cod_list != "") {
+        $obj_cod_list = substr($obj_cod_list, 1);
+    }
+    if ($obj_cod_list != "") {
+        $req_objets = "select sum(GREATEST(0,obj_poids)) as sum_poids from objets where obj_cod in ({$obj_cod_list})";
+        $stmt = $pdo->prepare($req_objets);
+        $stmt = $pdo->execute(array(), $stmt);
+        $result = $stmt->fetch();
+    }
+
+    if (isset($_REQUEST["mode-livraison"])) {   // livraison express
+        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_express}") );
+        $fdp = $port_au_kilo_express ;
+    }
+    else { // livraison standard
+        $coffre_date_dispo =  date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_standard}") );
+        $fdp = $port_au_kilo ;
+    }
+
+    if ($obj_cod_list == "" || !$result) {
+        echo "<br><strong style='color: #800000'>Les objets à se faire livrer n'ont pas été trouvé!</strong><br><br>";
+    } else if ($perso->perso_pa < 4) {
+        echo "<br><strong style='color: #800000'>Vous n'avez pas assez de PA pour faire cette livraison!</strong><br><br>";
+    } else if  ($perso->perso_po < ($fdp*(int)$result["sum_poids"])) {
+        echo "<br><strong style='color: #800000'>Vous n'avez pas assez de Brouzoufs pour faire cette livraison!</strong><br><br>";
+    } else {
+        $poids_retrait = $result["sum_poids"];
+        $done = false;
+
+        // Ajouter tous les objets dans l'invetaire du perso
+        $req_insert = "UPDATE coffre_objets SET coffre_date_dispo='$coffre_date_dispo', coffre_relais_poste='R' WHERE coffre_obj_cod in ($obj_cod_list);";
+        $obj_cod_tab = explode(",", $obj_cod_list);
+
+        // ajouter les lignes d'event !
+        $req_event = "INSERT INTO public.ligne_evt(levt_tevt_cod, levt_date, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres) VALUES ";
+        foreach ($obj_cod_tab as $obj) {
+            $objet = new objets();
+            $objet->charge($obj);
+            $gobj = new objet_generique();
+            $gobj->charge($objet->obj_gobj_cod);
+            $tobj = new type_objet();
+            $tobj->charge($gobj->gobj_tobj_cod);
+
+            $texte_evt = str_replace("'", "’", "[attaquant] a demandé la livraison d’un objet de son coffre <i>( {$obj} / {$tobj->tobj_libelle}  /  {$objet->obj_nom} )</i>");
+            $req_event .= "(111, now(), {$perso_cod}, E'{$texte_evt}', 'O', 'O', {$perso_cod}, {$perso_cod}, '[obj_cod]={$obj}'),";
+        }
+        $req_event = substr($req_event, 0, -1);
+
+
+        // Passer en transactionnel pour éviter, qu'une partie soit faite et pas l'autre
+        $trpdo = $pdo->pdo;
+        try {
+            $trpdo->beginTransaction();
+
+            // Ajouter tous les objets dans l'invetaire du perso
+            $stmt = $trpdo->prepare($req_insert);
+            if (!$stmt->execute(array())) {
+                throw new Exception('Requete livraison 1 invalide !!');
+            }
+            $result = $stmt->fetch();
+
+            // ajouter les lignes d'event !
+            $stmt = $trpdo->prepare($req_event);
+            if (!$stmt->execute(array())) {
+                throw new Exception('Requete livraison 2 invalide !!');
+            }
+            $result = $stmt->fetch();
+
+            $trpdo->commit();
+            $done = true;
+
+        } catch (\Exception $e) {
+            echo 'Error ' . $e->getMessage();
+            $trpdo->rollBack();
+        }
+
+        # le paiement des pa
+        if (!$done) {
+            echo "<br>Il y a eu un problème pendant le retrait!<br><br>";
+        } else {
+            //retirer les PA
+            $perso->perso_pa = $perso->perso_pa - 4;
+            $perso->perso_po = $perso->perso_po - ( $fdp * $poids_retrait) ;
+            $perso->stocke();
+            echo "<br>Félicitation vous venez de demander la livraison de  <b>" . (int)$nb_obj . " objet(s)</b> du coffre pour un poids total de <b>{$poids_retrait} Kg</b>!<br>";
+        }
+    }
+}
+// =================================================================================================================
+else if ($_REQUEST["methode"] == "reception2")
+    // =================================================================================================================
+{
+    // calcul du poids du retrait et verifiction des objets dans le coffre
+    $nb_obj = 0;
+    $obj_cod_list = "";
+    if (isset($_REQUEST['obj'])) {   // Liste des objets à la piece
+        foreach ($_REQUEST['obj'] as $obj_cod => $val) {
+            $obj_cod_list .= "," . (int)$obj_cod;
+        }
+        if ($obj_cod_list != "") {
+            // vérifier que les objets demandés sont bien au coffre
+            $obj_cod_list = substr($obj_cod_list, 1);
+            $req_objets = "select obj_cod from coffre_objets
+                            inner join objets on obj_cod = coffre_obj_cod
+                            inner join objet_generique on gobj_cod = obj_gobj_cod
+                            inner join type_objet on tobj_cod = gobj_tobj_cod
+                            where coffre_compt_cod = :compt_cod
+                                and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)                                
+                                and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
+                                and obj_cod in ({$obj_cod_list})
+                                and coffre_relais_poste='R' and coffre_date_dispo<=NOW() and '{$delai_retour_stock}'<coffre_date_dispo  ";
+            $stmt = $pdo->prepare($req_objets);
+            $stmt = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+            $obj_cod_list = "";
+            while ($result = $stmt->fetch()) {
+                $nb_obj++;
+                $obj_cod_list .= "," . (int)$result['obj_cod'];
+            }
+        }
+    }
+
+    if (isset($_REQUEST['gobj']) && isset($_REQUEST['qtegros'])) {   // Liste des objets en gros
+        foreach ($_REQUEST['gobj'] as $gobj_cod => $val) {
+            if (isset($_REQUEST['qtegros'][$gobj_cod]) && ($_REQUEST['qtegros'][$gobj_cod] > 0)) {
+                $qte_obj = (int)$_REQUEST['qtegros'][$gobj_cod];
+                $req_objets = "select obj_cod
+							from coffre_objets
+							inner join objets on obj_cod = coffre_obj_cod
+							inner join objet_generique on gobj_cod = obj_gobj_cod
+							where coffre_compt_cod = :compt_cod
+								and gobj_cod = :gobj_cod
+								and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
+                                and obj_nom = gobj_nom
+                                and coffre_relais_poste='R' and coffre_date_dispo<=NOW() and '{$delai_retour_stock}'<coffre_date_dispo  
 							limit $qte_obj";
                 $stmt = $pdo->prepare($req_objets);
                 $stmt = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod" => $gobj_cod), $stmt);
@@ -489,18 +648,17 @@ else if ($_REQUEST["methode"] == "retrait2")
     }
 
     if ($obj_cod_list == "" || !$result) {
-        echo "<br>Les objets a retirer n'ont pas été trouvé!<br><br>";
-    } else if ($perso->perso_pa < 4) {
-        echo "<br>Vous n'avez pas assez de PA pour faire le dépot!<br><br>";
+        echo "<br><strong style='color: #800000'>Les objets à réceptionner n'ont pas été trouvé!</strong><br><br>";
     } else {
         $poids_retrait = $result["sum_poids"];
         $done = false;
 
+
         // Ajouter tous les objets dans l'invetaire du perso
-        $req_insert = "insert into perso_objets( perobj_perso_cod, perobj_obj_cod, perobj_identifie,  perobj_equipe)VALUES ";
+        $req_insert = "insert into perso_objets( perobj_perso_cod, perobj_obj_cod, perobj_identifie,  perobj_equipe) VALUES ";
         $obj_cod_tab = explode(",", $obj_cod_list);
         foreach ($obj_cod_tab as $obj) {
-            $req_insert .= "({$perso_cod}, {$obj}, 'O', 'N'),";
+            $req_insert.="({$perso_cod}, {$obj}, 'O', 'N'),";
 
         }
         $req_insert = substr($req_insert, 0, -1);
@@ -515,10 +673,11 @@ else if ($_REQUEST["methode"] == "retrait2")
             $tobj = new type_objet();
             $tobj->charge($gobj->gobj_tobj_cod);
 
-            $texte_evt = str_replace("'", "’", "[attaquant] a retiré un objet de son coffre <i>( {$obj} / {$tobj->tobj_libelle}  /  {$objet->obj_nom} )</i>");
-            $req_event .= "(111, now(), {$perso_cod}, E'{$texte_evt}', 'O', 'O', {$perso_cod}, {$perso_cod}, '[obj_cod]={$obj}'),";
+            $texte_evt = str_replace("'","’", "[attaquant] a réceptionné un objet du relais poste <i>( {$obj} / {$tobj->tobj_libelle}  /  {$objet->obj_nom} )</i>");
+            $req_event.= "(111, now(), {$perso_cod}, E'{$texte_evt}', 'O', 'O', {$perso_cod}, {$perso_cod}, '[obj_cod]={$obj}'),";
         }
         $req_event = substr($req_event, 0, -1);
+
 
 
         // Passer en transactionnel pour éviter, qu'une partie soit faite et pas l'autre
@@ -527,7 +686,7 @@ else if ($_REQUEST["methode"] == "retrait2")
             $trpdo->beginTransaction();
 
             // Ajouter tous les objets dans l'invetaire du perso
-            $stmt = $trpdo->prepare($req_insert);
+            $stmt      = $trpdo->prepare($req_insert);
             if (!$stmt->execute(array())) {
                 throw new Exception('Requete retrait 1 invalide !!');
             }
@@ -535,21 +694,21 @@ else if ($_REQUEST["methode"] == "retrait2")
 
             // les supprimer de l'inventaire du perso!
             $req_delete = "delete from coffre_objets where coffre_obj_cod in ($obj_cod_list)";
-            $stmt = $trpdo->prepare($req_delete);
+            $stmt      = $trpdo->prepare($req_delete);
             if (!$stmt->execute(array())) {
                 throw new Exception('Requete retrait 2 invalide !!');
             }
             $result = $stmt->fetch();
 
             // ajouter les lignes d'event !
-            $stmt = $trpdo->prepare($req_event);
+            $stmt      = $trpdo->prepare($req_event);
             if (!$stmt->execute(array())) {
                 throw new Exception('Requete retrait 3 invalide !!');
             }
             $result = $stmt->fetch();
 
             $trpdo->commit();
-            $done = true;
+            $done = true ;
 
         } catch (\Exception $e) {
             echo 'Error ' . $e->getMessage();
@@ -558,12 +717,10 @@ else if ($_REQUEST["methode"] == "retrait2")
 
         # le paiement des pa
         if (!$done) {
-            echo "<br>Il y a eu un problème pendant le retrait!<br><br>";
+            echo "<br>Il y a eu un problème pendant la réception!<br><br>";
         } else {
             //retirer les PA
-            $perso->perso_pa = $perso->perso_pa - 4;
-            $perso->stocke();
-            echo "<br>Félicitation vous venez de retirer <b>" . (int)$nb_obj . " objet(s)</b> du coffre pour un poids total de <b>{$poids_retrait} Kg</b>!<br>";
+            echo "<br>Félicitation vous venez de réceptionner <b>" . (int)$nb_obj . " objet(s)</b> du Relais Poste pour un poids total de <b>{$poids_retrait} Kg</b>!<br>";
         }
     }
 }
@@ -576,12 +733,26 @@ else if ($_REQUEST["methode"] == "retrait2")
 // ===
 // =================================================================================================================
 
+// Calcul du poids stocké au coffre (rafraichir si changement)
+$req_coffre = "select sum(GREATEST(0,obj_poids)) as poids, count(*) as nombre
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod ";
+
+$stmt      = $pdo->prepare($req_coffre);
+$stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+$result = $stmt->fetch() ;
+$poids_au_coffre =  round($result["poids"],2);
+$nbobj_au_coffre = (int)$result["nombre"];
+$poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
+
 // =================================================================================================================
 if ($_REQUEST["methode"] == "deposer")
 // =================================================================================================================
 {
     // ======================== Interface DEPOT ================================================
-    echo "<div class=\"titre\">Sélection des objets à déposer</div>";
+    echo "<div class=\"titre\">Sélection des objets à envoyer au coffre</div>";
     echo "<form name=\"tran\" method=\"post\" action=\"\">";
     echo "<input type=\"hidden\" name=\"methode\" value=\"depot2\">";
 
@@ -607,7 +778,7 @@ if ($_REQUEST["methode"] == "deposer")
     if ($stmt->rowCount() > 0)
     {
         $etat = '';
-        echo "<div style=\"text-align:center;\" id='vente_detail'>Dépot au détail : cliquez sur les objets que vous souhaitez déposer. Les runes et composants d’alchimie se déposent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Dépot au détail : cliquez sur les objets que vous souhaitez envoyer. Les runes et composants d’alchimie se déposent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
         echo("<center><table>");
         echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
         echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
@@ -659,7 +830,7 @@ if ($_REQUEST["methode"] == "deposer")
     $nb_objets_gros = 0;
     if ($stmt->rowCount() > 0)
     {
-        echo "<div style=\"text-align:center;\" id='vente_detail'>Dépot en gros : cliquez sur les objets que vous souhaitez déposer, indiquez-en le nombre. Les autres objets se déposent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Dépot en gros : cliquez sur les objets que vous souhaitez envoyer, indiquez-en le nombre. Les autres objets se déposent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
         echo("<center><table>");
         echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à déposer</strong></td>';
         echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
@@ -691,8 +862,8 @@ if ($_REQUEST["methode"] == "deposer")
 
     if ($nb_objets + $nb_objets_gros > 0)
     {
-        echo "<br><center id='date-livraison-standard'><div>Livraison au coffre prévu le: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +1 DAY"))."</b></div></center>";
-        echo "<center id='date-livraison-express' style='display:none; color:#800000 '><div>Livraison express au coffre: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +4 HOURS"))."</b></div></center>";
+        echo "<br><center id='date-livraison-standard'><div>Livraison au coffre prévu le: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_standard}"))."</b></div></center>";
+        echo "<center id='date-livraison-express' style='display:none; color:#800000 '><div>Livraison express au coffre: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_express}"))."</b></div></center>";
         echo "<br><center><div>Frais de port : <b id='frais-port'>0</b> Bz <span> - Livraison Express : <input data-fdp-stardard='{$port_au_kilo}' data-fdp-express='{$port_au_kilo_express}' name='mode-livraison' id='mode-livraison' type='checkbox' onchange='maj_livraison();'> (<em style='font-size: 10px;'>avec frais de ports supplémentaires</em>)</span></div></center><br>";
         echo "<center><div>Dépot: <b><span id='selection-poids'>0</span></b>&nbsp;/ <span  id='max-poids-dispo'>{$poids_diso}</span> Kg&nbsp;&nbsp;&nbsp;&nbsp; <div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Payer et Envoyer (4PA)\" /></div></div></center></form>";
     } else
@@ -706,12 +877,12 @@ else  if ($_REQUEST["methode"] == "retirer")
 // =================================================================================================================
 {
     // ======================== Interface DEPOT ================================================
-    echo "<div class=\"titre\" style=\"background-color: #555555\">Sélection des objets à retirer</div>";
+    echo "<div class=\"titre\" style=\"background-color: #555555\">Sélection des objets à se faire livrer</div>";
     echo "<form name=\"tran\" method=\"post\" action=\"\">";
     echo "<input type=\"hidden\" name=\"methode\" value=\"retrait2\">";
+    $en_transit = false;
 
-
-    $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids
+    $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -729,17 +900,23 @@ else  if ($_REQUEST["methode"] == "retirer")
     if ($stmt->rowCount() > 0)
     {
         $etat = '';
-        echo "<div style=\"text-align:center;\" id='vente_detail'>Retrait au détail : cliquez sur les objets que vous souhaitez retirer. Les runes et composants d’alchimie se retirent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Retrait au détail : cliquez sur les objets que vous souhaitez vous faire livrer. Les runes et composants d’alchimie se retirent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
         echo("<center><table>");
         echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
         echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
-        echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td></tr>';
+        echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td>';
+        echo '<td><strong></td></tr>';
         while ($result = $stmt->fetch())
         {
+            $date_dispo = $result['coffre_date_dispo'] ;
+            $relais = $result['coffre_relais_poste'];
+            $dispo = ($relais != 'N' && date("Y-m-d H:i:s") < $date_dispo) ? false : true ;
+            if (!$dispo) $en_transit = true ;
+
             $nom_objet = $result['obj_nom'];
             $si_identifie = $result['perobj_identifie'];
             echo "<tr id='row-obj-{$result['obj_cod']}'>";
-            echo "<td><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+            echo "<td><input ".($dispo ? "" : "disabled")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
             echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
             if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
             {
@@ -748,6 +925,7 @@ else  if ($_REQUEST["methode"] == "retirer")
             echo "</label></td>";
 
             echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ) . "</td>";
+            echo "<td style='font-size: 10px;'>".($dispo ? "" : "dispo à partir du ".(date("d/m/y H:i:s", strtotime($date_dispo))))."</td>";
             echo "</tr>";
         }
         echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
@@ -756,7 +934,8 @@ else  if ($_REQUEST["methode"] == "retirer")
         $nb_objets++;
     }
 
-    $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, count(*) as nombre
+    $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, SUM(CASE WHEN coffre_relais_poste='N' OR coffre_date_dispo<=now() THEN 1 ELSE 0 END) as nombre
+                ,SUM(CASE WHEN coffre_relais_poste!='N' AND coffre_date_dispo>now() THEN 1 ELSE 0 END) as nombre_relais, min(coffre_date_dispo) as min_date_dispo, max(coffre_date_dispo) as max_date_dispo
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -771,10 +950,11 @@ else  if ($_REQUEST["methode"] == "retirer")
     $nb_objets_gros = 0;
     if ($stmt->rowCount() > 0)
     {
-        echo "<div style=\"text-align:center;\" id='vente_detail'>Retirer en gros : cliquez sur les objets que vous souhaitez retirer, indiquez-en le nombre. Les autres objets se retirent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Retirer en gros : cliquez sur les objets que vous souhaitez vous faire livrer, indiquez-en le nombre. Les autres objets se retirent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
         echo("<center><table>");
         echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à retirer</strong></td>';
         echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
+        echo '<td></td></tr>';
         echo '</tr>';
         while ($result = $stmt->fetch())
         {
@@ -785,8 +965,24 @@ else  if ($_REQUEST["methode"] == "retirer")
             $id_qte         = "qtegros[$gobj_cod]";
             $id_prx         = "prixgros[$gobj_cod]";
             $id_pds         = "poidsgros[$gobj_cod]";
+
+            $min_date_dispo = $result['min_date_dispo'] ;
+            $max_date_dispo = $result['max_date_dispo'] ;
+            $nombre_relais = $result['nombre_relais'];
+            $texte_dispo = "" ;
+
+            if ($nombre_relais>0)
+            {
+                $en_transit = true ;
+                if ($min_date_dispo == $max_date_dispo) {
+                    $texte_dispo = "+".$nombre_relais." dispo à partir du ".date("d/m/y H:i:s", strtotime($min_date_dispo));
+                } else {
+                    $texte_dispo = "+".$nombre_relais." dispo entre le ".date("d/m/y H:i:s", strtotime($min_date_dispo))." et ".date("d/m/y H:i:s", strtotime($max_date_dispo));
+                }
+            }
+
             echo "<tr id='row-gobj-{$gobj_cod}'>";
-            echo "<td class='soustitre2'><input onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+            echo "<td class='soustitre2'><input ".($quantite_dispo ==0 ? "disabled" : "")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
@@ -794,6 +990,7 @@ else  if ($_REQUEST["methode"] == "retirer")
             echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
             echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ). "</td>";
+            echo '<td style="font-size: 10px;">'.$texte_dispo.'</td>';
             echo "</tr>";
         }
 
@@ -803,10 +1000,150 @@ else  if ($_REQUEST["methode"] == "retirer")
 
     if ($nb_objets + $nb_objets_gros > 0)
     {
-        echo "<center><div>Retrait: <b><span id='selection-poids'>0</span></b>&nbspKg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Retirer (4PA)\" /></div></center></form>";
+        echo "<br><center id='date-livraison-standard'><div>Disponible au Relais Poste le: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_standard}"))."</b></div></center>";
+        echo "<center id='date-livraison-express' style='display:none; color:#800000 '><div>Livraison express au Relais Poste: <b>".date("d/m/Y à H:i:s", strtotime(date("Y-m-d H:i:s")." +{$delai_livraison_express}"))."</b></div></center>";
+        echo "<br><center><div>Frais de port : <b id='frais-port'>0</b> Bz <span> - Livraison Express : <input data-fdp-stardard='{$port_au_kilo}' data-fdp-express='{$port_au_kilo_express}' name='mode-livraison' id='mode-livraison' type='checkbox' onchange='maj_livraison();'> (<em style='font-size: 10px;'>avec frais de ports supplémentaires</em>)</span></div></center><br>";
+
+        echo "<center><div>Retrait: <b><span id='selection-poids'>0</span></b>&nbspKg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Payer pour se faire livrer (4PA)\" /></div></center></form>";
+
+        if ($en_transit ) echo "<u><b>NOTA</b></u>: <em>Vous avez des objets non dispo, car en transit entre votre coffre et les relais poste.</em> ";
     } else
     {
         echo 'Vous n’avez aucun objet dans votre coffre.<br>';
+    }
+}
+// =================================================================================================================
+else  if ($_REQUEST["methode"] == "receptionner")
+// =================================================================================================================
+{
+    // ======================== Interface DEPOT ================================================
+    echo "<div class=\"titre\" style=\"background-color: #555555\">Réceptionner des objets reçus au Relais Poste</div>";
+    echo "<form name=\"tran\" method=\"post\" action=\"\">";
+    echo "<input type=\"hidden\" name=\"methode\" value=\"reception2\">";
+
+
+    $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			inner join type_objet on tobj_cod = gobj_tobj_cod
+			where coffre_compt_cod = :compt_cod
+				and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)
+				and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)	
+				and coffre_relais_poste='R' and coffre_date_dispo<=NOW() and '{$delai_retour_stock}'<coffre_date_dispo
+			order by gobj_tobj_cod, obj_nom";
+
+
+    // Affichage des objets en vente à l’unité
+    $stmt      = $pdo->prepare($req_objets_unitaires);
+    $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+    $nb_objets = 0;
+    if ($stmt->rowCount() > 0)
+    {
+        $etat = '';
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Receptionner au détail : cliquez sur les objets que vous souhaitez retirer. Les runes et composants d’alchimie se réceptionnent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
+        echo("<center><table>");
+        echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
+        echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td>';
+        echo '<td class="soustitre2"><strong>Poids (en Kg)</strong></td>';
+        echo '<td><strong></td></tr>';
+        while ($result = $stmt->fetch())
+        {
+            $date_dispo = $result['coffre_date_dispo'] ;
+            $relais = $result['coffre_relais_poste'];
+            $dispo = ($relais != 'N' && date("Y-m-d H:i:s") < $date_dispo) ? false : true ;
+
+            $nom_objet = $result['obj_nom'];
+            $si_identifie = $result['perobj_identifie'];
+            echo "<tr id='row-obj-{$result['obj_cod']}'>";
+            echo "<td><input ".($dispo ? "" : "disabled")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+            echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
+            if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
+            {
+                echo "  - " . get_etat($result['obj_etat']);
+            }
+            echo "</label></td>";
+
+            echo "<td id='poids[{$result['obj_cod']}]' style='text-align: right;' class=\"soustitre2\">" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ) . "</td>";
+            echo "<td style='font-size: 10px;'>".($dispo ? "" : "dispo à partir du ".(date("d/m/y H:i:s", strtotime($date_dispo))))."</td>";
+            echo "</tr>";
+        }
+        echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\'); javascript:maj_poids_selectionne();">cocher/décocher/inverser</a></td></tr>';
+
+        echo "</table></center>";
+        $nb_objets++;
+    }
+
+    $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, SUM(CASE WHEN coffre_relais_poste='N' OR coffre_date_dispo<=now() THEN 1 ELSE 0 END) as nombre
+                ,SUM(CASE WHEN coffre_relais_poste!='N' AND coffre_date_dispo>now() THEN 1 ELSE 0 END) as nombre_relais, min(coffre_date_dispo) as min_date_dispo, max(coffre_date_dispo) as max_date_dispo
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod
+				and gobj_tobj_cod in $types_ventes_gros		  
+				and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)	   
+				and coffre_relais_poste='R' and coffre_date_dispo<=NOW() and '{$delai_retour_stock}'<coffre_date_dispo                    
+			group by gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids
+			order by gobj_tobj_cod, gobj_nom";
+    // Affichage des objets en vente en gros
+    $stmt           = $pdo->prepare($req_objets_gros);
+    $stmt           = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+    $nb_objets_gros = 0;
+    if ($stmt->rowCount() > 0)
+    {
+        echo "<div style=\"text-align:center;\" id='vente_detail'>Receptionner en gros : cliquez sur les objets que vous souhaitez retirer, indiquez-en le nombre. Les autres objets se réceptionnent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
+        echo("<center><table>");
+        echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à retirer</strong></td>';
+        echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
+        echo '<td></td></tr>';
+        echo '</tr>';
+        while ($result = $stmt->fetch())
+        {
+            $nom_objet      = $result['gobj_nom'];
+            $quantite_dispo = $result['nombre'];
+            $gobj_cod       = $result['gobj_cod'];
+            $id_chk         = "gobj[$gobj_cod]";
+            $id_qte         = "qtegros[$gobj_cod]";
+            $id_prx         = "prixgros[$gobj_cod]";
+            $id_pds         = "poidsgros[$gobj_cod]";
+
+            $min_date_dispo = $result['min_date_dispo'] ;
+            $max_date_dispo = $result['max_date_dispo'] ;
+            $nombre_relais = $result['nombre_relais'];
+            $texte_dispo = "" ;
+
+            if ($nombre_relais>0)
+            {
+                if ($min_date_dispo == $max_date_dispo) {
+                    $texte_dispo = $nombre_relais." dispo à partir du ".date("d/m/y H:i:s", strtotime($min_date_dispo));
+                } else {
+                    $texte_dispo = $nombre_relais." dispo entre le ".date("d/m/y H:i:s", strtotime($min_date_dispo))." et ".date("d/m/y H:i:s", strtotime($max_date_dispo));
+                }
+            }
+
+            echo "<tr id='row-gobj-{$gobj_cod}'>";
+            echo "<td class='soustitre2'><input ".($quantite_dispo ==0 ? "disabled" : "")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
+					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
+            echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
+            echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
+					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
+            echo "<td style='text-align: right;' class=\"soustitre2\" id='{$id_pds}'>" . ( $result['obj_poids'] < 0 ? 0 : $result['obj_poids'] ). "</td>";
+            echo '<td style="font-size: 10px;">'.$texte_dispo.'</td>';
+            echo "</tr>";
+        }
+
+        echo "</table></center>";
+        $nb_objets_gros++;
+    }
+
+    if ($nb_objets + $nb_objets_gros > 0)
+    {
+        echo "<center><div>Reception: <b><span id='selection-poids'>0</span></b>&nbspKg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Réceptionner\" /></div></center></form>";
+    } else
+    {
+        echo 'Vous n’avez reçu aucun objet.<br>';
     }
 }
 
@@ -816,11 +1153,23 @@ else  if ($_REQUEST["methode"] == "retirer")
 
 echo '<br><br><strong>Que voulez-vous faire ?</strong>';
 if ($_REQUEST["methode"] != "deposer") echo '<br>&nbsp;&nbsp;&nbsp;<a href="relais_coffre.php?methode=deposer">Envoyer des objets au coffre</a> (4PA)';
-if ($_REQUEST["methode"] != "retirer") echo '<br>&nbsp;&nbsp;&nbsp;<a href="relais_coffre.php?methode=retirer">Faire livrer des objets depuis le coffre</a> (4PA)';
+if ($_REQUEST["methode"] != "retirer") echo '<br>&nbsp;&nbsp;&nbsp;<a href="relais_coffre.php?methode=retirer">Se faire livrer des objets depuis le coffre</a> (4PA)';
+
+$req_coffre = "select count(*) as count
+			from coffre_objets
+			inner join objets on obj_cod = coffre_obj_cod
+			inner join objet_generique on gobj_cod = obj_gobj_cod
+			where coffre_compt_cod = :compt_cod and coffre_relais_poste='R' and coffre_date_dispo<=NOW() ";
+$stmt      = $pdo->prepare($req_coffre);
+$stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+$result = $stmt->fetch() ;
+$objet_a_retirer =  (int)$result["count"];
+
+if (($_REQUEST["methode"] != "receptionner") && ($objet_a_retirer>0)) echo '<br>&nbsp;&nbsp;&nbsp;<a href="relais_coffre.php?methode=receptionner">Réceptionner des objets livrés au Relais Poste</a>';
 
 echo "<br><br><hr>Votre stockage : <b>{$poids_au_coffre} Kg</b> / ".$stockage[$cc->ccompt_taille]." Kg";
 if ($nbobj_au_coffre>0) echo " <em style='font-size:9px;'>(<b>$nbobj_au_coffre</b> objet(s) dans le coffre)</em>";
-
+echo "<br>Vous avez <strong>$perso->perso_po</strong> brouzoufs<br>";
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

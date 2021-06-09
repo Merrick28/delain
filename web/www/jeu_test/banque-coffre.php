@@ -3,17 +3,26 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 define("APPEL", 1);
 
+//-----------------------------------------------------------------------
+// on regarde si le joueur est bien sur le lieu souhaité ----------------
+$perso     = $verif_connexion->perso;
+$perso_cod = $verif_connexion->perso_cod;
 
 $type_lieu = 1;
 $nom_lieu  = 'une banque';
 include "blocks/_test_lieu.php";
 include "fonctions.php";
 
-$perso     = $verif_connexion->perso;
-$perso_cod = $verif_connexion->perso_cod;
+// Test du retour d'erreur de blocks/_test_lieu.php
+if ($erreur != 0){
+    $contenu_page = ob_get_contents();
+    ob_end_clean();
+    include "blocks/_footer_page_jeu.php";
+    die();
+}
 
 // ====================== js script
-echo '<script type="text/javascript" src="../scripts/cocheCase.js"></script>';
+echo '<script type="text/javascript" src="../scripts/cocheCase.js?v'.$__VERSION.'"></script>';
 echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
 	function maj_poids_selectionne()
 	{              
@@ -257,7 +266,7 @@ else if ($erreur == 0)
         $stmt      = $pdo->prepare($req_coffre);
         $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
         $result = $stmt->fetch() ;
-        $poids_au_coffre =  (int)$result["poids"];
+        $poids_au_coffre =  1*$result["poids"];
         $poids_diso =  $stockage[$cc->ccompt_taille] - $poids_au_coffre ;
 
         // calcul du poids du dépot et du poids dispo au coffre
@@ -327,15 +336,15 @@ else if ($erreur == 0)
 
         if ($obj_cod_list=="" || !$result)
         {
-            echo "<br>Les objets a déposer n'ont pas été trouvé!<br><br>";
+            echo "<br><strong style='color: #800000'>Les objets à déposer n'ont pas été trouvé!</strong><br><br>";
         }
         else if ((int)$result["sum_poids"] > $poids_diso )
         {
-            echo "<br>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> a déposer (pour seulement $poids_diso Kg de dispo)!<br><br>";
+            echo "<br><strong style='color: #800000'>Il n'y a pas assez de place dans le coffre pour <b>".$result["sum_poids"]." Kg</b> à déposer (pour seulement $poids_diso Kg de dispo)!</strong><br><br>";
         }
         else if  ($perso->perso_pa<4)
         {
-            echo "<br>Vous n'avez pas assez de PA pour faire le dépot!<br><br>";
+            echo "<br><strong style='color: #800000'>Vous n'avez pas assez de PA pour faire le dépot!</strong><br><br>";
         }
         else
         {
@@ -492,11 +501,11 @@ else if ($erreur == 0)
 
         if ($obj_cod_list=="" || !$result)
         {
-            echo "<br>Les objets a retirer n'ont pas été trouvé!<br><br>";
+            echo "<br><strong style='color: #800000'>Les objets à retirer n'ont pas été trouvé!</strong><br><br>";
         }
         else if  ($perso->perso_pa<4)
         {
-            echo "<br>Vous n'avez pas assez de PA pour faire le dépot!<br><br>";
+            echo "<br><strong style='color: #800000'>Vous n'avez pas assez de PA pour faire le dépot!</strong><br><br>";
         }
         else
         {
@@ -784,7 +793,7 @@ else if ($erreur == 0)
         echo "<div class=\"titre\" style=\"background-color: #555555\">Sélection des objets à retirer</div>";
         echo "<form name=\"tran\" method=\"post\" action=\"\">";
         echo "<input type=\"hidden\" name=\"methode\" value=\"retrait2\">";
-
+        $en_transit = false;
 
         $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste
 			from coffre_objets
@@ -815,6 +824,7 @@ else if ($erreur == 0)
                 $date_dispo = $result['coffre_date_dispo'] ;
                 $relais = $result['coffre_relais_poste'];
                 $dispo = ($relais != 'N' && date("Y-m-d H:i:s") < $date_dispo) ? false : true ;
+                if (!$dispo) $en_transit = true ;
 
                 $nom_objet = $result['obj_nom'];
                 $si_identifie = $result['perobj_identifie'];
@@ -853,7 +863,7 @@ else if ($erreur == 0)
         $nb_objets_gros = 0;
         if ($stmt->rowCount() > 0)
         {
-            echo "<div style=\"text-align:center;\" id='vente_detail'>Retirer en gros : cliquez sur les objets que vous souhaitez retirer, indiquez-en le nombre. Les autres objets se retirent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
+            echo "<div style=\"text-align:center;\" id='vente_detail'>Retrait en gros : cliquez sur les objets que vous souhaitez retirer, indiquez-en le nombre. Les autres objets se retirent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
             echo("<center><table>");
             echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à retirer</strong></td>';
             echo '<td class="soustitre2"><strong>Poids (en Kg</strong></td>';
@@ -876,10 +886,11 @@ else if ($erreur == 0)
 
                 if ($nombre_relais>0)
                 {
+                    $en_transit = true ;
                     if ($min_date_dispo == $max_date_dispo) {
-                        $texte_dispo = $nombre_relais." dispo à partir du ".date("d/m/y H:i:s", strtotime($min_date_dispo));
+                        $texte_dispo = "+".$nombre_relais." dispo à partir du ".date("d/m/y H:i:s", strtotime($min_date_dispo));
                     } else {
-                        $texte_dispo = $nombre_relais." dispo entre le ".date("d/m/y H:i:s", strtotime($min_date_dispo))." et ".date("d/m/y H:i:s", strtotime($max_date_dispo));
+                        $texte_dispo = "+".$nombre_relais." dispo entre le ".date("d/m/y H:i:s", strtotime($min_date_dispo))." et ".date("d/m/y H:i:s", strtotime($max_date_dispo));
                     }
                 }
 
@@ -903,6 +914,7 @@ else if ($erreur == 0)
         if ($nb_objets + $nb_objets_gros > 0)
         {
             echo "<center><div>Retrait: <b><span id='selection-poids'>0</span></b>&nbspKg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Retirer (4PA)\" /></div></center></form>";
+            if ($en_transit ) echo "<u><b>NOTA</b></u>: <em>Vous avez des objets non dispo, car en transit entre votre coffre et les relais poste.</em> ";
         } else
         {
             echo 'Vous n’avez aucun objet dans votre coffre.<br>';
@@ -922,7 +934,7 @@ else if ($erreur == 0)
 
         echo "<hr>Votre stockage : <b>{$poids_au_coffre} Kg</b> / ".$stockage[$cc->ccompt_taille]." Kg";
         if ($nbobj_au_coffre>0) echo " <em style='font-size:9px;'>(<b>$nbobj_au_coffre</b> objet(s) dans le coffre)</em>";
-
+        echo "<br>Vous avez <strong>$perso->perso_po</strong> brouzoufs<br>";
     }
 
 
