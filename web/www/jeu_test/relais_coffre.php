@@ -118,6 +118,7 @@ echo '<script type="text/javascript">//# sourceURL=banque-coffre.js
 	
 	function maj_livraison()
 	{
+	    if ($("#mode-livraison").length == 0) return; //pas de frais à afficher
 	    
 	    if ($("#mode-livraison").prop("checked")) {
 	            $("#date-livraison-express").show();
