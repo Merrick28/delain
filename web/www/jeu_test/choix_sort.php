@@ -149,11 +149,16 @@ if (($erreur == 0) && ($type_lance == 6))
     $aggressif   = $objsortbm->objsortbm_bonus_aggressif;
     $soi_meme    = $objsortbm->objsortbm_bonus_soi_meme;
     $sort_joueur = $objsortbm->objsortbm_bonus_joueur;
+    $sort_familier = $objsortbm->objsortbm_bonus_familier;
     $dist_sort   = $objsortbm->objsortbm_bonus_distance ;
     $type_cible  = "0";
     if ($objsortbm->objsortbm_bonus_monstre == 'O')
     {
-        $type_cible = $type_cible . ",2,3";
+        $type_cible = $type_cible . ",2";
+    }
+    if ($objsortbm->objsortbm_bonus_familier == 'O')
+    {
+        $type_cible = $type_cible . ",3";
     }
     if ($objsortbm->objsortbm_bonus_joueur == 'O')
     {

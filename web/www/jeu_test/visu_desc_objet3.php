@@ -236,8 +236,10 @@ if ($autorise == 1)
         // Il faudrait passer toute la page en PDO, mais en attendant faisons en sorte que les nouveautées le soient déjà!
         $obj = new objets();
         $obj->charge($objet);
+        $flagSort = false ;
         if ($sorts_attaches = $obj->get_sorts_attaches())
         {
+            $flagSort = true ;
             echo "<tr>";
             echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet est magique, liste des sorts qu'il vous permet de lancer:</strong></td>";
             echo "</tr>";
@@ -246,6 +248,24 @@ if ($autorise == 1)
                 echo "<tr><td class=\"soustitre2\">" . ($objsort->objsort_equip_requis ? "Equipé" : "Inventaire") . "</td>";
                 $usage = ($objsort->objsort_nb_utilisation_max == 0 ) ? "" : " - <strong>Charge(s)</strong> : " . ($objsort->objsort_nb_utilisation_max - $objsort->objsort_nb_utilisation) ." / ". $objsort->objsort_nb_utilisation_max ;
                 echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->getCout() . " PA)</em>".$usage."</td>";
+                echo "<tr>";
+            }
+        }
+
+        if ($sorts_attaches = $obj->get_sorts_bm_attaches())
+        {
+            if (!$flagSort )
+            {
+                echo "<tr>";
+                echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet est magique, liste des sorts qu'il vous permet de lancer:</strong></td>";
+                echo "</tr>";
+            }
+
+            foreach ($sorts_attaches as $objsort)
+            {
+                echo "<tr><td class=\"soustitre2\">" . ($objsort->objsortbm_equip_requis ? "Equipé" : "Inventaire") . "</td>";
+                $usage = ($objsort->objsortbm_nb_utilisation_max == 0 ) ? "" : " - <strong>Charge(s)</strong> : " . ($objsort->objsortbm_nb_utilisation_max - $objsort->objsortbm_nb_utilisation) ." / ". $objsort->objsortbm_nb_utilisation_max ;
+                echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->objsortbm_cout . " PA)</em>".$usage."</td>";
                 echo "<tr>";
             }
         }

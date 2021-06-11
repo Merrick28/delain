@@ -28,6 +28,7 @@ class objets_sorts_bm
     var $objsortbm_bonus_soutien = 'N';
     var $objsortbm_bonus_soi_meme = 'O';
     var $objsortbm_bonus_monstre = 'O';
+    var $objsortbm_bonus_familier = 'O';
     var $objsortbm_bonus_joueur = 'O';
     var $objsortbm_bonus_case = 'N';
     var $objsortbm_bonus_mode = 'S';
@@ -72,6 +73,7 @@ class objets_sorts_bm
         $this->objsortbm_bonus_soutien = $result['objsortbm_bonus_soutien'];
         $this->objsortbm_bonus_soi_meme = $result['objsortbm_bonus_soi_meme'];
         $this->objsortbm_bonus_monstre = $result['objsortbm_bonus_monstre'];
+        $this->objsortbm_bonus_familier = $result['objsortbm_bonus_familier'];
         $this->objsortbm_bonus_joueur = $result['objsortbm_bonus_joueur'];
         $this->objsortbm_bonus_case = $result['objsortbm_bonus_case'];
         $this->objsortbm_bonus_mode = $result['objsortbm_bonus_mode'];
@@ -106,6 +108,7 @@ class objets_sorts_bm
             objsortbm_bonus_soutien,
             objsortbm_bonus_soi_meme,
             objsortbm_bonus_monstre,
+            objsortbm_bonus_familier,
             objsortbm_bonus_joueur,
             objsortbm_bonus_case ,
             objsortbm_bonus_mode                        )
@@ -128,6 +131,7 @@ class objets_sorts_bm
                         :objsortbm_bonus_soutien,
                         :objsortbm_bonus_soi_meme,
                         :objsortbm_bonus_monstre,
+                        :objsortbm_bonus_familier,
                         :objsortbm_bonus_joueur,
                         :objsortbm_bonus_case,
                         :objsortbm_bonus_mode                        )
@@ -151,6 +155,7 @@ class objets_sorts_bm
                 ":objsortbm_bonus_soutien" => $this->objsortbm_bonus_soutien,
                 ":objsortbm_bonus_soi_meme" => $this->objsortbm_bonus_soi_meme,
                 ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
+                ":objsortbm_bonus_familier" => $this->objsortbm_bonus_familier,
                 ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
                 ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
                 ":objsortbm_bonus_mode" => $this->objsortbm_bonus_mode,
@@ -181,6 +186,7 @@ class objets_sorts_bm
             objsortbm_bonus_soutien = :objsortbm_bonus_soutien,
             objsortbm_bonus_soi_meme = :objsortbm_bonus_soi_meme,
             objsortbm_bonus_monstre = :objsortbm_bonus_monstre,
+            objsortbm_bonus_familier = :objsortbm_bonus_familier,
             objsortbm_bonus_joueur = :objsortbm_bonus_joueur,
             objsortbm_bonus_case = :objsortbm_bonus_case,
             objsortbm_bonus_mode = :objsortbm_bonus_mode                        where objsortbm_cod = :objsortbm_cod ";
@@ -204,6 +210,7 @@ class objets_sorts_bm
                 ":objsortbm_bonus_soutien" => $this->objsortbm_bonus_soutien,
                 ":objsortbm_bonus_soi_meme" => $this->objsortbm_bonus_soi_meme,
                 ":objsortbm_bonus_monstre" => $this->objsortbm_bonus_monstre,
+                ":objsortbm_bonus_familier" => $this->objsortbm_bonus_familier,
                 ":objsortbm_bonus_joueur" => $this->objsortbm_bonus_joueur,
                 ":objsortbm_bonus_case" => $this->objsortbm_bonus_case,
                 ":objsortbm_bonus_mode" => $this->objsortbm_bonus_mode,
@@ -222,8 +229,8 @@ class objets_sorts_bm
         $pdo = new bddpdo;
 
         // On commence par "ensorceler" les objets sur la base de leur générique (si cela n'avait pas été déjà fait)
-        $req = "insert into objets_sorts_bm(objsortbm_gobj_cod, objsortbm_obj_cod, objsortbm_tbonus_cod, objsortbm_nom, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, objsortbm_cout, objsortbm_malchance, objsortbm_nb_utilisation_max, objsortbm_nb_utilisation, objsortbm_equip_requis, objsortbm_parent_cod)     
-                select null as objsortbm_gobj_cod, obj_cod objsortbm_obj_cod, og.objsortbm_tbonus_cod, og.objsortbm_nom, og.objsortbm_bonus_valeur, og.objsortbm_bonus_nb_tours, og.objsortbm_cout, og.objsortbm_malchance, og.objsortbm_nb_utilisation_max, 0, og.objsortbm_equip_requis, og.objsortbm_cod as objsortbm_parent_cod
+        $req = "insert into objets_sorts_bm(objsortbm_gobj_cod, objsortbm_obj_cod, objsortbm_tbonus_cod, objsortbm_nom, objsortbm_bonus_valeur, objsortbm_bonus_nb_tours, objsortbm_cout, objsortbm_malchance, objsortbm_nb_utilisation_max, objsortbm_nb_utilisation, objsortbm_equip_requis, objsortbm_bonus_distance, objsortbm_bonus_aggressif, objsortbm_bonus_soutien, objsortbm_bonus_soi_meme, objsortbm_bonus_monstre, objsortbm_bonus_familier, objsortbm_bonus_joueur, objsortbm_bonus_mode, objsortbm_parent_cod)     
+                select null as objsortbm_gobj_cod, obj_cod objsortbm_obj_cod, og.objsortbm_tbonus_cod, og.objsortbm_nom, og.objsortbm_bonus_valeur, og.objsortbm_bonus_nb_tours, og.objsortbm_cout, og.objsortbm_malchance, og.objsortbm_nb_utilisation_max, 0, og.objsortbm_equip_requis, og.objsortbm_bonus_distance, og.objsortbm_bonus_aggressif, og.objsortbm_bonus_soutien, og.objsortbm_bonus_soi_meme, og.objsortbm_bonus_monstre, og.objsortbm_bonus_familier, og.objsortbm_bonus_joueur, og.objsortbm_bonus_mode, og.objsortbm_cod as objsortbm_parent_cod
                 from perso_objets
                 join objets on obj_cod=perobj_obj_cod
                 join objets_sorts_bm as og on og.objsortbm_gobj_cod=obj_gobj_cod
@@ -239,7 +246,15 @@ class objets_sorts_bm
                 objsortbm_cout=og.objsortbm_cout,
                 objsortbm_malchance=og.objsortbm_malchance,
                 objsortbm_nb_utilisation_max=og.objsortbm_nb_utilisation_max,
-                objsortbm_equip_requis=og.objsortbm_equip_requis
+                objsortbm_equip_requis=og.objsortbm_equip_requis,
+                objsortbm_bonus_distance=og.objsortbm_bonus_distance,
+                objsortbm_bonus_aggressif=og.objsortbm_bonus_aggressif,
+                objsortbm_bonus_soutien=og.objsortbm_bonus_soutien,
+                objsortbm_bonus_soi_meme=og.objsortbm_bonus_soi_meme,
+                objsortbm_bonus_monstre=og.objsortbm_bonus_monstre,
+                objsortbm_bonus_familier=og.objsortbm_bonus_familier,
+                objsortbm_bonus_joueur=og.objsortbm_bonus_joueur,
+                objsortbm_bonus_mode=og.objsortbm_bonus_mode
                 from objets_sorts_bm og, perso_objets, objets
                 where oo.objsortbm_obj_cod=obj_cod and oo.objsortbm_parent_cod=og.objsortbm_cod and obj_cod=perobj_obj_cod and og.objsortbm_gobj_cod=obj_gobj_cod 
                 and  perobj_perso_cod=? and perobj_identifie = 'O' 
@@ -289,7 +304,7 @@ class objets_sorts_bm
         while($result = $stmt->fetch())
         {
             $temp = new objets_sorts_bm();
-            $temp->charge($result["objsort_cod"]);
+            $temp->charge($result["objsortbm_cod"]);
             $retour[] = $temp;
             unset($temp);
         }
