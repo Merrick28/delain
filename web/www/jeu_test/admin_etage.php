@@ -24,11 +24,13 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
      $html->etage_select($admin_etage) .
     "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
 	<p><strong>Autres outils</strong><br />
-	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
-	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
-	<a href='modif_etage3ter.php'>Creation multiple de lieux</a><br />
+	<a href='modif_etage3.php?admin_etage={$admin_etage}'>Créer / modifier un étage (caractéristiques générales)</a><br />
+	<a href='modif_etage3bis.php?admin_etage={$admin_etage}'>Créer / modifier les lieux</a><br />
+	<a href='modif_etage3ter.php?admin_etage={$admin_etage}'>Creation multiple de lieux</a><br />
 	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
-	<a href='modif_etage.php'>Autres outils</a></td></tr></table>";
+	<a href='admin_ea_etage.php?admin_etage={$admin_etage}'>Gestion des EA d'étage</a><br />
+	<a href='modif_etage.php'>Autres outils</a></td>
+	</tr></table>";
 
 //cahrger les type de terrains
 $pdo = new bddpdo();
@@ -158,6 +160,14 @@ switch ($methode) {
                         ?>
                        <br/>
 
+                        <input name="special" value="ea-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Gestion de la position des Effets-Auto.">Effet-Auto: </span>
+                        <?php
+                        echo '<select name="select-ea-dep" id="select-ea-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'ea-dep\')">';
+                        echo '<option value="0">Selecteur de positions</option>';
+                        echo '</select>';
+                        ?>
+
                        <br/>
                     </td>
                 </tr>
@@ -173,6 +183,13 @@ switch ($methode) {
             <em> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la
                 brosse spéciale dédiée.</em><br/>
             <em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br/>
+        </div>
+
+        <div id="ea-liste-container" class="bordiv" style="display:none;">
+            <button onclick="Etage.nettoyer_ea_list()">Vider</button>
+            <b><u>Listes des positions</u></b>
+            <button onclick="copyToClipboard('#ea-liste-cases')">Copier</button> :
+            <div id="ea-liste-cases" ></div>
         </div>
 
         <div id="vueEtage"></div>
@@ -207,8 +224,8 @@ switch ($methode) {
             <input type="hidden" name="modifs" value=""/>
             <center><input type="submit" class="test" value="Modifier !"></center>
         </form>
-    <hr>
-    <b><u>IMPORTANT</u></b>: En cas de modification, s'il y a des spécifications liées aux types de terrain, elles doivent-être ré-appliquées manuellement (<a target="_blank" href="/jeu_test/modif_etage7.php?pos_etage=<?php echo $admin_etage; ?>">Type de terrain</a>)!
+
+
         <?php break;
 
     case "valide":

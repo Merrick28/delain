@@ -70,6 +70,7 @@ Speciaux.donnees = [
 	{id: 'terrain-dep', valeur: false, nom: 'Terrain/Déplacement', type: 'terrain-dep', url: 'special-brush.png', css: ''},
 	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
 	{id: 'deplacement', valeur: false, nom: 'Déplacement', type: 'deplacement', url: 'special-brush.png', css: ''},
+	{id: 'ea-dep', valeur: false, nom: 'Effet-auto', type: 'ea-dep', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -160,7 +161,8 @@ Pinceau.appliqueCase = function (idx) {
 			tangible: caseModif.tangible,
 			entree_arene: caseModif.entree_arene,
 			ter_cod: caseModif.ter_cod,
-			pa_dep: caseModif.pa_dep
+			pa_dep: caseModif.pa_dep,
+			ea_dep: caseModif.ea_dep
 		};
 		Etage.CasesModifiees.splice(idxModif, 1);
 	} else {		// Case pas encore modifiée
@@ -177,7 +179,8 @@ Pinceau.appliqueCase = function (idx) {
 			tangible: ancienneCase.tangible,
 			entree_arene: ancienneCase.entree_arene,
 			ter_cod: ancienneCase.ter_cod,
-			pa_dep: ancienneCase.pa_dep
+			pa_dep: ancienneCase.pa_dep,
+			ea_dep: ancienneCase.ea_dep
 		};
 	}
 
@@ -202,7 +205,20 @@ Pinceau.appliqueCase = function (idx) {
 		case Speciaux.type:
 
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
-			if (pinceauSpecial.id=="terrain" ) {
+			if (pinceauSpecial.id=="ea-dep" ) {
+
+				nvlleCase.ea_dep = nvlleCase.ea_dep ? 0 : 1 ;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ea_dep == 0 ? false : true);
+
+				var liste = $("#ea-liste-cases").text();
+				if (nvlleCase.ea_dep == 0) {
+					liste = liste.replace(" "+nvlleCase.id+",", "");
+				} else {
+					liste = liste+" "+nvlleCase.id+",";
+				}
+				$("#ea-liste-cases").text( liste );
+
+			} else if (pinceauSpecial.id=="terrain" ) {
 				var ter_cod = $("#select-terrain").val();
 				nvlleCase.ter_cod = nvlleCase.ter_cod == ter_cod ? 0 : ter_cod;
 				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ter_cod == ter_cod ? true : false);
@@ -211,7 +227,7 @@ Pinceau.appliqueCase = function (idx) {
 				var  pa_dep = $("#dep_pa").val();
 				nvlleCase.pa_dep = nvlleCase.pa_dep == pa_dep ? 0 : pa_dep ;
 				$(Etage.Cases[idx].divSpecial).text(nvlleCase.pa_dep == 0 ? '' : nvlleCase.pa_dep );
-				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.pa_dep == pa_dep ? true : false );
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.pa_dep == pa_dep ? false : true);
 
 			} else if (pinceauSpecial.id=="terrain-dep" ) {
 				var  ter_cod = $("#select-terrain-dep").val();
@@ -268,7 +284,12 @@ Pinceau.annuleCase = function (idx) {
 		Etage.changeCase (Speciaux, idx, (caseDebut.entree_arene) ? 'areneOK' : 'areneNOK');
 
 		var spec = $('input[name="special"]:checked').val();
-		if (spec=="terrain") {
+		if (spec=="ea-dep" ) {
+
+			var liste = $("#ea-liste-cases").text();
+			liste = liste.replace(" " + caseDebut.id + ",", "");
+			$("#ea-liste-cases").text(liste);
+		} else if (spec=="terrain") {
 			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain").val() ? true : false);
 			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
 		}else if (spec=="deplacement") {
