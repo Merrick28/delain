@@ -34,18 +34,9 @@ if ($erreur == 0)
 
         $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA d'étage : $pos_etage\n";
 
-        // Sauvegarder les modifications des effets-auto => save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)
-        // injection de l'étage code!
-        foreach (explode(",", $_POST["fonctions_ajoutees"]) as $k => $v) {
-            if ($v!="")  $_POST["fonc_trig_pos_etage".$v] = $pos_etage ;
-        }
-        foreach (explode(",", $_POST["fonctions_existantes"]) as $k => $v) {
-            if ($v!="")  $_POST["fonc_trig_pos_etage".$v] = $pos_etage ;
-        }
-
         $message = save_effet_auto($_POST, null, null) ;
 
-        writelog($log . $message, 'monstre_edit');
+        writelog($log . $message, 'lieux_etages');
         echo nl2br($message);
         echo "<hr>";
 
@@ -138,7 +129,9 @@ if ($erreur == 0)
             <input type="hidden" name="fonctions_annulees" id="fonctions_annulees" value=""/>
             <input type="hidden" name="fonctions_existantes" id="fonctions_existantes" value=""/>
             <div id="liste_fonctions"></div><script>
-            EffetAuto.EditionEAPosition = true ; ';       // En mode EA les implantations d'EA sont interdites
+            EffetAuto.EditionEAPosition = true ; // En mode EA les implantations d\'EA sont interdites
+            EffetAuto.EditionEA.etage_cod = '.$pos_etage.' ;
+            ';
 
         // Liste des EA Existantes
         $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param

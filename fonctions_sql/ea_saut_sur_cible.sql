@@ -186,7 +186,7 @@ begin
       ---------------------------
       -- les EA liés au déplacement (le saut est considéré comme un déplacement)
       ---------------------------
-      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source)) ;
+      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source,'ancien_etage',v_et_source, 'nouveau_pos_cod',ligne.pos_cod,'nouveau_etage',v_et_source)) ;
 
   end loop;
 

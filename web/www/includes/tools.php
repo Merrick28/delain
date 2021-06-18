@@ -263,6 +263,9 @@ function get_texte_declenchement($fonc_type)
         case 'MAC':
             $texteDeclenchement = 'le perso est ciblé par un sort.';
             break;
+        case 'POS':
+            $texteDeclenchement = 'lorsqu’il arrive ou quitte une case à EA.';
+            break;
     }
 
     return $texteDeclenchement ;

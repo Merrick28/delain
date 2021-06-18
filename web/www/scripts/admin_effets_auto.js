@@ -3,6 +3,7 @@ EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
 EffetAuto.EditionCompteur = false;
 EffetAuto.EditionEAPosition = false;
+EffetAuto.EditionEA = {etage_cod:0};
 
 /*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
@@ -136,7 +137,7 @@ EffetAuto.Triggers = {
 		default:'deb_tour_generique',
 		declencheur:'Arrive ou quitte une case à EA.',
 		parametres: [
-			{ nom: 'trig_nom_ea', type: 'texte', longueur: 50,  label: 'Nom de l’EA', description: 'Nommer l’EA afin de la retrouver plus facileemnt dans l’édition de l’étage' },
+			{ nom: 'trig_nom_ea', type: 'POSNomEtage', label: 'Nom de l’EA', description: 'Nommer l’EA afin de la retrouver plus facileemnt dans l’édition de l’étage' },
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_pos_cods', type: 'texte', longueur: 50,  label: 'Liste de position', description: 'Liste des positions déchenchant l’EA (pos_cod séparé par des « , » ' },
 			{ nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 cas)' },
@@ -775,6 +776,20 @@ EffetAuto.ChampChoixSensProjection = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = "";
+	var nom = "fonc_" + parametre.nom + numero.toString();
+	var etage = "fonc_trig_pos_etage" + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + valeur + '" size=50 name="' + nom + '" id="' + nom + '"/>';
+	if (parametre.commentaires) html += parametre.commentaires;
+	html += '</label>';
+	html += '<input type="hidden" name="' + etage + '" id="' + etage + '" value="'+ EffetAuto.EditionEA.etage_cod +'">';
+
+	return html;
+}
+
 EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
@@ -1273,6 +1288,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'POSsens':
 			html = pd + EffetAuto.ChampChoixSensDeplacement (parametre, numero, valeur) + pf;
+			break;
+		case 'POSNomEtage':
+			html = pd + EffetAuto.ChampChoixNomEtage (parametre, numero, valeur) + pf;
 			break;
 		case 'POStype':
 			html = pd + EffetAuto.ChampChoixTypeEA (parametre, numero, valeur) + pf;
