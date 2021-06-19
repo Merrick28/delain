@@ -817,8 +817,9 @@ EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Toujours</option>';
-	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option>';
-	html += '<option value="1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Bascule</option></select></label>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Une seule fois</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option></select></label>';
 	html += "<br />";
 	return html;
 }
