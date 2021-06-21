@@ -67,6 +67,7 @@ include_once '../includes/tools.php';
                    $("#objsortbm_bonus_nb_tours").val(data.objsortbm_bonus_nb_tours ? data.objsortbm_bonus_nb_tours : "1");
                    $("#objsortbm_bonus_soi_meme").val((!data.objsortbm_bonus_soi_meme || data.objsortbm_bonus_soi_meme =='N') ? 'N' : 'O');
                    $("#objsortbm_bonus_monstre").val((!data.objsortbm_bonus_monstre || data.objsortbm_bonus_monstre =='N') ? 'N' : 'O');
+                   $("#objsortbm_bonus_familier").val((!data.objsortbm_bonus_familier || data.objsortbm_bonus_familier =='N') ? 'N' : 'O');
                    $("#objsortbm_bonus_joueur").val((!data.objsortbm_bonus_joueur || data.objsortbm_bonus_joueur =='N') ? 'N' : 'O');
                    $("#objsortbm_bonus_case").val((!data.objsortbm_bonus_case || data.objsortbm_bonus_case =='N') ? 'N' : 'O');
                    $("#objsortbm_bonus_distance").val(data.objsortbm_bonus_distance ? data.objsortbm_bonus_distance : "0");
@@ -142,7 +143,7 @@ if ($erreur == 0)
                 $objsortsbm->objsortbm_obj_cod = $_REQUEST["objsortbm_obj_cod"]== "" ? null : 1*(int)$_REQUEST["objsortbm_obj_cod"] ;
                 $objsortsbm->objsortbm_tbonus_cod = 1*(int)$_REQUEST["objsortbm_tbonus_cod"];
                 $objsortsbm->objsortbm_nom = $_REQUEST["objsortbm_nom"]=='' ? null : $_REQUEST["objsortbm_nom"] ;
-                $objsortsbm->objsortbm_cout = $_REQUEST["objsortbm_cout"]=='' ? null : 1*(int)$_REQUEST["objsortbm_cout"];
+                $objsortsbm->objsortbm_cout = $_REQUEST["objsortbm_cout"]=='' ? 4 : 1*(int)$_REQUEST["objsortbm_cout"];
                 $objsortsbm->objsortbm_bonus_valeur = $_REQUEST["objsortbm_bonus_valeur"]=='' ? "1" : $_REQUEST["objsortbm_bonus_valeur"];
                 $objsortsbm->objsortbm_bonus_nb_tours = $_REQUEST["objsortbm_bonus_nb_tours"]=='' ? "1" : $_REQUEST["objsortbm_bonus_nb_tours"];
                 $objsortsbm->objsortbm_bonus_distance = $_REQUEST["objsortbm_bonus_distance"]=='' ?  0 : (int)$_REQUEST["objsortbm_bonus_distance"];
@@ -150,6 +151,7 @@ if ($erreur == 0)
                 $objsortsbm->objsortbm_bonus_soutien = $_REQUEST["objsortbm_bonus_soutien"]=='' ? "N" : $_REQUEST["objsortbm_bonus_soutien"];
                 $objsortsbm->objsortbm_bonus_soi_meme = $_REQUEST["objsortbm_bonus_soi_meme"]=='' ? "O" : $_REQUEST["objsortbm_bonus_soi_meme"];
                 $objsortsbm->objsortbm_bonus_monstre = $_REQUEST["objsortbm_bonus_monstre"]=='' ? "O" : $_REQUEST["objsortbm_bonus_monstre"];
+                $objsortsbm->objsortbm_bonus_familier = $_REQUEST["objsortbm_bonus_familier"]=='' ? "O" : $_REQUEST["objsortbm_bonus_familier"];
                 $objsortsbm->objsortbm_bonus_joueur = $_REQUEST["objsortbm_bonus_joueur"]=='' ? "O" : $_REQUEST["objsortbm_bonus_joueur"];
                 $objsortsbm->objsortbm_bonus_case = $_REQUEST["objsortbm_bonus_case"]=='' ? "N" : $_REQUEST["objsortbm_bonus_case"];
                 $objsortsbm->objsortbm_bonus_mode = $_REQUEST["objsortbm_bonus_mode"]=='' ? "S" : $_REQUEST["objsortbm_bonus_mode"];
@@ -174,6 +176,7 @@ if ($erreur == 0)
                                     objsortbm_bonus_soutien=osb2.objsortbm_bonus_soutien,
                                     objsortbm_bonus_soi_meme=osb2.objsortbm_bonus_soi_meme,
                                     objsortbm_bonus_monstre=osb2.objsortbm_bonus_monstre,
+                                    objsortbm_bonus_familier=osb2.objsortbm_bonus_familier,
                                     objsortbm_bonus_joueur=osb2.objsortbm_bonus_joueur,
                                     objsortbm_bonus_case=osb2.objsortbm_bonus_case,
                                     objsortbm_bonus_mode=osb2.objsortbm_bonus_mode,
@@ -254,6 +257,7 @@ if ($erreur == 0)
                 <tr><td>Ciblage:</td><td>
                         Soi-même: '.create_selectbox("objsortbm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soi_meme")).'
                         Monstres: '.create_selectbox("objsortbm_bonus_monstre", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_monstre")).'
+                        Familiers: '.create_selectbox("objsortbm_bonus_familier", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_familier")).'
                         Joueurs: '.create_selectbox("objsortbm_bonus_joueur", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_joueur")).'
                         <input type="hidden" name="objsortbm_bonus_case" value="N"><!--Une case: '.create_selectbox("objsortbm_bonus_case", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsortbm_bonus_case")).'-->
                     </td></tr>
@@ -310,7 +314,8 @@ if ($erreur == 0)
                       <td>".$os->objsortbm_bonus_valeur."</td>
                       <td>".$os->objsortbm_bonus_nb_tours."</td>
                       <td>" .( $os->objsortbm_bonus_soi_meme =="O" ? "Soit-même," : "" )
-                            .( $os->objsortbm_bonus_monstre =="O" ? "Monstre," : "" )
+                            .( $os->objsortbm_bonus_monstre =="O" ? "Monstres," : "" )
+                            .( $os->objsortbm_bonus_familier =="O" ? "Familiers," : "" )
                             .( $os->objsortbm_bonus_joueur =="O" ? "Joueurs," : "" )
                             .( $os->objsortbm_bonus_case =="O" ? "Case," : "" )."</td>
                       <td>" .$os->objsortbm_bonus_distance."</td>

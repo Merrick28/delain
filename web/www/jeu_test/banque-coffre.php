@@ -120,11 +120,11 @@ for ($i=0; $i<5; $i++){
 $imgbzf = '<img src="/images/smilies/bzf.gif">';
 
 // ====================== Affichage
-if ($perso->is_4eme_perso())
+if ($perso->is_4eme_perso() || $perso->is_fam_4eme_perso())
 {
     echo '<div class="bordiv">
     <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding:8px; border-radius:10px 10px 0 0; border:solid black 2px;">';
-    echo "<br>Le coffre individuel n'est pas accessible au 4eme perso!<br><br>";
+    echo "<br>Le coffre individuel n'est pas accessible au 4eme perso ou à son familier!<br><br>";
 }
 else if ($perso->is_monstre())
 {

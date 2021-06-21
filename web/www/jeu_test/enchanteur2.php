@@ -29,11 +29,12 @@ if ($erreur == 0)
             // requête pour voir si on a des objets enchantables
             //
             $req = 'select obj_cod,obj_nom
-				from objets,perso_objets
+				from objets,perso_objets,objet_generique
 				where perobj_perso_cod = ' . $perso_cod . '
 				and perobj_identifie = \'O\'
 				and perobj_obj_cod = obj_cod
-				and obj_enchantable = 1 ';
+				and gobj_cod=obj_gobj_cod
+				and obj_enchantable = 1 and gobj_chance_enchant>0 ';
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
                 $contenu_page .= '« <em>Désolé, vous ne possédez aucun objet sur lequel je puisse lancer un enchantement.</em>»';
