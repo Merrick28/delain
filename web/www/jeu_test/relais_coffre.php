@@ -151,11 +151,11 @@ $ppos = new perso_position();
 $ppos->getByPerso($perso->perso_cod);
 $coffre_pos_cod = $ppos->ppos_pos_cod ;
 
-if ($perso->is_4eme_perso())
+if ($perso->is_4eme_perso() || $perso->is_fam_4eme_perso())
 {
     $erreur = 1 ;
     echo '<div class="bordiv">';
-    echo "<br>Le coffre individuel n'est pas accessible au 4eme perso!<br><br>";
+    echo "<br>Le coffre individuel n'est pas accessible au 4eme perso ou à son familier!<br><br>";
 }
 else if ($perso->is_monstre())
 {

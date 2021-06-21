@@ -62,7 +62,7 @@ if ($erreur != 0)
     $template = $twig->load('lieu_anomalie.twig');
     echo $template->render(array_merge($options_twig_defaut, array('LIEU' => "un relais poste")));
 
-} else if ($perso->is_4eme_perso())
+} else if ($perso->is_4eme_perso() || $perso->is_fam_4eme_perso())
 {
 
     $template = $twig->load('lieu_relais_poste.twig');
