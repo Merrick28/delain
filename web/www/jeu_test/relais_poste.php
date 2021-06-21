@@ -53,6 +53,17 @@ $perso         = new perso;
 $perso         = $verif_connexion->perso;
 $perso_pos_cod = $perso->get_position()['pos']->pos_cod;
 
+
+//===========================================================================================
+// details de l'objet poste
+$objets_poste = new objets_poste;
+$options_twig = array(); // on affiche rien par defaut!
+$zone_couverture = $objets_poste->getTexteZoneCouverture($perso_pos_cod);
+$options_twig_colis = array(
+    "perso_po" => $perso->perso_po,
+    "zone_couverture" => $zone_couverture);    //la fortune dont on dispose
+
+
 //===========================================================================================
 // ----- Traitement du lieu ---------------------------------------------
 if ($erreur != 0)
@@ -60,19 +71,19 @@ if ($erreur != 0)
 
     //cas d'un erreur de lieu (dans la cas par exemple d'un perso qui aurait changer de lieu avec une autre page web)
     $template = $twig->load('lieu_anomalie.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('LIEU' => "un relais poste")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('LIEU' => "un relais poste")));
 
 } else if ($perso->is_4eme_perso() || $perso->is_fam_4eme_perso())
 {
 
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('INTERDIT' => "quatrième personnage")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('INTERDIT' => "quatrième personnage")));
 
 } else if ($perso->is_monstre())
 {
 
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('INTERDIT' => "monstre")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('INTERDIT' => "monstre")));
 
 } else
 {
@@ -82,16 +93,6 @@ if ($erreur != 0)
     $cc->loadBy_ccompt_compt_cod($compt_cod);
 
     //===========================================================================================
-    // details de l'objet poste
-    $objets_poste = new objets_poste;
-    $options_twig = array(); // on affiche rien par defaut!
-
-    //===========================================================================================
-    $zone_couverture = $objets_poste->getTexteZoneCouverture($perso_pos_cod);
-    $options_twig_colis = array(
-        "perso_po" => $perso->perso_po,
-        "zone_couverture" => $zone_couverture);    //la fortune dont on dispose
-
     // On commence par regarder s'il y a déjà des objets envoyés --------------------------------
     $objets_poste_emet = $objets_poste->getBy_opost_emet_perso_cod($perso_cod);
     if ($objets_poste_emet)
