@@ -1326,6 +1326,19 @@ class perso
         return false;
     }
 
+    public function is_fam_4eme_perso()
+    {
+        if ($this->perso_type_perso == 3)
+        {
+            $p = new perso();
+            $pf = new perso_familier();
+            $pf->getByFamilier($this->perso_cod);
+            $p->charge( $pf->pfam_perso_cod ) ;
+            return $p->is_4eme_perso();
+        }
+        return false;
+    }
+
     public function is_admin_dieu()
     {
         $dp  = new dieu_perso();

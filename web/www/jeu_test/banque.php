@@ -363,7 +363,7 @@ if ($erreur == 0)
     </form>
 
 <?php }
-    if (! $perso->is_4eme_perso())
+    if (! $perso->is_4eme_perso() && ! $perso->is_fam_4eme_perso())
     {
         ?>
         <hr/>
