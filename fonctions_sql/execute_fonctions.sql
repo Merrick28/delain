@@ -66,7 +66,7 @@ begin
 	for row in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
-			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'trig_rearme' != -1 AND
+			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
 			              (  ( row.fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% '||v_param->>'ancien_pos_cod'::text ||',%')
 			              OR ( row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% '||v_param->>'nouveau_pos_cod'::text ||',%' ))))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
@@ -266,10 +266,10 @@ begin
             if trim(row.fonc_trigger_param->>'fonc_trig_raz'::text) = 'O' then
                 v_raz := 'O' ;
             end if;
-        elseif row.fonc_type = 'POS' and row.fonc_trigger_param->>''trig_rearme'' = 1 then
+        elseif row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_rearme' = 1 then
 
             -- l'EA devait être déclenché une seule fois, il l'a été, on le positionne à jamais de rearmement = rearmement manuel
-            update fonction_specifique set fonc_trigger_param=jsonb_set(row.fonc_trigger_param, '{"trig_rearme"}', jsonb '-1') where fonc_cod=row.fonc_cod ;
+            update fonction_specifique set fonc_trigger_param=jsonb_set(row.fonc_trigger_param::jsonb, '{"fonc_trig_rearme"}', '-1') where fonc_cod=row.fonc_cod ;
         end if;
 
 

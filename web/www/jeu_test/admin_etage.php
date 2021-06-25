@@ -38,6 +38,11 @@ $req_m_terrain= "select ter_cod, ter_nom from terrain where ter_cod > 0 order by
 $stmt_m_terrain = $pdo->query($req_m_terrain);
 $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
 
+$req_m_ea= "select fonc_cod, fonc_trigger_param->>'fonc_trig_nom_ea' as nom_ea , fonc_trigger_param->>'fonc_trig_pos_cods' as pos_cods from fonction_specifique where fonc_trigger_param->>'fonc_trig_pos_etage'={$admin_etage} order by fonc_trigger_param->>'fonc_trig_nom_ea' ";
+$stmt_m_ea = $pdo->query($req_m_ea);
+$effet_auto = $stmt_m_ea->fetchAll(PDO::FETCH_ASSOC);
+
+
 switch ($methode) {
     case "debut":
         break;
@@ -133,10 +138,10 @@ switch ($methode) {
                         <span title="Sélection du terrain.">Terrains seuls: </span>
                         <?php
                         echo '<select name="select-terrain" id="select-terrain" onchange="Pinceau.miseAJour (\'Speciaux\', \'terrain\')">';
-                        echo '<option value="0"'.($ter_cod == 0 ? ' selected ' : '').'>Sans terrain spécifique</option>';
+                        echo '<option value="0">Sans terrain spécifique</option>';
                         for ($t=0; $t<count($terrains); $t++ )
                         {
-                            echo '<option value="'.$terrains[$t]["ter_cod"].'"'.($ter_cod == $terrains[$t]["ter_cod"] ? ' selected ' : '').'>'.$terrains[$t]["ter_nom"].'</option>';
+                            echo '<option value="'.$terrains[$t]["ter_cod"].'">'.$terrains[$t]["ter_nom"].'</option>';
                         }
                         echo '</select>';
                         ?><br>
@@ -151,10 +156,10 @@ switch ($methode) {
                         Modificateur PA: <input name="terrain_dep_pa" id="terrain-dep_pa" value="0" type="text" size="3"/>
                         <?php
                         echo '<select name="select-terrain-dep" id="select-terrain-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'terrain-dep\')">';
-                        echo '<option value="0"'.($ter_cod == 0 ? ' selected ' : '').'>Sans terrain spécifique</option>';
+                        echo '<option value="0">Sans terrain spécifique</option>';
                         for ($t=0; $t<count($terrains); $t++ )
                         {
-                            echo '<option value="'.$terrains[$t]["ter_cod"].'"'.($ter_cod == $terrains[$t]["ter_cod"] ? ' selected ' : '').'>'.$terrains[$t]["ter_nom"].'</option>';
+                            echo '<option value="'.$terrains[$t]["ter_cod"].'">'.$terrains[$t]["ter_nom"].'</option>';
                         }
                         echo '</select>';
                         ?>
@@ -165,6 +170,10 @@ switch ($methode) {
                         <?php
                         echo '<select name="select-ea-dep" id="select-ea-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'ea-dep\')">';
                         echo '<option value="0">Selecteur de positions</option>';
+                        for ($ea=0; $ea<count($effet_auto); $ea++ )
+                        {
+                            echo '<option value="'.$effet_auto[$ea]["fonc_cod"].'">'.$effet_auto[$ea]["nom_ea"].'</option>';
+                        }
                         echo '</select>';
                         ?>
 
@@ -191,6 +200,8 @@ switch ($methode) {
             <button onclick="copyToClipboard('#ea-liste-cases')">Copier</button> :
             <div id="ea-liste-cases" ></div>
         </div>
+
+
 
         <div id="vueEtage"></div>
         <script type="text/javascript" src="../scripts/admin_etage_code.js?v=<?php echo $__VERSION; ?>"></script>
@@ -222,6 +233,13 @@ switch ($methode) {
             <input type="hidden" name="admin_etage" value="<?php echo $admin_etage; ?>"/>
             <input type="hidden" name="methode" value="valide"/>
             <input type="hidden" name="modifs" value=""/>
+            <?php
+            for ($ea=0; $ea<count($effet_auto); $ea++ )
+            {
+                echo "<input type='hidden' name=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"0\">";
+                echo "<input type='hidden' name=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"".$effet_auto[$ea]["pos_cods"]."\">";
+            }
+            ?>
             <center><input type="submit" class="test" value="Modifier !"></center>
         </form>
 
@@ -229,6 +247,21 @@ switch ($methode) {
         <?php break;
 
     case "valide":
+
+        // on traite d'abord les EA
+        $nb_modif_ea = 0 ;
+        foreach ($_REQUEST as $k => $v) {
+            if ((substr($k, 0,15) == "ea-modif-cases-") && ($v=="1") && isset($_REQUEST["ea-liste-cases-".substr($k, 15)])) {
+                $nb_modif_ea ++ ;
+
+                $req_ea= "update fonction_specifique set fonc_trigger_param=jsonb_set(fonc_trigger_param::jsonb, '{\"fonc_trig_pos_cods\"}', '\"".$_REQUEST["ea-liste-cases-".substr($k, 15)]."\"') where fonc_cod=:fonc_cod";
+                $stmt = $pdo->prepare($req_ea);
+                $stmt = $pdo->execute(array(":fonc_cod" => substr($k, 15)), $stmt);
+            }
+        }
+
+        //echo "<pre>"; print_r($_REQUEST); die();
+
         $modifs      = $_REQUEST['modifs'];
         $admin_etage = get_request_var('admin_etage', '');
         $erreur      = false;
@@ -237,11 +270,13 @@ switch ($methode) {
             echo "<p>Erreur ! Étage non défini.</p>";
             $erreur = true;
         }
-        if (empty($modifs))
+        if (empty($modifs) && ($nb_modif_ea==0))
         {
             echo "<p>Aucune modification enregistrée</p>";
             $erreur = true;
         }
+
+
 
         // validation des modifs Version 2: preg_match ne supporte qu'un taille limité pour la chaine d'entrée
         $split=explode(";",$modifs);
@@ -262,7 +297,7 @@ switch ($methode) {
         //    echo "<p>Erreur ! Modifications non valides <br />-- debug --$modifs</p>";
         //    $erreur = true;
         //}
-        if (!$erreur) {
+        if (!$erreur && !empty($modifs)) {
             $tab_modifs = explode(';', $modifs);
             $cpt_fond = 0;
             $cpt_mur = 0;
@@ -386,6 +421,7 @@ switch ($methode) {
             $stmt = $pdo->query($req);
             echo "<p>Changements validés dans les automaps.</p>";
         }
+        if ($nb_modif_ea>0) echo "<p>Modifications sur les positions $nb_modif_ea EA<br /></p>";
         break;
 }
 $contenu_page = ob_get_contents();

@@ -14,7 +14,7 @@ $contenu_page = '';
 define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
-//print_r($_REQUEST); die();
+//echo "<pre>"; print_r($_REQUEST); die();
 if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = 1*$_REQUEST["admin_etage"] ; else $pos_etage = 1*$_REQUEST['pos_etage'] ;
 
 
@@ -28,9 +28,19 @@ if ($erreur == 0)
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    if(isset($_REQUEST['methode']) && $_REQUEST['methode']=="add_mon_fonction")
+    if(isset($_POST['methode']) && $_POST['methode']=="add_mon_fonction")
     {
-        // Traitement des actions
+        // Traitement des actions: assurer le formatage du champ "fonc_trig_pos_cods" => " XXXXX, XXXXX, XXXXX, etc..."
+        foreach ($_POST as $k => $v)
+        {
+            if (substr($k, 0, 18)=="fonc_trig_pos_cods")
+            {
+                $pos_cods = explode(",", $v);
+                array_walk($pos_cods, function(&$value, &$key){return $value = " ".trim($value) ;} );
+                $_POST[$k] = implode(",", array_filter($pos_cods, function ($val) { return ( $val == " " ? false : true ); } )).",";
+            }
+        }
+        //echo "<pre>"; print_r($_REQUEST); die();
 
         $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA d'étage : $pos_etage\n";
 

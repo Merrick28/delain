@@ -1051,13 +1051,13 @@ EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
 		html += '</select>&nbsp;' ;
 
 		html += '<select style="max-width: 45px;" name="' + nomSigne + '[]">';
-		var selectionne = ((valeur.length && valeur[i].conj == "=") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="=">=</option>';
-		var selectionne = ((valeur.length && valeur[i].conj == "!=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="!=">!=</option>';
-		var selectionne = ((valeur.length && valeur[i].conj == "<") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<"><</option>';
-		var selectionne = ((valeur.length && valeur[i].conj == "<=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<="><=</option>';
-		var selectionne = ((valeur.length && valeur[i].conj == "entre") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="entre">entre</option>';
-		var selectionne = ((valeur.length && valeur[i].conj == ">") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">">></option>';
-		var selectionne = ((valeur.length && valeur[i].conj == ">=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">=">>=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "=") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="=">=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "!=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="!=">!=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "<") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<"><</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "<=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<="><=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "entre") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="entre">entre</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == ">") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">">></option>';
+		var selectionne = ((valeur.length && valeur[i].signe == ">=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">=">>=</option>';
 		html += '</select>' ;
 
 		html += '&nbsp;<input id="val1'+row+'" data-entry="val" name="'+nomVal1+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].val1 : "")+'">';

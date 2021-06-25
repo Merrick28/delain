@@ -206,17 +206,23 @@ Pinceau.appliqueCase = function (idx) {
 
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
 			if (pinceauSpecial.id=="ea-dep" ) {
+				var fonc_cod = $("#select-ea-dep").val();
 
-				nvlleCase.ea_dep = nvlleCase.ea_dep ? 0 : 1 ;
-				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ea_dep == 0 ? false : true);
+				nvlleCase.ea_dep[fonc_cod] = nvlleCase.ea_dep[fonc_cod] ? 0 : 1 ;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ea_dep[fonc_cod] == 0 ? false : true);
 
-				var liste = $("#ea-liste-cases").text();
-				if (nvlleCase.ea_dep == 0) {
+				if (fonc_cod==0) var liste = $("#ea-liste-cases").text(); else var liste = $("#ea-liste-cases-"+fonc_cod).val();
+				if (nvlleCase.ea_dep[fonc_cod] == 0) {
 					liste = liste.replace(" "+nvlleCase.id+",", "");
 				} else {
 					liste = liste+" "+nvlleCase.id+",";
 				}
-				$("#ea-liste-cases").text( liste );
+				if (fonc_cod==0) {
+					$("#ea-liste-cases").text( liste );
+				} else {
+					$("#ea-liste-cases-"+fonc_cod).val(liste);
+					$("#ea-modif-cases-"+fonc_cod).val(1);			// Pos_cod list des EA modifiée!
+				}
 
 			} else if (pinceauSpecial.id=="terrain" ) {
 				var ter_cod = $("#select-terrain").val();

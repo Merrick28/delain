@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep") return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -62,6 +62,8 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 			}
 		break;
 		case 'terrain-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="terrain-dep"]').prop( "checked", true );
 			var  ter_cod = $("#select-terrain-dep").val();
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
@@ -72,6 +74,8 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 			}
 		break;
 		case 'terrain':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="terrain"]').prop( "checked", true );
 			var  ter_cod = $("#select-terrain").val();
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
@@ -91,11 +95,22 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 			}
 		break;
 		case 'ea-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="ea-dep"]').prop( "checked", true );
 			$("#ea-liste-container").show();
+			var  fonc_cod = $("#select-ea-dep").val();
+			if (fonc_cod==0) var liste = $("#ea-liste-cases").text(); else var liste = $("#ea-liste-cases-"+fonc_cod).val();
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
-				if (!donneesCourantes.ea_dep) donneesCourantes.ea_dep = 0 ;
-				var classe = (donneesCourantes.ea_dep != 0) ? 'pinceauOn' : 'pinceauOff';
+				if (!donneesCourantes.ea_dep) donneesCourantes.ea_dep = [] ;
+				if (!donneesCourantes.ea_dep[fonc_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.ea_dep[fonc_cod] = 1 ;
+					else
+						donneesCourantes.ea_dep[fonc_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.ea_dep[fonc_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
@@ -457,7 +472,8 @@ Etage.nettoyer_ea_list = function() {
 	$("#ea-liste-cases").text("");
 	for (var i = 0; i < Etage.Cases.length; i++) {
 		var donneesCourantes = Etage.TrouveCaseActuelle(i);
-		donneesCourantes.ea_dep = 0 ;
+		if (!donneesCourantes.ea_dep) donneesCourantes.ea_dep = [] ;
+		donneesCourantes.ea_dep[0] = 0 ;
 		var classe = 'pinceauOff' ;
 		ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 		if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
