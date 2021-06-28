@@ -99,7 +99,7 @@ begin
                     v_do_it := false  ;
 
                 else
-                
+
                     /* boucler sur les perso qui sont sur les cases de l'EA */
                     for plist in (
                       select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
