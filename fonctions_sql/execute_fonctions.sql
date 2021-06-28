@@ -45,6 +45,10 @@ declare
 	v_sort_aggressif text;     -- sort de agressif
 	v_sort_soutien text;       -- sort de agressif
 
+	-- variable specifique au POS
+  v_pos_cod integer;         -- position de l'EA de type POS
+	plist record;              -- list de perso
+
 begin
 
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
@@ -67,8 +71,8 @@ begin
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
 			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
-			              (  ( row.fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% '||v_param->>'ancien_pos_cod'::text ||',%')
-			              OR ( row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% '||v_param->>'nouveau_pos_cod'::text ||',%' ))))
+			              (  ( fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' ))))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
 		)
 	loop
@@ -85,21 +89,31 @@ begin
         -- vérifier si le perso verifie les conditions demandée
         if  verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
 
-            v_do_it := true ;
+            v_do_it := true ;   /* le perso vérifie les condition, par défaut on active l'EA */
 
-            /*
-            ==> A faire: verifier les EA type bascule !
-            if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% '||v_param->>'nouveau_pos_cod'::text ||',%' then
-                -- le perso arrive sur la case,
+            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2) then
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition */
 
-            else
-                -- le perso quitte la case
+                if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' then
+                    v_pos_cod :=  f_to_numeric(v_param->>'nouveau_pos_cod') ;    -- le perso arrive sur la case,
+                else
+                    v_pos_cod :=  f_to_numeric(v_param->>'ancien_pos_cod') ;    -- le perso quitte la case
+                end if;
+
+                /* boucler sur le perso de la case */
+                for plist in (
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  )
+                loop
+                    if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+                        v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule, on ne l'active pas */
+                        exit ;
+                    end if;
+                end loop;
 
             end if;
-            */
 
         end if;
-
 
 	  elseif row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
 	      -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
