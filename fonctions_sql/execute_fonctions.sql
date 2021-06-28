@@ -94,15 +94,15 @@ begin
             if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2) then
                 /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition */
 
-                if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' then
-                    v_pos_cod :=  f_to_numeric(v_param->>'nouveau_pos_cod') ;    -- le perso arrive sur la case,
-                else
-                    v_pos_cod :=  f_to_numeric(v_param->>'ancien_pos_cod') ;    -- le perso quitte la case
-                end if;
+                -- if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' then
+                --     v_pos_cod :=  f_to_numeric(v_param->>'nouveau_pos_cod') ;    -- le perso arrive sur la case,
+                -- else
+                --     v_pos_cod :=  f_to_numeric(v_param->>'ancien_pos_cod') ;    -- le perso quitte la case
+                -- end if;
 
-                /* boucler sur le perso de la case */
+                /* boucler sur les perso qui sont sur les cases de l'EA */
                 for plist in (
-                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
                   )
                 loop
                     if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
