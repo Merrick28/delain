@@ -53,6 +53,14 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
 		break;
+		case 'illusion':
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.illusion) ? cssTrue : cssFalse;
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
 		case 'entree_arene':
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
@@ -307,6 +315,7 @@ Etage.getValeurFromType = function (type, idx, sousType) {
 				case 'pvp': resultat = Speciaux.getIdFromValeur (sousType, laCase.pvp); break;
 				case 'creusable': resultat = Speciaux.getIdFromValeur (sousType, laCase.creusable); break;
 				case 'tangible': resultat = Speciaux.getIdFromValeur (sousType, laCase.tangible); break;
+				case 'illusion': resultat = Speciaux.getIdFromValeur (sousType, laCase.illusion); break;
 				case 'entree_arene': resultat = Speciaux.getIdFromValeur (sousType, laCase.entree_arene); break;
 			}
 		break;
@@ -423,11 +432,12 @@ Etage.ecrireModifs = function () {
 		var modif_pvp = Etage.Cases[c.idx].pvp != c.pvp;
 		var modif_pio = Etage.Cases[c.idx].creusable != c.creusable;
 		var modif_tan = Etage.Cases[c.idx].tangible != c.tangible;
+		var modif_alu = Etage.Cases[c.idx].illusion != c.illusion;
 		var modif_arn = Etage.Cases[c.idx].entree_arene != c.entree_arene;
 		var modif_ter = Etage.Cases[c.idx].ter_cod != c.ter_cod;
 		var modif_dep = Etage.Cases[c.idx].pa_dep != c.pa_dep;
 
-		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_arn || modif_ter || modif_dep)
+		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_alu || modif_arn || modif_ter || modif_dep)
 		{
 			valeur += c.id + "|";
 			if (modif_mur) valeur += "m=" + c.mur + ",";
@@ -438,6 +448,7 @@ Etage.ecrireModifs = function () {
 			if (modif_pvp) valeur += "v=" + ((c.pvp) ? "1" : "0") + ",";
 			if (modif_pio) valeur += "c=" + ((c.creusable) ? "1" : "0") + ",";
 			if (modif_tan) valeur += "t=" + ((c.tangible) ? "1" : "0") + ",";
+			if (modif_alu) valeur += "i=" + ((c.illusion) ? "1" : "0") + ",";
 			if (modif_arn) valeur += "a=" + ((c.entree_arene) ? "1" : "0") + ",";
 			if (modif_ter) valeur += "g=" + c.ter_cod + ",";
 			if (modif_dep) valeur += "b=" + c.pa_dep + ",";

@@ -125,6 +125,14 @@ switch ($methode) {
                         <label><input name="special" value="tangibleNOK"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)"
                                       type="radio"/>non.</label><br/>
+                        <span title="Un mur illusion se comporte comme un mur pour l'automap, mais n'en est pas un!">Mur illusion (*)</span>
+                        <label><input name="special" value="illusionTOGGLE"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>bascule</label>
+                        <label><input name="special" value="illusionOK"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>oui</label>
+                        <label><input name="special" value="illusionNOK"
+                                      onclick="Pinceau.miseAJour ('Speciaux', this.value)"
+                                      type="radio"/>non.</label><br/>
                         <span title="Position d'entrée pour les etage du type arène.">Entrée d'arène</span>
                         <label><input name="special" value="areneTOGGLE"
                                       onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>bascule</label>
@@ -280,7 +288,7 @@ switch ($methode) {
 
         // validation des modifs Version 2: preg_match ne supporte qu'un taille limité pour la chaine d'entrée
         $split=explode(";",$modifs);
-        $schema = "/^\d+\|([dmsfpvctgba]=[-0123456789]+,)/i";
+        $schema = "/^\d+\|([dmsfpvctigba]=[-0123456789]+,)/i";
         foreach ($split as $s) {
             if ($s!=""){
                 if (!preg_match($schema, $s)) {
@@ -306,6 +314,7 @@ switch ($methode) {
             $cpt_pvp = 0;
             $cpt_pas = 0;
             $cpt_tan = 0;
+            $cpt_alu = 0;
             $cpt_arn = 0;
             $cpt_cre = 0;
             $cpt_ter = 0;
@@ -379,6 +388,10 @@ switch ($methode) {
                                 $set_mur[] = "mur_tangible = '" . (($valeur) ? 'O' : 'N') . "'";
                                 $cpt_tan++;
                                 break;
+                            case 'i': // mur illusion
+                                $set_mur[] = "mur_illusion = '" . (($valeur) ? 'O' : 'N') . "'";
+                                $cpt_alu++;
+                                break;
                             case 'g': // ground = terrain
                                 $set_case[] = "pos_ter_cod = " . (int)$valeur ;
                                 $cpt_ter++;
@@ -413,6 +426,7 @@ switch ($methode) {
 				$cpt_arn entrées d'arènes modifiées<br />
 				$cpt_cre murs creusables modifiés<br />
 				$cpt_tan murs tangibles modifiés<br />
+				$cpt_alu murs illusions modifiés<br />
 				$cpt_ter terrains modifiés<br />
 				$cpt_dep bonus/malus de déplacement modifiés<br />
 				$cpt_erreur erreurs détectées<br /></p>";
