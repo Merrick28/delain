@@ -426,7 +426,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $titre      = "Nouvel aventurier dans les souterrains...";
         $corps      = "Chers amis,<br>
 Je vous informe qu'un nouvel aventurier viens de pénétrer dans les souterrains de delain.<br>
-Il s'agit du perso n° {$nouveau_perso_cod} ayant pour nom: {$nom}<br> 
+Il s'agit du perso n° {$nouveau_perso_cod} ayant pour nom: {$nom2}<br> 
 Amicalement,<br> 
 Gildwen.
 ";

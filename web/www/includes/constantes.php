@@ -1,6 +1,7 @@
 <?php
 // fichier de déclaration des constantes
 
+
 $__VERSION = "20210615";        // A changer aussi dans variable_menu.php
 
 //$racine_url = "http://www.jdr-delain.net/";

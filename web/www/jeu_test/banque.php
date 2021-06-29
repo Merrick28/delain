@@ -363,9 +363,16 @@ if ($erreur == 0)
     </form>
 
 <?php }
-    ?>
-    <hr/>
-    <?php
+    if (! $perso->is_4eme_perso() && ! $perso->is_fam_4eme_perso())
+    {
+        ?>
+        <hr/>
+        <strong>Coffre individuel</strong><br>
+        <img height="100px;" src="../images/coffre.png">
+        <br><br>Voir le stockage d'objet dans les <a href="banque-coffre.php">coffres individuels</a><br><br>
+        <hr/>
+        <?php
+    }
     // PARTIE COMPTE BANCAIRE DE GUILDE
     // ON VERIFIE SI LE PERSO FAIT PARTIE D'UNE GUILDE
 
