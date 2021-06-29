@@ -116,6 +116,10 @@ begin
     from bonus
     where bonus_perso_cod = cible
       and bonus_tbonus_libc = 'MDS';
+    delete
+    from bonus
+    where bonus_perso_cod = cible
+      and bonus_tbonus_libc = 'VEN';
 -- soin sur le lanceur
     select into v_pv,v_pv_max,v_voie_magique perso_pv, perso_pv_max, perso_voie_magique
     from perso
