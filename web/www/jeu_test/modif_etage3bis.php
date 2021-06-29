@@ -22,6 +22,7 @@ $methode   = $_REQUEST['methode'];
 $lieu      = $_REQUEST['lieu'];
 $pos_etage = $_REQUEST['pos_etage'];
 
+if (isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = $_REQUEST["admin_etage"] ;
 
 if ($erreur == 0)
 {

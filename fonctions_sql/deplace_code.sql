@@ -270,7 +270,7 @@ begin
 ---------------------------
 -- les EA liés au déplacement du perso
 ---------------------------
-    code_retour := code_retour || execute_fonctions(num_perso, null, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+    code_retour := code_retour || execute_fonctions(num_perso, null, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos,'ancien_etage',ancien_etage,'nouveau_pos_cod',v_pos,'nouveau_etage',e)) ;
 
 ---------------------------
 -- les EA liés au déplacement de la monture
@@ -280,7 +280,7 @@ begin
         join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
         where p.perso_cod=num_perso and p.perso_type_perso=1 ;
     if found then
-        code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos)) ;
+        code_retour := code_retour || execute_fonctions(v_monture, num_perso, 'DEP', json_build_object('ancien_pos_cod',ancien_code_pos,'ancien_etage',ancien_etage,'nouveau_pos_cod',v_pos,'nouveau_etage',e)) ;
     end if;
 
 ---------------------------

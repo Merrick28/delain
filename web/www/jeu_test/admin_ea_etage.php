@@ -11,9 +11,12 @@ include('variables_menu.php');
 
 $contenu_page = '';
 
-$droit_modif = 'dcompt_enchantements';
 define('APPEL', 1);
-include "blocks/_test_droit_modif_generique.php";
+include "blocks/_test_droit_modif_etage.php";
+
+//echo "<pre>"; print_r($_REQUEST); die();
+if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = 1*$_REQUEST["admin_etage"] ; else $pos_etage = 1*$_REQUEST['pos_etage'] ;
+
 
 if ($erreur == 0)
 {
@@ -22,21 +25,28 @@ if ($erreur == 0)
     //=======================================================================================
     // On est admin ici, on a les droits sur les quetes
     // Traitement des paramètres
-    $tbonus_cod = 1*$_REQUEST['tbonus_cod'] ;
-
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    if(isset($_REQUEST['methode']) && $_REQUEST['methode']=="add_mon_fonction")
+    if(isset($_POST['methode']) && $_POST['methode']=="add_mon_fonction")
     {
-        // Traitement des actions
+        // Traitement des actions: assurer le formatage du champ "fonc_trig_pos_cods" => " XXXXX, XXXXX, XXXXX, etc..."
+        foreach ($_POST as $k => $v)
+        {
+            if (substr($k, 0, 18)=="fonc_trig_pos_cods")
+            {
+                $pos_cods = explode(",", $v);
+                array_walk($pos_cods, function(&$value, &$key){return $value = " ".trim($value) ;} );
+                $_POST[$k] = implode(",", array_filter($pos_cods, function ($val) { return ( $val == " " ? false : true ); } )).",";
+            }
+        }
+        //echo "<pre>"; print_r($_REQUEST); die();
 
-        $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA du compteur numero: $tbonus_cod\n";
+        $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie les EA d'étage : $pos_etage\n";
 
-        // Sauvegarder les modifications des effets-auto => save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)
         $message = save_effet_auto($_POST, null, null) ;
 
-        writelog($log . $message, 'monstre_edit');
+        writelog($log . $message, 'lieux_etages');
         echo nl2br($message);
         echo "<hr>";
 
@@ -51,11 +61,11 @@ if ($erreur == 0)
             <script language="javascript" src="../js/multiple-select.min.js?v'.$__VERSION.'"></script>
             <script language="javascript"> 
                 // Paramètres de déclechement réduite aux BMC pour ces EA
-                $.each(EffetAuto.Triggers, function( d ) {  if (d != "BMC") delete EffetAuto.Triggers[d]; });
+                $.each(EffetAuto.Triggers, function( d ) {  if (d != "POS") delete EffetAuto.Triggers[d]; });
             </script>
             ';
 
-    echo "On trouve ici des EA (effets-auto) qui sont attachés à des Bonus/Malus du type compteur.<br>
+    echo "On trouve ici des EA (effets-auto) qui sont attachés à des cases dans un étage.<br>
           Cela signifie que tout « perso » (qu'il soit monstre ou joueurs) déclenchera ces effets s'il remplit les conditions du déclenchement.<br>
           <u><strong>ATTENTION</strong></u>: il faut noter que: <br>
           • Le changement de nom ne sera effectif QUE pour les monstres.<br>
@@ -66,37 +76,21 @@ if ($erreur == 0)
             <TR>
             <TD>
             <form method="post">
-            Editer les EA d\'un compteur:<select onchange="this.parentNode.submit();" name="tbonus_cod"><option value="0">Sélectionner le compteur</option>';
+            Editer les EA d\'un étage:<select onchange="this.parentNode.submit();" name="pos_etage"><option value="0">Sélectionner l\'étage</option>';
 
-    // sortir les "E3(+)" : Exaltation, Excitation, Embrasement des compteurs configurables dans l'outil.
-    $stmt = $pdo->query("select tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle, tbonus_cod from bonus_type where tbonus_libc not in ('C01', 'C07', 'C08', 'C10', 'C11', 'C12') and tbonus_compteur='O' order by tbonus_libc");
-    while ($result = $stmt->fetch())
-    {
-        echo '<option value="' . $result['tbonus_cod'];
-        if ($result['tbonus_cod'] == $tbonus_cod) echo '" selected="selected';
-        echo '">' . $result['tonbus_libelle'] . '</option>';
-    }
+    if (!isset($pos_etage)) $pos_etage = '';
+    echo $html->etage_select($pos_etage);
+
     echo '  </select>
             </form></TD>
             </TR>
             </TABLE>';
-    if ($tbonus_cod>0) {
-        $req = "SELECT * FROM bonus_type WHERE tbonus_cod=:tbonus_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":tbonus_cod" => $tbonus_cod), $stmt);
-
-        if ($result = $stmt->fetch()) {
-            echo "<strong>Compteur #" . $result["tbonus_cod"] ."</strong>: ". $result["tbonus_libc"] . ($result["tbonus_cumulable"]=='O' ? " - <strong>Progressivité:</strong> ".$result["tbonus_degressivite"]."%" : '') . "<br>";
-            echo "<strong>Description de ce Compteur: </strong>" . $result["tbonus_description"] . "<br><br>";
-        }
-    }
-
     echo "<HR>";
 
     echo '<strong>EFFETS AUTOMATIQUES:</strong><br><br>';
 
-    if ($tbonus_cod==0) {
-        echo 'Sélectionnez le compteur!';
+    if ($pos_etage==0) {
+        echo 'Sélectionnez l\'étage!';
     } else {
 
         // Liste des monstres générique
@@ -110,9 +104,7 @@ if ($erreur == 0)
         echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
         // Liste des Bonus-malus pour les compteurs
-        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
-                            from bonus_type where tbonus_cod={$tbonus_cod}
-                            order by tonbus_libelle ";
+        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle from bonus_type  order by tonbus_libelle ";
         echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
         // Liste des conditions de perso
@@ -141,22 +133,23 @@ if ($erreur == 0)
             <input type="hidden" name="methode2" value="edit">
             <input type="hidden" name="methode" value="add_mon_fonction">
             <input type="hidden" name="sel_method" value="edit">
-            <input type="hidden" name="tbonus_cod" value="'.$tbonus_cod.'">
+            <input type="hidden" name="pos_etage" value="'.$pos_etage.'">
             <input type="hidden" name="fonctions_supprimees" id="fonctions_supprimees" value=""/>
             <input type="hidden" name="fonctions_ajoutees" id="fonctions_ajoutees" value=""/>
             <input type="hidden" name="fonctions_annulees" id="fonctions_annulees" value=""/>
             <input type="hidden" name="fonctions_existantes" id="fonctions_existantes" value=""/>
             <div id="liste_fonctions"></div><script>
-            EffetAuto.EditionCompteur = true ; ';       // En mode compteur les implantations d'EA sont interdites
+            EffetAuto.EditionEAPosition = true ; // En mode EA les implantations d\'EA sont interdites
+            EffetAuto.EditionEA.etage_cod = '.$pos_etage.' ;
+            ';
 
         // Liste des EA Existantes
         $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param
-                        from fonction_specifique, bonus_type 
+                        from fonction_specifique
                         where   fonc_gmon_cod is null 
                             and fonc_perso_cod is null 
-                            and fonc_type='BMC'
-                            and tbonus_cod=".((int)$tbonus_cod)."
-                            and fonc_trigger_param->>'fonc_trig_compteur'::text = tbonus_libc
+                            and fonc_type='POS'
+                            and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$pos_etage)."
                         order by fonc_cod ";
 
         echo getJS_ea_existant($req, false, false);

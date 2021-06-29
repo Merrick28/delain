@@ -2,6 +2,8 @@ var EffetAuto = {num_courant: 0};
 EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
 EffetAuto.EditionCompteur = false;
+EffetAuto.EditionEAPosition = false;
+EffetAuto.EditionEA = {etage_cod:0};
 
 /*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
@@ -128,7 +130,20 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_dans_liste', type: 'transac', label: 'Sur objet de la liste', description: 'L’EA va être déclenché, que faire de l’objet reçu s’il fait partie de la liste des objets attendus?' },
 			{ nom: 'trig_hors_liste', type: 'transac', label: 'Sur objet hors liste', description: 'L’EA ne sera pas déclenché, que faire de l’objet reçu s’il ne fait PAS partie de la liste des objets attendus?' },
-			{ nom: 'trig_objet', type: 'objet', label: 'Liste d’objet attendu', description: 'Liste des objets qui déclenchent l’effet s’il sont reçus en transaction.' },
+			{ nom: 'trig_objet', type: 'objet', label: 'Liste d’objet attendu', description: 'Liste des objets qui déclenchent l’effet s’ils sont reçus en transaction.' },
+		]
+	},
+	"POS": {description: "lorsqu’il arrive ou quitte une case à EA.",
+		default:'deb_tour_generique',
+		declencheur:'Arrive ou quitte une case à EA.',
+		parametres: [
+			{ nom: 'trig_nom_ea', type: 'POSNomEtage', label: 'Nom de l’EA', description: 'Nommer l’EA afin de la retrouver plus facileemnt dans l’édition de l’étage' },
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_pos_cods', type: 'texte', longueur: 50,  label: 'Liste de position', description: 'Liste des positions déchenchant l’EA (pos_cod séparé par des « , » ' },
+			{ nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 cas)' },
+			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet)' },
+			{ nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
+			{ nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
 		]
 	},
 }
@@ -547,7 +562,7 @@ EffetAuto.addItem = function (elem, M)
 		var s = row.split('-') ;
 		var r = (1+1*s[2]);
 		var new_row = s[0]+'-'+s[1]+'-'+r+'-';
-		var new_elem = '<tr id="'+new_row+'" style="display: block;">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+		var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
 		$(new_elem).insertAfter(elem);
 
 		//Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
@@ -607,7 +622,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || !EffetAuto.EditionCompteur) && (fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || (!EffetAuto.EditionCompteur && !EffetAuto.EditionEAPosition)) && (fct.bm_compteur && type == 'POS' ||fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -755,8 +770,56 @@ EffetAuto.ChampChoixSensProjection = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
-	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Repousse sur son passage ou éloigne les cibles.</option>';
-	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Attire les cibles à lui.</option></select></label>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Repousse sur son passage ou éloigne les cibles</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Attire les cibles à lui</option></select></label>';
+	html += "<br />";
+	return html;
+}
+
+EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = "";
+	var nom = "fonc_" + parametre.nom + numero.toString();
+	var etage = "fonc_trig_pos_etage" + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + valeur + '" size=50 name="' + nom + '" id="' + nom + '"/>';
+	if (parametre.commentaires) html += parametre.commentaires;
+	html += '</label>';
+	html += '<input type="hidden" name="' + etage + '" id="' + etage + '" value="'+ EffetAuto.EditionEA.etage_cod +'">';
+
+	return html;
+}
+
+EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option></select></label>';
+	html += "<br />";
+	return html;
+}
+
+EffetAuto.ChampChoixTypeEA = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Indétectable</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Piège détectable</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Cachette détectable</option></select></label>';
+	html += "<br />";
+	return html;
+}
+
+EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Toujours</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Une seule fois</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option></select></label>';
 	html += "<br />";
 	return html;
 }
@@ -952,6 +1015,53 @@ EffetAuto.ChampListeBM = function (parametre, numero, valeur) {
 		html += 'Cumulatif: <input data-entry="unckecked" onchange="EffetAuto.CheckBoxChange(\''+rowCumulatifCheck+'\', \''+rowCumulatifNom+'\');" id="'+rowCumulatifCheck+'" name="'+checkboxCumulatif+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].cumulatif =='O' ? ' checked' : '') : '')+'><br>';
 		html += '&nbsp;<strong>Valeur:<strong>&nbsp;<input id="force'+row+'" data-entry="val" name="'+nomForce+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].force : "")+'">';
 		html += '&nbsp;<strong>Durée:<strong>&nbsp;<input id="durre'+row+'" data-entry="val" name="'+nomDuree+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].duree : "")+'"> tour(s)&nbsp';
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
+EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomConj = "obj_fonc_" + parametre.nom + numero.toString()+"_conj";
+	var nomCond = "obj_fonc_" + parametre.nom + numero.toString()+"_cond";
+	var nomSigne = "obj_fonc_" + parametre.nom + numero.toString()+"_signe";
+	var nomVal1 = "obj_fonc_" + parametre.nom + numero.toString()+"_val1";
+	var nomVal2 = "obj_fonc_" + parametre.nom + numero.toString()+"_val2";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		var row='-row-'+numero+'-'+i+'-';
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+
+		html += '<select style="max-width: 45px;" name="' + nomConj + '[]">';
+		var selectionne = ((valeur.length && valeur[i].conj == "ET") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="ET">ET</option>';
+		var selectionne = ((valeur.length && valeur[i].conj == "OU") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="OU">OU</option>';
+		html += '</select>&nbsp;'
+
+		html += '<select style="max-width: 150px;" name="' + nomCond + '[]">';
+		html += EffetAuto.CopieListe ('liste_perso_condition_modele',  valeur.length ? valeur[i].cond : "");
+		html += '</select>&nbsp;' ;
+
+		html += '<select style="max-width: 45px;" name="' + nomSigne + '[]">';
+		var selectionne = ((valeur.length && valeur[i].signe == "=") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="=">=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "!=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="!=">!=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "<") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<"><</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "<=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="<="><=</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == "entre") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value="entre">entre</option>';
+		var selectionne = ((valeur.length && valeur[i].signe == ">") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">">></option>';
+		var selectionne = ((valeur.length && valeur[i].signe == ">=") ? 'selected="selected"' : '' );  html += '<option ' + selectionne + ' value=">=">>=</option>';
+		html += '</select>' ;
+
+		html += '&nbsp;<input id="val1'+row+'" data-entry="val" name="'+nomVal1+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].val1 : "")+'">';
+		html += '&nbsp;et&nbsp;<input id="val2'+row+'" data-entry="val" name="'+nomVal2+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].val2 : "")+'">';
 		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
 		html += '</tr>';
 	}
@@ -1171,8 +1281,23 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'Sort':
 			html = pd + EffetAuto.ChampSort(parametre, numero, valeur) + pf;
 			break;
+		case 'perso-condition':
+			html = pd + EffetAuto.ChampListePersoCondition (parametre, numero, valeur) + pf;
+			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
+			break;
+		case 'POSsens':
+			html = pd + EffetAuto.ChampChoixSensDeplacement (parametre, numero, valeur) + pf;
+			break;
+		case 'POSNomEtage':
+			html = pd + EffetAuto.ChampChoixNomEtage (parametre, numero, valeur) + pf;
+			break;
+		case 'POStype':
+			html = pd + EffetAuto.ChampChoixTypeEA (parametre, numero, valeur) + pf;
+			break;
+		case 'POSrearme':
+			html = pd + EffetAuto.ChampChoixRearmement (parametre, numero, valeur) + pf;
 			break;
 		case 'PVsens':
 			html = pd + EffetAuto.ChampChoixPVsens (parametre, numero, valeur) + pf;
