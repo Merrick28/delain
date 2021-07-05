@@ -56,7 +56,8 @@ begin
   (24, 'Niveau Enluminure', 'COMPETENCE'),
   (25, 'A terminé l''étape de QA', 'QUETE'),
   (26, 'Nombre de lock', 'VARIABLE'),
-  (27, 'Code du perso', 'CARAC');
+  (27, 'Code du perso', 'CARAC'),
+  (28, 'Possède un type d’objet générique', 'OBJET');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -181,6 +182,22 @@ begin
 
   elsif (v_carac_cod = 27) then                  --   (27, 'Code du perso', 'CARAC');
     select into v_perso_carac perso_cod::text from perso where perso_cod = v_perso_cod ;
+
+  elsif (v_carac_cod = 28) then                  --   (28, 'Possède un type d’objet générique', 'OBJET')
+    select obj_cod into v_perso_carac from perso_objets join objets on perobj_obj_cod=obj_cod where perobj_perso_cod = v_perso_cod and obj_gobj_cod = TO_NUMBER(v_param_txt_2, '9999999999.99') LIMIT 1 ;
+    if found then
+      if (v_param_txt_1 = '=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    else
+      if (v_param_txt_1 = '!=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    end if;
 
   else
     return 0 ;    -- erreur dans les paramètres

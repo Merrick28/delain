@@ -136,7 +136,7 @@ begin
 		return code_retour;
 	end if;
 
-	if exists (select 1 from murs where mur_pos_cod = v_pos) then
+	if exists (select 1 from murs where mur_pos_cod = v_pos and mur_illusion!='O') then
 		code_retour := code_retour || E'1#Erreur : vous ne pouvez vous rendre sur la destination ciblée. Il s’agit soit d’un mur, soit d’un endroit inaccessible par là...#2';
 		return code_retour;
 	end if;

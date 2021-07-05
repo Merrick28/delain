@@ -45,7 +45,7 @@ else if ($stmt->rowCount())
                         $req_pos = $req_pos . "where pos_x = $x[$cptx] ";
                         $req_pos = $req_pos . "and pos_y = $y[$cpty] ";
                         $req_pos = $req_pos . "and pos_etage = $etage ";
-                        $req_pos = $req_pos . "and not exists (select 1 from murs where mur_pos_cod = pos_cod) ";
+                        $req_pos = $req_pos . "and not exists (select 1 from murs where mur_pos_cod = pos_cod and mur_illusion!='O') ";
                         $req_pos = $req_pos . "and ( ($pos_modif_pa_dep>12) OR (get_pa_dep_terrain($perso_cod, pos_cod) BETWEEN 0 AND 12))";
                         $stmt = $pdo->query($req_pos);
                         $num_pos = $stmt->rowCount();
