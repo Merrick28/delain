@@ -1,21 +1,13 @@
 console.log('chargement admin_etage_pinceau');
 
-var defautImageUrl = "http://www.jdr-delain.net/images/del.gif";
-var cheminImages = "http://www.jdr-delain.net/images/";
+var defautImageUrl = "/images/del.gif";
+var cheminImages = "/images/";
 var Fonds = {};
 Fonds.donnees = new Array();
-Fonds.isDefaut = function (id) {
-	return false;
-};
-Fonds.getUrl = function (id) {
-	return cheminImages + 'f_' + Etage.style + '_' + id + '.png';
-};
-Fonds.getClass = function (id) {
-	return 'v' + id;
-};
-Fonds.getId = function (id) {
-	return 'fond' + id;
-};
+Fonds.isDefaut = function (id) { return false; };
+Fonds.getUrl = function (id) { return cheminImages + 'f_' + Etage.style + '_' + id + '.png'; };
+Fonds.getClass = function (id) { return 'v' + id; };
+Fonds.getId = function (id) { return 'fond' + id; };
 Fonds.type = "Fond";
 Fonds.enlevable = false;
 Fonds.getSousType = function (id) { return true; }

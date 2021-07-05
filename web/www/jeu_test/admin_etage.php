@@ -27,8 +27,9 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<a href='modif_etage3.php?admin_etage={$admin_etage}'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php?admin_etage={$admin_etage}'>Créer / modifier les lieux</a><br />
 	<a href='modif_etage3ter.php?admin_etage={$admin_etage}'>Creation multiple de lieux</a><br />
-	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
+	<a target='_blank' href='admin_meca_etage.php?admin_etage={$admin_etage}'>Gestion des Mécanismes d'étage</a><br />
 	<a target='_blank' href='admin_ea_etage.php?admin_etage={$admin_etage}'>Gestion des EA d'étage</a><br />
+	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td>
 	</tr></table>";
 
@@ -197,7 +198,7 @@ switch ($methode) {
                 sauvegarde)</em><br/>
             <em> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et
                 l’appliquer sur le(s) décor(s) ) enlever.</em><br/>
-            <em> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la
+            <em> - Les outils spéciaux Creusable, Tangibles et Illusion ne s’appliquent qu’aux murs. Vous pouvez utiliser la
                 brosse spéciale dédiée.</em><br/>
             <em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br/>
         </div>

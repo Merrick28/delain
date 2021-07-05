@@ -19,6 +19,7 @@ $stmt = $pdo->query($req_etage);
 if (!$result = $stmt->fetch())
     die ('alert("Erreur ! Étage inconnu !")');
 ?>
+//# sourceURL=admin_etage_data.js
 Etage.minX = <?php echo $result['minx']; ?>;
 Etage.maxX = <?php echo $result['maxx']; ?>;
 Etage.minY = <?php echo $result['miny']; ?>;
