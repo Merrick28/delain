@@ -20,6 +20,8 @@ if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUE
 
 if ($erreur == 0)
 {
+    $pdo = new bddpdo();
+
     //=======================================================================================
     // == Main
     //=======================================================================================
@@ -28,8 +30,9 @@ if ($erreur == 0)
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    if(isset($_POST['methode']) && $_POST['methode']=="xxxxx")
+    if(isset($_POST['methode']) && $_POST['methode']=="creer_meca")
     {
+        print_r($_POST);
 
         writelog($log . $message, 'lieux_etages');
         echo nl2br($message);
@@ -59,8 +62,8 @@ if ($erreur == 0)
         </script>';
 
     echo "On trouve ici des mécaniques qui sont définies sur un étage.<br>
-          Un mécanisme définit les caractéristiques d'une case (fond, decors, murs, etc..), il pourra être utilisé pour venir remplacer (temporairement) les \"vrais\" caractéristiques 
-          d'une case de l'étage (à l'aide des EA d'étage, des QA ou grace à d'autres mécanismes).<br>
+          Un mécanisme définit les caractéristiques d'une case (fond, decors, murs, etc..), il pourra être utilisé pour venir remplacer (temporairement) les \"vrais\" caractéristiques (celles de base) d'une case de l'étage.<br>
+          Ce remplacement est réalisé à l'aide des EA d'étage, des QA ou encore grace à d'autres mécanismes.<br>
         <br><br>";
 
 
@@ -102,30 +105,47 @@ if ($erreur == 0)
             </table></div>
         ";
 
+        $req_m_terrain= "select ter_cod, ter_nom from terrain where ter_cod > 0 order by ter_nom";
+        $stmt_m_terrain = $pdo->query($req_m_terrain);
+        $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
+
         echo "
         <form method='post' action='admin_meca_etage.php'>
                     <input type='hidden' name='methode' value='creer_meca'>
                     <input type='hidden' name='pos_etage' value='$pos_etage'>
+                    <input type='hidden' id='meca-Fond' name='type_aff' value=''>
+                    <input type='hidden' id='meca-Decor' name='pos_decor' value=''>
+                    <input type='hidden' id='meca-Mur' name='mur_type' value=''>
+                    <input type='hidden' id='meca-DecorDessus' name='decor_dessus' value=''>
                     
-            Nom du mécanisme: <input type='text' name='nom'><br/>
-            <br><input type='submit' class='test' value='créer le mécanisme!'/><br>
+            <br>Nom du mécanisme: <input type='text' name='nom'  size='40'><br/>
+            <div style='float: left; display: inline-flex;'>Pattern:&nbsp;&nbsp;&nbsp; 
+                        <div id='pattern-Fond' data-pattern='0' class='caseVue caseFond pinceau'>
+                            <div id='pattern-Decor' data-pattern='0' class='caseVue'>
+                                <div id='pattern-Mur' data-pattern='0' class='caseVue'>                                
+                                    <div id='pattern-DecorDessus' data-pattern='0' class='caseVue'>                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </div><br/><br>
+            <table>
+            <tr><td>Passage autorisé:</td><td><input checked type='radio' name='passage_autorise' value='-1'>Base</td><td>&nbsp;|&nbsp;<input type='radio' name='passage_autorise' value='0'>Autorisé</td><td>&nbsp;|&nbsp;<input type='radio' name='passage_autorise' value='1'>Interdit<td><tr></tr>
+            <tr><td>Mur tangible:</td><td><input checked type='radio' name='mur_tangible' value='-1'>Base</td><td>&nbsp;|&nbsp;<input type='radio' name='mur_tangible' value='0'>Tangible</td><td>&nbsp;|&nbsp;<input type='radio' name='mur_tangible' value='1'>Intangible<td><tr></tr>
+            <tr><td>Mur illusion:</td><td><input checked type='radio' name='mur_illusion' value='-1'>Base</td><td>&nbsp;|&nbsp;<input type='radio' name='mur_illusion' value='0'>Infranchissable</td><td>&nbsp;|&nbsp;<input type='radio' name='mur_illusion' value='1'>Illusion<td><tr>
+            </table>
+            Terrain: ";
+            echo '<select name="pos_ter_cod" id="select-terrain">';
+            echo '<option value="-1">Terrain Inchangé (base)</option>';
+            echo '<option value="0">Sans terrain spécifique</option>';
+            for ($t=0; $t<count($terrains); $t++ )
+            {
+                echo '<option value="'.$terrains[$t]["ter_cod"].'">'.$terrains[$t]["ter_nom"].'</option>';
+            }
+            echo '</select> Modificateur de PA: <input name="modif_pa_dep" id="modif_pa_dep" value="" type="text" size="3"/> (<em style="font-size: 10px;">laisser vide pour garder le modificateur de base</em>)';
+        echo "<br><br><input type='submit' class='test' value='créer le mécanisme!'/><br>
         </form>";
 
-
-/*
-pmeca_meca_cod integer,
-pmeca_pos_cod integer,
-pmeca_pos_etage integer NOT NULL,
-pmeca_base_pos_type_aff integer NOT NULL,
-pmeca_base_pos_decor integer NOT NULL,
-pmeca_base_pos_decor_dessus integer NOT NULL,
-pmeca_base_pos_passage_autorise integer NOT NULL,
-pmeca_base_pos_modif_pa_dep integer NOT NULL,
-pmeca_base_pos_ter_cod integer NOT NULL,
-pmeca_base_mur_type integer DEFAULT NULL,
-pmeca_base_mur_tangible character varying(1) DEFAULT NULL,
-pmeca_base_mur_illusion character varying(1) DEFAULT NULL,
-*/
 
 
         echo "<HR>Liste des mécanismes de l'étage:";

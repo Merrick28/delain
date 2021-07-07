@@ -60,6 +60,7 @@ CREATE TABLE public.meca_position
   pmeca_base_pos_ter_cod integer NOT NULL,
   pmeca_base_mur_type integer DEFAULT NULL,
   pmeca_base_mur_tangible character varying(1) DEFAULT NULL,
+  pmeca_base_mur_tangible character varying(1) DEFAULT NULL,
   pmeca_base_mur_illusion character varying(1) DEFAULT NULL,
   CONSTRAINT pk_pmeca_cod PRIMARY KEY (pmeca_cod)
 );

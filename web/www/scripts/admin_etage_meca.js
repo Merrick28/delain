@@ -88,7 +88,15 @@ Pinceau.dessineListe = function (objet, parent) {
 		elementImage.title = idObj;
 		elementImage.data = idObj;
 		elementImage.onclick = function () {
-			Pinceau.miseAJour(objet.type, this.data);
+			//Pinceau.miseAJour(objet.type, this.data);
+			var valeurCourante = $("#pattern-"+objet.type).data("pattern");
+			var nvlleValeur =  this.data ;
+			var styleDecorCourant = objet.getClass(valeurCourante);
+			var styleNouveauDecor = objet.getClass(nvlleValeur);
+			$("#pattern-"+objet.type).removeClass(styleDecorCourant).addClass(styleNouveauDecor);
+			$("#pattern-"+objet.type).data("pattern",  this.data);
+			$("#meca-"+objet.type).val(this.data);
+
 		};
 		elementImage.onmouseover = function () {
 			ManipCss.ajouteClasse(this, "pinceausurligne");
