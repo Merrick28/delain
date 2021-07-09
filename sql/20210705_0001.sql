@@ -57,7 +57,7 @@ CREATE TABLE public.meca_position
   pmeca_base_pos_decor_dessus integer NOT NULL,
   pmeca_base_pos_passage_autorise integer NOT NULL,
   pmeca_base_pos_modif_pa_dep integer NOT NULL,
-  pmeca_base_pos_ter_cod integer NOT NULL,
+  pmeca_base_pos_ter_cod integer DEFAULT NULL,
   pmeca_base_mur_type integer DEFAULT NULL,
   pmeca_base_mur_tangible character varying(1) DEFAULT NULL,
   pmeca_base_mur_tangible character varying(1) DEFAULT NULL,

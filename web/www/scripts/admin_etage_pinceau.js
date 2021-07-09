@@ -66,6 +66,7 @@ Speciaux.donnees = [
 	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
 	{id: 'deplacement', valeur: false, nom: 'Déplacement', type: 'deplacement', url: 'special-brush.png', css: ''},
 	{id: 'ea-dep', valeur: false, nom: 'Effet-auto', type: 'ea-dep', url: 'special-brush.png', css: ''},
+	{id: 'meca-dep', valeur: false, nom: 'Mecanisme', type: 'meca-dep', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -158,7 +159,8 @@ Pinceau.appliqueCase = function (idx) {
 			entree_arene: caseModif.entree_arene,
 			ter_cod: caseModif.ter_cod,
 			pa_dep: caseModif.pa_dep,
-			ea_dep: caseModif.ea_dep
+			ea_dep: caseModif.ea_dep,
+			meca_dep: caseModif.meca_dep
 		};
 		Etage.CasesModifiees.splice(idxModif, 1);
 	} else {		// Case pas encore modifiée
@@ -177,7 +179,8 @@ Pinceau.appliqueCase = function (idx) {
 			entree_arene: ancienneCase.entree_arene,
 			ter_cod: ancienneCase.ter_cod,
 			pa_dep: ancienneCase.pa_dep,
-			ea_dep: ancienneCase.ea_dep
+			ea_dep: ancienneCase.ea_dep,
+			meca_dep: ancienneCase.meca_dep
 		};
 	}
 
@@ -202,7 +205,23 @@ Pinceau.appliqueCase = function (idx) {
 		case Speciaux.type:
 
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
-			if (pinceauSpecial.id=="ea-dep" ) {
+			if (pinceauSpecial.id=="meca-dep" ) {
+				var meca_cod = $("#select-meca-dep").val();
+
+				nvlleCase.meca_dep[meca_cod] = nvlleCase.meca_dep[meca_cod] ? 0 : 1;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.meca_dep[meca_cod] == 0 ? false : true);
+
+				var liste = $("#meca-liste-cases-" + meca_cod).val();
+				if (nvlleCase.meca_dep[meca_cod] == 0) {
+					liste = liste.replace(" " + nvlleCase.id + ",", "");
+				} else {
+					liste = liste + " " + nvlleCase.id + ",";
+				}
+
+				$("#meca-liste-cases-" + meca_cod).val(liste);
+				$("#meca-modif-cases-" + meca_cod).val(1);			// Pos_cod list des MECA modifiée!
+
+			} else if (pinceauSpecial.id=="ea-dep" ) {
 				var fonc_cod = $("#select-ea-dep").val();
 
 				nvlleCase.ea_dep[fonc_cod] = nvlleCase.ea_dep[fonc_cod] ? 0 : 1 ;
@@ -314,7 +333,7 @@ Pinceau.annuleCase = function (idx) {
 
 Pinceau.dessineListe = function (objet, parent) {
 	var imagesParLigne = 5;
-	var lignesVisibles = 8;
+	var lignesVisibles = 10;
 	var nombreDeLignes = objet.donnees.length / imagesParLigne;
 	var largeurPX = (imagesParLigne * 30);
 	var hauteurPX = (nombreDeLignes * 30);

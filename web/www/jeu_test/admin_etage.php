@@ -44,6 +44,11 @@ $stmt_m_ea = $pdo->query($req_m_ea);
 $effet_auto = $stmt_m_ea->fetchAll(PDO::FETCH_ASSOC);
 
 
+$req_m_meca= "select meca_cod, meca_nom,STRING_AGG (pmeca_pos_cod, ', ') pos_cods  from meca left join meca_position on pmeca_meca_cod=meca_cod where meca_pos_etage={$admin_etage}  group by meca_cod, meca_nom order by meca_nom ";
+$stmt_m_meca = $pdo->query($req_m_meca);
+$mecanisme = $stmt_m_meca->fetchAll(PDO::FETCH_ASSOC);
+
+
 switch ($methode) {
     case "debut":
         break;
@@ -64,7 +69,7 @@ switch ($methode) {
                     <td><strong>Spécial</strong></td>
                 </tr>
                 <tr valign="top">
-                    <td class="bordiv">
+                    <td style="min-width: 330px;" class="bordiv">
                         Outil sélectionné : <img style="display: inline;" src="" alt="Aucun" title="Aucun"
                                                  id="imgPinceau">
                         (Type : <span id="typePinceau">aucun</span>)<br>
@@ -175,13 +180,24 @@ switch ($methode) {
                        <br/>
 
                         <input name="special" value="ea-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
-                        <span title="Gestion de la position des Effets-Auto.">Effet-Auto: </span>
+                        <span title="Gestion de la position des Effets-Auto.">Effets-Auto: </span>
                         <?php
                         echo '<select name="select-ea-dep" id="select-ea-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'ea-dep\')">';
                         echo '<option value="0">Selecteur de positions</option>';
                         for ($ea=0; $ea<count($effet_auto); $ea++ )
                         {
                             echo '<option value="'.$effet_auto[$ea]["fonc_cod"].'">'.$effet_auto[$ea]["nom_ea"].'</option>';
+                        }
+                        echo '</select>';
+                        ?>                       <br/>
+
+                        <input name="special" value="meca-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Gestion de la position des Mécanismes.">Mécanismes: </span>
+                        <?php
+                        echo '<select name="select-meca-dep" id="select-meca-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'meca-dep\')">';
+                        for ($m=0; $m<count($mecanisme); $m++ )
+                        {
+                            echo '<option value="'.$mecanisme[$m]["meca_cod"].'">'.$mecanisme[$m]["meca_nom"].'</option>';
                         }
                         echo '</select>';
                         ?>
@@ -248,6 +264,12 @@ switch ($methode) {
                 echo "<input type='hidden' name=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"0\">";
                 echo "<input type='hidden' name=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"".$effet_auto[$ea]["pos_cods"]."\">";
             }
+
+            for ($m=0; $m<count($mecanisme); $m++ )
+            {
+                echo "<input type='hidden' name=\"meca-modif-cases-".$mecanisme[$m]["meca_cod"]."\" id=\"meca-modif-cases-".$mecanisme[$m]["meca_cod"]."\" value=\"0\">";
+                echo "<input type='hidden' name=\"meca-liste-cases-".$mecanisme[$m]["meca_cod"]."\" id=\"meca-liste-cases-".$mecanisme[$m]["meca_cod"]."\" value=\" ".$mecanisme[$m]["pos_cods"].",\">";
+            }
             ?>
             <center><input type="submit" class="test" value="Modifier !"></center>
         </form>
@@ -257,7 +279,7 @@ switch ($methode) {
 
     case "valide":
 
-        // on traite d'abord les EA
+        // on traite d'abord les EA ======================================
         $nb_modif_ea = 0 ;
         foreach ($_REQUEST as $k => $v) {
             if ((substr($k, 0,15) == "ea-modif-cases-") && ($v=="1") && isset($_REQUEST["ea-liste-cases-".substr($k, 15)])) {
@@ -266,6 +288,20 @@ switch ($methode) {
                 $req_ea= "update fonction_specifique set fonc_trigger_param=jsonb_set(fonc_trigger_param::jsonb, '{\"fonc_trig_pos_cods\"}', '\"".$_REQUEST["ea-liste-cases-".substr($k, 15)]."\"') where fonc_cod=:fonc_cod";
                 $stmt = $pdo->prepare($req_ea);
                 $stmt = $pdo->execute(array(":fonc_cod" => substr($k, 15)), $stmt);
+            }
+        }
+
+        // on traite ensuite les MECA ======================================
+        $nb_modif_ea = 0 ;
+        foreach ($_REQUEST as $k => $v) {
+            if ((substr($k, 0,17) == "meca-modif-cases-") && ($v=="1") && isset($_REQUEST["meca-liste-cases-".substr($k, 17)])) {
+                $nb_modif_meca ++ ;
+                $meca_cod = substr($k, 17);
+                $meca = new meca();
+                $meca->charge($meca_cod);
+                $pos_cod_liste = explode( ",", $_REQUEST["meca-liste-cases-".substr($k, 17)] );
+                $meca->set_positions($pos_cod_liste);
+
             }
         }
 
@@ -279,7 +315,7 @@ switch ($methode) {
             echo "<p>Erreur ! Étage non défini.</p>";
             $erreur = true;
         }
-        if (empty($modifs) && ($nb_modif_ea==0))
+        if (empty($modifs) && ($nb_modif_ea==0) && ($nb_modif_meca==0))
         {
             echo "<p>Aucune modification enregistrée</p>";
             $erreur = true;
@@ -436,7 +472,8 @@ switch ($methode) {
             $stmt = $pdo->query($req);
             echo "<p>Changements validés dans les automaps.</p>";
         }
-        if ($nb_modif_ea>0) echo "<p>Modifications sur les positions $nb_modif_ea EA<br /></p>";
+        if ($nb_modif_ea>0) echo "<p>Modifications sur les positions d'EA : $nb_modif_ea<br /></p>";
+        if ($nb_modif_meca>0) echo "<p>Modifications sur les positions de mécanismes : $nb_modif_meca <br /></p>";
         break;
 }
 $contenu_page = ob_get_contents();

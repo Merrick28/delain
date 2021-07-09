@@ -224,4 +224,37 @@ class meca
                 die('Unknown method.');
         }
     }
+
+    function set_positions($pos_liste)
+    {
+        $pdo = new bddpdo;
+
+        // Préparation de la liste des positionen PDO
+        $i = 0 ; $in_req = "";
+        foreach ($pos_liste as $item)
+        {
+            if ((int)$item != 0)
+            {
+                $key = ":pmeca_pos_cod".$i++;
+                $in_req .= ($in_req ? "," : "") . $key; // :id0,:id1,:id2
+                $in_list[$key] = (int)$item; // collecting values into a key-value array
+            }
+        }
+
+        // Un trigger "ON DELETE" désactive un eventuel mecanisme activé sur cette position et rétablit les caracs de base de la position
+        $req = "delete from meca_position where pmeca_meca_cod=:meca_cod and pmeca_pos_cod not in ({$in_req})";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array_merge([":meca_cod" => $this->meca_cod],$in_list),$stmt);
+
+        foreach ($pos_liste as $pos_cod)
+        {
+            if ((int)$pos_cod != 0)
+            {
+                $pdo    = new bddpdo();
+                $req = "select meca_ajout_pos(:meca_cod,:pos_cod) as resultat";
+                $stmt   = $pdo->prepare($req);
+                $pdo->execute(array( ":meca_cod" => $this->meca_cod, ":pos_cod" => (int)$pos_cod), $stmt);
+            }
+        }
+    }
 }
