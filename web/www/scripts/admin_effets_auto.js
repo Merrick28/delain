@@ -157,6 +157,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Bonus / Malus standard',
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
@@ -181,6 +182,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Soins/Dégâts & Multiples Bonus/Malus',
 		description: 'Applique des Soins/Dégâts ainsi que des Bonus/Malus, à une ou plusieurs cibles.',
 		parametres: [
@@ -204,6 +206,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Attribution d’un titre',
 		description: 'Donne un titre à l’adversaire du monstre (tueur ou tué).',
 		parametres: [
@@ -217,6 +220,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Crapaud',
 		description: 'Transforme une cible en crapaud. Image changée, messages agrémentés de CROAAAAs. Antidote : se faire embrasser.',
 		parametres: [
@@ -235,6 +239,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Dégâts (ou soins)',
 		description: 'Inflige des dégâts aux cibles données (pour une valeur positive ; ou des soins pour une valeur négative).',
 		parametres: [
@@ -256,6 +261,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: false,
 		bm_compteur: false,
+		ea_etage: false,
 		obsolete: true,
 		affichage: 'Esprit Damné (Obsolète)',
 		description: 'Applique des Malus standard de -25 de chances au toucher, -3 dégâts, +2 PA/attaque (proba 50% par cible), +3 PA/déplacements (proba 12% par cible).',
@@ -274,6 +280,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocation de monstre',
 		description: 'Invoque un monstre d’un type donné.',
@@ -291,6 +298,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocations multiples',
 		description: 'Invoque plusieurs monstres du type donné. Typiquement, les gelées lors de leur mort.',
@@ -307,6 +315,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocation sur l’étage',
 		description: 'Invoque plusieurs monstres du type donné, quelque part sur le même étage. Typiquement, les golems lors de leur mort.',
@@ -324,6 +333,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: false,
 		bm_compteur: false,
+		ea_etage: false,
 		affichage: 'Mélange voies magiques',
 		description: 'Modifie de façon permanente la voie magique des cibles (animation halloween).',
 		parametres: [
@@ -342,6 +352,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Nécromancie',
 		description: 'Crée un mort-vivant. Les probabilités sont les suivantes : \n5% Chasseur éternel, \n15% Zombie, \n10% Spectre de L’effroi, \n20% Squelette, \n10% Guerrier squelette, \n5% Poltergeist, \n30% Archer Squelette, \n5% Tourmenteur.',
@@ -354,6 +365,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Nécromancie (tueur)',
 		description: 'Crée un mort-vivant lorsqu’une cible est tuée, ou un clone de la victime (15% de chances).',
@@ -366,6 +378,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: false,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Quête de l’Avatar',
 		description: 'Valide ou infirme la quête liée à la mort de l’Avatar.',
 		parametres: [],
@@ -377,6 +390,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Usure d’objets',
 		description: 'Use un objet équipé par un aventurier ou un familier.',
 		parametres: [
@@ -396,6 +410,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Suppression de Bonus/Malus',
 		description: 'Supprime les effets d’un Bonus/Malus.',
 		parametres: [
@@ -417,6 +432,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Lance un sort',
 		description: 'Lance un sort sur une ou plusieurs cibles, si le sort est un sort de case, il sera lancé sur la case de la ou des cibles.',
 		parametres: [
@@ -438,6 +454,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Projette ou Attire',
 		description: 'Projette ou attire à lui, le ou les cibles.',
 		parametres: [
@@ -462,6 +479,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Bondi sur une cible',
 		description: 'Saute directement sur une des cibles à portée. Compte comme un déplacement (déclenchement de l’EA « Se déplace »).',
 		parametres: [
@@ -482,6 +500,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Laisse tomber des objets',
 		description: 'Laisse tomber des objets au sol.',
 		parametres: [
@@ -498,6 +517,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Invoque des monstres',
 		description: 'Génération d’un ou plusieurs monstres dont le type est établit depuis une liste.',
 		parametres: [
@@ -519,6 +539,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Se metamorphose',
 		description: 'Prends les caractéristiques d’un autre monstre générique.',
 		parametres: [
@@ -535,6 +556,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: false,
 		affichage: 'Implante une EA',
 		description: 'Implante une EA à une cible.',
 		parametres: [
@@ -548,6 +570,22 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_validite', type: 'entier', label: 'Validité de l’implantation (en min.):', description: 'Délai de validité (en minutes) de l’EA après implantation. Laisser vide pour un délai infini.',  validation: Validation.Types.EntierOuVide },
 			{ nom: 'effet', type: 'ea', label: 'EA à implanter:', description: 'L’EA qui sera implantée sur les cibles.' }
+		],
+	},
+	{	nom: 'ea_meca',
+		debut: false,
+		tueur: false,
+		mort: false,
+		attaque: false,
+		modifiable: true,
+		bm_compteur: false,
+		ea_etage: true,
+		affichage: 'Active/Desactive un mécanisme',
+		description: 'Activation/Desactivation de mécanismes.',
+		parametres: [
+			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des mécanismes).', validation: Validation.Types.Numerique },
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_meca', type: 'meca', label: 'Liste de mécanisme', description: 'Liste de mécanisme à activer/désactiver avec chances individuels.' }
 		],
 	},
 ];
@@ -622,7 +660,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || (!EffetAuto.EditionCompteur && !EffetAuto.EditionEAPosition)) && (fct.bm_compteur && type == 'POS' ||fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || (!EffetAuto.EditionCompteur && !EffetAuto.EditionEAPosition)) && ((fct.ea_etage && type == 'POS') ||(fct.bm_compteur && type == 'BMC') || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -1070,6 +1108,49 @@ EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
 	return html;
 }
 
+
+EffetAuto.ChampMeca = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomMecaCod = "obj_fonc_" + parametre.nom + numero.toString()+"_meca_cod";
+	var nomPosCod = "obj_fonc_" + parametre.nom + numero.toString()+"_pos_cod";
+	var nomSens = "obj_fonc_" + parametre.nom + numero.toString()+"_sens";
+	var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomMecaCod + '[]">';
+		html += EffetAuto.CopieListe ('liste_meca_modele',  valeur.length ? valeur[i].meca_cod : "");
+		html += '</select>';
+
+		html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
+		var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Active</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactive</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverse</option>';
+		html += '</select>' ;
+
+		html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
+
+		html += '<strong>Position:</strong>&nbsp;<span title="Position ciblée pour les mecanismes individuels (facultatif)">';
+		html += '<input data-entry="val" id="row-'+numero+'-'+i+'-pos_cod" name="'+nomPosCod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].pos_cod : "")+'">';
+		html += '</span>&nbsp';
+		html += '<span style="display:none;" data-entry="text" id="row-'+numero+'-'+i+'-pos_nom"></span>&nbsp';
+		html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-pos\',\'position\',\'Rechercher une position\',[\'\',\'\',\'\']);">';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
 EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var base = "fonc_" + parametre.nom + numero.toString();
@@ -1298,6 +1379,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'POSrearme':
 			html = pd + EffetAuto.ChampChoixRearmement (parametre, numero, valeur) + pf;
+			break;
+		case 'meca':
+			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
 			break;
 		case 'PVsens':
 			html = pd + EffetAuto.ChampChoixPVsens (parametre, numero, valeur) + pf;

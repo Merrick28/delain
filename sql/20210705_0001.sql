@@ -52,6 +52,7 @@ CREATE TABLE public.meca_position
   pmeca_meca_cod integer,
   pmeca_pos_cod integer,
   pmeca_pos_etage integer NOT NULL,
+  pmeca_actif integer NOT NULL DEFAULT 0,
   pmeca_base_pos_type_aff integer NOT NULL,
   pmeca_base_pos_decor integer NOT NULL,
   pmeca_base_pos_decor_dessus integer NOT NULL,
