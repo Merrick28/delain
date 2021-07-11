@@ -57,7 +57,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet « implantation » d’effet-automatique.';
+    -- return 'Pas d’effet « implantation » d’effet-automatique.';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -168,9 +169,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « implantation » d’effet-automatique';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « implantation » d’effet-automatique';
+  -- end if;
 
   return code_retour;
 end;$_$;

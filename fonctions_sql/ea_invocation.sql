@@ -57,7 +57,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « invocation ».';
+    -- return 'Pas d’effet automatique de « invocation ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -181,9 +182,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « invocation »';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « invocation »';
+  -- end if;
 
   return code_retour;
 end;$_$;

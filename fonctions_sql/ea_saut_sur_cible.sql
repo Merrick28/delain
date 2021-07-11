@@ -55,7 +55,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « saut sur cible ».';
+    -- return 'Pas d’effet automatique de « saut sur cible ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -190,9 +191,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « saut sur cible »';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « saut sur cible »';
+  -- end if;
 
   return code_retour;
 end;$_$;

@@ -204,9 +204,9 @@ begin
     end if;
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
+  -- end if;
 
   return code_retour;
 end;$_$;

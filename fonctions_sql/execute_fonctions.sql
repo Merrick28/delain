@@ -35,6 +35,8 @@ declare
   v_sante_max integer;       -- fourchette haute
   v_pfonc_param json;        -- Paramètre mémorisé pour cet EA
 	v_do_it bool;              -- Executer la fonction
+	v_chainage integer;        -- valeur du chainage des EA courant
+	v_chaine_ordre integer;    -- récupération du n° de chainage courrant
 
 	-- variable specifique au BMC
 	v_perso_nom text;          -- Nom du perso avan modification
@@ -52,6 +54,7 @@ declare
 begin
 
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
+  v_chainage := 0 ;                 -- traitement des EA chainés
 
   -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
@@ -74,6 +77,7 @@ begin
 			              (  ( fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' ))))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
+			order by coalesce(f_to_numeric(fonc_trigger_param->>'fonc_trig_proba_chain'),0)
 		)
 	loop
 
@@ -288,15 +292,24 @@ begin
             update fonction_specifique set fonc_trigger_param=jsonb_set(row.fonc_trigger_param::jsonb, '{"fonc_trig_rearme"}', '-1') where fonc_cod=row.fonc_cod ;
         end if;
 
+        -- traitement du chainage des EA.
+        v_chaine_ordre :=  coalesce(f_to_numeric(row.fonc_trigger_param->>'fonc_trig_proba_chain'),0) ;
+        if (v_chaine_ordre = 0) or (v_chaine_ordre <= (v_chainage +1)) then
 
-        -- --------------- maintenant executer la fonction de l'EA trouvée !
-        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
-        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            -- --------------- maintenant executer la fonction de l'EA trouvée !
+            -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
 
-        if coalesce(retour_fonction, '') != '' then
-          code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            if coalesce(retour_fonction, '') != '' then
+                -- seulement s'il y a un retour indiquant que l'EA a été déclenchée, on augmente le niveau de chainage si nécéssaire!
+                if (v_chaine_ordre < v_chainage) then
+                    v_chainage := v_chaine_ordre ;
+                end if;
+                code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            end if;
+
         end if;
-        
+
     end if;
     
 	end loop;

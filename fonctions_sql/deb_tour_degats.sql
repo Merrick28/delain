@@ -68,7 +68,8 @@ begin
         select into v_nom_efaseur perso_nom from perso where perso_cod = v_source;
 	-- Chances de déclencher l’effet
 	if random() > v_proba then
-		return 'Pas d’effet automatique de dégâts/soins.';
+		-- return 'Pas d’effet automatique de dégâts/soins.';
+		return '';
 	end if;
 	-- Initialisation des conteneurs
 	code_retour := '';
@@ -247,9 +248,9 @@ begin
 		end if;
 	end loop;
 
-	if code_retour = '' then
-		code_retour := 'Aucune cible éligible pour l’effet de dégâts/soins.';
-	end if;
+	-- if code_retour = '' then
+	-- 	code_retour := 'Aucune cible éligible pour l’effet de dégâts/soins.';
+	-- end if;
 
 	return code_retour;
 end;$_$;

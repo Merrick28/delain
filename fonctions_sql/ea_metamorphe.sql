@@ -73,7 +73,8 @@ begin
   
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « métamorphose ».';
+    -- return 'Pas d’effet automatique de « métamorphose ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -237,9 +238,9 @@ begin
   end if;
 
 
-  if code_retour = '' then
-    code_retour :=  'Pas d’effet de « métamorphose ».';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour :=  'Pas d’effet de « métamorphose ».';
+  -- end if;
 
   return code_retour;
 end;$_$;
