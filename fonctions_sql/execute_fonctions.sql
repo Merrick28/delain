@@ -302,7 +302,7 @@ begin
 
             if coalesce(retour_fonction, '') != '' then
                 -- seulement s'il y a un retour indiquant que l'EA a été déclenchée, on augmente le niveau de chainage si nécéssaire!
-                if (v_chaine_ordre < v_chainage) then
+                if (v_chaine_ordre > v_chainage) then
                     v_chainage := v_chaine_ordre ;
                 end if;
                 code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';

@@ -77,7 +77,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
+    -- return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
