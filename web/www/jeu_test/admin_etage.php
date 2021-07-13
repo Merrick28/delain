@@ -439,16 +439,43 @@ switch ($methode) {
                                 break;
                         }
                     }
+                    // vérifier si la case est à déjà un mécanisme activeé, si c'est le cas il faut traiter les cases "base" du mécanisme à la place
+                    $req ="select count(*)as count from meca_position where pmeca_pos_cod=$case and pmeca_actif=1 ";
+                    $stmt = $pdo->query($req, PDO::FETCH_ASSOC);
+                    $result = $stmt->fetch();
+
+                    if ($result["count"]<=0) {
+                        // Traitement sur les cases normales seulement si elles n'ont pas été activées par un mécanisme!
+                        $set_req = implode(',', $set_case);
+                        if ($set_req !== "") {
+                            $req = "update positions set $set_req where pos_cod = $case";
+                            $pdo->query($req);
+                        }
+                        $set_req = implode(',', $set_mur);
+                        if ($set_req !== "") {
+                            $req = "update murs set $set_req where mur_pos_cod = $case";
+                            $pdo->query($req);
+                        }
+                    }
+
+                    // ensuite on traite les modifications sur les mécanismes (sauvegarde de leur nouvelle base)
+                    $set_case = array_filter($set_case, function($item) { return in_array(trim(substr($item, 0, strpos($item,"="))), ["pos_type_aff","pos_decor","pos_decor_dessus","pos_passage_autorise","pos_ter_cod","pos_modif_pa_dep"]);} );
+                    array_walk($set_case, function (&$item) { $item = "pmeca_base_".$item; });
                     $set_req = implode(',', $set_case);
                     if ($set_req !== "") {
-                        $req = "update positions set $set_req where pos_cod = $case";
+                        $req = "update meca_position set $set_req where pmeca_pos_cod = $case";
                         $pdo->query($req);
                     }
+
+                    $set_mur = array_filter($set_mur, function($item) { return in_array(trim(substr($item, 0, strpos($item,"="))), ["mur_type","mur_tangible","mur_illusion"]);} );
+                    array_walk($set_mur, function (&$item) { $item = "pmeca_base_".$item; });
                     $set_req = implode(',', $set_mur);
                     if ($set_req !== "") {
-                        $req = "update murs set $set_req where mur_pos_cod = $case";
+                        $req = "update meca_position set $set_req where pmeca_pos_cod = $case";
                         $pdo->query($req);
                     }
+
+
                 } else {
                     $cpt_erreur++;
                 }

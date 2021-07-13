@@ -196,7 +196,7 @@ if ($erreur == 0)
         echo "<div style='float: left; display: inline-flex;'>Pattern:&nbsp;&nbsp;&nbsp; 
                         <div id='pattern-Fond' data-pattern='".($meca->meca_pos_type_aff=="" ? -1 : $meca->meca_pos_type_aff)."' class='caseVue caseFond pinceau ".($meca->meca_pos_type_aff=="" ? "" : "v".$meca->meca_pos_type_aff)."'>
                             <div id='pattern-Decor' data-pattern='".(int)$meca->meca_pos_decor."' class='caseVue ".($meca->meca_pos_decor=="" ? "" : "decor".$meca->meca_pos_decor)."'>
-                                <div id='pattern-Mur' data-pattern='".(int)$meca->meca_mur_type."' class='caseVue ".($meca->meca_mur_type=="" ? "" : "mur".$meca->meca_pos_decor)."'>                                
+                                <div id='pattern-Mur' data-pattern='".(int)$meca->meca_mur_type."' class='caseVue ".($meca->meca_mur_type=="" ? "" : "mur_".$meca->meca_mur_type)."'>                                
                                     <div id='pattern-DecorDessus' data-pattern='".(int)$meca->meca_pos_decor_dessus."' class='caseVue ".($meca->meca_pos_decor_dessus=="" ? "" : "decor".$meca->meca_pos_decor_dessus)."'>                                
                                     </div>
                                 </div>
@@ -255,7 +255,7 @@ if ($erreur == 0)
                 <td>{$result['meca_nom']}</td>
                 <td><div class='caseVue caseFond pinceau ".($result['meca_pos_type_aff']=="" ? "" : "v".$result['meca_pos_type_aff'])."'>
                             <div class='caseVue ".($result['meca_pos_decor']=="" ? "" : "decor".$result['meca_pos_decor'])."'>
-                                <div  class='caseVue ".($result['meca_mur_type']=="" ? "" : "mur".$result['meca_mur_type'])."'>                                
+                                <div  class='caseVue ".($result['meca_mur_type']=="" ? "" : "mur_".$result['meca_mur_type'])."'>                                
                                     <div class='caseVue ".($result['meca_pos_decor_dessus']=="" ? "" : "decor".$result['meca_pos_decor_dessus'])."'>                                
                                     </div>
                                 </div>
@@ -264,7 +264,7 @@ if ($erreur == 0)
                 </td>
                 <td>".($result['meca_type']=="G" ? "Grappe" : "Individuel")."</td>
                 <td>".($result['meca_pos_passage_autorise']=="" ? "base" : ($result['meca_pos_passage_autorise']=="1" ? "autorisé": "interdit"))."</td>
-                <td>".($result['meca_mur_tangible']=="" ? "base" : ($result['meca_pos_passage_autorise']=="O" ? "intangible": "tagible"))."</td>
+                <td>".($result['meca_mur_tangible']=="" ? "base" : ($result['meca_mur_tangible']=="O" ? "intangible": "tangible"))."</td>
                 <td>".($result['meca_mur_illusion']=="" ? "base" : ($result['meca_mur_illusion']=="O" ? "illusion": "infranchissable"))."</td>
                 <td>".($result['meca_pos_ter_cod']=="" ? "base" : ($result['meca_pos_ter_cod']=="0" ? "sans terrain": $result['ter_nom']))."</td>
                 <td>".($result['meca_pos_modif_pa_dep']=="" ? "base" : (int)$result['meca_pos_modif_pa_dep'] )."</td>

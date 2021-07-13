@@ -40,10 +40,11 @@ $style = $etage->etage_affichage;
 Etage.style = "<?php echo $style; ?>";
 
 <?php // Détail des cases
-$req_cases = "select pos_decor, pos_cod, pos_x, pos_y, pos_type_aff, coalesce(mur_type, 0) as mur_type, pos_decor_dessus, pos_passage_autorise, pos_pvp, pos_entree_arene,
-        coalesce(mur_tangible, 'N') as mur_tangible, coalesce(mur_illusion, 'N') as mur_illusion, coalesce(mur_creusable, 'N') as mur_creusable, coalesce(pos_modif_pa_dep, 0) as pos_modif_pa_dep, coalesce(pos_ter_cod, 0) as pos_ter_cod
+$req_cases = "select coalesce(pmeca_base_pos_decor, pos_decor) as pos_decor, pos_cod, pos_x, pos_y, coalesce(pmeca_base_pos_type_aff,pos_type_aff) as pos_type_aff, coalesce(coalesce(pmeca_base_mur_type,mur_type), 0) as mur_type, coalesce(pmeca_base_pos_decor_dessus, pos_decor_dessus) as pos_decor_dessus, coalesce(pmeca_base_pos_passage_autorise, pos_passage_autorise) as pos_passage_autorise, pos_pvp, pos_entree_arene,
+        coalesce(coalesce(pmeca_base_mur_tangible,mur_tangible), 'N') as mur_tangible, coalesce(coalesce(pmeca_base_mur_illusion,mur_illusion), 'N') as mur_illusion, coalesce(mur_creusable, 'N') as mur_creusable, coalesce(coalesce(pmeca_base_pos_modif_pa_dep,pos_modif_pa_dep), 0) as pos_modif_pa_dep, coalesce(coalesce(pmeca_base_pos_ter_cod,pos_ter_cod), 0) as pos_ter_cod
 	from positions
 	left outer join murs on mur_pos_cod = pos_cod
+	left outer join (select distinct pmeca_pos_cod, pmeca_base_pos_decor, pmeca_base_pos_type_aff,pmeca_base_pos_decor_dessus,pmeca_base_pos_passage_autorise,pmeca_base_pos_modif_pa_dep,pmeca_base_pos_ter_cod, pmeca_base_mur_type, pmeca_base_mur_tangible, pmeca_base_mur_illusion from meca_position where pmeca_actif=1 and pmeca_pos_etage = $num_etage) as mpp on pmeca_pos_cod=pos_cod
 	where pos_etage = $num_etage 
 	order by pos_y desc, pos_x";
 $stmt = $pdo->query($req_cases);
