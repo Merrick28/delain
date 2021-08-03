@@ -1,6 +1,7 @@
 console.log('chargement admin_etage_meca');
 
 var defautImageUrl = "/images/del.gif";
+var removeImageUrl = "/images/remove.png";
 var cheminImages = "/images/";
 var Fonds = {};
 Fonds.donnees = new Array();
@@ -15,8 +16,9 @@ Fonds.getSousType = function (id) { return true; }
 
 var Murs = {};
 Murs.donnees = new Array();
+Murs.donnees[-1] = { id: -1 };
 Murs.isDefaut = function (id) { return id == 0; };
-Murs.getUrl = function (id) { return ( Murs.isDefaut(id)) ? defautImageUrl : cheminImages + 't_' + Etage.style + '_mur_' + id + '.png';};
+Murs.getUrl = function (id) { return id == -1 ? removeImageUrl : (( Murs.isDefaut(id)) ? defautImageUrl : cheminImages + 't_' + Etage.style + '_mur_' + id + '.png');};
 Murs.getClass = function (id) { return (Murs.isDefaut(id)) ? "" : 'mur_' + id;};
 Murs.getId = function (id) { return 'mur' + id;};
 Murs.type = "Mur";
@@ -71,7 +73,7 @@ Pinceau.dessineListe = function (objet, parent) {
 	divConteneur.style.width = largeurPX.toString() + "px";
 	divConteneur.style.heigth = hauteurPX.toString() + "px";
 
-	var shift = objet.donnees[-1] ? -1: 0 ;
+	var shift = objet.donnees[-1] ? -1 : 0 ;
 	for (var i = shift; i < objet.donnees.length; i++) {
 		var debutLigne = ((i-shift) % imagesParLigne == 0);
 		var idObj = objet.donnees[i].id;
