@@ -24,6 +24,7 @@ declare
   code_retour text;
   v_perso_nom text;
   v_ppos_pos_cod integer;
+  v_ea_pos_cod integer;
   v_pos_cod integer;
   v_nb_meca integer;
   taux numeric;
@@ -41,6 +42,7 @@ begin
 
   -- Position et carac
   select perso_nom, ppos_pos_cod into v_perso_nom, v_ppos_pos_cod from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod = v_perso_cod;
+  v_ea_pos_cod := f_to_numeric(v_params->>'ea_pos_cod'::text);
 
   -- boucle sur la liste des mécanismes
   v_nb_meca := 0 ;  -- comptage des mecas declenchés!
@@ -50,7 +52,7 @@ begin
       if (taux=0) or (random() <= taux) then
           -- declenchement du mecanisqme !!!  "{"meca_cod":"10","sens":"0","taux":"100","pos_cod":""}"
           v_nb_meca := v_nb_meca + 1;
-          perform meca_declenchement( f_to_numeric(ligne.value->>'meca_cod'::text)::integer, f_to_numeric(ligne.value->>'sens'::text)::integer, f_to_numeric(ligne.value->>'pos_cod'::text)::integer, v_ppos_pos_cod  ) ;
+          perform meca_declenchement( f_to_numeric(ligne.value->>'meca_cod'::text)::integer, f_to_numeric(ligne.value->>'sens'::text)::integer, f_to_numeric(ligne.value->>'pos_cod'::text)::integer, coalesce(nullif(v_ea_pos_cod,0), v_ppos_pos_cod) ) ;
 
       end if;
   end loop;

@@ -292,7 +292,7 @@ switch ($methode) {
         }
 
         // on traite ensuite les MECA ======================================
-        $nb_modif_ea = 0 ;
+        $nb_modif_meca = 0 ;
         foreach ($_REQUEST as $k => $v) {
             if ((substr($k, 0,17) == "meca-modif-cases-") && ($v=="1") && isset($_REQUEST["meca-liste-cases-".substr($k, 17)])) {
                 $nb_modif_meca ++ ;

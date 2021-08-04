@@ -95,6 +95,13 @@ begin
 
             v_do_it := true ;   /* le perso vérifie les condition, par défaut on active l'EA */
 
+            /* passer en parametre la case qui déclenche l'EA (ncecessaire pour les EA sur les mécanismes individuels)*/
+            if row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND  row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
+                v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(v_param->>'ancien_pos_cod'::text, '') || '}' )::jsonb)::json ;
+            else
+                v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(v_param->>'nouveau_pos_cod'::text, '') || '}' )::jsonb)::json ;
+            end if;
+
             if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2) then
                 /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition */
 

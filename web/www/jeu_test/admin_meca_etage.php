@@ -54,6 +54,11 @@ if ($erreur == 0)
 
             if ($_POST['meca_cod']>0) {
 
+                // désactiver un mécanisme avant de le modifier!
+                $req = "SELECT meca_declenchement(pmeca_meca_cod,-1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+
                 $req = "UPDATE meca SET meca_nom=:meca_nom, meca_type=:meca_type, meca_pos_etage=:meca_pos_etage, meca_pos_type_aff=:meca_pos_type_aff, 
                                         meca_pos_decor=:meca_pos_decor, meca_pos_decor_dessus=:meca_pos_decor_dessus, meca_pos_passage_autorise=:meca_pos_passage_autorise, 
                                         meca_pos_modif_pa_dep=:meca_pos_modif_pa_dep, meca_pos_ter_cod=:meca_pos_ter_cod, meca_mur_type=:meca_mur_type, 
@@ -91,6 +96,30 @@ if ($erreur == 0)
 
                 $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) supprime mécanismes d'étage : $pos_etage\n";
                 $message = "Suppression du mécanisme: #". $_POST['meca_cod'];
+
+                writelog($log . $message, 'lieux_etages');
+                echo nl2br($message);
+                echo "<hr>";
+        } else if ($_POST['methode']=="activer_meca") {
+
+                $req = "SELECT meca_declenchement(pmeca_meca_cod,1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+
+                $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) active mécanismes d'étage : $pos_etage\n";
+                $message = "Activation du mécanisme: #". $_POST['meca_cod'];
+
+                writelog($log . $message, 'lieux_etages');
+                echo nl2br($message);
+                echo "<hr>";
+        } else if ($_POST['methode']=="desactiver_meca") {
+
+                $req = "SELECT meca_declenchement(pmeca_meca_cod,-1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+
+                $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) désactive mécanismes d'étage : $pos_etage\n";
+                $message = "Désactivation du mécanisme: #". $_POST['meca_cod'];
 
                 writelog($log . $message, 'lieux_etages');
                 echo nl2br($message);
@@ -220,11 +249,11 @@ if ($erreur == 0)
 
         $bouton = ($meca->meca_cod > 0) ? "Modifier le mécanisme!" : "créer le mécanisme!";
         echo "<br><br><input type='submit' class='test' value='{$bouton}'/>";
-
         if ($meca->meca_cod > 0)
         {
             echo '&nbsp;&nbsp;&nbsp;&nbsp;ou&nbsp;<a href="admin_meca_etage.php?pos_etage='.$pos_etage.'">Créer un nouveau</a><br>';
         }
+        echo "<br><br><b><u>ATTENTION</u></b>: Modifier un mécanisme existant entraine sa désactivation.";
         echo "<br></form>";
 
         echo "<HR>Liste des mécanismes de l'étage:";
@@ -234,11 +263,31 @@ if ($erreur == 0)
                    <input type='hidden' name='pos_etage' value='{$pos_etage}'>
                    <input type='hidden' name='meca_cod' value=''>
                </form>
+               <form name='activermeca' method='post' action='admin_meca_etage.php'>
+                   <input type='hidden' name='methode' value='activer_meca'>
+                   <input type='hidden' name='pos_etage' value='{$pos_etage}'>
+                   <input type='hidden' name='meca_cod' value=''>
+               </form>
+               <form name='desactivermeca' method='post' action='admin_meca_etage.php'>
+                   <input type='hidden' name='methode' value='desactiver_meca'>
+                   <input type='hidden' name='pos_etage' value='{$pos_etage}'>
+                   <input type='hidden' name='meca_cod' value=''>
+               </form>
                <script language='javascript'>
                    function supprimermeca(code)
                    {
                        document.supprimermeca.meca_cod.value = code;
                        document.supprimermeca.submit();
+                   }
+                   function activermeca(code)
+                   {
+                       document.activermeca.meca_cod.value = code;
+                       document.activermeca.submit();
+                   }
+                   function desactivermeca(code)
+                   {
+                       document.desactivermeca.meca_cod.value = code;
+                       document.desactivermeca.submit();
                    }
                </script>
                <table>";
@@ -246,9 +295,15 @@ if ($erreur == 0)
         $req_meca  = "select * from meca left join terrain on ter_cod=meca_pos_ter_cod where meca_pos_etage = ? order by meca_nom, meca_cod";
         $stmt = $pdo->prepare($req_meca);
         $stmt = $pdo->execute(array($pos_etage), $stmt);
-        echo "<tr><td></td><td width='200px;'><b>Nom</b></td><td><b>Type</b></td><td><b>Pattern</b></td><td><b>Passage</b></td><td><b>Mur Tangible</b></td><td><b>Mur Illusion</b></td><td><b>Terrain</b></td><td><b>Modif. PA</b></td><td></td></tr>";
+        echo "<tr><td></td><td width='200px;'><b>Nom</b></td><td><b>Type</b></td><td><b>Pattern</b></td><td><b>Passage</b></td><td><b>Mur Tangible</b></td><td><b>Mur Illusion</b></td><td><b>Terrain</b></td><td><b>Modif. PA</b></td><td><b>Etat actuel</b></td><td><b>Activation/Désactivation</b></td><td></td></tr>";
         while ($result = $stmt->fetch())
         {
+            // calculer l'état du mecanisme
+            $req_pmeca  = "select count(*) nb_count, sum(pmeca_actif) as nb_actif from meca_position where pmeca_meca_cod= ? ";
+            $stmt2 = $pdo->prepare($req_pmeca);
+            $stmt2 = $pdo->execute(array($result['meca_cod']), $stmt2);
+            $result2 = $stmt2->fetch();
+
             echo "
             <tr>
                 <td><a href=\"?pos_etage={$pos_etage}&meca_cod={$result['meca_cod']}\">Modifier</a></td>
@@ -268,10 +323,13 @@ if ($erreur == 0)
                 <td>".($result['meca_mur_illusion']=="" ? "base" : ($result['meca_mur_illusion']=="O" ? "illusion": "infranchissable"))."</td>
                 <td>".($result['meca_pos_ter_cod']=="" ? "base" : ($result['meca_pos_ter_cod']=="0" ? "sans terrain": $result['ter_nom']))."</td>
                 <td>".($result['meca_pos_modif_pa_dep']=="" ? "base" : (int)$result['meca_pos_modif_pa_dep'] )."</td>
+                <td><b>".($result2["nb_count"]==0 ? "Inutilisé" : ($result2["nb_actif"]==0 ? "Désactivé" : "Activé".($result['meca_type']=="G" ? "" : " ".$result2["nb_actif"]."/".$result2["nb_count"])))."</b></td>
+                <td><a href=\"javascript:desactivermeca({$result['meca_cod']});\">Désactiver</a> / <a href=\"javascript:activermeca({$result['meca_cod']});\">Activer</a></td>
                 <td><a href=\"javascript:supprimermeca({$result['meca_cod']});\">Supprimer</a></td>
             </tr>";
         }
         echo '</table>';
+        echo "<br><br><b><u>ATTENTION</u></b>: Une activation sur un mecanisme « individuel » activera toutes les cases où ce mécanisme est utilisé!";
     }
 }
 #meca_nom, meca_type, meca_pos_etage, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_mur_illusion)

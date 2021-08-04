@@ -33,7 +33,7 @@ declare
 begin
 
   -- position de la case ciblé si mécanisme du type 'Individuel'
-  v_target_pos_cod := COALESCE(v_meca_pos_cod, v_target_pos_cod) ;
+  v_target_pos_cod := COALESCE(NULLIF(v_meca_pos_cod,0), v_perso_pos_cod) ;
   v_automap := 0 ;  -- maj de l'automap requis !
 
 
