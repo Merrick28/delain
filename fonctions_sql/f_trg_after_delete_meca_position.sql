@@ -23,12 +23,12 @@ begin
          -- =============================================== DEACTIVATION INDIVIDUELLE ===================================
           -- retour à l'état normal de la case
           update positions set
-                pos_type_aff = pmeca_base_pos_type_aff,
-                pos_decor = pmeca_base_pos_decor,
-                pos_decor_dessus = pmeca_base_pos_decor_dessus,
-                pos_passage_autorise = pmeca_base_pos_passage_autorise,
-                pos_modif_pa_dep = pmeca_base_pos_modif_pa_dep,
-                pos_ter_cod = pmeca_base_pos_ter_cod
+                pos_type_aff = OLD.pmeca_base_pos_type_aff,
+                pos_decor = OLD.pmeca_base_pos_decor,
+                pos_decor_dessus = OLD.pmeca_base_pos_decor_dessus,
+                pos_passage_autorise = OLD.pmeca_base_pos_passage_autorise,
+                pos_modif_pa_dep = OLD.pmeca_base_pos_modif_pa_dep,
+                pos_ter_cod = OLD.pmeca_base_pos_ter_cod
               where pos_cod=v_target_pos_cod  ;
 
           -- retour à l'état normal du mur

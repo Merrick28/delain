@@ -220,7 +220,8 @@ begin
                 pos_passage_autorise = pmeca_base_pos_passage_autorise,
                 pos_modif_pa_dep = pmeca_base_pos_modif_pa_dep,
                 pos_ter_cod = pmeca_base_pos_ter_cod
-              where pos_cod=v_target_pos_cod  ;
+              from meca_position
+              where pmeca_meca_cod = v_meca_cod and pmeca_pos_cod=v_target_pos_cod and pos_cod=v_target_pos_cod ;
 
           -- retour à l'état normal du mur
           select count(*) into v_count from meca_position join meca on meca_cod=pmeca_meca_cod join murs on mur_pos_cod=pmeca_pos_cod where pmeca_meca_cod=v_meca_cod and pmeca_pos_cod=v_target_pos_cod and pmeca_base_mur_type is null and meca_mur_type > 0 ;
@@ -248,7 +249,8 @@ begin
                       mur_type = coalesce(pmeca_base_mur_type, mur_type),
                       mur_tangible = coalesce(pmeca_base_mur_tangible, mur_tangible),
                       mur_illusion = coalesce(pmeca_base_mur_illusion, mur_illusion)
-                    where mur_pos_cod=v_target_pos_cod ;
+                    from meca_position
+                    where pmeca_meca_cod = v_meca_cod and pmeca_pos_cod=v_target_pos_cod and mur_pos_cod=v_target_pos_cod ;
                   
               end if;
 
