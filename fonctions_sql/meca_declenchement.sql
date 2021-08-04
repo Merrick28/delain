@@ -196,12 +196,12 @@ begin
               where mur_pos_cod=pmeca_pos_cod and pmeca_meca_cod = v_meca_cod ;
 
           -- ajouter les murs qui avaient été supprimés par le mecanisme
-          select count(*) into v_count from meca_position join meca on meca_cod=pmeca_meca_cod join murs on mur_pos_cod=pmeca_pos_cod where pmeca_meca_cod=v_meca_cod and pmeca_base_mur_type is not null and meca_mur_type = -1 ;
+          select count(*) into v_count from meca_position join meca on meca_cod=pmeca_meca_cod left join murs on mur_pos_cod=pmeca_pos_cod where mur_pos_cod is null and pmeca_meca_cod=v_meca_cod and pmeca_base_mur_type is not null and meca_mur_type = -1 ;
           if v_count>0 then
 
               insert into murs (mur_pos_cod, mur_type, mur_tangible, mur_illusion)
                   select pmeca_pos_cod as mur_pos_cod, pmeca_base_mur_type as mur_type, COALESCE(pmeca_base_mur_tangible,'O') as mur_tangible, COALESCE(pmeca_base_mur_illusion,'N') as mur_illusion
-                      from meca_position join meca on meca_cod=pmeca_meca_cod join murs on mur_pos_cod=pmeca_pos_cod where pmeca_meca_cod=v_meca_cod and pmeca_base_mur_type is not null and meca_mur_type = -1  ;
+                      from meca_position join meca on meca_cod=pmeca_meca_cod left join murs on mur_pos_cod=pmeca_pos_cod where mur_pos_cod is null and pmeca_meca_cod=v_meca_cod and pmeca_base_mur_type is not null and meca_mur_type = -1  ;
               v_automap := 1 ;  -- à cause de la suppression de mur !
 
           end if;
