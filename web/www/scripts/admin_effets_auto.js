@@ -141,7 +141,7 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_pos_cods', type: 'texte', longueur: 50,  label: 'Liste de position', description: 'Liste des positions déchenchant l’EA (pos_cod séparé par des « , » ' },
 			{ nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 cas)' },
-			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet)' },
+			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet sur la case de déclenchement ou sur toute la grappe/liste de position définie par l’EA)' },
 			{ nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
 			{ nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
 		]
@@ -870,7 +870,8 @@ EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Toujours</option>';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Une seule fois</option>';
-	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule (case)</option>';
+	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Bascule (grappe)</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option></select></label>';
 	html += "<br />";
 	return html;

@@ -97,27 +97,46 @@ begin
 
             /* passer en parametre la case qui déclenche l'EA (ncecessaire pour les EA sur les mécanismes individuels)*/
             if row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND  row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
-                v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(v_param->>'ancien_pos_cod'::text, '') || '}' )::jsonb)::json ;
+                v_pos_cod := f_to_numeric(v_param->>'ancien_pos_cod'::text) ;
             else
-                v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(v_param->>'nouveau_pos_cod'::text, '') || '}' )::jsonb)::json ;
+                v_pos_cod := f_to_numeric(v_param->>'nouveau_pos_cod'::text) ;
             end if;
+            -- injecter la case qui declenche l'ea dans les paramètres !
+            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '') || '}' )::jsonb)::json ;
 
-            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2) then
-                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition */
 
+            /* traitement des ré-armement du type bascule */
+            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2)  then
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur la case */
+
+                /* boucler sur les perso qui sont sur la case déclenchant l'EA */
+                for plist in (
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  )
+                loop
+                    if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+                        v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (case) , on ne l'active pas */
+                        exit ;
+                    end if;
+                end loop;
+
+
+            elseif ( row.fonc_trigger_param->>'fonc_trig_rearme' = 3)  then
+
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur toutes les cases de l'EA */
                 if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' and row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
-                    -- le perso arrive (ou quitte) sur une case EA type bascule, mais il quitte (ou arrive) une autre case de ce même EA, il n'y a pas de re-declechement
+                    -- le perso arrive (ou quitte) sur une case EA type bascule, mais il quitte (ou arrive) lui même sur une autre case de ce même EA, il n'y a pas de re-declechement
                     v_do_it := false  ;
 
                 else
 
-                    /* boucler sur les perso qui sont sur les cases de l'EA */
+                    /* boucler sur les perso qui sont sur toutes les cases de l'EA */
                     for plist in (
                       select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
                       )
                     loop
                         if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
-                            v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule, on ne l'active pas */
+                            v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (grappe), on ne l'active pas */
                             exit ;
                         end if;
                     end loop;

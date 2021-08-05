@@ -70,6 +70,7 @@ if ($erreur == 0)
           Cela signifie que tout « perso » (qu'il soit monstre ou joueurs) déclenchera ces effets s'il remplit les conditions du déclenchement.<br>
           <u><strong>ATTENTION</strong></u>: il faut noter que: <br>
           • Le changement de nom ne sera effectif QUE pour les monstres.<br>
+          • Un même EA ne peut pas se déclencher 2x sur la même action, ainsi la 'bascule' d'un mecanisme individuel en mode inversion peut ne pas fonctionner.<br>
         <br><br>";
 
 
