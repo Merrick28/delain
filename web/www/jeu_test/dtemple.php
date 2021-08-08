@@ -229,7 +229,7 @@ if ($erreur == 0)
             $req  =
                 "select dren_cod from dieu_renegat where dren_dieu_cod = $dieu_cod and dren_perso_cod = $perso_cod and dren_datfin > now()";
             $stmt = $pdo->query($req);
-        if ($stmt->rowCount() != 0)
+        if ($stmt && $stmt->rowCount() != 0)
         {
             // RENEGAT !!!
             echo "<p>Vous êtes <strong>renégat</strong> !! Inutile de s’attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !</p>";
