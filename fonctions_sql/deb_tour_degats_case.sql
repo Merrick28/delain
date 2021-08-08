@@ -57,7 +57,8 @@ declare
 
 begin
 
-code_retour := 'pas d''action';
+-- code_retour := 'pas d''action';
+code_retour := '';
 --On regarde si la fonction doit se déclencher
 if  lancer_des(1,100) > chance then
 	return code_retour;

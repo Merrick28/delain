@@ -253,9 +253,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « Soins/Dégats et ajout de Bonus/Malus »';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « Soins/Dégats et ajout de Bonus/Malus »';
+  -- end if;
 
   return code_retour;
 end;$_$;

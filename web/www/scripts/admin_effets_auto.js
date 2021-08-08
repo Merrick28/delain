@@ -141,7 +141,7 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_pos_cods', type: 'texte', longueur: 50,  label: 'Liste de position', description: 'Liste des positions déchenchant l’EA (pos_cod séparé par des « , » ' },
 			{ nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 cas)' },
-			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet)' },
+			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet sur la case de déclenchement ou sur toute la grappe/liste de position définie par l’EA)' },
 			{ nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
 			{ nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
 		]
@@ -157,6 +157,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Bonus / Malus standard',
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
@@ -170,7 +171,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
@@ -181,6 +183,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Soins/Dégâts & Multiples Bonus/Malus',
 		description: 'Applique des Soins/Dégâts ainsi que des Bonus/Malus, à une ou plusieurs cibles.',
 		parametres: [
@@ -190,7 +193,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'force', type: 'entier', longueur: 2, label: 'Soins/Dégâts', description: 'Le nombre de PV impactés en plus de l’effet des BM, une valeur positive pour des soins ou négative pour des dégâts. La valeur peut être fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'trig_effet_bm', type: 'listebm', label: 'Liste des Bonus/Malus', description: 'Liste des Bonus/Malus, ils seront tous appliqués si le jet de proba est réussi.' }
@@ -204,6 +208,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Attribution d’un titre',
 		description: 'Donne un titre à l’adversaire du monstre (tueur ou tué).',
 		parametres: [
@@ -217,6 +222,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Crapaud',
 		description: 'Transforme une cible en crapaud. Image changée, messages agrémentés de CROAAAAs. Antidote : se faire embrasser.',
 		parametres: [
@@ -235,6 +241,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Dégâts (ou soins)',
 		description: 'Inflige des dégâts aux cibles données (pour une valeur positive ; ou des soins pour une valeur négative).',
 		parametres: [
@@ -245,7 +252,8 @@ EffetAuto.Types = [
 			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés, suffixé de « causant X dégâts » ou « redonnant X PVs » (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de l’attaquant, [cible] celui de la cible.' }
 		],
 	},
@@ -256,6 +264,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: false,
 		bm_compteur: false,
+		ea_etage: false,
 		obsolete: true,
 		affichage: 'Esprit Damné (Obsolète)',
 		description: 'Applique des Malus standard de -25 de chances au toucher, -3 dégâts, +2 PA/attaque (proba 50% par cible), +3 PA/déplacements (proba 12% par cible).',
@@ -274,6 +283,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocation de monstre',
 		description: 'Invoque un monstre d’un type donné.',
@@ -291,6 +301,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocations multiples',
 		description: 'Invoque plusieurs monstres du type donné. Typiquement, les gelées lors de leur mort.',
@@ -307,11 +318,13 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Invocation sur l’étage',
 		description: 'Invoque plusieurs monstres du type donné, quelque part sur le même étage. Typiquement, les golems lors de leur mort.',
 		parametres: [
-			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100.', validation: Validation.Types.Entier },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100.', validation: Validation.Types.Entier },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'effet', type: 'monstre', label: 'Type de monstre', description: 'Le type de monstre à invoquer.' },
 			{ nom: 'portee', type: 'lecture', valeur: 'Étage', label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de monstres invoqués', description: 'Le nombre de monstres invoqués.', validation: Validation.Types.Entier },
@@ -324,6 +337,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: false,
 		bm_compteur: false,
+		ea_etage: false,
 		affichage: 'Mélange voies magiques',
 		description: 'Modifie de façon permanente la voie magique des cibles (animation halloween).',
 		parametres: [
@@ -331,7 +345,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'entier', label: 'Nombre de cibles', description: 'Le nombre de cibles.', validation: Validation.Types.Entier },
-			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Entier },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Entier },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'lecture', valeur: 'La créature d’Haloween a modifié la nature magique de [cible]', label: 'Message', description: 'Le message apparaissant dans les événements.' }
 		],
 	},
@@ -342,6 +357,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Nécromancie',
 		description: 'Crée un mort-vivant. Les probabilités sont les suivantes : \n5% Chasseur éternel, \n15% Zombie, \n10% Spectre de L’effroi, \n20% Squelette, \n10% Guerrier squelette, \n5% Poltergeist, \n30% Archer Squelette, \n5% Tourmenteur.',
@@ -354,6 +370,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		obsolete: true,
 		affichage: 'Nécromancie (tueur)',
 		description: 'Crée un mort-vivant lorsqu’une cible est tuée, ou un clone de la victime (15% de chances).',
@@ -366,6 +383,7 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: false,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Quête de l’Avatar',
 		description: 'Valide ou infirme la quête liée à la mort de l’Avatar.',
 		parametres: [],
@@ -377,6 +395,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Usure d’objets',
 		description: 'Use un objet équipé par un aventurier ou un familier.',
 		parametres: [
@@ -386,7 +405,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'lecture', valeur: 0, label: 'Portée', description: 'La portée de l’effet: -1 pour tout l’étage.' },
 			{ nom: 'nombre', type: 'lecture', valeur: 1, label: 'Nombre de cibles', description: 'Le nombre de cibles.' },
-			{ nom: 'proba', type: 'entier', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (nombre entier).', validation: Validation.Types.Entier }
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (nombre entier).', validation: Validation.Types.Entier },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 		],
 	},
 	{	nom: 'ea_supprime_bm',
@@ -396,6 +416,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Suppression de Bonus/Malus',
 		description: 'Supprime les effets d’un Bonus/Malus.',
 		parametres: [
@@ -405,7 +426,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_effet_bm', type: 'listebm2', label: 'Liste des Bonus/Malus à supprimer', description: 'Liste des Bonus/Malus, ils seront tous supprimés si le jet de proba est réussi.' }
 		],
@@ -417,6 +439,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Lance un sort',
 		description: 'Lance un sort sur une ou plusieurs cibles, si le sort est un sort de case, il sera lancé sur la case de la ou des cibles.',
 		parametres: [
@@ -427,7 +450,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
@@ -438,6 +462,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Projette ou Attire',
 		description: 'Projette ou attire à lui, le ou les cibles.',
 		parametres: [
@@ -451,7 +476,8 @@ EffetAuto.Types = [
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'trig_cible_combat',type: 'checkbox', label: 'Sauf la cible de combat', description: 'Pour un monstre: si coché, sa cible de combat actuelle ne sera pas projetée/attirée.'},
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
@@ -462,6 +488,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Bondi sur une cible',
 		description: 'Saute directement sur une des cibles à portée. Compte comme un déplacement (déclenchement de l’EA « Se déplace »).',
 		parametres: [
@@ -471,7 +498,8 @@ EffetAuto.Types = [
 			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
 			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
@@ -482,11 +510,13 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Laisse tomber des objets',
 		description: 'Laisse tomber des objets au sol.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_objet', type: 'drop', label: 'Liste d’objet', description: 'Liste d’objet et taux de drop de chacun, chaque tirage laissera au sol un seul objet de cette liste.' }
 		],
@@ -498,11 +528,13 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Invoque des monstres',
 		description: 'Génération d’un ou plusieurs monstres dont le type est établit depuis une liste.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de monstre', description: 'Le nombre de monstre à invoquer. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'cible', type: 'cible-case', label: 'Case de ciblage', description: 'La case est déterminée suivant Le type de cible sur lesquelles l’effet peut s’appliquer (case aléatoire s’il n’y a pas de cible valide au moment de l’invocation).' },
 			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
@@ -519,10 +551,12 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: true,
 		affichage: 'Se metamorphose',
 		description: 'Prends les caractéristiques d’un autre monstre générique.',
 		parametres: [
-			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de métamorphose, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nouveau nom de base)'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et chance de metamorphose en l’un d’eux.' }
@@ -535,6 +569,7 @@ EffetAuto.Types = [
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
+		ea_etage: false,
 		affichage: 'Implante une EA',
 		description: 'Implante une EA à une cible.',
 		parametres: [
@@ -548,6 +583,23 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_validite', type: 'entier', label: 'Validité de l’implantation (en min.):', description: 'Délai de validité (en minutes) de l’EA après implantation. Laisser vide pour un délai infini.',  validation: Validation.Types.EntierOuVide },
 			{ nom: 'effet', type: 'ea', label: 'EA à implanter:', description: 'L’EA qui sera implantée sur les cibles.' }
+		],
+	},
+	{	nom: 'ea_meca',
+		debut: false,
+		tueur: false,
+		mort: false,
+		attaque: false,
+		modifiable: true,
+		bm_compteur: false,
+		ea_etage: true,
+		affichage: 'Active/Desactive un mécanisme',
+		description: 'Activation/Desactivation de mécanismes.',
+		parametres: [
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des mécanismes).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_meca', type: 'meca', label: 'Liste de mécanisme', description: 'Liste de mécanisme à activer/désactiver avec chances individuels.' }
 		],
 	},
 ];
@@ -622,7 +674,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || (!EffetAuto.EditionCompteur && !EffetAuto.EditionEAPosition)) && (fct.bm_compteur && type == 'POS' ||fct.bm_compteur && type == 'BMC' || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
+		if (!fct.obsolete && fct.modifiable && (fct.nom != 'ea_implantation_ea' || (!EffetAuto.EditionCompteur && !EffetAuto.EditionEAPosition)) && ((fct.ea_etage && type == 'POS') ||(fct.bm_compteur && type == 'BMC') || (fct.attaque && type == 'MAL') || (fct.attaque && type == 'MAC') || (fct.debut && type == 'OTR') || (fct.debut && type == 'CES') || (fct.debut && type == 'DEP') || (fct.debut && type == 'D') || (fct.tueur && type == 'T') || (fct.mort && type == 'M') || (fct.attaque && type == 'A') || (fct.attaque && type == 'AE') || (fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT')))) {
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -818,7 +870,8 @@ EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Toujours</option>';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Une seule fois</option>';
-	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule (case)</option>';
+	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Bascule (grappe)</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option></select></label>';
 	html += "<br />";
 	return html;
@@ -1070,6 +1123,49 @@ EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
 	return html;
 }
 
+
+EffetAuto.ChampMeca = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomMecaCod = "obj_fonc_" + parametre.nom + numero.toString()+"_meca_cod";
+	var nomPosCod = "obj_fonc_" + parametre.nom + numero.toString()+"_pos_cod";
+	var nomSens = "obj_fonc_" + parametre.nom + numero.toString()+"_sens";
+	var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomMecaCod + '[]">';
+		html += EffetAuto.CopieListe ('liste_meca_modele',  valeur.length ? valeur[i].meca_cod : "");
+		html += '</select>';
+
+		html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
+		var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Active</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactive</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverse</option>';
+		html += '</select>' ;
+
+		html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
+
+		html += '<strong>Position:</strong>&nbsp;<span title="Position ciblée pour les mecanismes individuels (facultatif)">';
+		html += '<input data-entry="val" id="row-'+numero+'-'+i+'-pos_cod" name="'+nomPosCod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].pos_cod : "")+'">';
+		html += '</span>&nbsp';
+		html += '<span style="display:none;" data-entry="text" id="row-'+numero+'-'+i+'-pos_nom"></span>&nbsp';
+		html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-pos\',\'position\',\'Rechercher une position\',[\'\',\'\',\'\']);">';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
 EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var base = "fonc_" + parametre.nom + numero.toString();
@@ -1206,6 +1302,22 @@ EffetAuto.ChampEA = function (parametre, numero, valeur) {
 }
 
 
+EffetAuto.ChampProba = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = "";
+
+	var html = '<strong>&nbsp; Chainage</strong>&nbsp;<span title="Chainage des EA: un EA sans chainage ou avec un chainage d’ordre 1 sera toujours traité (suivant sa proba), un EA avec un chainage d’ordre 2 ne sera traité (avec sa proba) que si au moins un chainage d’ordre 1 s’est déclenché sur un même évènement. Et ainsi de suite...">';
+	html += '<select name="fonc_' + parametre.nom + numero.toString() +'">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Sans Chainage</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Chainage ordre 1</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Chainage ordre 2</option>';
+	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Chainage ordre 3</option></select></span>';
+
+	return html;
+
+}
+
+
 
 EffetAuto.Supprime = function (id, numero, silence) {
 
@@ -1269,6 +1381,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'ea':
 			html = pd + EffetAuto.ChampEA(parametre, numero, valeur) + pf;
 			break;
+		case 'proba':
+			html = pd + EffetAuto.ChampProba(parametre, numero, valeur) + pf;
+			break;
 		case 'sens-projection':
 			html = pd + EffetAuto.ChampChoixSensProjection(parametre, numero, valeur) + pf;
 			break;
@@ -1298,6 +1413,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'POSrearme':
 			html = pd + EffetAuto.ChampChoixRearmement (parametre, numero, valeur) + pf;
+			break;
+		case 'meca':
+			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
 			break;
 		case 'PVsens':
 			html = pd + EffetAuto.ChampChoixPVsens (parametre, numero, valeur) + pf;

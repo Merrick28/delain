@@ -27,7 +27,7 @@ declare
 begin
 	code_retour := '';
 	v_des := lancer_des(1,100);
-	code_retour := code_retour || 'lancer: ' || trim(to_char(v_des,'99999999'));
+	--code_retour := code_retour || 'lancer: ' || trim(to_char(v_des,'99999999'));
 	if v_des < v_chance_necro then
 	select into v_cible perso_cible from perso where perso_cod = monstre;
 	code_retour := code_retour || 'Cible: ' || trim(to_char(v_cible,'99999999'));

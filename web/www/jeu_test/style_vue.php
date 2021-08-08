@@ -181,6 +181,7 @@ echo ".objet{ background-image:url('" . G_IMAGES . "t_" , $etage, "_obj.png'); }
 // MURS
 ?>
 .mur_0 { background: none; }
+.mur_-1 { background-image:url('/images/remove.png'); }
 <?php if ($source == 'bdd')
 {
 	$req_styles = "select distinct mur_type from murs

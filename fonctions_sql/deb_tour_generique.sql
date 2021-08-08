@@ -77,7 +77,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
+    -- return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -204,9 +205,9 @@ begin
     end if;
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
+  -- end if;
 
   return code_retour;
 end;$_$;

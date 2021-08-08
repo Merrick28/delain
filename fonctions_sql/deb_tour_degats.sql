@@ -68,7 +68,8 @@ begin
         select into v_nom_efaseur perso_nom from perso where perso_cod = v_source;
 	-- Chances de déclencher l’effet
 	if random() > v_proba then
-		return 'Pas d’effet automatique de dégâts/soins.';
+		-- return 'Pas d’effet automatique de dégâts/soins.';
+		return '';
 	end if;
 	-- Initialisation des conteneurs
 	code_retour := '';
@@ -215,7 +216,7 @@ begin
 			else
 				perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt || ', redonnant ' || valeur::text || ' PVs.', 'O', 'O', null);
 			end if;
-		elsif ligne.perso_cod != v_source then	-- Perte de PVs (dégâts)
+		elsif ligne.perso_cod != v_source or v_cibles_type = 'S' then	-- Perte de PVs (dégâts)
 			valeur_pvp := effectue_degats_perso(ligne.perso_cod, valeur, v_source);
 			code_retour := code_retour || '<br />' || v_nom_efaseur || ' inflige ' || valeur_pvp::text || ' dégâts à ' || ligne.perso_nom;
 			if v_bloque_magie = 1 then
@@ -247,9 +248,9 @@ begin
 		end if;
 	end loop;
 
-	if code_retour = '' then
-		code_retour := 'Aucune cible éligible pour l’effet de dégâts/soins.';
-	end if;
+	-- if code_retour = '' then
+	-- 	code_retour := 'Aucune cible éligible pour l’effet de dégâts/soins.';
+	-- end if;
 
 	return code_retour;
 end;$_$;

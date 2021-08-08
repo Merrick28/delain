@@ -477,7 +477,7 @@ begin
               -- perte de PV lié au terrains
               v_dgm_int := floor(v_pv_max / 2) ;   -- dommage de terrain = 1/2 des PV max, soit 3 tours max avec une bonne REG :-) !
               update perso set perso_pv = perso_pv - v_dgm_int where perso_cod = personnage;
-              code_retour := code_retour || '<br>A cause de ce terrain est trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
+              code_retour := code_retour || '<br>A cause de ce terrain trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
 
               perform insere_evenement(personnage , personnage, 54, texte_evt || ' [cible] perd <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.', 'O', NULL);
 
@@ -493,17 +493,21 @@ begin
     /* gestion des perso sur un terrain normalement innacessible: le perso doit sortir en 3 tours avec des mouvements à 12PA */
     v_modif_pa_dep := 0 ;
     select  getparm_n(9) + pos_modif_pa_dep, coalesce(pos_ter_cod,0) into v_modif_pa_dep, v_ter_cod
-      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_monture is null and perso_type_perso=1 limit 1;
+      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_monture is null and perso_type_perso in (1,3) limit 1;
     if v_modif_pa_dep>12 then
 
         -- checher le text d'ambiance spécifique au terrain
         select ter_msg_inaccessible into texte_evt from terrain where ter_cod=v_ter_cod ;
-        code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Vous devez sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+        if v_type_perso = 1 then
+            code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Vous devez sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+        else
+            code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Votre maitre doit sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+        end if;
 
         -- perte de PV lié au terrains
         v_dgm_int := floor(v_pv_max / 3) ;   -- dommage de terrain = 1/3 des PV max, soit 4 tours max avec une bonne REG :-) !
         update perso set perso_pv = perso_pv - v_dgm_int where perso_cod = personnage;
-        code_retour := code_retour || '<br>A cause de ce terrain est trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
+        code_retour := code_retour || '<br>A cause de ce terrain trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
 
         perform insere_evenement(personnage , personnage, 54, texte_evt || ' [cible] perd <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.', 'O', NULL);
 

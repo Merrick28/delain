@@ -118,7 +118,8 @@ insert into ligne_evt(levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,lev
      			values(75,now(),1,cible,texte_evt,'N','N',personnage,cible);
 	end if;
 end if;
-return 'OK';
+-- return 'OK';
+return '';
 end;$_$;
 
 

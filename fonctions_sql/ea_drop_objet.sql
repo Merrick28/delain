@@ -42,7 +42,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « drop objet ».';
+    -- return 'Pas d’effet automatique de « drop objet ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -85,9 +86,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Pas d’effet automatique de « drop objet »!';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Pas d’effet automatique de « drop objet »!';
+  -- end if;
 
   return code_retour;
 end;$_$;

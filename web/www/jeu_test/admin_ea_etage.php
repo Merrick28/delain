@@ -54,6 +54,7 @@ if ($erreur == 0)
 
     //=======================================================================================
     echo '  <link href="../css/multiple-select.min.css?v'.$__VERSION.'" rel="stylesheet">
+            <SCRIPT language="javascript" src="../scripts/tools.js"></script>
             <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
             <script language="javascript" src="../scripts/validation.js"></script>
             <script language="javascript" src="../scripts/manip_css.js"></script>
@@ -69,6 +70,7 @@ if ($erreur == 0)
           Cela signifie que tout « perso » (qu'il soit monstre ou joueurs) déclenchera ces effets s'il remplit les conditions du déclenchement.<br>
           <u><strong>ATTENTION</strong></u>: il faut noter que: <br>
           • Le changement de nom ne sera effectif QUE pour les monstres.<br>
+          • Un même EA ne peut pas se déclencher 2x sur la même action, ainsi la 'bascule' d'un mecanisme individuel en mode inversion peut ne pas fonctionner.<br>
         <br><br>";
 
 
@@ -127,6 +129,10 @@ if ($erreur == 0)
         // Liste des objets generique
         $req = "select gobj_nom, gobj_cod from objet_generique order by gobj_nom ";
         echo '<select id="liste_objet_modele" style="display:none;">' . $html->select_from_query($req, 'gobj_cod', 'gobj_nom') . '</select>';
+
+        // Liste des méca de l'étage
+        $req = "select meca_nom, meca_cod from meca where meca_pos_etage=".$pos_etage." order by meca_nom ";
+        echo '<select id="liste_meca_modele" style="display:none;">' . $html->select_from_query($req, 'meca_cod', 'meca_nom') . '</select>';
 
         // Interface de saisie
         echo '<form method="post" onsubmit="return Validation.Valide ();">

@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep") return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep" && typeSpecial!="meca-dep") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -100,6 +100,26 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
+		case 'meca-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="meca-dep"]').prop( "checked", true );
+			var  meca_cod = $("#select-meca-dep").val();
+			 var liste = $("#meca-liste-cases-"+meca_cod).val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				if (!donneesCourantes.meca_dep) donneesCourantes.meca_dep = [] ;
+				if (!donneesCourantes.meca_dep[meca_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.meca_dep[meca_cod] = 1 ;
+					else
+						donneesCourantes.meca_dep[meca_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.meca_dep[meca_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
 		break;
 		case 'ea-dep':

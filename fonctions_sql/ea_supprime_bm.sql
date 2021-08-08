@@ -64,7 +64,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de  suppression de « Bonus/Malus ».';
+    -- return 'Pas d’effet automatique de  suppression de « Bonus/Malus ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -229,9 +230,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour suppression de « bonus/malus »';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour suppression de « bonus/malus »';
+  -- end if;
 
   return code_retour;
 end;$_$;

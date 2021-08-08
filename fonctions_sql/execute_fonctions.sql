@@ -35,6 +35,8 @@ declare
   v_sante_max integer;       -- fourchette haute
   v_pfonc_param json;        -- Paramètre mémorisé pour cet EA
 	v_do_it bool;              -- Executer la fonction
+	v_chainage integer;        -- valeur du chainage des EA courant
+	v_chaine_ordre integer;    -- récupération du n° de chainage courrant
 
 	-- variable specifique au BMC
 	v_perso_nom text;          -- Nom du perso avan modification
@@ -52,6 +54,7 @@ declare
 begin
 
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
+  v_chainage := 0 ;                 -- traitement des EA chainés
 
   -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
@@ -74,6 +77,7 @@ begin
 			              (  ( fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' ))))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
+			order by coalesce(f_to_numeric(fonc_trigger_param->>'fonc_trig_proba_chain'),0)
 		)
 	loop
 
@@ -91,22 +95,48 @@ begin
 
             v_do_it := true ;   /* le perso vérifie les condition, par défaut on active l'EA */
 
-            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2) then
-                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition */
+            /* passer en parametre la case qui déclenche l'EA (ncecessaire pour les EA sur les mécanismes individuels)*/
+            if row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND  row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
+                v_pos_cod := f_to_numeric(v_param->>'ancien_pos_cod'::text) ;
+            else
+                v_pos_cod := f_to_numeric(v_param->>'nouveau_pos_cod'::text) ;
+            end if;
+            -- injecter la case qui declenche l'ea dans les paramètres !
+            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '') || '}' )::jsonb)::json ;
 
+
+            /* traitement des ré-armement du type bascule */
+            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2)  then
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur la case */
+
+                /* boucler sur les perso qui sont sur la case déclenchant l'EA */
+                for plist in (
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  )
+                loop
+                    if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+                        v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (case) , on ne l'active pas */
+                        exit ;
+                    end if;
+                end loop;
+
+
+            elseif ( row.fonc_trigger_param->>'fonc_trig_rearme' = 3)  then
+
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur toutes les cases de l'EA */
                 if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' and row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
-                    -- le perso arrive (ou quitte) sur une case EA type bascule, mais il quitte (ou arrive) une autre case de ce même EA, il n'y a pas de re-declechement
+                    -- le perso arrive (ou quitte) sur une case EA type bascule, mais il quitte (ou arrive) lui même sur une autre case de ce même EA, il n'y a pas de re-declechement
                     v_do_it := false  ;
 
                 else
 
-                    /* boucler sur les perso qui sont sur les cases de l'EA */
+                    /* boucler sur les perso qui sont sur toutes les cases de l'EA */
                     for plist in (
                       select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
                       )
                     loop
                         if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
-                            v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule, on ne l'active pas */
+                            v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (grappe), on ne l'active pas */
                             exit ;
                         end if;
                     end loop;
@@ -288,15 +318,24 @@ begin
             update fonction_specifique set fonc_trigger_param=jsonb_set(row.fonc_trigger_param::jsonb, '{"fonc_trig_rearme"}', '-1') where fonc_cod=row.fonc_cod ;
         end if;
 
+        -- traitement du chainage des EA.
+        v_chaine_ordre :=  coalesce(f_to_numeric(row.fonc_trigger_param->>'fonc_trig_proba_chain'),0) ;
+        if (v_chaine_ordre = 0) or (v_chaine_ordre <= (v_chainage +1)) then
 
-        -- --------------- maintenant executer la fonction de l'EA trouvée !
-        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
-        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            -- --------------- maintenant executer la fonction de l'EA trouvée !
+            -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
 
-        if coalesce(retour_fonction, '') != '' then
-          code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            if coalesce(retour_fonction, '') != '' then
+                -- seulement s'il y a un retour indiquant que l'EA a été déclenchée, on augmente le niveau de chainage si nécéssaire!
+                if (v_chaine_ordre > v_chainage) then
+                    v_chainage := v_chaine_ordre ;
+                end if;
+                code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            end if;
+
         end if;
-        
+
     end if;
     
 	end loop;

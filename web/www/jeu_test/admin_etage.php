@@ -27,8 +27,9 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<a href='modif_etage3.php?admin_etage={$admin_etage}'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php?admin_etage={$admin_etage}'>Créer / modifier les lieux</a><br />
 	<a href='modif_etage3ter.php?admin_etage={$admin_etage}'>Creation multiple de lieux</a><br />
-	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
+	<a target='_blank' href='admin_meca_etage.php?admin_etage={$admin_etage}'>Gestion des Mécanismes d'étage</a><br />
 	<a target='_blank' href='admin_ea_etage.php?admin_etage={$admin_etage}'>Gestion des EA d'étage</a><br />
+	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td>
 	</tr></table>";
 
@@ -41,6 +42,11 @@ $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
 $req_m_ea= "select fonc_cod, fonc_trigger_param->>'fonc_trig_nom_ea' as nom_ea , fonc_trigger_param->>'fonc_trig_pos_cods' as pos_cods from fonction_specifique where fonc_trigger_param->>'fonc_trig_pos_etage'={$admin_etage} order by fonc_trigger_param->>'fonc_trig_nom_ea' ";
 $stmt_m_ea = $pdo->query($req_m_ea);
 $effet_auto = $stmt_m_ea->fetchAll(PDO::FETCH_ASSOC);
+
+
+$req_m_meca= "select meca_cod, meca_nom,STRING_AGG (pmeca_pos_cod, ', ') pos_cods  from meca left join meca_position on pmeca_meca_cod=meca_cod where meca_pos_etage={$admin_etage}  group by meca_cod, meca_nom order by meca_nom ";
+$stmt_m_meca = $pdo->query($req_m_meca);
+$mecanisme = $stmt_m_meca->fetchAll(PDO::FETCH_ASSOC);
 
 
 switch ($methode) {
@@ -63,7 +69,7 @@ switch ($methode) {
                     <td><strong>Spécial</strong></td>
                 </tr>
                 <tr valign="top">
-                    <td class="bordiv">
+                    <td style="min-width: 330px;" class="bordiv">
                         Outil sélectionné : <img style="display: inline;" src="" alt="Aucun" title="Aucun"
                                                  id="imgPinceau">
                         (Type : <span id="typePinceau">aucun</span>)<br>
@@ -174,13 +180,24 @@ switch ($methode) {
                        <br/>
 
                         <input name="special" value="ea-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
-                        <span title="Gestion de la position des Effets-Auto.">Effet-Auto: </span>
+                        <span title="Gestion de la position des Effets-Auto.">Effets-Auto: </span>
                         <?php
                         echo '<select name="select-ea-dep" id="select-ea-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'ea-dep\')">';
                         echo '<option value="0">Selecteur de positions</option>';
                         for ($ea=0; $ea<count($effet_auto); $ea++ )
                         {
                             echo '<option value="'.$effet_auto[$ea]["fonc_cod"].'">'.$effet_auto[$ea]["nom_ea"].'</option>';
+                        }
+                        echo '</select>';
+                        ?>                       <br/>
+
+                        <input name="special" value="meca-dep" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio"/>
+                        <span title="Gestion de la position des Mécanismes.">Mécanismes: </span>
+                        <?php
+                        echo '<select name="select-meca-dep" id="select-meca-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'meca-dep\')">';
+                        for ($m=0; $m<count($mecanisme); $m++ )
+                        {
+                            echo '<option value="'.$mecanisme[$m]["meca_cod"].'">'.$mecanisme[$m]["meca_nom"].'</option>';
                         }
                         echo '</select>';
                         ?>
@@ -197,7 +214,7 @@ switch ($methode) {
                 sauvegarde)</em><br/>
             <em> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et
                 l’appliquer sur le(s) décor(s) ) enlever.</em><br/>
-            <em> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la
+            <em> - Les outils spéciaux Creusable, Tangibles et Illusion ne s’appliquent qu’aux murs. Vous pouvez utiliser la
                 brosse spéciale dédiée.</em><br/>
             <em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br/>
         </div>
@@ -247,6 +264,12 @@ switch ($methode) {
                 echo "<input type='hidden' name=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-modif-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"0\">";
                 echo "<input type='hidden' name=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" id=\"ea-liste-cases-".$effet_auto[$ea]["fonc_cod"]."\" value=\"".$effet_auto[$ea]["pos_cods"]."\">";
             }
+
+            for ($m=0; $m<count($mecanisme); $m++ )
+            {
+                echo "<input type='hidden' name=\"meca-modif-cases-".$mecanisme[$m]["meca_cod"]."\" id=\"meca-modif-cases-".$mecanisme[$m]["meca_cod"]."\" value=\"0\">";
+                echo "<input type='hidden' name=\"meca-liste-cases-".$mecanisme[$m]["meca_cod"]."\" id=\"meca-liste-cases-".$mecanisme[$m]["meca_cod"]."\" value=\" ".$mecanisme[$m]["pos_cods"].",\">";
+            }
             ?>
             <center><input type="submit" class="test" value="Modifier !"></center>
         </form>
@@ -256,7 +279,7 @@ switch ($methode) {
 
     case "valide":
 
-        // on traite d'abord les EA
+        // on traite d'abord les EA ======================================
         $nb_modif_ea = 0 ;
         foreach ($_REQUEST as $k => $v) {
             if ((substr($k, 0,15) == "ea-modif-cases-") && ($v=="1") && isset($_REQUEST["ea-liste-cases-".substr($k, 15)])) {
@@ -265,6 +288,20 @@ switch ($methode) {
                 $req_ea= "update fonction_specifique set fonc_trigger_param=jsonb_set(fonc_trigger_param::jsonb, '{\"fonc_trig_pos_cods\"}', '\"".$_REQUEST["ea-liste-cases-".substr($k, 15)]."\"') where fonc_cod=:fonc_cod";
                 $stmt = $pdo->prepare($req_ea);
                 $stmt = $pdo->execute(array(":fonc_cod" => substr($k, 15)), $stmt);
+            }
+        }
+
+        // on traite ensuite les MECA ======================================
+        $nb_modif_meca = 0 ;
+        foreach ($_REQUEST as $k => $v) {
+            if ((substr($k, 0,17) == "meca-modif-cases-") && ($v=="1") && isset($_REQUEST["meca-liste-cases-".substr($k, 17)])) {
+                $nb_modif_meca ++ ;
+                $meca_cod = substr($k, 17);
+                $meca = new meca();
+                $meca->charge($meca_cod);
+                $pos_cod_liste = explode( ",", $_REQUEST["meca-liste-cases-".substr($k, 17)] );
+                $meca->set_positions($pos_cod_liste);
+
             }
         }
 
@@ -278,7 +315,7 @@ switch ($methode) {
             echo "<p>Erreur ! Étage non défini.</p>";
             $erreur = true;
         }
-        if (empty($modifs) && ($nb_modif_ea==0))
+        if (empty($modifs) && ($nb_modif_ea==0) && ($nb_modif_meca==0))
         {
             echo "<p>Aucune modification enregistrée</p>";
             $erreur = true;
@@ -402,16 +439,43 @@ switch ($methode) {
                                 break;
                         }
                     }
+                    // vérifier si la case est à déjà un mécanisme activeé, si c'est le cas il faut traiter les cases "base" du mécanisme à la place
+                    $req ="select count(*)as count from meca_position where pmeca_pos_cod=$case and pmeca_actif=1 ";
+                    $stmt = $pdo->query($req, PDO::FETCH_ASSOC);
+                    $result = $stmt->fetch();
+
+                    if ($result["count"]<=0) {
+                        // Traitement sur les cases normales seulement si elles n'ont pas été activées par un mécanisme!
+                        $set_req = implode(',', $set_case);
+                        if ($set_req !== "") {
+                            $req = "update positions set $set_req where pos_cod = $case";
+                            $pdo->query($req);
+                        }
+                        $set_req = implode(',', $set_mur);
+                        if ($set_req !== "") {
+                            $req = "update murs set $set_req where mur_pos_cod = $case";
+                            $pdo->query($req);
+                        }
+                    }
+
+                    // ensuite on traite les modifications sur les mécanismes (sauvegarde de leur nouvelle base)
+                    $set_case = array_filter($set_case, function($item) { return in_array(trim(substr($item, 0, strpos($item,"="))), ["pos_type_aff","pos_decor","pos_decor_dessus","pos_passage_autorise","pos_ter_cod","pos_modif_pa_dep"]);} );
+                    array_walk($set_case, function (&$item) { $item = "pmeca_base_".$item; });
                     $set_req = implode(',', $set_case);
                     if ($set_req !== "") {
-                        $req = "update positions set $set_req where pos_cod = $case";
+                        $req = "update meca_position set $set_req where pmeca_pos_cod = $case";
                         $pdo->query($req);
                     }
+
+                    $set_mur = array_filter($set_mur, function($item) { return in_array(trim(substr($item, 0, strpos($item,"="))), ["mur_type","mur_tangible","mur_illusion"]);} );
+                    array_walk($set_mur, function (&$item) { $item = "pmeca_base_".$item; });
                     $set_req = implode(',', $set_mur);
                     if ($set_req !== "") {
-                        $req = "update murs set $set_req where mur_pos_cod = $case";
+                        $req = "update meca_position set $set_req where pmeca_pos_cod = $case";
                         $pdo->query($req);
                     }
+
+
                 } else {
                     $cpt_erreur++;
                 }
@@ -435,7 +499,8 @@ switch ($methode) {
             $stmt = $pdo->query($req);
             echo "<p>Changements validés dans les automaps.</p>";
         }
-        if ($nb_modif_ea>0) echo "<p>Modifications sur les positions $nb_modif_ea EA<br /></p>";
+        if ($nb_modif_ea>0) echo "<p>Modifications sur les positions d'EA : $nb_modif_ea<br /></p>";
+        if ($nb_modif_meca>0) echo "<p>Modifications sur les positions de mécanismes : $nb_modif_meca <br /></p>";
         break;
 }
 $contenu_page = ob_get_contents();
