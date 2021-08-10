@@ -67,34 +67,54 @@
 
 {# BARRE MENU ICONE #}
 <div id="colonne0-icons" class="centrer">
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/frame_vue.php">
-            <img title="Vue" src="{{ G_IMAGES }}eye.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+            <img title="Vue" src="{{ G_IMAGES }}eye.png"></a>
+    </div>
+    <div style="float: left;  width:11.11%;">
+        <a href="/jeu_test/perso2.php">
+            <img title="Fiche perso" src="{{ G_IMAGES }}profil.png"></a>
+    </div>
+    <div style="float: left;  width:11.11%;">
+        {% set perso_nb_demarrage_quete = PERSO.perso_nb_demarrage_quete %}
+        {%  if  perso_nb_demarrage_quete > 0 %}
+            <a href="/jeu_test/quete_perso.php">
+                <img title="Intéractions" src="{{ G_IMAGES }}quete.png"></a>
+                <span class="badge">{{ perso_nb_demarrage_quete }}</span>
+        {% else %}
+            <a href="/jeu_test/quete_auto.php?onglet=apercu">
+                <img title="Quêtes" src="{{ G_IMAGES }}quete.png"></a>
+                    {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0  %}
+                        <span class="badge">{{ PERSO.perso_nb_auto_quete.journal_nb_news }}</span>
+                    {% endif %}
+        {% endif %}
+
+    </div>
+    <!--div style="float: left;  width:11.11%;">
         <a href="/jeu_test/evenements.php">
             <img title="Evénements" src="{{ G_IMAGES }}events.png"></a>
         {% if PERSO.getNbEvtNonLu > 0 %}
             <span class="badge">{{ PERSO.getNbEvtNonLu }}</span>
         {% endif %}
-    </div>
+    </div-->
 {% if not CAVALIER or COMPTE.is_admin %}
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/inventaire.php">
             <img title="Inventaire" src="{{ G_IMAGES }}chest.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/transactions2.php">
-            <img title="Transaction" src="{{ G_IMAGES }}transac.png"></a>
+            <img title="Transactions" src="{{ G_IMAGES }}transac.png"></a>
         {% if PERSO.transactions !=0 %}
             <span class="badge">{{ PERSO.transactions }}</span>
         {% endif %}
     </div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/combat.php">
             <img title="Combat" src="{{ G_IMAGES }}war.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/magie.php">
             <img title="Magie" src="{{ G_IMAGES }}book.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/messagerie2.php">
             <img title="Messagerie" src="{{ G_IMAGES }}mail.png"></a>
         {% if PERSO.getMsgNonLu|length > 0 %}
@@ -104,13 +124,13 @@
         {% endif %}
     </div>
 {%  else %}
-    <div style="float: left;  width:12.5%;">&nbsp;</div>
-    <div style="float: left;  width:12.5%;">&nbsp;</div>
-    <div style="float: left;  width:12.5%;">&nbsp;</div>
-    <div style="float: left;  width:12.5%;">&nbsp;</div>
-    <div style="float: left;  width:12.5%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
 {% endif %}
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/switch.php">
             <img title="Gestion de compte" src="{{ G_IMAGES }}castle.png"></a></div>
 </div>

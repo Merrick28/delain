@@ -33,7 +33,7 @@ begin
 
     -- maintenant rechercher la clé correspondante
     taux:= 0 ;
-    for ligne in (select value from json_array_elements(list)  )
+    for ligne in (select value from json_array_elements(list) order by value->>key_tx, random() )
     loop
         taux := taux + f_to_numeric(ligne.value->>key_tx::text) ;
         if tirage <= taux then
