@@ -247,6 +247,54 @@ class aquete_etape
     }
 
     /**
+     * definit des element de position pour une étape du model interaction
+     * @global bdd_mysql $pdo
+     * @param array $pos_liste => list des positions
+     */
+    function set_interaction_positions($pos_liste)
+    {
+        $pdo    = new bddpdo;
+        $element_list = [] ;        // liste des elements
+
+        $ordre = 1;
+        foreach ($pos_liste as $item)
+        {
+            if ((int)$item != 0)
+            {
+                $element = new aquete_element;
+
+                $req    = "SELECT aqelem_cod FROM quetes.aquete_element where aqelem_misc_cod=:aqelem_misc_cod and aqelem_aqetape_cod=:aqelem_aqetape_cod and aqelem_param_id=1 and aqelem_aqperso_cod is null ";
+                $stmt   = $pdo->prepare($req);
+
+                $stmt   = $pdo->execute(array(":aqelem_aqetape_cod" => $this->aqetape_aquete_cod, ":aqelem_misc_cod" => (int)$item ), $stmt);
+                if ($result = $stmt->fetch())
+                {
+                   // element déjà existant, mettre à jour
+                    $element->charge($result["aqelem_cod"]);
+                    $element->aqelem_param_ordre = $ordre ;
+                }
+                else
+                {
+                    // inserer nouvel element
+                    $element->aqelem_aquete_cod = $this->aqetape_aquete_cod;
+                    $element->aqelem_aqetape_cod = $this->aqetape_cod;
+                    $element->aqelem_param_id = 1;
+                    $element->aqelem_type = "position" ;
+                    $element->aqelem_misc_cod = (int)$item ;
+                    $element->aqelem_param_ordre = $ordre ;
+                    $element->stocke(true);
+                }
+                $element_list[] = $element->aqelem_cod ;
+                $ordre ++;
+            }
+        }
+
+        $element = new aquete_element;
+        $element->clean($this->aqetape_cod, $element_list);        // supprimer tous les elements qui ne sont pas dans la liste.
+    }
+
+
+    /**
      * retourne toutes les etapes de la quete dans l'ordre chronologique !
      * @global bdd_mysql $pdo
      * @param integer $quete => quete dont on veut les etapes

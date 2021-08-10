@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep" && typeSpecial!="meca-dep") return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep" && typeSpecial!="meca-dep" && typeSpecial!="qa-dep") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -118,6 +118,26 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				}
 
 				var classe = (donneesCourantes.meca_dep[meca_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
+		case 'qa-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="qa-dep"]').prop( "checked", true );
+			var  aquete_cod = $("#select-qa-dep").val();
+			 var liste = $("#qa-liste-cases-"+aquete_cod).val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				if (!donneesCourantes.qa_dep) donneesCourantes.qa_dep = [] ;
+				if (!donneesCourantes.qa_dep[aquete_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.qa_dep[aquete_cod] = 1 ;
+					else
+						donneesCourantes.qa_dep[aquete_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.qa_dep[aquete_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}

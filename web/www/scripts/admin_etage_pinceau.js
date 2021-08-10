@@ -66,6 +66,7 @@ Speciaux.donnees = [
 	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
 	{id: 'deplacement', valeur: false, nom: 'Déplacement', type: 'deplacement', url: 'special-brush.png', css: ''},
 	{id: 'ea-dep', valeur: false, nom: 'Effet-auto', type: 'ea-dep', url: 'special-brush.png', css: ''},
+	{id: 'qa-dep', valeur: false, nom: 'Quête-auto', type: 'qa-dep', url: 'special-brush.png', css: ''},
 	{id: 'meca-dep', valeur: false, nom: 'Mecanisme', type: 'meca-dep', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
@@ -160,6 +161,7 @@ Pinceau.appliqueCase = function (idx) {
 			ter_cod: caseModif.ter_cod,
 			pa_dep: caseModif.pa_dep,
 			ea_dep: caseModif.ea_dep,
+			qa_dep: caseModif.qa_dep,
 			meca_dep: caseModif.meca_dep
 		};
 		Etage.CasesModifiees.splice(idxModif, 1);
@@ -180,6 +182,7 @@ Pinceau.appliqueCase = function (idx) {
 			ter_cod: ancienneCase.ter_cod,
 			pa_dep: ancienneCase.pa_dep,
 			ea_dep: ancienneCase.ea_dep,
+			qa_dep: ancienneCase.qa_dep,
 			meca_dep: ancienneCase.meca_dep
 		};
 	}
@@ -220,6 +223,21 @@ Pinceau.appliqueCase = function (idx) {
 
 				$("#meca-liste-cases-" + meca_cod).val(liste);
 				$("#meca-modif-cases-" + meca_cod).val(1);			// Pos_cod list des MECA modifiée!
+			} else if (pinceauSpecial.id=="qa-dep" ) {
+				var aquete_cod = $("#select-qa-dep").val();
+
+				nvlleCase.qa_dep[aquete_cod] = nvlleCase.qa_dep[aquete_cod] ? 0 : 1;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.qa_dep[aquete_cod] == 0 ? false : true);
+
+				var liste = $("#qa-liste-cases-" + aquete_cod).val();
+				if (nvlleCase.qa_dep[aquete_cod] == 0) {
+					liste = liste.replace(" " + nvlleCase.id + ",", "");
+				} else {
+					liste = liste + " " + nvlleCase.id + ",";
+				}
+
+				$("#qa-liste-cases-" + aquete_cod).val(liste);
+				$("#qa-modif-cases-" + aquete_cod).val(1);			// Pos_cod list des MECA modifiée!
 
 			} else if (pinceauSpecial.id=="ea-dep" ) {
 				var fonc_cod = $("#select-ea-dep").val();
