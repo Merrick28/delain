@@ -2284,6 +2284,42 @@ class aquete_action
     }
 
     //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:meca|0%0]',
+     * p1=meca
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function meca_declenchement(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'meca', 0)) return false ;
+
+        // Recherche de la zone centrale de départ
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+        $perso_pos_cod = $perso->get_position()["pos"]->pos_cod ;
+
+        foreach ($p1 as $k => $elem)
+        {
+            $chance = $elem->aqelem_param_num_2 > 0 ? $elem->aqelem_param_num_2 : 100;
+            if ( rand(0, 10000)/100 < $chance )
+            {
+                // declencher !!!
+                $req = "select meca_declenchement(:meca_cod,:sens,null,:perso_pos_cod) as result; ";
+                $stmt   = $pdo->prepare($req);
+                $pdo->execute(array(":meca_cod"         => $elem->aqelem_misc_cod,
+                                    ":sens"             =>  $elem->aqelem_param_num_1,
+                                    ":perso_pos_cod"    => $perso_pos_cod), $stmt);
+            }
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
 /*
 echo "<pre>"; print_r($p1); echo "</pre>";
 die();

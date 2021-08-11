@@ -199,7 +199,7 @@ switch ($methode) {
                         <span title="Gestion de la position des Quetes-Auto.">Quete-Auto: </span>
                         <?php
                         echo '<select name="select-qa-dep" id="select-qa-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'qa-dep\')">';
-                        for ($qa=0; $qa<count($qa); $qa++ )
+                        for ($qa=0; $qa<count($quete_auto); $qa++ )
                         {
                             echo '<option value="'.$quete_auto[$qa]["aquete_cod"].'">'.$quete_auto[$qa]["nom_qa"].'</option>';
                         }

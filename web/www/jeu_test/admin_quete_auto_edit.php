@@ -74,7 +74,10 @@ if ($erreur == 0)
                 <HR>';
 
         if ($pos_etage>0) {
-            echo '<strong>Caractéristiques de l\'interaction</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : ""). ' <em style="font-size:10px">(Une interaction est une Quête-auto spécifique à un etage et déclenchée sur une position)</em>';
+            echo '<strong>Caractéristiques de l\'interaction</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
+            echo' <br><em style="font-size:10px">Une interaction est une Quête-auto spécifique à un etage et déclenchée sur une position determinée.</em>';
+            echo' <br><em style="font-size:10px">Toutes les étapes de cette interaction ne pourront avoir lieu QUE sur cette position.</em>';
+            echo' <br><em style="font-size:10px">Si le joueur quitte la position, l\'interaction est terminée et reprendra au départ s\'il revient en place.</em>';
 
         } else {
             echo '<strong>Caractéristiques de la Quête</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
@@ -99,6 +102,11 @@ if ($erreur == 0)
         echo    '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
         if ($pos_etage>0) {
             echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
+            echo '<input type="hidden" name="aquete_nb_max_instance" value="" />';
+            echo '<input type="hidden" name="aquete_nb_max_participant" value="" />';
+            echo '<input type="hidden" name="aquete_nb_max_rejouable" value="" />';
+            echo '<input type="hidden" name="aquete_nb_max_quete" value="" />';
+            echo '<input type="hidden" name="aquete_max_delai" value="" />';
             echo '<input type="hidden" name="aquete_pos_etage" value="'.$pos_etage.'" />';
         } else {
             echo '<input type="hidden" name="aquete_pos_etage" value="" />';
@@ -114,12 +122,14 @@ if ($erreur == 0)
         }
         echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
-        echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
-        echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <em>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="'.$quete->aquete_nb_max_quete.'"> <em>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>'.$quete->get_nb_en_cours().'</strong> quête en cours sur <strong>'.$quete->get_nb_total().'</strong> au total <em>(tous persos confondus)</em></td></tr>';
+        if ($pos_etage==0) {
+            echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
+            echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
+            echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $quete->get_nb_en_cours() . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em></td></tr>';
+        }
         if ($aquete_cod==0)
         {
             // cas d'une nouvelle quete
@@ -617,7 +627,7 @@ if ($erreur == 0)
                                     </td>';
                         break;
 
-                    case 'bonus':       // pour invocation
+                    case 'bonus':       // pour ls BM
                         if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                         {
                             $bon = new bonus_type() ;
@@ -631,6 +641,27 @@ if ($erreur == 0)
                                      Puissance :<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" style="margin-top: 5px;">
                                      Nombre de DLT :<input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'">
                                    </td>';
+                        break;
+
+                    case 'meca':       // pour les mecanisme d'étage
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $meca = new meca() ;
+                            $meca->charge( $element->aqelem_misc_cod );
+                            $etage = new etage();
+                            $etage->charge( $meca->meca_pos_etage );
+                            $aqelem_misc_nom = $etage->etage_libelle." / ".$meca->meca_nom ;
+                        }
+                        echo   '<td>Mecanisme :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'meca\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","meca","Rechercher un mécanisme");\'> 
+                                    Déclenchement : '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Active","-1"=>"Désactive","2"=>"Inverse"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     Chance (en %): <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'">
+
+                               </td>';
                         break;
 
                     case 'perso_condition':       // pour invocation

@@ -478,6 +478,22 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
 
+        case 'meca':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select meca_cod cod, (etage_libelle || ' / ' || meca_nom) nom from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ?  {$filter} ORDER BY (etage_libelle || ' / ' || meca_nom)  LIMIT {$limit}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
         case 'sort':
             $words = explode(" ", $recherche);
             $search_string = array();

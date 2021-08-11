@@ -235,7 +235,15 @@ switch ($methode)
 
     case 'dialogue' :
         // La saisie du joueur est dans le $_REQUEST, rien de particulier ici, tout sera géré dans le run!
-        $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+
+        $aquete_cod = 1 * $_REQUEST["quete"] ;
+        $quete = new aquete();
+        $quete->charge($aquete_cod);
+        if ($quete->aquete_interaction = 'O') {
+            $methode = "interagir";
+        } else {
+            $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+        }
         break;
 }
 if ($methode == "interagir") {

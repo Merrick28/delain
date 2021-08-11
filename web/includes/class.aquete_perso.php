@@ -1068,6 +1068,12 @@ class aquete_perso
                     $this->action->teleportation_perso($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si la téléportation n'a pas été faite)
                     break;
+
+                case "#MECANISME #DECLENCHEMENT":
+                    // déclenchement d'un mecanisme d'étage, .
+                    $this->action->meca_declenchement($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même si le mecanisme n'a pas été déclenché)
+                    break;
             }
 
             //------- comptage du nombre d'étape réalisées----------------------
