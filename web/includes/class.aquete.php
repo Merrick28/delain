@@ -24,6 +24,8 @@ class aquete
     var $aquete_max_delai;
     var $aquete_nom_alias          = '';
     var $aquete_journal_archive    = 'O';
+    var $aquete_interaction        = 'N';
+    var $aquete_pos_etage;
 
     function __construct()
     {
@@ -53,6 +55,8 @@ class aquete
         $this->aquete_etape_cod          = $result['aquete_etape_cod'];
         $this->aquete_actif              = $result['aquete_actif'];
         $this->aquete_journal_archive    = $result['aquete_journal_archive'];
+        $this->aquete_interaction        = $result['aquete_interaction'];
+        $this->aquete_pos_etage          = $result['aquete_pos_etage'];
         $this->aquete_date_debut         = $result['aquete_date_debut'];
         $this->aquete_date_fin           = $result['aquete_date_fin'];
         $this->aquete_nb_max_instance    = $result['aquete_nb_max_instance'];
@@ -81,6 +85,8 @@ class aquete
                         aquete_etape_cod,
                         aquete_actif,
                         aquete_journal_archive,
+                        aquete_interaction,
+                        aquete_pos_etage,
                         aquete_date_debut,
                         aquete_date_fin,
                         aquete_nb_max_instance,
@@ -97,6 +103,8 @@ class aquete
                         :aquete_etape_cod,
                         :aquete_actif,
                         :aquete_journal_archive,
+                        :aquete_interaction,
+                        :aquete_pos_etage,
                         :aquete_date_debut,
                         :aquete_date_fin,
                         :aquete_nb_max_instance,
@@ -114,6 +122,8 @@ class aquete
                                       ":aquete_etape_cod"          => $this->aquete_etape_cod,
                                       ":aquete_actif"              => $this->aquete_actif,
                                       ":aquete_journal_archive"    => $this->aquete_journal_archive,
+                                      ":aquete_interaction"        => $this->aquete_interaction,
+                                      ":aquete_pos_etage"          => $this->aquete_pos_etage,
                                       ":aquete_date_debut"         => $this->aquete_date_debut,
                                       ":aquete_date_fin"           => $this->aquete_date_fin,
                                       ":aquete_nb_max_instance"    => $this->aquete_nb_max_instance,
@@ -135,6 +145,8 @@ class aquete
             aquete_etape_cod = :aquete_etape_cod,
             aquete_actif = :aquete_actif,
             aquete_journal_archive = :aquete_journal_archive,
+            aquete_interaction = :aquete_interaction,
+            aquete_pos_etage = :aquete_pos_etage,
             aquete_date_debut = :aquete_date_debut,
             aquete_date_fin = :aquete_date_fin,
             aquete_nb_max_instance = :aquete_nb_max_instance,
@@ -153,6 +165,8 @@ class aquete
                                       ":aquete_etape_cod"          => $this->aquete_etape_cod,
                                       ":aquete_actif"              => $this->aquete_actif,
                                       ":aquete_journal_archive"    => $this->aquete_journal_archive,
+                                      ":aquete_interaction"        => $this->aquete_interaction,
+                                      ":aquete_pos_etage"          => $this->aquete_pos_etage,
                                       ":aquete_date_debut"         => $this->aquete_date_debut,
                                       ":aquete_date_fin"           => $this->aquete_date_fin,
                                       ":aquete_nb_max_instance"    => $this->aquete_nb_max_instance,

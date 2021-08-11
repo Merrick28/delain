@@ -602,6 +602,30 @@ EffetAuto.Types = [
 			{ nom: 'trig_meca', type: 'meca', label: 'Liste de mécanisme', description: 'Liste de mécanisme à activer/désactiver avec chances individuels.' }
 		],
 	},
+	{	nom: 'ea_teleportation',
+		debut: true,
+		tueur: true,
+		mort: true,
+		attaque: true,
+		modifiable: true,
+		bm_compteur: true,
+		ea_etage: true,
+		affichage: 'Teleportation',
+		description: 'Teleporte la ou les cibles sur une case donnée.',
+		parametres: [
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+			{ nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+			{ nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+			{ nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_pos_unique',type: 'checkbox', label: 'Téléportation groupée', description: 'si cochée, et s’il y a plusieurs cibles et plusieurs positions, toutes les cibles seront téléportées à la même position.'},
+			{ nom: 'trig_pos_cod', type: 'positions', label: 'Position de Téléportion', description: 'L’endroit où seront téléporté la ou les cibles.' },
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
 
@@ -1166,6 +1190,38 @@ EffetAuto.ChampMeca = function (parametre, numero, valeur) {
 	return html;
 }
 
+
+EffetAuto.ChampPositions = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomPosCod = "obj_fonc_" + parametre.nom + numero.toString()+"_pos_cod";
+	var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+
+		html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">% ';
+
+		html += '<strong>Position:</strong>&nbsp;<span title="Position ciblée pour les mecanismes individuels (facultatif)">';
+		html += '<input data-entry="val" id="row-'+numero+'-'+i+'-pos_cod" name="'+nomPosCod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].pos_cod : "")+'">';
+		html += '</span>&nbsp';
+		html += '<span style="display:none;" data-entry="text" id="row-'+numero+'-'+i+'-pos_nom"></span>&nbsp';
+		html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-pos\',\'position\',\'Rechercher une position\',[\'\',\'\',\'\']);">';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
 EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var base = "fonc_" + parametre.nom + numero.toString();
@@ -1416,6 +1472,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'meca':
 			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
+			break;
+		case 'positions':
+			html = pd + EffetAuto.ChampPositions (parametre, numero, valeur) + pf;
 			break;
 		case 'PVsens':
 			html = pd + EffetAuto.ChampChoixPVsens (parametre, numero, valeur) + pf;

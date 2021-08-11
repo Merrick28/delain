@@ -27,6 +27,7 @@ if ($erreur == 0)
     // On est admin ici, on a les droits sur les quetes
     // Traitement des paramètres
     $aquete_cod = 1*$_REQUEST['aquete_cod'] ;
+    $pos_etage = 1*$_REQUEST['pos_etage'] ;     // SI $pos_etage >0, on est dans le cas des interactions sinon QA standard
     //-- traitement des actions
     if(isset($_REQUEST['methode']))
     {
@@ -54,7 +55,11 @@ if ($erreur == 0)
                 <form method="post">
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
-        $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete order by aquete_nom_alias');
+        if ($pos_etage>0) {
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.' order by aquete_nom_alias');
+        } else {
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null order by aquete_nom_alias');
+        }
         while ($result = $stmt->fetch())
         {
             echo '<option value="' . $result['aquete_cod'];
@@ -68,7 +73,12 @@ if ($erreur == 0)
                 </TABLE>
                 <HR>';
 
-        echo '<strong>Caractéristiques de la Quête</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
+        if ($pos_etage>0) {
+            echo '<strong>Caractéristiques de l\'interaction</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : ""). ' <em style="font-size:10px">(Une interaction est une Quête-auto spécifique à un etage et déclenchée sur une position)</em>';
+
+        } else {
+            echo '<strong>Caractéristiques de la Quête</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
+        }
 
         // La quête elle-même ----------------------------------------------------------------------
         $quete = new aquete;
@@ -84,15 +94,24 @@ if ($erreur == 0)
                 }
                 </script>
   
-                <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />
-                <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
-                <table width="80%" align="center">';
+                <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />';
+
+        echo    '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
+        if ($pos_etage>0) {
+            echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
+            echo '<input type="hidden" name="aquete_pos_etage" value="'.$pos_etage.'" />';
+        } else {
+            echo '<input type="hidden" name="aquete_pos_etage" value="" />';
+        }
+        echo    '<table width="80%" align="center">';
 
         echo '<tr><td><strong>Nom de référence admin</strong>:</td><td><input type="text" name="aquete_nom_alias" value="'.htmlspecialchars($quete->aquete_nom_alias).'"></td></tr>';
         echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
         echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="'.htmlspecialchars($quete->aquete_description).'"></td></tr>';
         echo '<tr><td><strong>Quête ouverte </strong>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <em>activation/désactivation général</em></td></tr>';
-        echo '<tr><td><strong>Archivage dans le journal </strong>:</td><td>'.create_selectbox("aquete_journal_archive", array("O"=>"Oui","N"=>"Non"), $quete->aquete_journal_archive).' <em>Faut-il mettre la quette dans le journal des quêtes terminée</em></td></tr>';
+        if ($pos_etage==0) {
+            echo '<tr><td><strong>Archivage dans le journal </strong>:</td><td>'.create_selectbox("aquete_journal_archive", array("O"=>"Oui","N"=>"Non"), $quete->aquete_journal_archive).' <em>Faut-il mettre la quette dans le journal des quêtes terminée</em></td></tr>';
+        }
         echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
@@ -116,7 +135,11 @@ if ($erreur == 0)
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $liste_etape = array();
             $liste_etape[0]="Tout à la fin";
-            $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
+            if ($pos_etage==0) {
+                $filter = (!$etapes || sizeof($etapes) == 0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START' AND aqetapmodel_tag<>'#START #INTERACTION'";
+            } else {
+                $filter = (!$etapes || sizeof($etapes) == 0) ? "where aqetapmodel_tag='#START #INTERACTION'" : "where aqetapmodel_tag<>'#START' AND aqetapmodel_tag<>'#START #INTERACTION'";
+            }
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" />';
             if ($nb_quete_en_cours==0)
                 echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_delete_quete();"; type="submit" value="Supprimer la quête" />';

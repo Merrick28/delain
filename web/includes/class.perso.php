@@ -1565,6 +1565,28 @@ class perso
         return sizeof($tab_quete["quetes"]) > 0;
     }
 
+    // Retourne vrai si le perso est sur un endroit permettant le démarrage d'une nouvelle quête (quete auto ou standard)
+    public function perso_nb_demarrage_quete()
+    {
+        $pdo  = new bddpdo;
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+
+        $req
+                = 'select count(perso_cod) as nombre from perso,perso_position
+			where ppos_pos_cod = ?
+				and perso_quete in (\'quete_ratier.php\',\'enchanteur.php\',\'quete_alchimiste.php\',\'quete_chasseur.php\',\'quete_dispensaire.php\',\'quete_dame_cygne.php\',\'quete_forgeron.php\',\'quete_groquik.php\')
+				and perso_cod = ppos_perso_cod';
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
+        $result = $stmt->fetch();
+
+        // Verification quete auto
+        $quete     = new aquete;
+        $tab_quete = $quete->get_debut_quete($this->perso_cod);
+        return sizeof($tab_quete["quetes"]) + $result['nombre'] ;
+    }
+
     // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
     public function perso_nb_auto_quete()
     {

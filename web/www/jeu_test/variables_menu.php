@@ -6,7 +6,7 @@
  *
  */
 
-$__VERSION = "20210711";    // A changer aussi dans constante.php
+$__VERSION = "20210810";    // A changer aussi dans constante.php
 
 $benchmark       = $profiler->start('Variables menu');
 $verif_connexion = new verif_connexion();
@@ -336,22 +336,6 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
 }
 
 
-$barre_menu_icone = '
-<div id="colonne0-icons"><center>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/frame_vue.php"><img title="Vue" src="' . G_IMAGES . 'eye.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/evenements.php"><img title="Evénements" src="' . G_IMAGES . 'events.png"></a>' . ($nb_evt_non_lu <= 0 ? '' : '<span class="badge">' . $nb_evt_non_lu . '</span>') . '</div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/inventaire.php"><img title="Inventaire" src="' . G_IMAGES . 'chest.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/transactions2.php"><img title="Transaction" src="' . G_IMAGES . 'transac.png"></a>' . ($transaction <= 0 ? '' : '<span class="badge">' . $transaction . '</span>') . '</div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/combat.php"><img title="Combat" src="' . G_IMAGES . 'war.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/magie.php"><img title="Magie" src="' . G_IMAGES . 'book.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/messagerie2.php"><img title="Messagerie" src="' . G_IMAGES . 'mail.png"></a>' . ($nb_msg <= 0 ? '' : '<span class="badge">' . $nb_msg . '</span>') . '</div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/switch.php"><img title="Gestion de compte" src="' . G_IMAGES . 'castle.png"></a></div>
-</center></div>';
-
-
-
-
-
 // variables twig
 $var_twig_defaut = array(
     '__VERSION'           => $__VERSION,
@@ -359,7 +343,6 @@ $var_twig_defaut = array(
     'G_URL'               => G_URL,
     'PERSO'               => $perso,
     'CAVALIER'            => $perso->est_chevauche(),
-    'BARRE_MENU_ICONE'    => $barre_menu_icone,
     'TYPE_FLUX'           => $type_flux,
     'DEG_MIN'             => $deg_min,
     'DEG_MAX'             => $deg_max,
