@@ -253,7 +253,7 @@ class aquete_perso
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod ";
+        $req = "select aqperso_cod from quetes.aquete_perso join quetes.aquete on aquete_cod=aqperso_aquete_cod  where aqperso_perso_cod=? and aqperso_actif<>'N' and aquete_interaction!='O' order by aqperso_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -380,6 +380,102 @@ class aquete_perso
         $this->stocke($new);
 
         // Il reste à générer les éléments de cette quête dédiés au perso (juste le choix et le déclencheur) !!!
+        $element->aqelem_aqperso_cod = $this->aqperso_cod;      // le nouvelle élément est dédié au perso
+        $element->aqelem_quete_step = 1;                        // une bouvelle quete démarre step 1
+        $element->stocke(true);                             // stocke new va dupliquer l'élément
+
+        $element = new aquete_element();
+        $element->aqelem_aquete_cod = $aquete_cod;
+        $element->aqelem_quete_step = 1;   // Elément du Step 1
+        $element->aqelem_aqetape_cod = $quete->aquete_etape_cod;
+        $element->aqelem_param_id = 1;
+        $element->aqelem_param_ordre = 0;
+        $element->aqelem_type = $trigger["aqelem_type"];
+        $element->aqelem_misc_cod = 1 * $trigger['aqelem_misc_cod'];
+        $element->aqelem_nom = $trigger['nom'];                 // lNom de l'élément
+        $element->aqelem_aqperso_cod = $this->aqperso_cod;       // élément dédié au perso
+        $element->stocke(true);                             // stocke new va dupliquer l'élément
+
+        // ajouter une ligne dans le journal
+        $texte = $this->hydrate();
+        if ($texte != '')
+        {
+            // Journaliser le texte pour éviter de l'hydratiation à chaque consultation
+            $perso_journal = new aquete_perso_journal();
+            $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
+            $perso_journal->aqpersoj_realisation = $this->aqperso_nb_realisation;
+            $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
+            $perso_journal->aqpersoj_quete_step = 1;
+            $perso_journal->aqpersoj_texte = $texte;
+            $perso_journal->stocke(true);
+        }
+
+        // L'étape 1 est considérée comme terminée!!!! Puisque qu'elle ne sert qu'a créer cette instance, on va directement à l'étape suivante
+        $this->aqperso_quete_step++;
+        $this->aqperso_etape_cod = $seconde_etape_cod;
+        $this->stocke(); // sauvegarder les nouvelle mise à jour
+
+        return "";     // Ok!
+    }
+
+
+
+    // Créé une nouvelle instance de la quete #$aquete_cod pour le $perso_cod
+    // Rreourne rien si tout c'est bien passé, sinon un message d'erreur
+    /**
+     * @param $perso_cod
+     * @param $aquete_cod
+     * @return string
+     */
+    function demarre_interaction($perso_cod, $aquete_cod, $trigger)
+    {
+        $pdo = new bddpdo;
+
+        $quete = new aquete();
+        $quete->charge($aquete_cod);
+
+        //On regarde les conditions
+        $req = "select *  from quetes.aquete_perso where aqperso_perso_cod = ? and aqperso_aquete_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod, $aquete_cod), $stmt);
+        $result = $stmt->fetch();
+        $new = true;
+        if ($result)
+        {
+            // L'interaction a déjà été faite, on raz pour une nouvelle itération!
+            $new = false;
+            $this->charge($result["aqperso_cod"]);
+
+            //supprimer le journal en cours
+            $perso_journal = new aquete_perso_journal();
+            $perso_journal->deleteBy_aqperso_cod($this->aqperso_cod, $this->aqperso_nb_realisation);
+        }
+
+        // suprimer d'éventuels elements en cours
+        $element = new aquete_element();
+        $element->deleteBy_aqperso_cod($this->aqperso_cod);
+
+        // On charge l'étape 1 !
+        $etape = new aquete_etape();
+        $etape->charge($quete->aquete_etape_cod);  // c'est la première étape, celle de démarrage
+        //
+        // on commence a l'étape suivante!
+        $seconde_etape_cod = $etape->aqetape_etape_cod  ;
+
+        // La quête a peut-être déjà été réalisée dans le passé, on redémarre à zero -------------------------------------
+        $this->aqperso_perso_cod = $perso_cod;      // dans le cas d'une première instanciation
+        $this->aqperso_aquete_cod = $aquete_cod;    // dans le cas d'une première instanciation
+        $this->aqperso_quete_step = 1;              // (Re-)Démarrage step 1 (important pour l'hydratation)
+        $this->aqperso_etape_cod = $quete->aquete_etape_cod;
+        $this->aqperso_nb_realisation++;
+        $this->aqperso_date_debut = date('Y-m-d H:i:s');
+        $this->aqperso_actif = 'O';
+        $this->aqperso_date_fin = NULL;
+        $this->aqperso_date_debut_etape = $this->aqperso_date_debut;
+        $this->stocke($new);
+
+        // Il reste à générer les éléments de cette quête dédiés au perso (juste le le déclencheur) !!!
+        $element->charge($trigger["aqelem_cod"]);
         $element->aqelem_aqperso_cod = $this->aqperso_cod;      // le nouvelle élément est dédié au perso
         $element->aqelem_quete_step = 1;                        // une bouvelle quete démarre step 1
         $element->stocke(true);                             // stocke new va dupliquer l'élément
@@ -1006,8 +1102,8 @@ class aquete_perso
 
         } while ($loop && $this->aqperso_etape_cod > 0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
-        /// Jouraliser la fin de quete
-        if ($this->aqperso_etape_cod == 0)
+        /// Jouraliser la fin de quete (si pas une quete du type interaction)
+        if (($this->aqperso_etape_cod == 0) && ($quete->aquete_interaction!='O'))
         {
             $this->aqperso_quete_step++; // L'étape était déjà commencée, il y a déjà une entrée dans le journal pour celle-ci on passe un step !
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;

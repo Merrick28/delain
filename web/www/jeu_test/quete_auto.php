@@ -69,6 +69,46 @@ switch ($methode)
         }
         break;
 
+    case 'interaction' :
+
+        //On vérifie que le perso est bien en position pour démarrer cette quete.
+        $quete = new aquete;
+        $tab_quete = $quete->get_debut_quete($perso_cod);
+        $aquete_cod = $_REQUEST["quete"];
+
+        // dans le cas d'une interaction, il n'y a pas de choix, on ouvre directement sur la première etape,
+        $trigger = -1;   //index de la quete démarrée dans la liste possible
+        foreach ($tab_quete["quetes"] as $k => $quete)
+        {
+            if ($quete->aquete_cod == $aquete_cod && $quete->aquete_interaction == 'O')
+            {
+                $trigger = $k;
+                break;  // Inutile de chercher plus loin on a notre champion!
+            }
+        }
+
+        if ($trigger == -1)
+        {
+            $contenu_page .= "Malheureusement vous n'est pas ou plus en mesure d'interacgir avec ça!";
+        } else
+        {
+            // Instanciation de la quete automatique.
+            $quete_perso = new aquete_perso();
+            $result = $quete_perso->demarre_interaction($perso_cod, $aquete_cod,  $tab_quete["triggers"][$trigger]);
+
+            if ($result != "")
+            {
+                // Erreur, impossible de démarrer la quete
+                $contenu_page .= $result;
+            } else
+            {
+                // la quete a bien été instanciée
+                $methode = "interagir";     // => Pour réaliser la suite dans la liste de mes quetes en cours !!!!
+            }
+
+        }
+        break;
+
     case 'stop' :
 
         //On vérifie que le perso à bien démarrer la quete et on lui propose d'arrêter
@@ -177,13 +217,20 @@ switch ($methode)
         break;
 
     case 'choix' :
-
+        $aquete_cod = 1 * $_REQUEST["quete"] ;
         $quete_perso = new aquete_perso();
-        if ($quete_perso->chargeBy_perso_quete($perso_cod, 1 * $_REQUEST["quete"]))
+        if ($quete_perso->chargeBy_perso_quete($perso_cod, $aquete_cod))
         {
             $quete_perso->set_choix_aventurier(1 * $_REQUEST["choix"]);
         }
-        $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+
+        $quete = new aquete();
+        $quete->charge($aquete_cod);
+        if ($quete->aquete_interaction = 'O') {
+            $methode = "interagir";
+        } else {
+            $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+        }
         break;
 
     case 'dialogue' :
@@ -191,8 +238,28 @@ switch ($methode)
         $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
         break;
 }
+if ($methode == "interagir") {
 
-if ($methode == "")
+    $quete_perso = new aquete_perso();
+    $quete_perso->chargeBy_perso_quete($perso_cod, $aquete_cod) ;
+    $quete = $quete_perso->get_quete();
+
+    $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>Interaction avec l'environnement</strong></center></div><br><br>";
+    $contenu_page .= $quete->aquete_description."<br><br>" ;
+
+    //** C'est ici que l'on vérifie l'avancement de la quete, (nota il faut que l'on y passe obligatoirement au démarrage après la première étape) **//
+    $quete_perso->run();
+    $contenu_page .= $quete_perso->journal('O', 0, false);      // Texte avec l'historique de la quete jusqu'a l'étape en cours
+
+
+    // Si la quête est finie, proposer la fermeture au joueur!
+    if (! $quete_perso->est_finie() )
+    {
+        $contenu_page .= $quete_perso->get_texte_etape_courante();
+    }
+
+    $contenu_page .= "<br><br>";
+} else if ($methode == "")
 {
     //--------------------------- PAGE DE SUIVI DES QUETES EN COURS ET TERMINEES --------------------------------------
     $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>Suivi de vos Quêtes</strong></center></div><br><br>";

@@ -537,7 +537,7 @@ switch ($methode) {
             echo "<p>Changements validés dans les automaps.</p>";
         }
         if ($nb_modif_ea>0) echo "<p>Modifications sur les positions d'EA : $nb_modif_ea<br /></p>";
-        if ($nb_modif_qa>0) echo "<p>Modifications sur les positions d'QA : $nb_modif_qa<br /></p>";
+        if ($nb_modif_qa>0) echo "<p>Modifications sur les positions de QA : $nb_modif_qa<br /></p>";
         if ($nb_modif_meca>0) echo "<p>Modifications sur les positions de mécanismes : $nb_modif_meca <br /></p>";
         break;
 }

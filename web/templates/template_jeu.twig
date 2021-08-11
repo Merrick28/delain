@@ -79,7 +79,7 @@
         {% set perso_nb_demarrage_quete = PERSO.perso_nb_demarrage_quete %}
         {%  if  perso_nb_demarrage_quete > 0 %}
             <a href="/jeu_test/quete_perso.php">
-                <img title="Intéractions" src="{{ G_IMAGES }}quete.png"></a>
+                <img title="Interactions" src="{{ G_IMAGES }}quete.png"></a>
                 <span class="badge">{{ perso_nb_demarrage_quete }}</span>
         {% else %}
             <a href="/jeu_test/quete_auto.php?onglet=apercu">
@@ -214,7 +214,7 @@
             </div>
             <div id="quete">
                 {% if PERSO.is_perso_quete %}
-                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/quete_perso.php"><strong>Quête</strong></a>
+                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/quete_perso.php"><strong>Quête / Interaction</strong></a>
                 {% endif %}
             </div>
             <div id="lieu">
@@ -388,7 +388,7 @@
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches comptes</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions du 4e</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Interactions du 4e</a><br>
         {% endif %}
 
         {% if DROIT.controle_admin == 'O' %}
