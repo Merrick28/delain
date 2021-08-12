@@ -199,7 +199,7 @@ switch ($methode) {
                         <span title="Gestion de la position des Quetes-Auto.">Quete-Auto: </span>
                         <?php
                         echo '<select name="select-qa-dep" id="select-qa-dep" onchange="Pinceau.miseAJour (\'Speciaux\', \'qa-dep\')">';
-                        for ($qa=0; $qa<count($qa); $qa++ )
+                        for ($qa=0; $qa<count($quete_auto); $qa++ )
                         {
                             echo '<option value="'.$quete_auto[$qa]["aquete_cod"].'">'.$quete_auto[$qa]["nom_qa"].'</option>';
                         }
@@ -537,7 +537,7 @@ switch ($methode) {
             echo "<p>Changements validés dans les automaps.</p>";
         }
         if ($nb_modif_ea>0) echo "<p>Modifications sur les positions d'EA : $nb_modif_ea<br /></p>";
-        if ($nb_modif_qa>0) echo "<p>Modifications sur les positions d'QA : $nb_modif_qa<br /></p>";
+        if ($nb_modif_qa>0) echo "<p>Modifications sur les positions de QA : $nb_modif_qa<br /></p>";
         if ($nb_modif_meca>0) echo "<p>Modifications sur les positions de mécanismes : $nb_modif_meca <br /></p>";
         break;
 }

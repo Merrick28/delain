@@ -478,6 +478,22 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
 
+        case 'meca':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select meca_cod cod, (etage_libelle || ' / ' || meca_nom) nom from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ?  {$filter} ORDER BY (etage_libelle || ' / ' || meca_nom)  LIMIT {$limit}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
         case 'sort':
             $words = explode(" ", $recherche);
             $search_string = array();
@@ -527,6 +543,22 @@ switch($_REQUEST["request"])
             $req = "select aqetape_cod cod, aqetape_nom||' ['||aquete_nom||']' nom from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter} ORDER BY aqetape_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
+        case 'quete':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from quetes.aquete where aquete_nom_alias ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select aquete_cod cod, aquete_nom_alias nom from quetes.aquete where aquete_nom_alias ilike ? {$filter} ORDER BY aquete_nom_alias LIMIT {$limit}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
 
         case 'element':

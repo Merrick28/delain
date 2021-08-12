@@ -37,10 +37,16 @@ if ($erreur == 0)
         //$contenu_page .= "<strong>{$quete->aquete_nom}</strong><br><br>";
 
         $contenu_quete_auto .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$tab_quete["triggers"][$k]["nom"]}</strong></center></div>" ;
-        $contenu_quete_auto .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
+        if ($quete->aquete_interaction == 'O') {
+            $link = "/jeu_test/quete_auto.php?methode=interaction&quete=".$quete->aquete_cod ;
+            $contenu_quete_auto .= "<br><a href='{$link}'>Interagir</a> : ".$quete->aquete_description."<br><br>" ;
+            $contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]);
+        } else {
+            $contenu_quete_auto .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
+            $contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]);
+        }
 
         //$contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]["nom"]);
-        $contenu_quete_auto .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]);
         $contenu_quete_auto .= "<br><br><hr><!-- fin $k => $quete->aquete_etape_cod -->";
 
     }
