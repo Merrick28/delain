@@ -194,16 +194,20 @@ switch ($methode)
                 $contenu_page .= "<br>Malheureusement, vous n'avez pas réussi cette quête!";
             }
 
-            if ($quete->aquete_journal_archive != 'O')
+            // Si cela n'avait pas été fait !
+            if ($quete_perso->aqperso_actif == "O")
             {
-                // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
-                $perso_journal = new aquete_perso_journal();
-                $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod, $quete_perso->aqperso_nb_realisation);
-            }
+                if ($quete->aquete_journal_archive != 'O')
+                {
+                    // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
+                    $perso_journal = new aquete_perso_journal();
+                    $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod, $quete_perso->aqperso_nb_realisation);
+                }
 
-            $quete_perso->aqperso_actif = 'N';
-            $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
-            $quete_perso->stocke();
+                $quete_perso->aqperso_actif = 'N';
+                $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
+                $quete_perso->stocke();
+            }
 
             if ($quete->aquete_journal_archive != 'O')
             {
@@ -239,7 +243,7 @@ switch ($methode)
         $aquete_cod = 1 * $_REQUEST["quete"] ;
         $quete = new aquete();
         $quete->charge($aquete_cod);
-        if ($quete->aquete_interaction = 'O') {
+        if ($quete->aquete_interaction == 'O') {
             $methode = "interagir";
         } else {
             $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
@@ -368,6 +372,19 @@ if ($methode == "interagir") {
             if ($quete_perso->est_finie())
             {
                 $contenu_page .= '&nbsp;&nbsp;&nbsp;<form method="post"><input type="hidden" name="methode" value="terminer"><input type="hidden" name="quete" value="' . $aquete_cod . '"><input type="submit" class="test" value="  Terminer  "></form>';
+
+                // Maintenant on force la fermeture ici, trop de joueur ne clique pas sur "Terminer"=================
+                if ($quete->aquete_journal_archive != 'O')
+                {
+                    // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
+                    $perso_journal = new aquete_perso_journal();
+                    $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod, $quete_perso->aqperso_nb_realisation);
+                }
+
+                $quete_perso->aqperso_actif = 'N';
+                $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
+                $quete_perso->stocke();
+
             }
             else
             {

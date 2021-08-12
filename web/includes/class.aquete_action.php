@@ -190,7 +190,7 @@ class aquete_action
         if (!$perso_competence->getByPersoCompetenceNiveau($perso->perso_cod, $p1->aqelem_misc_cod)) return 0 ;         // etape suivante: pas la compétence
 
         // Si le perso n'a pas le niveau requis
-        if ( $perso_competence->pcomp_modificateur <= $p2->aqelem_param_num_1 ) return 0 ;                              // etape suivante: pas le niveau
+        if ( $perso_competence->pcomp_modificateur <= $p2->aqelem_param_num_1) return 0 ;                              // etape suivante: pas le niveau
 
         // On ajoute la difficulté au niveau de compétence du perso
         $competence = $perso_competence->pcomp_modificateur + $p3->aqelem_param_num_1;
@@ -212,13 +212,15 @@ class aquete_action
             $etape = $p8->aqelem_misc_cod  ;        // Echec critique
         } else if ($reussite>$competence) {
             $etape = $p7->aqelem_misc_cod  ;        // echec classique
-        } else if ($result["reussite"] <= ( 5*$competence/100) ) {
-            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5% de la compétence
+        } else if ($result["reussite"] <= 5 ) {
+            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5
         } else if ($result["reussite"] <= ( 10*$competence/100) ) {
             $etape = $p5->aqelem_misc_cod  ;        // Réussite spéciale à 10% de la compétence
         } else {
             $etape = $p6->aqelem_misc_cod  ;        // Réussite standard
         }
+
+        //echo "<pre>"; print_r([$etape, $reussite, $competence, $result]);die();
 
         // retourner l'étape !
         return $etape;
@@ -372,6 +374,53 @@ class aquete_action
         }
 
         // Sortie par défaut!! demander une autre saisie du joueur
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_pa(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if (!isset($_REQUEST["dialogue"]) || $_REQUEST["dialogue"] == "")
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue = $_REQUEST["dialogue"] ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "valeur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape" )) return $retour ;    // Problème lecture (blocage)
+
+        $nb_pa = $p1->aqelem_param_num_1 ;
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+
+        // refus ou pas assez de PA
+        if ($perso->perso_pa<$nb_pa || $dialogue != 'O')
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p2->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // Consommer les PA
+        $perso->perso_pa = $perso->perso_pa - $nb_pa ;
+        $perso->stocke();
+
+        $retour->status = true ;  // l'étape est pas terminée sur un fail !
+        $retour->etape = $p3->aqelem_misc_cod;
         return $retour;
     }
 
