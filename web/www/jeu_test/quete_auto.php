@@ -89,7 +89,7 @@ switch ($methode)
 
         if ($trigger == -1)
         {
-            $contenu_page .= "Malheureusement vous n'est pas ou plus en mesure d'interacgir avec ça!";
+            $contenu_page .= "Malheureusement vous n'est pas ou plus en mesure d'interagir avec ça!";
         } else
         {
             // Instanciation de la quete automatique.

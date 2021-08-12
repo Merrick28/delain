@@ -1074,6 +1074,18 @@ class aquete_perso
                     $this->action->meca_declenchement($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si le mecanisme n'a pas été déclenché)
                     break;
+
+                case "#QUETE #DESACTIVATION":
+                    // déclenchement d'un mecanisme d'étage, .
+                    $this->action->quete_desactivation($this);
+                    $status_etape = 1;      // 1 => ok etape suivante
+                    break;
+
+                case "#QUETE #ACTIVATION":
+                    // déclenchement d'un mecanisme d'étage, .
+                    $this->action->quete_activation($this);
+                    $status_etape = 1;      // 1 => ok etape suivante
+                    break;
             }
 
             //------- comptage du nombre d'étape réalisées----------------------

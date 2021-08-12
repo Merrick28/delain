@@ -684,7 +684,7 @@ if ($erreur == 0)
 
                     case 'choix':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Choix  :
@@ -699,7 +699,7 @@ if ($erreur == 0)
 
                     case 'choix_etape':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Liste de mot <em style="font-size: x-small">(séparés par |)</em>  :
@@ -715,7 +715,7 @@ if ($erreur == 0)
 
                     case 'delai':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Délai (<em>en jours</em>) :
@@ -730,7 +730,7 @@ if ($erreur == 0)
 
                     case 'valeur':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Valeur :
@@ -742,7 +742,7 @@ if ($erreur == 0)
 
                     case 'texte':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Texte :
@@ -754,7 +754,7 @@ if ($erreur == 0)
 
                     case 'etape':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Etape : 
@@ -768,7 +768,7 @@ if ($erreur == 0)
 
                     case 'quete_etape':
 
-                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape = new aquete_etape() ;
                         $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
 
                         echo   '<td>Etape : 
@@ -780,9 +780,26 @@ if ($erreur == 0)
                                 </td>';
                         break;
 
+                    case 'quete':
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $aquete = new aquete() ;
+                            $aquete->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $aquete->aquete_nom_alias ;
+                        }
+
+                        echo   '<td>Quête : 
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'quete\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","quete","Rechercher une etape");\'> 
+                                </td>';
+                        break;
+
                     case 'element':
 
-                        $aquete_etape = new aquete_etape;
+                        $aquete_etape = new aquete_etape();
                         $aquete_etape->charge($element->aqelem_misc_cod);
                         $aqelem_misc_nom = $aquete_etape->aqetape_nom;
 

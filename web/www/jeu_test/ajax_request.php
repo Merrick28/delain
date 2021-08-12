@@ -545,6 +545,22 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute($search_string, $stmt);
             break;
 
+        case 'quete':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from quetes.aquete where aquete_nom_alias ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select aquete_cod cod, aquete_nom_alias nom from quetes.aquete where aquete_nom_alias ilike ? {$filter} ORDER BY aquete_nom_alias LIMIT {$limit}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
         case 'element':
             // On va utiliser ce paramètre sans le passer par le pdo, il faut s'assurer qu'il fait bien partie des valeurs attendue)
             // Il y aurait un risque d'injection de coe sql si on ne le faisait pas.;

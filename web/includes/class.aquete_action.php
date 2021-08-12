@@ -2320,6 +2320,60 @@ class aquete_action
     }
 
     //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:quete|1%0]',
+     * p1=quete
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function quete_desactivation(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+
+        $aquete_cod = $p1->aqelem_misc_cod ? $p1->aqelem_misc_cod  : $aqperso->aqperso_aquete_cod ;
+
+        if ($aquete_cod)
+        {
+            $quete = new aquete();
+            $quete->charge($aquete_cod);
+            $quete->aquete_actif = 'N' ;
+            $quete->stocke();
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:quete|1%0]',
+     * p1=quete
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function quete_activation(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+
+        $aquete_cod = $p1->aqelem_misc_cod ;
+
+        if ($aquete_cod)
+        {
+            $quete = new aquete();
+            $quete->charge($aquete_cod);
+            $quete->aquete_actif = 'O' ;
+            $quete->stocke();
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
 /*
 echo "<pre>"; print_r($p1); echo "</pre>";
 die();
