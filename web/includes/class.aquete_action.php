@@ -1058,6 +1058,16 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                              // Problème lecture des paramètres
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return false ;       // Problème lecture des paramètres
+        $p3 = $element->get_aqperso_element( $aqperso, 3, 'selecteur') ;        // ce parametre est optionnel(innexistant dans les premières versions)
+        $p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur') ;           // ce parametre est optionnel(innexistant dans les premières versions)
+
+        // Parametre de dispertion pour distribution au sol!
+        $dispersion = $p4 ? $p4->aqelem_param_num_1 : 0 ;
+
+        // Recherche de la zone centrale de départ
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+        $perso_pos_pos = $perso->get_position()["pos"]->pos_cod ;
 
         shuffle($p2);                                       // ordre aléatoire pour les objets
 
@@ -1090,36 +1100,64 @@ class aquete_action
         $param_ordre = 0 ;
         foreach ($liste_objet as $k => $elem)
         {
-
-            // instancier l'objet générique
-            $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
-
-            if ($result = $stmt->fetch())
+            if ($p3 && $p3->aqelem_misc_cod==1)
             {
-                if (1*$result["obj_cod"]>0)
-                {
-                    $objet = new objets();
-                    $objet->charge(1*$result["obj_cod"]);
+                // drop de l'objet au sol
+                $req = "select cree_objet_pos(:gobj_cod, pos_alentour(:pos_cod, :dispersion)) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":pos_cod" => $perso_pos_pos, ":dispersion" => $dispersion  ), $stmt);
 
-                    $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
-                        ":texte_evt"=> $texte_evt,
-                        ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
-                        ":levt_cible" => $aqperso->aqperso_perso_cod ,
-                        ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
-                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
-                    $elem->aqelem_type = 'objet';
-                    $elem->aqelem_misc_cod =  $objet->obj_cod ;
-                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
-                    $param_ordre ++ ;
-                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"] > 0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
                 }
             }
+            else
+            {
+                // mettre l'objet directement dans l'inventaire du meneur de quete
+
+                // instancier l'objet générique
+                $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"]>0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                        $stmt   = $pdo->prepare($req);
+                        $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                            ":texte_evt"=> $texte_evt,
+                            ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
+                            ":levt_cible" => $aqperso->aqperso_perso_cod ,
+                            ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
+                }
+            }
+
         }
 
         return true;
