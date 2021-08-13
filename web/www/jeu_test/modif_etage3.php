@@ -17,7 +17,7 @@ include "blocks/_test_droit_modif_etage.php";
 
 $methode          = get_request_var('methode', 'debut');
 
-if (isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = $_REQUEST["admin_etage"] ;
+if (isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0 && $pos_etage==0) $pos_etage = $_REQUEST["admin_etage"] ;
 
 $log = '';
 $resultat = '';
