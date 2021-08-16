@@ -34,7 +34,7 @@ if ($result = $stmt->fetch())
             $req_position    = "select pos_x,pos_y,pos_etage
 												from perso_position,positions
 												where ppos_perso_cod = $perso_cod
-												and ppos_pos_cod = pos_cod ";
+												and ppos_pos_cod = pos_cod  ";
             $stmt            = $pdo->query($req_position);
             $result          = $stmt->fetch();
             $perso_pos_x     = $result['pos_x'];
@@ -45,7 +45,16 @@ if ($result = $stmt->fetch())
             // POSITION DES PIEGES
             $req_piege = "select pos_x,pos_y,pos_etage from positions
 															where substring(pos_fonction_arrivee from 1 for 5) = 'piege'
-															and pos_etage = $perso_pos_etage";
+															and pos_etage = $perso_pos_etage
+                            union all		
+                                                                                                        
+                            SELECT pos_x,pos_y,pos_etage from (
+                                SELECT  distinct f_to_numeric(unnest(string_to_array(fonc_trigger_param->>'fonc_trig_pos_cods', ',') )) as ea_pos_cod
+                                  FROM public.fonction_specifique 
+                                    where fonc_type='POS' and fonc_gmon_cod is null and fonc_perso_cod is null 
+                                        and f_to_numeric(fonc_trigger_param->>'fonc_trig_type') = -1 
+                                        and f_to_numeric(fonc_trigger_param->>'fonc_trig_pos_etage')=$perso_pos_etage 
+                                ) as f join positions on f.ea_pos_cod=pos_cod";
             $stmt      = $pdo->query($req_piege);
             while ($result = $stmt->fetch())
             {
