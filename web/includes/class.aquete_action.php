@@ -419,8 +419,65 @@ class aquete_action
         $perso->perso_pa = $perso->perso_pa - $nb_pa ;
         $perso->stocke();
 
-        $retour->status = true ;  // l'étape est pas terminée sur un fail !
+        $retour->status = true ;  // l'étape est pas terminée sur un success !
         $retour->etape = $p3->aqelem_misc_cod;
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_code(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if (!isset($_REQUEST["dialogue"]) )
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue =  $_REQUEST["dialogue"] ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "selecteur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "texte" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape" )) return $retour ;    // Problème lecture (blocage)
+
+        $nb_pa = $p3->aqelem_param_num_1 ;
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+
+        // refus ou pas assez de PA
+        if ($perso->perso_pa<$nb_pa || $dialogue == '')
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // Consommer les PA
+        $perso->perso_pa = $perso->perso_pa - $nb_pa ;
+        $perso->stocke();
+
+        // Code faux
+        if ($perso->perso_pa<$nb_pa || $dialogue != $p2->aqelem_param_txt_1)
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        $retour->status = true ;  // l'étape est pas terminée sur un success !
+        $retour->etape = $p5->aqelem_misc_cod;
         return $retour;
     }
 

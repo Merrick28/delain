@@ -454,7 +454,7 @@ class aquete_etape
     }
 
     /**
-     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un texte)
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (validation d'une dépense de PA)
      * @param aquete_perso $aqperso
      * @return mixed|string
      */
@@ -478,6 +478,52 @@ class aquete_etape
             $hydrate_texte .= '<br><a href="'.$link.'" style="margin:25px;">OUI</a>';
             $link = "/jeu_test/quete_auto.php?methode=dialogue&quete=".$this->aqetape_aquete_cod."&dialogue=N" ;
             $hydrate_texte .= '<a href="'.$link.'" style="margin:25px;">NON</a>';
+        }
+
+
+        return $hydrate_texte ;
+    }
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un code)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_texte_choix_code(aquete_perso $aqperso)
+    {
+        $hydrate_texte = "" ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'selecteur')) return false ;                              // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'texte')) return false ;                              // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        if ($perso->perso_pa <  $p3->aqelem_param_num_1)
+        {
+            $hydrate_texte .= "Vous n'avez pas assez de PA pour essayer!";
+        }
+        else
+        {
+
+            $hydrate_texte .='<form method="post" action="quete_auto.php">
+                                <input type="hidden" name="methode" value="dialogue">
+                                <input type="hidden" id="cryptex_value" name="dialogue" value="">
+                                <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">';
+
+            $cryptex = new cryptex($p1->aqelem_misc_cod, $p2->aqelem_param_txt_1);
+            $hydrate_texte .= $cryptex->display();
+            $hydrate_texte .="<div>";
+
+            $hydrate_texte .="</div>";
+            $hydrate_texte .='<br><input style="margin-left:20px; margin-top:20px;" onclick="$(\'#cryptex_value\').val(getCryptexValue());" class="test" type="submit" name="choix_etape" value="Valider'.( $p3->aqelem_param_num_1 > 0 ? " ({$p3->aqelem_param_num_1} PA)" : "").'"">';
+            if ($p3->aqelem_param_num_1 > 0)
+            {
+                $hydrate_texte .= '<input style="margin-left:20px;" class="test" type="submit" name="choix_etape" value="Ignorer">';
+            }
+            $hydrate_texte .='</form>';
         }
 
 
