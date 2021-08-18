@@ -347,7 +347,8 @@ if ($erreur == 0)
         echo '<tr><td><strong>Exemple </strong>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.htmlspecialchars($etape->aqetape_nom).'"></td></tr>';
         echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
-        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
+        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br>
+                   Vous pouvez utiliser des images en les déposants sur le serveur à l\'aide de cet outil: <a target="_blank" href="/jeu_test/modif_etage3_images.php">ressources images</a><br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
                    <a href="#" onclick="$(\'#info-variables\').slideToggle();"><img src="/images/info_16.png"></a><div id="info-variables" style="display:none;"><br>Le texte d\'étape peut contenir des <u>variables</u>:<br>
                    <br>* [X] est une représentation en texte du paramètre X de l\'étape (exemple [1], [2] etc...<br> 
                    <br>* [#perso.XXXXX] est une représentation en texte de la propriété "XXXXX" du perso, comme par exemple:<br>
