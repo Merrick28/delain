@@ -59,6 +59,7 @@ $menus = '<p>Choisissez l’étage à modifier :</p>
 	<a href='vue_etage.php?num_etage=$etage'>Visualiser les changements ? </a><br /></p>
 	<hr />
 	<p><strong>Autres outils</strong><br />
+	<a href='modif_etage3_images.php'>Ajouter/Supprimer des images</a><br />	
 	<a href='modif_etage3_styles.php'>Modifier les styles.</a><br />	
 	<a href='modif_etage3_decors.php'>Modifier les décors.</a><br />	
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
