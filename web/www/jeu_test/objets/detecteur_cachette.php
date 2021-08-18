@@ -26,6 +26,7 @@ if ($result = $stmt->fetch())
             $stmt            = $pdo->query($req_use);
             $perso->perso_pa = $perso->perso_pa - 4;
             $perso->stocke();
+
             $contenu_page .= '<p>Le cadran du détecteur affiche :</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
 
@@ -44,7 +45,16 @@ if ($result = $stmt->fetch())
             // POSITION DES CACHETTES
             $req_cachette = "select pos_x,pos_y,pos_etage from cachettes,positions
 															where cache_pos_cod = pos_cod
-															and pos_etage = $perso_pos_etage";
+															and pos_etage = $perso_pos_etage															
+                              union all		
+                                                                                                            
+                              SELECT pos_x,pos_y,pos_etage from (
+                                SELECT  distinct f_to_numeric(unnest(string_to_array(fonc_trigger_param->>'fonc_trig_pos_cods', ',') )) as ea_pos_cod
+                                  FROM public.fonction_specifique 
+                                    where fonc_type='POS' and fonc_gmon_cod is null and fonc_perso_cod is null 
+                                        and f_to_numeric(fonc_trigger_param->>'fonc_trig_type') = 1 
+                                        and f_to_numeric(fonc_trigger_param->>'fonc_trig_pos_etage')=$perso_pos_etage 
+                                ) as f join positions on f.ea_pos_cod=pos_cod	";
             $stmt         = $pdo->query($req_cachette);
             while ($result = $stmt->fetch())
             {

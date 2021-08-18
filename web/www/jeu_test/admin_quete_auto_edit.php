@@ -8,6 +8,20 @@ include_once '../includes/tools.php';
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
+// Editeur WYSIWYG pour le texte d'étape! (SCEdtor) / Avait été retiré? pourquoi? par qui ?
+echo '<link href="/styles/sceditor.min.css" rel="stylesheet">';
+echo '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
+echo '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></script>';
+echo '<script>//# sourceURL=admin_quete_auto_edit.js
+ $( document ).ready(function() {
+    var textarea = document.getElementById("id-textarea-etape");
+    sceditor.create(textarea, {
+        format: "xhtml",
+        style: "/style/sceditor.min.css",
+        toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|table,quote,image|maximize|source",
+    });
+});
+</script>';
 
 //
 //Contenu de la div de droite
@@ -219,7 +233,7 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
@@ -238,6 +252,10 @@ if ($erreur == 0)
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 6));
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 7));
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 8));
+                        } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #CODE")))
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 4) ;
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
                         } else
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
@@ -329,7 +347,8 @@ if ($erreur == 0)
         echo '<tr><td><strong>Exemple </strong>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.htmlspecialchars($etape->aqetape_nom).'"></td></tr>';
         echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
-        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
+        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br>
+                   Vous pouvez utiliser des images en les déposants sur le serveur à l\'aide de cet outil: <a target="_blank" href="/jeu_test/modif_etage3_images.php">ressources images</a><br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
                    <a href="#" onclick="$(\'#info-variables\').slideToggle();"><img src="/images/info_16.png"></a><div id="info-variables" style="display:none;"><br>Le texte d\'étape peut contenir des <u>variables</u>:<br>
                    <br>* [X] est une représentation en texte du paramètre X de l\'étape (exemple [1], [2] etc...<br> 
                    <br>* [#perso.XXXXX] est une représentation en texte de la propriété "XXXXX" du perso, comme par exemple:<br>

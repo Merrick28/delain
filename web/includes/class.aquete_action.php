@@ -419,8 +419,65 @@ class aquete_action
         $perso->perso_pa = $perso->perso_pa - $nb_pa ;
         $perso->stocke();
 
-        $retour->status = true ;  // l'étape est pas terminée sur un fail !
+        $retour->status = true ;  // l'étape est pas terminée sur un success !
         $retour->etape = $p3->aqelem_misc_cod;
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_code(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if (!isset($_REQUEST["dialogue"]) )
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue =  $_REQUEST["dialogue"] ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "selecteur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "texte" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape" )) return $retour ;    // Problème lecture (blocage)
+
+        $nb_pa = $p3->aqelem_param_num_1 ;
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+
+        // refus ou pas assez de PA
+        if ($perso->perso_pa<$nb_pa || $dialogue == '')
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // Consommer les PA
+        $perso->perso_pa = $perso->perso_pa - $nb_pa ;
+        $perso->stocke();
+
+        // Code faux
+        if ($perso->perso_pa<$nb_pa || $dialogue != $p2->aqelem_param_txt_1)
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        $retour->status = true ;  // l'étape est pas terminée sur un success !
+        $retour->etape = $p5->aqelem_misc_cod;
         return $retour;
     }
 
@@ -1058,6 +1115,16 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                              // Problème lecture des paramètres
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return false ;       // Problème lecture des paramètres
+        $p3 = $element->get_aqperso_element( $aqperso, 3, 'selecteur') ;        // ce parametre est optionnel(innexistant dans les premières versions)
+        $p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur') ;           // ce parametre est optionnel(innexistant dans les premières versions)
+
+        // Parametre de dispertion pour distribution au sol!
+        $dispersion = $p4 ? $p4->aqelem_param_num_1 : 0 ;
+
+        // Recherche de la zone centrale de départ
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+        $perso_pos_pos = $perso->get_position()["pos"]->pos_cod ;
 
         shuffle($p2);                                       // ordre aléatoire pour les objets
 
@@ -1090,36 +1157,64 @@ class aquete_action
         $param_ordre = 0 ;
         foreach ($liste_objet as $k => $elem)
         {
-
-            // instancier l'objet générique
-            $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
-
-            if ($result = $stmt->fetch())
+            if ($p3 && $p3->aqelem_misc_cod==1)
             {
-                if (1*$result["obj_cod"]>0)
-                {
-                    $objet = new objets();
-                    $objet->charge(1*$result["obj_cod"]);
+                // drop de l'objet au sol
+                $req = "select cree_objet_pos(:gobj_cod, pos_alentour(:pos_cod, :dispersion)) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":pos_cod" => $perso_pos_pos, ":dispersion" => $dispersion  ), $stmt);
 
-                    $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
-                        ":texte_evt"=> $texte_evt,
-                        ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
-                        ":levt_cible" => $aqperso->aqperso_perso_cod ,
-                        ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
-                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
-                    $elem->aqelem_type = 'objet';
-                    $elem->aqelem_misc_cod =  $objet->obj_cod ;
-                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
-                    $param_ordre ++ ;
-                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"] > 0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
                 }
             }
+            else
+            {
+                // mettre l'objet directement dans l'inventaire du meneur de quete
+
+                // instancier l'objet générique
+                $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"]>0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                        $stmt   = $pdo->prepare($req);
+                        $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                            ":texte_evt"=> $texte_evt,
+                            ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
+                            ":levt_cible" => $aqperso->aqperso_perso_cod ,
+                            ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
+                }
+            }
+
         }
 
         return true;
