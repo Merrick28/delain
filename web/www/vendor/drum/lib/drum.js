@@ -120,7 +120,8 @@
 			dail_w: 20,
 			dail_h: 5,
 			dail_stroke_color: '#999999',
-			dail_stroke_width: 1
+			dail_stroke_width: 1 ,
+			dail_step: 1
 		}, options || {});
 
 		settings.self = this ;
@@ -177,14 +178,27 @@
 				$(this).find(".up").hide();
 				$(this).find(".down").hide();
 			});
-			
+
+			// For all common browser
 			$(wrapper).on("mousewheel", function(e){
-			     if(e.originalEvent.wheelDelta /120 > 0) {
+			 	if(e.originalEvent.wheelDelta /120 > 0) {
 					settings.self.setIndex(settings.self.getIndex()-1);
 				}
 				else{
 					settings.self.setIndex(settings.self.getIndex()+1);
 				}
+				return false ;
+			});
+
+			// For firefox!
+			$(wrapper).on("DOMMouseScroll", function(e){
+			 	if(e.originalEvent.wheelDelta /120 > 0) {
+					settings.self.setIndex(settings.self.getIndex()-1);
+				}
+				else{
+					settings.self.setIndex(settings.self.getIndex()+1);
+				}
+				return false ;
 			});
 			
 		}
@@ -257,8 +271,8 @@
 				if (last_index != data.index && settings.onChange) 
 					settings.onChange(HTMLselect);
 
-				$(selected.elem).css("opacity", 1);
 				$("figure:not(.a" + (selected.angle*100) + ", .hidden)", drum).css("opacity", "0.5");
+				$(selected.elem).css("opacity", 1);
 				if (selected.angle != settings.last_angle && [0,90,180,270].indexOf(selected.angle) >= 0) {
 					settings.last_angle = selected.angle;
 					update(selected);
@@ -315,7 +329,17 @@
 				var deg = settings.rotation - settings.theta - 1;
 				settings.rotation = getNearest(deg);
 				transform();
-			});			
+			});
+			$(dialUp).dblclick(function (e) {
+				var deg = settings.rotation + (settings.theta * settings.dail_step) + 1;
+				settings.rotation = getNearest(deg);
+				transform();
+			});
+			$(dialDown).dblclick(function (e) {
+				var deg = settings.rotation - (settings.theta * settings.dail_step) - 1;
+				settings.rotation = getNearest(deg);
+				transform();
+			});
 		}
 	};
 
