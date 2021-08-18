@@ -330,6 +330,7 @@
 				settings.rotation = getNearest(deg);
 				transform();
 			});
+			/* Double clique trop destabilisant, inutilisable
 			$(dialUp).dblclick(function (e) {
 				var deg = settings.rotation + (settings.theta * settings.dail_step) + 1;
 				settings.rotation = getNearest(deg);
@@ -340,6 +341,7 @@
 				settings.rotation = getNearest(deg);
 				transform();
 			});
+			*/
 		}
 	};
 
