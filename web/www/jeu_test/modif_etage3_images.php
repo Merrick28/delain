@@ -23,6 +23,8 @@ if ($erreur == 0)
     } else if ($_POST["methode"] == "delete") {
         $filename = $_POST["fichier"] ;
         @unlink($baseimage . '/' . $filename);
+    } else {
+        $filename = "" ;
     }
 
     // ressources des images pour les admins
@@ -35,9 +37,10 @@ if ($erreur == 0)
 	// browse files
     $files = preg_grep('/^([^.])/', scandir($baseimage));
 
-    foreach ($files as$fichier)
+    foreach ($files as $fichier)
     {
-        echo '<div style="display:inline-flex"><form method="post">
+        $style = ($fichier == $filename ) ? "width: 100%; background-color: lightgray;" : "";
+        echo '<div style="'.$style.' display:inline-flex"><form method="post">
                                     <input type="hidden" name="methode" value="delete">
                                     <input type="hidden" name="fichier" value="'.$fichier.'">
                                     <input style="margin-top: 10px;" type="submit" value="Supprimer">
