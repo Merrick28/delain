@@ -180,18 +180,7 @@
 			});
 
 			// For all common browser
-			$(wrapper).on("mousewheel", function(e){
-			 	if(e.originalEvent.wheelDelta /120 > 0) {
-					settings.self.setIndex(settings.self.getIndex()-1);
-				}
-				else{
-					settings.self.setIndex(settings.self.getIndex()+1);
-				}
-				return false ;
-			});
-
-			// For firefox!
-			$(wrapper).on("DOMMouseScroll", function(e){
+			$(wrapper).on("wheel", function(e){
 			 	if(e.originalEvent.wheelDelta /120 > 0) {
 					settings.self.setIndex(settings.self.getIndex()-1);
 				}
@@ -330,18 +319,6 @@
 				settings.rotation = getNearest(deg);
 				transform();
 			});
-			/* Double clique trop destabilisant, inutilisable
-			$(dialUp).dblclick(function (e) {
-				var deg = settings.rotation + (settings.theta * settings.dail_step) + 1;
-				settings.rotation = getNearest(deg);
-				transform();
-			});
-			$(dialDown).dblclick(function (e) {
-				var deg = settings.rotation - (settings.theta * settings.dail_step) - 1;
-				settings.rotation = getNearest(deg);
-				transform();
-			});
-			*/
 		}
 	};
 
