@@ -540,7 +540,6 @@ if ($erreur == 0)
 
                     $meca->meca_si_active = json_encode($action_meca_active);
                     $meca->meca_si_desactive = json_encode($action_meca_desactive);
-                    print_r($meca);
                     $meca->stocke();
                 }
 
