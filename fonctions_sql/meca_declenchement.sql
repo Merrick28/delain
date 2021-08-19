@@ -6,13 +6,39 @@
 CREATE OR REPLACE FUNCTION meca_declenchement(integer,integer,integer,integer) RETURNS integer
     LANGUAGE plpgsql
     AS $$/*************************************************/
-/* fonction meca_declenchement                      */
+/* fonction meca_declenchement   (caller)        */
 /*************************************************/
 declare
   v_meca_cod alias for $1;
   v_sens alias for $2;    -- 0 ou 1 = active, -1 = desactive, 2 = inverse
   v_meca_pos_cod alias for $3;
   v_perso_pos_cod alias for $4;
+begin
+
+  return meca_declenchement(v_meca_cod,v_sens,v_meca_pos_cod,v_perso_pos_cod, ARRAY[0]);
+
+end;$$;
+
+ALTER FUNCTION public.meca_declenchement(integer,integer,integer,integer) OWNER TO delain;
+
+
+
+--
+-- Name: meca_declenchement(integer,integer,integer,integer,json); Type: FUNCTION; Schema: public; Owner: delain
+--
+
+CREATE OR REPLACE FUNCTION meca_declenchement(integer,integer,integer,integer,integer[]) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$/*************************************************/
+/* fonction meca_declenchement                   */
+/*************************************************/
+-- Comme une activation de mecanisme peut en entrainer une autre, on s'assure qu'il n'y a pas de boucle infinie en passant la liste des mecas déja activés!
+declare
+  v_meca_cod alias for $1;
+  v_sens alias for $2;    -- 0 ou 1 = active, -1 = desactive, 2 = inverse
+  v_meca_pos_cod alias for $3;
+  v_perso_pos_cod alias for $4;
+  v_meca_cod_list alias for $5;
   v_target_pos_cod integer;
   v_pmeca_actif integer;
   v_count integer;
@@ -29,8 +55,16 @@ declare
   v_meca_mur_type integer;
   v_meca_mur_tangible character varying(1);
   v_meca_mur_illusion character varying(1);
-
+  v_meca_si_active json;
+  v_meca_si_desactive json;
+  v_meca_list json;
+  ligne record;                -- Une ligne d’enregistrements
 begin
+
+  -- pour éviter le boulce infinie, on sort si le méca a déja été traité
+  if v_meca_cod_list is not null and ARRAY[v_meca_cod]@>v_meca_cod_list then
+      return -99 ;  -- break loop !
+  end if;
 
   -- position de la case ciblé si mécanisme du type 'Individuel'
   v_target_pos_cod := COALESCE(NULLIF(v_meca_pos_cod,0), v_perso_pos_cod) ;
@@ -39,8 +73,8 @@ begin
 
   -- -------------------------------------------------------------------------------------------------------------------
   -- rechercher la ou les cases consernées et voir leur état actuel!
-  select meca_pos_etage, meca_type, meca_pos_type_aff,  meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible
-      into v_meca_pos_etage, v_meca_type, v_meca_pos_type_aff,  v_meca_pos_decor, v_meca_pos_decor_dessus, v_meca_pos_passage_autorise, v_meca_pos_modif_pa_dep, v_meca_pos_ter_cod, v_meca_mur_type, v_meca_mur_tangible
+  select meca_pos_etage, meca_type, meca_pos_type_aff,  meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_si_active, meca_si_desactive
+      into v_meca_pos_etage, v_meca_type, v_meca_pos_type_aff,  v_meca_pos_decor, v_meca_pos_decor_dessus, v_meca_pos_passage_autorise, v_meca_pos_modif_pa_dep, v_meca_pos_ter_cod, v_meca_mur_type, v_meca_mur_tangible, v_meca_si_active, v_meca_si_desactive
       from meca where meca_cod=v_meca_cod ;
 
   -- calculer l'état actuel du mécnisme
@@ -159,6 +193,23 @@ begin
           update meca_position set pmeca_actif=1 where pmeca_meca_cod = v_meca_cod and pmeca_pos_cod = v_target_pos_cod ;
 
       end if;
+
+      -- activer les mecanismes différés (ou liés)
+      v_meca_list := (v_meca_si_active->>'meca')::json;
+      for ligne in (select value from json_array_elements(v_meca_list) )
+      loop
+          if f_to_numeric(ligne.value->>'meca_cod')>0 and f_to_numeric(ligne.value->>'meca_delai')=0 then
+
+              v_meca_cod_list := v_meca_cod_list  || ARRAY[v_meca_cod] ;
+              perform meca_declenchement(f_to_numeric(ligne.value->>'meca_cod')::integer,f_to_numeric(ligne.value->>'meca_sens')::integer,v_meca_pos_cod,v_perso_pos_cod, v_meca_cod_list );
+
+          elseif f_to_numeric(ligne.value->>'meca_cod')>0 then
+
+              INSERT INTO meca_action( ameca_meca_cod, ameca_date_action, ameca_sens_action,  ameca_pos_cod)
+                    VALUES (f_to_numeric(ligne.value->>'meca_cod'), NOW()+ f_to_numeric(ligne.value->>'meca_delai') * '1 hour'::interval , f_to_numeric(ligne.value->>'meca_sens'),  v_target_pos_cod);
+          end if;
+      end loop;
+
   -- -------------------------------------------------------------------------------------------------------------------
   elsif (v_pmeca_actif=1) and (v_sens=-1 or v_sens=2) then
       -- cas d'une désactivation (ou inversion)
@@ -261,6 +312,23 @@ begin
 
       end if;
 
+      -- activer les mecanismes différés  (ou liés)
+      v_meca_list := (v_meca_si_desactive->>'meca')::json;
+      for ligne in (select value from json_array_elements(v_meca_list) )
+      loop
+          if f_to_numeric(ligne.value->>'meca_cod')>0 and f_to_numeric(ligne.value->>'meca_delai')=0 then
+
+              v_meca_cod_list := v_meca_cod_list  || ARRAY[v_meca_cod] ;
+              perform meca_declenchement(f_to_numeric(ligne.value->>'meca_cod')::integer,f_to_numeric(ligne.value->>'meca_sens')::integer,v_meca_pos_cod,v_perso_pos_cod, v_meca_cod_list );
+
+          elseif f_to_numeric(ligne.value->>'meca_cod')>0 then
+
+              INSERT INTO meca_action( ameca_meca_cod, ameca_date_action, ameca_sens_action,  ameca_pos_cod)
+                    VALUES (f_to_numeric(ligne.value->>'meca_cod'), NOW()+ f_to_numeric(ligne.value->>'meca_delai') * '1 hour'::interval , f_to_numeric(ligne.value->>'meca_sens'),  v_target_pos_cod);
+
+          end if;
+      end loop;
+
   else
       return -2;   -- mécanisme déjà dans l'état demandé (ou sens de déclenchement invalide)
   end if;
@@ -275,7 +343,7 @@ begin
 
 end;$$;
 
-ALTER FUNCTION public.meca_declenchement(integer,integer,integer,integer) OWNER TO delain;
+ALTER FUNCTION public.meca_declenchement(integer,integer,integer,integer,integer[]) OWNER TO delain;
 
 
 

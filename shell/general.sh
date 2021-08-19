@@ -32,4 +32,5 @@ select cron_formule_parchemin();
 select cron_valide_objectif();
 select cron_sequence_etape_ia();
 select action_generique();
+select meca_action_declenchement();
 EOF
