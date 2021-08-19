@@ -41,6 +41,7 @@ if ($erreur == 0)
         echo "<br><br><u><strong>Options:</strong></u><br>
             Nom du nouvel étage : <input type='text' name='etage_libelle' size='55'><br>
             Dupliquer aussi les lieux: <input type='checkbox' name='dupliquer_lieux'><br>
+            Dupliquer aussi les mécanismes, les EA et les QA d'étage: <input type='checkbox' name='dupliquer_meca'><br>
             <br><input type='submit' value=\"Dupliquer l'étage\" class='test'/>
             </form></td><td></table>";
 
@@ -48,7 +49,7 @@ if ($erreur == 0)
         <form method='post' action='$phpself'>
         <input type='hidden' value='supprimer' name='supprimer' />
         Choisir l'étage à supprimer : <select name='etage'>" . $html->etage_select($admin_etage) . "</select>";
-        echo "<br><br> <u>Nota</u>: La suppression n'est pas possible s'il reste des persos à cet étage.<br> Seront supprimés:<br> - L'étage ses caracs, ses positions et murs.<br> - Tous les objets et l'or, qu'il contient<br> - Tous les monstres et PNJ aussi<br> - Tous les lieux de l'étage<br>";
+        echo "<br><br> <u>Nota</u>: La suppression n'est pas possible s'il reste des persos à cet étage.<br> Seront supprimés:<br> - L'étage ses caracs, ses positions et murs.<br> - Tous les objets et l'or, qu'il contient<br> - Tous les monstres et PNJ aussi<br> - Tous les lieux de l'étage<br> - Tous les mécanismes, EA et QA d'étage<br>";
         echo "<br><br><input type='submit' value=\"Supprimer l'étage\" class='test'/>
             </form></td><td></table>";
 
@@ -125,8 +126,42 @@ if ($erreur == 0)
             $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
             if ($result = $stmt->fetch())
             {
-                Echo "Or: <strong>{$result['sum_total']}</strong> Bz<br>";
+                Echo "Or: <strong>".(1*$result['sum_total'])."</strong> Bz<br>";
             }
+
+            // Compter les mécas
+            $req  =
+                "SELECT count(*) count_total from meca WHERE meca_pos_etage = :pos_etage ; ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Mécanisme: <strong>{$result['count_total']}</strong><br>";
+            }
+
+            // Compter les ea
+            $req = "select count(*) as count_total from fonction_specifique
+                        where   fonc_gmon_cod is null 
+                            and fonc_perso_cod is null 
+                            and fonc_type='POS'
+                            and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero);
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Effet-auto: <strong>{$result['count_total']}</strong><br>";
+            }
+
+            // Compter les qa
+            $req = "select count(*) count_total from quetes.aquete where aquete_pos_etage = :pos_etage ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Quete-auto: <strong>{$result['count_total']}</strong><br>";
+            }
+
+
 
             echo "<br><strong>Voulez-vous vraiment supprimer cet étage?</strong><br><br>
                 <form method='post' action='{$_SERVER['PHP_SELF']}'>
@@ -217,6 +252,24 @@ if ($erreur == 0)
             $req  = "DELETE FROM repart_monstre where rmon_etage_cod = :rmon_etage_cod ; ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":rmon_etage_cod" => $etage->etage_numero), $stmt);
+
+            // supression des mécas !
+            echo "Suppression dela réartition des mécanismes...<br>";
+            $req  = "DELETE from meca WHERE meca_pos_etage = :pos_etage ; ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+
+            // supression des EA !
+            echo "Suppression dela réartition des EA...<br>";
+            $req  = "DELETE from fonction_specifique where fonc_gmon_cod is null and fonc_perso_cod is null and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero) ."; ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(), $stmt);
+
+            // supression des QA !
+            echo "Suppression dela réartition des QA...<br>";
+            $req  = "DELETE from quetes.aquete WHERE aquete_pos_etage = :pos_etage ; ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
 
             // Puis l'étage lui-même !
             echo "Suppression des caracs de l'étage...<br>";
@@ -411,6 +464,114 @@ if ($erreur == 0)
                     $lieu_position->lpos_pos_cod  = $result["pos_cod"];
                     $lieu_position->stocke(true);    // Créer nouveau !
                 }
+            }
+
+            //les meca, EA et qA
+            if (isset($_POST["dupliquer_meca"]))
+            {
+                echo "Duplication des Méca, EA, QA...<br>";
+
+                // les MECA ============================================================================================
+                $meca_link = [] ;
+
+                // Boucle sur les méca a dupliquer
+                $req  = "SELECT meca_cod from meca  WHERE meca_pos_etage = :ref_pos_etage; ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":ref_pos_etage" => $etage->etage_numero), $stmt);
+                //echo "<pre>"; print_r(array("req"=>$req, ":ref_pos_etage" => $etage->etage_numero));
+                while ($result = $stmt->fetch())
+                {
+                    $meca = new meca();
+                    $meca->charge($result["meca_cod"]);
+                    $meca->meca_pos_etage = $etage_cod ;
+                    $meca->stocke(true);
+                    $meca_link[$result["meca_cod"]] = $meca->meca_cod;
+
+                    // dupliquer les position de mécanisme
+                    $req  = "SELECT pmeca_cod from meca_position WHERE pmeca_meca_cod = :pmeca_meca_cod; ";
+                    $stmt2 = $pdo->prepare($req);
+                    $stmt2 = $pdo->execute(array(":pmeca_meca_cod" => $result["meca_cod"]), $stmt2);
+                    //echo "<pre>"; print_r(array("req"=>$req, ":pmeca_meca_cod" => $result["meca_cod"]));
+                    while ($result2 = $stmt2->fetch())
+                    {
+                        $pmeca = new meca_position();
+                        $pmeca->charge($result2["pmeca_cod"]);
+
+                        // trouver la même position sur le nouvel étage
+                        $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                              join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                              WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                        $stmt3 = $pdo->prepare($req);
+                        $stmt3 = $pdo->execute(array(":pos_cod" => $pmeca->pmeca_pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
+                        //echo "<pre>"; print_r(array("req"=>$req, ":pos_cod" => $pmeca->pmeca_pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero));
+                        if ($result3 = $stmt3->fetch())
+                        {
+                            // On recalibre sur la copie et on sauvgarde !
+                            $pmeca->pmeca_meca_cod = $meca->meca_cod ;
+                            $pmeca->pmeca_pos_etage = $etage_cod;
+                            $pmeca->pmeca_pos_cod = $result3["pos_cod"];
+                            $pmeca->stocke(true);
+                        }
+                    }
+                }
+
+                echo "<pre>"; print_r($meca_link);
+
+                // recalibrage des activations/desactivations de meca
+                // Boucle sur les mécas qui ont été dupliqués
+                $req  = "SELECT meca_cod from meca  WHERE meca_pos_etage = :meca_pos_etage; ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":meca_pos_etage" => $etage_cod), $stmt);
+                while ($result = $stmt->fetch())
+                {
+                    $meca = new meca();
+                    $meca->charge($result["meca_cod"]);
+
+                    $action_meca_active = json_decode($meca->meca_si_active);
+                    foreach ($action_meca_active->meca as $row => $action_meca)
+                    {
+                        $action_meca_active->meca[$row]->meca_cod = $meca_link[$action_meca->meca_cod] ;
+                    }
+                    $action_meca_desactive = json_decode($meca->meca_si_desactive);
+                    foreach ($action_meca_desactive->meca as $row => $action_meca)
+                    {
+                        $action_meca_desactive->meca[$row]->meca_cod = $meca_link[$action_meca->meca_cod] ;
+                    }
+
+                    $meca->meca_si_active = json_encode($action_meca_active);
+                    $meca->meca_si_desactive = json_encode($action_meca_desactive);
+                    print_r($meca);
+                    $meca->stocke();
+                }
+
+
+                /*
+
+                // Duplication des mecas
+                echo "Duplication des mécanismes...<br>";
+                $req  = "INSERT INTO meca(meca_pos_etage, meca_nom, meca_type, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible,  meca_mur_illusion, meca_si_active, meca_si_desactive )
+                              SELECT :meca_pos_etage, meca_nom, meca_type, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible,  meca_mur_illusion, meca_si_active, meca_si_desactive
+                              FROM meca  
+                              WHERE meca_pos_etage = :ref_pos_etage; ";
+                $stmt = $pdo->prepare($req);
+                $stmt =
+                    $pdo->execute(array(":meca_pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
+
+
+                // supression des EA !
+                echo "Suppression dela réartition des EA...<br>";
+                $req  = "DELETE from fonction_specifique where fonc_gmon_cod is null and fonc_perso_cod is null and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero) ."; ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(), $stmt);
+
+                // supression des QA !
+                echo "Suppression dela réartition des QA...<br>";
+                $req  = "DELETE from quetes.aquete WHERE aquete_pos_etage = :pos_etage ; ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+
+        */
+
             }
 
             // Loguer pour le suivi admin
