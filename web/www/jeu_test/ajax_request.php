@@ -481,6 +481,8 @@ switch($_REQUEST["request"])
         case 'meca':
             $filter = "";
 
+            if (1*$params["etage_cod"]>0) $filter .= "and meca_pos_etage = ".(1*$params["etage_cod"]);
+
             // requete de comptage
             $req = "select count(*) from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ? {$filter}";
             $stmt = $pdo->prepare($req);
