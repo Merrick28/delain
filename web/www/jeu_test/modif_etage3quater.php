@@ -405,7 +405,6 @@ if ($erreur == 0)
                                     or (mur_pos_cod is not null and pmeca_base_mur_type>0) 
                                     or (mur_pos_cod is null and meca_mur_type=-1)
                              ); ";
-            echo $req."<br>";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
 
@@ -569,19 +568,115 @@ if ($erreur == 0)
                     $meca->stocke();
                 }
 
+                // les EA ============================================================================================
+
+                // Dupliqurer les EA de l'étage
+                $req  = "SELECT fonc_cod, fonc_nom, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee, fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite, fonc_trigger_param 
+                                    FROM fonction_specifique 
+                                    WHERE fonc_gmon_cod is null and fonc_perso_cod is null and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero);
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(), $stmt);
+                echo "<pre>";
+                while ($result = $stmt->fetch())
+                {
+                    print_r(print_r($result));
+                    $fonc_trigger_param = json_decode($result["fonc_trigger_param"]);
+                    print_r(print_r($fonc_trigger_param));
+
+                    // bind sur le nouvel etage
+                    $fonc_trigger_param->fonc_trig_pos_etage = $etage_cod ;
+
+                    // reaffecter les positions de déclenchement
+                    $pos_cods = explode(",", $fonc_trigger_param->fonc_trig_pos_cods);
+                    array_walk($pos_cods, function(&$value, &$key){return $value = 1*$value ;} );
+                    $pos_cods_list = implode(",", array_filter($pos_cods, function ($val) { return ( $val == 0 ? false : true ); } ));
+
+                    if ($pos_cods_list != "")
+                    {
+                        // trouver les mêmes positions sur le nouvel étage
+                        $req   = "SELECT ' '||STRING_AGG (p2.pos_cod,', ')||',' as pos_cods from positions p1
+                                  join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                  WHERE p1.pos_cod in ($pos_cods_list) and p1.pos_etage = :ref_pos_etage; ";
+                        $stmt2 = $pdo->prepare($req);
+                        $stmt2 = $pdo->execute(array(":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt2);
+                        if ($result2 = $stmt2->fetch())
+                        {
+                            $fonc_trigger_param->fonc_trig_pos_cods = $result2["pos_cods"] ;
+                        }
+                    }
+
+
+                    // recalibrer l'utilisation des menanismes (pour ceux du nouvel etage)
+                    if ($result["fonc_nom"] =="ea_meca")
+                    {
+                        if (gettype($fonc_trigger_param->fonc_trig_meca)=="string") { $fonc_trigger_param->fonc_trig_meca = json_decode($fonc_trigger_param->fonc_trig_meca); }
+                        foreach ($fonc_trigger_param->fonc_trig_meca as $row => $ea_meca)
+                        {
+                            $fonc_trigger_param->fonc_trig_meca[$row]->meca_cod = $meca_map[$ea_meca->meca_cod] ;
+                            if (1*$ea_meca->pos_cod > 0)
+                            {
+                                // trouver la même position sur le nouvel étage
+                                $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                      WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                                $stmt3 = $pdo->prepare($req);
+                                $stmt3 = $pdo->execute(array(":pos_cod" => 1*$ea_meca->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
+                                if ($result3 = $stmt3->fetch())
+                                {
+                                    $fonc_trigger_param->fonc_trig_meca[$row]->pos_cod = $result3["pos_cod"] ;
+                                }
+                            }
+
+                        }
+                    }
+
+                    // recalibrer l'utilisation des téléporatations (pour ceux du nouvel etage)
+                    if ($result["fonc_nom"] == "ea_teleportation")
+                    {
+                        if (gettype($fonc_trigger_param->fonc_trig_pos_cod)=="string") $fonc_trigger_param->fonc_trig_pos_cod = json_decode($fonc_trigger_param->fonc_trig_pos_cod);
+                        foreach ($fonc_trigger_param->fonc_trig_pos_cod as $row => $ea_teleport)
+                        {
+                            if (1*$ea_teleport->pos_cod > 0)
+                            {
+                                // trouver la même position sur le nouvel étage
+                                $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                      WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                                $stmt3 = $pdo->prepare($req);
+                                $stmt3 = $pdo->execute(array(":pos_cod" => 1*$ea_teleport->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
+                                if ($result3 = $stmt3->fetch())
+                                {
+                                    $fonc_trigger_param->fonc_trig_pos_cod[$row]->pos_cod = $result3["pos_cod"] ;
+                                }
+                            }
+
+                        }
+                    }
+
+                    // remettre au format json !
+                    print_r($fonc_trigger_param) ;
+                    $fonc_trigger_param = json_encode($fonc_trigger_param);
+                    print_r($fonc_trigger_param) ;
+
+                    // appliquer les changement
+                    $req  = "INSERT INTO fonction_specifique(fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee, fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite, fonc_trigger_param)
+                              VALUES (:fonc_nom, null, null, 'POS', :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_nombre_cible, :fonc_date_limite, :fonc_trigger_param)";
+                    $stmt2 = $pdo->prepare($req);
+                    $stmt2 = $pdo->execute(array(   "fonc_nom" => $result["fonc_nom"],
+                                                    "fonc_effet" => $result["fonc_effet"],
+                                                    "fonc_force" => $result["fonc_force"],
+                                                    "fonc_duree" => $result["fonc_duree"],
+                                                    "fonc_type_cible" => $result["fonc_type_cible"],
+                                                    "fonc_portee" => $result["fonc_portee"],
+                                                    "fonc_proba" => $result["fonc_proba"],
+                                                    "fonc_message" => $result["fonc_message"],
+                                                    "fonc_nombre_cible" => $result["fonc_nombre_cible"],
+                                                    "fonc_date_limite" => $result["fonc_date_limite"],
+                                                    "fonc_trigger_param" => $fonc_trigger_param), $stmt2);
+                }
+
 
                 /*
-
-                // Duplication des mecas
-                echo "Duplication des mécanismes...<br>";
-                $req  = "INSERT INTO meca(meca_pos_etage, meca_nom, meca_type, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible,  meca_mur_illusion, meca_si_active, meca_si_desactive )
-                              SELECT :meca_pos_etage, meca_nom, meca_type, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible,  meca_mur_illusion, meca_si_active, meca_si_desactive
-                              FROM meca  
-                              WHERE meca_pos_etage = :ref_pos_etage; ";
-                $stmt = $pdo->prepare($req);
-                $stmt =
-                    $pdo->execute(array(":meca_pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
-
 
                 // supression des EA !
                 echo "Suppression dela réartition des EA...<br>";
