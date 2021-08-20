@@ -576,12 +576,9 @@ if ($erreur == 0)
                                     WHERE fonc_gmon_cod is null and fonc_perso_cod is null and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero);
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array(), $stmt);
-                echo "<pre>";
                 while ($result = $stmt->fetch())
                 {
-                    print_r(print_r($result));
                     $fonc_trigger_param = json_decode($result["fonc_trigger_param"]);
-                    print_r(print_r($fonc_trigger_param));
 
                     // bind sur le nouvel etage
                     $fonc_trigger_param->fonc_trig_pos_etage = $etage_cod ;
@@ -654,9 +651,7 @@ if ($erreur == 0)
                     }
 
                     // remettre au format json !
-                    print_r($fonc_trigger_param) ;
                     $fonc_trigger_param = json_encode($fonc_trigger_param);
-                    print_r($fonc_trigger_param) ;
 
                     // appliquer les changement
                     $req  = "INSERT INTO fonction_specifique(fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee, fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite, fonc_trigger_param)
@@ -675,23 +670,123 @@ if ($erreur == 0)
                                                     "fonc_trigger_param" => $fonc_trigger_param), $stmt2);
                 }
 
+                // les QA ============================================================================================
+                $aquete_map = [] ;
+                $aquete_etape_map = [] ;
 
-                /*
+                echo "<pre>";
 
-                // supression des EA !
-                echo "Suppression dela réartition des EA...<br>";
-                $req  = "DELETE from fonction_specifique where fonc_gmon_cod is null and fonc_perso_cod is null and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'::text=".((int)$etage->etage_numero) ."; ";
+                // Boucle sur les QA a dupliquer
+                $req  = "SELECT aquete_cod from quetes.aquete WHERE aquete_pos_etage = :ref_pos_etage; ";
                 $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(), $stmt);
+                $stmt = $pdo->execute(array(":ref_pos_etage" => $etage->etage_numero), $stmt);
+                while ($result = $stmt->fetch())
+                {
+                    $aquete = new aquete();
+                    $aquete->charge($result["aquete_cod"]);
+                    $aquete->aquete_pos_etage = $etage_cod;
+                    $aquete->stocke(true);
+                    $aquete_map[$result["aquete_cod"]] = $aquete->aquete_cod;
 
-                // supression des QA !
-                echo "Suppression dela réartition des QA...<br>";
-                $req  = "DELETE from quetes.aquete WHERE aquete_pos_etage = :pos_etage ; ";
+                    // dupliquer les étapes !
+                    $req  = "SELECT aqetape_cod from quetes.aquete_etape WHERE aqetape_aquete_cod = :aqetape_aquete_cod; ";
+                    $stmt2 = $pdo->prepare($req);
+                    $stmt2 = $pdo->execute(array(":aqetape_aquete_cod" => $result["aquete_cod"]), $stmt2);
+                    while ($result2 = $stmt2->fetch())
+                    {
+                        $etape = new aquete_etape();
+                        $etape->charge($result2["aqetape_cod"]);
+                        $etape->aqetape_aquete_cod =  $aquete->aquete_cod ;
+                        $etape->stocke( true );
+                        $aquete_etape_map[$result2["aqetape_cod"]] = $etape->aqetape_cod;
+
+                        // dupliquer les éléments de l'étape !
+                        $req  = "SELECT aqelem_cod from quetes.aquete_element WHERE aqelem_aquete_cod=:aqelem_aquete_cod and  aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null ";
+                        $stmt3 = $pdo->prepare($req);
+                        $stmt3 = $pdo->execute(array(":aqelem_aquete_cod" =>  $result["aquete_cod"], ":aqelem_aqetape_cod" => $result2["aqetape_cod"]), $stmt3);
+                        while ($result3 = $stmt3->fetch())
+                        {
+                            $element = new aquete_element();
+                            $element->charge($result3["aqelem_cod"]);
+                            $element->aqelem_aquete_cod =  $aquete->aquete_cod ;
+                            $element->aqelem_aqetape_cod =  $etape->aqetape_cod ;
+                            $element->stocke( true );
+                        }
+                    }
+
+                    // recalibrer la prelière étape de la quete
+                    $aquete->aquete_etape_cod = $aquete_etape_map[ $aquete->aquete_etape_cod ];
+                    $aquete->stocke();
+
+                }
+
+                // recalibrer le workflow d'étapes
+                $req  = "SELECT aqetape_cod from quetes.aquete join quetes.aquete_etape on aqetape_aquete_cod=aquete_cod WHERE aquete_pos_etage = :aquete_pos_etage and aqetape_etape_cod is not null; ";
                 $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+                $stmt = $pdo->execute(array(":aquete_pos_etage" =>  $etage_cod), $stmt);
+                while ($result = $stmt->fetch())
+                {
+                    $etape = new aquete_etape();
+                    $etape->charge($result["aqetape_cod"]);
+                    $etape->aqetape_etape_cod = $aquete_etape_map[ $etape->aqetape_etape_cod ] ;
+                    $etape->stocke();
+                }
 
-        */
+                // recalibrer les éléments du type "position", "etape", "quete", "meca", etc...
+                $req  = "SELECT aqelem_cod from quetes.aquete join quetes.aquete_element on aqelem_aquete_cod=aquete_cod 
+                                  WHERE aquete_pos_etage = :aquete_pos_etage and aqelem_type in ('quete','choix','choix_etape','position','etape','quete_etape','meca'); ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":aquete_pos_etage" =>  $etage_cod), $stmt);
+                while ($result = $stmt->fetch())
+                {
+                    $element = new aquete_element();
+                    $element->charge($result["aqelem_cod"]);
 
+                    //===== position
+                    if  ( $element->aqelem_type == 'position' && $element->aqelem_misc_cod>0)
+                    {
+                        $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                      WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                        $stmt2 = $pdo->prepare($req);
+                        $stmt2 = $pdo->execute(array(":pos_cod" => $element->aqelem_misc_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt2);
+                        if ($result2 = $stmt2->fetch())
+                        {
+                            $element->aqelem_misc_cod = $result2["pos_cod"] ;
+                        }
+                    }
+                    //===== meca
+                    else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($meca_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $meca_map[$element->aqelem_misc_cod] ;
+                    }
+                    //===== quete
+                    else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $aquete_map[$element->aqelem_misc_cod] ;
+                    }
+                    //===== quete_etape
+                    else if  ( $element->aqelem_type == 'quete_etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                    }
+                    //===== etape
+                    else if  ( $element->aqelem_type == 'etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                    }
+                    //===== choix
+                    else if  ( $element->aqelem_type == 'choix' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                    }
+                    //===== choix_etape
+                    else if  ( $element->aqelem_type == 'choix_etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                    {
+                        $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                    }
+                    $element->stocke();     // sauver les modifications !
+                }
             }
 
             // Loguer pour le suivi admin
