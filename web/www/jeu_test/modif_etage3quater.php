@@ -358,27 +358,54 @@ if ($erreur == 0)
             $stmt =
                 $pdo->execute(array(":etage_cod" => $etage_cod, ":etage_numero" => $etage_cod, ":etage_libelle" => $_POST["etage_libelle"], ":ref_etage_cod" => $etage->etage_cod), $stmt);
 
-            // Duplication dans la table des positions
+            // Duplication dans la table des positions (attention on duplique l'tage avec ses positions de base, des mecanisme peuvent avoir changé l'état courrant)
             echo "Duplication des positions...<br>";
             $req  = "INSERT INTO positions(
                         pos_x, pos_y, pos_etage, pos_key, pos_type_aff, pos_magie,
                         pos_decor, pos_decor_dessus, pos_fonction_arrivee, pos_passage_autorise,
-                        pos_modif_pa_dep, pos_fonction_dessus, pos_entree_arene, pos_anticipation,
+                        pos_modif_pa_dep, pos_ter_cod, pos_fonction_dessus, pos_entree_arene, pos_anticipation,
                         pos_pvp)
                       SELECT pos_x, pos_y, :pos_etage, pos_key, pos_type_aff, pos_magie, 
-                        pos_decor, pos_decor_dessus, pos_fonction_arrivee, pos_passage_autorise, 
-                        pos_modif_pa_dep, pos_fonction_dessus, pos_entree_arene, pos_anticipation, 
+                        coalesce(pmeca_base_pos_decor, pos_decor) as pos_decor, 
+                        coalesce(pmeca_base_pos_decor_dessus, pos_decor_dessus) as pos_decor_dessus, 
+                        pos_fonction_arrivee, 
+                        coalesce(pmeca_base_pos_passage_autorise, pos_passage_autorise) as pos_passage_autorise, 
+                        coalesce(coalesce(pmeca_base_pos_modif_pa_dep,pos_modif_pa_dep), 0) as pos_modif_pa_dep, 
+                        coalesce(coalesce(pmeca_base_pos_ter_cod,pos_ter_cod), 0) as pos_ter_cod, 
+                        pos_fonction_dessus, 
+                        pos_entree_arene, 
+                        pos_anticipation, 
                         pos_pvp
-                        FROM positions where pos_etage = :ref_pos_etage ;";
+                        FROM positions 
+                        left outer join (select distinct pmeca_pos_cod, pmeca_base_pos_decor, pmeca_base_pos_type_aff,pmeca_base_pos_decor_dessus,pmeca_base_pos_passage_autorise,pmeca_base_pos_modif_pa_dep,pmeca_base_pos_ter_cod, pmeca_base_mur_type, pmeca_base_mur_tangible, pmeca_base_mur_illusion from meca_position where pmeca_actif=1 and pmeca_pos_etage = :ref_pos_etage) as mpp on pmeca_pos_cod=pos_cod
+                        where pos_etage = :ref_pos_etage ;";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
 
             // Duplication des murs
+            /* prenre en compte les murs là :
+                    - où il n'y en a actuellment et où il n'y a pas de mecanisme actif
+                    - où il y en a actuellement et où avec le mécanisme actif le mur est encore la
+                    - où il n'y a pas de mur parcequ'un mecanisme actif l'a supprimé*/
             echo "Duplication des murs...<br>";
             $req  = "INSERT INTO murs( mur_pos_cod, mur_type, mur_tangible, mur_creusable, mur_usure,  mur_richesse)
-                      SELECT p2.pos_cod as mur_pos_cod, mur_type, mur_tangible, mur_creusable, mur_usure, mur_richesse
-                      FROM murs join positions p1 on mur_pos_cod=p1.pos_cod join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage 
-                      WHERE p1.pos_etage = :ref_pos_etage; ";
+                      SELECT p2.pos_cod as mur_pos_cod, 
+                          coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN pmeca_base_mur_type ELSE mur_type END, 0) as mur_type, 
+                          coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN pmeca_base_mur_tangible ELSE mur_tangible END, 'O') as mur_tangible, 
+                          coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN null ELSE mur_creusable END, 'N') as mur_creusable, 
+                          coalesce(mur_usure, 1000) as mur_usure, 
+                          coalesce(mur_richesse, 100) as mur_richesse
+                      FROM positions p1
+                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                      left outer join murs on mur_pos_cod=p1.pos_cod 
+                      left outer join (select distinct pmeca_pos_cod, meca_mur_type, pmeca_base_mur_type, pmeca_base_mur_tangible, pmeca_base_mur_illusion 
+                                          from meca_position join meca on meca_cod=pmeca_meca_cod where pmeca_actif=1 and pmeca_pos_etage = :ref_pos_etage) as mpp on pmeca_pos_cod=p1.pos_cod 
+                      WHERE p1.pos_etage = :ref_pos_etage and (
+                                       (mur_pos_cod is not null and pmeca_base_mur_type is null) 
+                                    or (mur_pos_cod is not null and pmeca_base_mur_type>0) 
+                                    or (mur_pos_cod is null and meca_mur_type=-1)
+                             ); ";
+            echo $req."<br>";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
 
@@ -472,7 +499,7 @@ if ($erreur == 0)
                 echo "Duplication des Méca, EA, QA...<br>";
 
                 // les MECA ============================================================================================
-                $meca_link = [] ;
+                $meca_map = [] ;
 
                 // Boucle sur les méca a dupliquer
                 $req  = "SELECT meca_cod from meca  WHERE meca_pos_etage = :ref_pos_etage; ";
@@ -485,7 +512,7 @@ if ($erreur == 0)
                     $meca->charge($result["meca_cod"]);
                     $meca->meca_pos_etage = $etage_cod ;
                     $meca->stocke(true);
-                    $meca_link[$result["meca_cod"]] = $meca->meca_cod;
+                    $meca_map[$result["meca_cod"]] = $meca->meca_cod;
 
                     // dupliquer les position de mécanisme
                     $req  = "SELECT pmeca_cod from meca_position WHERE pmeca_meca_cod = :pmeca_meca_cod; ";
@@ -510,12 +537,11 @@ if ($erreur == 0)
                             $pmeca->pmeca_meca_cod = $meca->meca_cod ;
                             $pmeca->pmeca_pos_etage = $etage_cod;
                             $pmeca->pmeca_pos_cod = $result3["pos_cod"];
+                            $pmeca->pmeca_actif = 0 ; // meca désactiver pour la copie !
                             $pmeca->stocke(true);
                         }
                     }
                 }
-
-                echo "<pre>"; print_r($meca_link);
 
                 // recalibrage des activations/desactivations de meca
                 // Boucle sur les mécas qui ont été dupliqués
@@ -530,12 +556,12 @@ if ($erreur == 0)
                     $action_meca_active = json_decode($meca->meca_si_active);
                     foreach ($action_meca_active->meca as $row => $action_meca)
                     {
-                        $action_meca_active->meca[$row]->meca_cod = $meca_link[$action_meca->meca_cod] ;
+                        $action_meca_active->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
                     }
                     $action_meca_desactive = json_decode($meca->meca_si_desactive);
                     foreach ($action_meca_desactive->meca as $row => $action_meca)
                     {
-                        $action_meca_desactive->meca[$row]->meca_cod = $meca_link[$action_meca->meca_cod] ;
+                        $action_meca_desactive->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
                     }
 
                     $meca->meca_si_active = json_encode($action_meca_active);
