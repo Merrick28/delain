@@ -205,7 +205,7 @@ if ($erreur == 0)
     $stmt          = $pdo->query($req);
     while ($result = $stmt->fetch())
     {
-        $texte_select  = ($result['compt_cod'] == $compt_cod) ? 'selected="selected"' : '';
+        $texte_select  = ""; //($result['compt_cod'] == $compt_cod) ? 'selected="selected"' : '';
         $option_compte .= "<option value=\"" . $result['compt_cod'] . "\" $texte_select>" . $result['compt_nom'] . "</option>";
     }
 
