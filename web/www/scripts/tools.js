@@ -184,7 +184,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
-    if ( $( "#spop-tablecod-meca-etage" ).length ) params.etage_cod = $( "#spop-tablecod-meca-etage" ).val() ;
+    if ( $( "#spop-tablecod-meca-etage_cod" ).length ) params.etage_cod = $( "#spop-tablecod-meca-etage_cod" ).val() ;
     if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
     if ( $( "#spop-tablecod-etape-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-etape-aqetape_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
@@ -275,6 +275,9 @@ function getTableCod(divname, table, titre, params)
         options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
         options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
+    } else if (table=="meca")
+    {
+        options += '<input id="spop-tablecod-meca-etage_cod" type="hidden" value="'+params[0]+'">';
    } else if (table=="objet_generique")
    {
         options += 'Limiter: Attach. Sorts: <input type="checkbox" id="spop-tablecod-objet-generique-sort" onChange="getTableCod_update();"> ';
