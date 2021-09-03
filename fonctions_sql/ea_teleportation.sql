@@ -140,7 +140,11 @@ begin
 
       -- si on a trouvé une case cible!
       if v_pos_teleportation > 0 then
-          code_retour := code_retour || '<br />' || ligne.perso_nom || ' a été déplacé.' ;
+          if v_texte_evt != '' then
+              code_retour := code_retour || '<br />' || replace(replace(v_texte_evt, '[cible]',ligne.perso_nom ), '[attaquant]', v_source_nom)  ;
+          else
+              code_retour := code_retour || '<br />' || ligne.perso_nom || ' a été déplacé.' ;
+          end if;
 
           -- si teléporation entre arene et donjon (assurer l'intégrité)
           perform entrer_controle_arene(ligne.perso_cod, ligne.pos_cod, v_pos_teleportation);
