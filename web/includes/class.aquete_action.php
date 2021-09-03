@@ -2472,10 +2472,11 @@ class aquete_action
      **/
     function quete_desactivation(aquete_perso $aqperso)
     {
-
         $pdo = new bddpdo;
+
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+        $p2 = $element->get_aqperso_element( $aqperso, 2, "selecteur" ) ;
 
         $aquete_cod = $p1->aqelem_misc_cod ? $p1->aqelem_misc_cod  : $aqperso->aqperso_aquete_cod ;
 
@@ -2483,8 +2484,37 @@ class aquete_action
         {
             $quete = new aquete();
             $quete->charge($aquete_cod);
-            $quete->aquete_actif = 'N' ;
-            $quete->stocke();
+
+            if ($p2 && $p2->aqelem_misc_cod==1)
+            {
+                // supprimer la règle si elle existe "OU perso_cod = meneur (si c'est pas déjà le cas)
+                $elem = new aquete_element();
+                $elist = $elem->getBy_etape_param_id($quete->aquete_etape_cod, 0);
+                $hasPersoCondition = false ;
+                foreach ($elist as $k => $e)
+                {
+                    if ($e->aqelem_misc_cod == 27 && $e->aqelem_param_txt_2 == $aqperso->aqperso_perso_cod && $e->aqelem_param_txt_1 == "=")
+                    {
+                        $hasPersoCondition = true ;
+                        $req = "delete from quetes.aquete_element where aqelem_cod=:aqelem_cod ";
+                        $stmt   = $pdo->prepare($req);
+                        $pdo->execute(array(":aqelem_cod"    => $e->aqelem_cod), $stmt);
+                        break;
+                    }
+                }
+                if ($hasPersoCondition && count($elist)==1)
+                {
+                    // s'était le dernier perso, on désactive completment
+                    $quete->aquete_actif = 'N';
+                    $quete->stocke();
+                }
+            }
+            else
+            {
+                // pas de consition on supprime pour tout le monde
+                $quete->aquete_actif = 'N';
+                $quete->stocke();
+            }
         }
 
         return true;
@@ -2499,10 +2529,9 @@ class aquete_action
      **/
     function quete_activation(aquete_perso $aqperso)
     {
-
-        $pdo = new bddpdo;
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+        $p2 = $element->get_aqperso_element( $aqperso, 2, "selecteur" ) ;
 
         $aquete_cod = $p1->aqelem_misc_cod ;
 
@@ -2512,6 +2541,34 @@ class aquete_action
             $quete->charge($aquete_cod);
             $quete->aquete_actif = 'O' ;
             $quete->stocke();
+
+            if ($p2 && $p2->aqelem_misc_cod==1)
+            {
+                // ajouter règle "OU perso_cod = meneur (si c'est pas déjà le cas)
+                $elem = new aquete_element();
+                $elist = $elem->getBy_etape_param_id($quete->aquete_etape_cod, 0);
+                $hasPersoCondition = false ;
+                foreach ($elist as $k => $e)
+                {
+                    if ($e->aqelem_misc_cod == 27 && $e->aqelem_param_txt_2 == $aqperso->aqperso_perso_cod)
+                    {
+                        $hasPersoCondition = true ;
+                        break;
+                    }
+                }
+                if (!$hasPersoCondition )
+                {
+                    $elem->aqelem_aquete_cod = $quete->aquete_cod ;
+                    $elem->aqelem_aqetape_cod = $quete->aquete_etape_cod ;
+                    $elem->aqelem_param_id = 0 ;
+                    $elem->aqelem_type = "perso_condition" ;
+                    $elem->aqelem_misc_cod = 27 ;
+                    $elem->aqelem_param_num_1 = 1 ;
+                    $elem->aqelem_param_txt_1 = "=" ;
+                    $elem->aqelem_param_txt_2 = $aqperso->aqperso_perso_cod ;
+                    $elem->stocke(true);
+                }
+            }
         }
 
         return true;
