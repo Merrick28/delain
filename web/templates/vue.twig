@@ -28,6 +28,13 @@
     </form>
     <div id="vue_haut" style="overflow:auto;">
         <table style="background : none;">
+            {% if VUE_EFFET_AUTO != '' %}
+                <tr>
+                    <td colspan="2">
+                        <div id="vue_resultat" class="bordiv">{{ VUE_EFFET_AUTO|raw }}</div>
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <td valign="top">
                     <div id="vue_gauche" class="bordiv">{{ VUE_GAUCHE|raw }}</div>

@@ -269,7 +269,16 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                 $page_retour = 'deplacement.php';
                 $retour      = '<hr /><p><a href="' . $page_retour . '">Retour !</a></p>';
             }
-            $contenu_page .= $result[1];
+            if ( $result[1] != 'Déplacement effectué !'){
+                if ( strpos($result[1], "Déplacement effectué !") !== false ) {
+                    $contenu_page .= "Déplacement effectué !" ;
+                    $resultat_ea_dep = str_replace("<b>Effets automatiques :</b>", "<b style='font-size:14px; color: #800000;'>Effets automatiques :</b>", str_replace("Déplacement effectué !", "", $result[1]) );
+                } else {
+                    $resultat_ea_dep = str_replace("<b>Effets automatiques :</b>", "<b style='font-size:14px; color: #800000;'>Effets automatiques :</b>", $result[1] );
+                }
+            } else {
+                $contenu_page .= $result[1];
+            }
 
             if (strpos($result[1], 'Erreur') !== 0)
             {
