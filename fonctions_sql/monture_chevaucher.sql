@@ -57,11 +57,11 @@ begin
 
 
   -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
-  temp_competence := monture_competence(v_perso, 1, v_monture, 0);
+  /* temp_competence := monture_competence(v_perso, 1, v_monture, 0);
   code_retour := code_retour||split_part(temp_competence,';',3);
 
   -- Test sur le jet de compétence
-  if split_part(temp_competence,';',1) = '1' then
+  if split_part(temp_competence,';',1) = '1' then */
       -- faire l'action (jet de compétence reussi)
       code_retour := code_retour||'<br><p>Désormais, vous chevauchez: ' || v_monture_nom || ' !<br>';
 
@@ -76,10 +76,10 @@ begin
       -- evenement chevaucher (105)
       perform insere_evenement(v_perso, v_monture, 105, '[attaquant] monte sur sa monture [cible].', 'O', NULL);
 
-  else
+  /* else
       -- si echec du jet de compétence
       code_retour := code_retour||'<br><p>Vous n’avez pas réussi à chevaucher: ' || v_monture_nom || ' !<br>';
-  end if;
+  end if; */
 
   return code_retour ;
 end;

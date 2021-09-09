@@ -76,6 +76,7 @@ declare
 	objet_etat_min integer;
 	objet_etat_max integer;
 	texte text;
+	v_nb_portail integer;
 begin
 /**********************************************/
 /* Etape 1 : on insère dans perso les valeurs */
@@ -104,6 +105,7 @@ begin
   */
 
   -- choisir un portail
+  v_nb_portail :=0 ;
   if v_type_portail = 8 then
       -- recherche d'un portail démoniaque
       select into pos_portail pos_cod
@@ -116,6 +118,13 @@ begin
         limit 1;
   else
       -- recherche d'un portail à monture compatible avecles terrains accessibles pour la monture
+      select count(*) into v_nb_portail
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 41
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level ;
+
       select into pos_portail pos_cod
         from lieu,lieu_position,positions
         where lieu_tlieu_cod = 41
@@ -133,8 +142,8 @@ begin
         limit 1;
   end if;
 
-  -- Si pas de portail trouvé, pour les monstre on pop au hazard (pas pour les montures)
-	if pos_portail is null and v_type_portail=8 then
+  -- Si pas de portail trouvé, pour les monstre on pop au hazard (pas pour les montures sauf si aucun portail a monture suer l'étage)
+	if pos_portail is null and (v_type_portail=8 or v_nb_portail=0) then
 		pos_portail := pos_aleatoire(v_level);
 	end if;
 	if pos_portail is null then 

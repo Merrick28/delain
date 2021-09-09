@@ -36,20 +36,20 @@ begin
 
 
   -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
-  temp_competence := monture_competence(v_perso, 1, v_monture, 0);
-  code_retour := code_retour||split_part(temp_competence,';',3);
+  /* temp_competence := monture_competence(v_perso, 1, v_monture, 0);
+  code_retour := code_retour||split_part(temp_competence,';',3); */
 
   -- Réaliser les actions du dé-chevauchement (ou la chute, le résultat est le même :-) !!!
   update perso set perso_monture=null where perso_cod=v_perso ;
 
-  -- Test sur le jet de compétence
-  if split_part(temp_competence,';',1) = '1' then
+  /* -- Test sur le jet de compétence
+  if split_part(temp_competence,';',1) = '1' then */
       code_retour := code_retour || '<p>Désormais, vous ne chevauchez plus: ' || v_monture_nom || ' !<br>';
 
       -- evenement déchevaucher (106)
       perform insere_evenement(v_perso, v_monture, 106, '[attaquant] est descendu de sa monture [cible].', 'O', NULL);
 
-  else
+  /* else
       -- si echec du jet de compétence
       code_retour := code_retour||'<br><p>Vous n’avez pas réussi à descendre de ' || v_monture_nom || ', mais vous êtes tombé comme une m... heu comme un sac !<br>';
 
@@ -106,7 +106,7 @@ begin
 
       end if;
 
-  end if;
+  end if; */
 
 
   return code_retour ;
