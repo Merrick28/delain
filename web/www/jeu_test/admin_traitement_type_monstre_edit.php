@@ -69,12 +69,12 @@ switch ($methode)
                             . ",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
                             . ",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
                             . ",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
-                            . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar, gmon_sex) values ($gmon_cod, e'$gmon_nom'"
+                            . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar, gmon_sex, gmon_type_ia, gmon_monture) values ($gmon_cod, e'$gmon_nom'"
                             . ",$gmon_for,$gmon_dex,$gmon_int,$gmon_con"
                             . ",$gmon_race_cod,$gmon_temps_tour,$gmon_des_regen,$gmon_valeur_regen,$gmon_vue"
                             . ",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
                             . ",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
-                            . ",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex)";
+                            . ",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex, $gmon_ia, '$gmon_monture')";
             $pdo->query($req_cre_gmon);
         }
         writelog($log . "Nouveau type de monstre : $gmon_nom \n", 'monstre_edit');
