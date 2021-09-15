@@ -401,7 +401,6 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                 break;
             }
 
-
             $perso_cible = new perso;
             $perso_cible->charge($cible);
             $logger->warning('Cible ' . print_r($perso_cible, true));
@@ -427,8 +426,25 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                 break;
             }
 
+
+            /* cas particulier de la combo BS/MTS/ATT */
+            if ($type_lance == 7)
+            {
+                $sort = new sorts;
+                foreach([2,4,6] as $sort_cod)
+                {
+                    $sort->charge($sort_cod);
+                    $contenu_page .= '<p>Lancement de : <b>'.$sort->sort_nom.'</b>';
+                    $req  = 'select nv_' . $sort->sort_fonction . '(:perso_cod,:cible,1) as resultat ';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(':perso_cod'  => $perso_cod,':cible'      => $perso_cible->perso_cod), $stmt);
+                    $result       = $stmt->fetch();
+                    $contenu_page .= $result['resultat'];
+                }
+
+            }
             /* cas particulier d'un bonus/malus lancé comme un sort */
-            if ($type_lance == 6)
+            else if ($type_lance == 6)
             {
                 $objsortbm = new objets_sorts_bm();
                 $objsortbm->charge($_REQUEST["objsort_cod"]);
