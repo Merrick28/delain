@@ -51,6 +51,7 @@ declare
   v_distance_min integer;      -- distance minimum requis pour la cible
 
   v_pos_teleportation integer;      -- case cible de la teleportation
+  v_etage_teleportation integer;      -- etage ciblé par la téléportation
 
 begin
 
@@ -94,7 +95,7 @@ begin
   v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
 
   -- Et finalement on parcourt les cibles.
-  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv
+  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv, pos_etage
                 from perso
                   inner join perso_position on ppos_perso_cod = perso_cod
                   inner join positions on pos_cod = ppos_pos_cod
@@ -136,6 +137,7 @@ begin
       -- la nouvelle position a été calculée, faire le deplacement --
       if coalesce((v_params->>'fonc_trig_pos_unique')::text,'N') !='O' or v_pos_teleportation = 0 then
           v_pos_teleportation := f_tirage_aleatoire_liste('pos_cod', 'taux', (v_params->>'fonc_trig_pos_cod')::json) ;
+          select pos_etage into v_etage_teleportation from positions where pos_cod = v_pos_teleportation ;
       end if;    
 
       -- si on a trouvé une case cible!
@@ -165,6 +167,9 @@ begin
               delete from transaction	where tran_vendeur = v_perso_fam;
               delete from transaction	where tran_acheteur = v_perso_fam;
           end if;
+
+          -- declenchement des EA de mouve (depuis la case de déplacement, vers la case ciblé)
+          perform execute_fonctions(ligne.perso_cod, null, 'DEP', json_build_object('ancien_pos_cod',ligne.pos_cod,'ancien_etage',ligne.pos_etage,'nouveau_pos_cod',v_pos_teleportation,'nouveau_etage',v_etage_teleportation)) ;
 
           -- On rajoute la ligne d’événements
           if v_texte_evt != '' then

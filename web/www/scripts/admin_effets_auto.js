@@ -872,7 +872,8 @@ EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
-	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option></select></label>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option>';
+	html += '<option value="-2" ' + ((valeur == -2) ? 'selected="selected"' : '' ) + '>Sur évenement mécanisme</option></select></label>';
 	html += "<br />";
 	return html;
 }

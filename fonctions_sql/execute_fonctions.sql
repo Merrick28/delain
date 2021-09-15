@@ -74,8 +74,9 @@ begin
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
 			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
-			              (  ( fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
-			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' ))))
+			              (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
 			order by coalesce(f_to_numeric(fonc_trigger_param->>'fonc_trig_proba_chain'),0)
 		)
@@ -85,7 +86,7 @@ begin
     v_do_it := true;
     
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'POS' then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' != -2 then -- -------------------------------------------------------------------------------------
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
@@ -102,7 +103,7 @@ begin
                 v_pos_cod := f_to_numeric(v_param->>'nouveau_pos_cod'::text) ;
             end if;
             -- injecter la case qui declenche l'ea dans les paramètres !
-            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '') || '}' )::jsonb)::json ;
+            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '0') || '}' )::jsonb)::json ;
 
 
             /* traitement des ré-armement du type bascule */

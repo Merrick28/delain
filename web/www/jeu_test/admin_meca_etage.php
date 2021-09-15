@@ -48,6 +48,20 @@ if ($erreur == 0)
                     $si_desactive["meca"][] = ["meca_cod" => (int)$action_meca_cod, "meca_sens" => (int)$_POST['aqelem_meca_sens'][1][$k], "meca_delai" => 1 * $_POST['aqelem_delai'][1][$k]];
                 }
             }
+
+            $si_active["ea"] = [] ;
+            foreach ($_POST['aqelem_fonc_cod'][2] as $k => $action_ea_cod ){
+                if ( (int)$action_ea_cod > 0){
+                    $si_active["ea"][] = [ "fonc_cod" => (int)$action_ea_cod ] ;
+                }
+            }
+
+            $si_desactive["ea"] = [] ;
+            foreach ($_POST['aqelem_fonc_cod'][3] as $k => $action_ea_cod ){
+                if ( (int)$action_ea_cod > 0){
+                    $si_desactive["ea"][] = [ "fonc_cod" => (int)$action_ea_cod ] ;
+                }
+            }
             //echo "<pre>"; print_r([$si_active, $si_desactive, $_POST]); die();
 
             $meca_nom = $_POST["nom"] == "" ? "Inconnu" : $_POST["nom"] ;
@@ -224,6 +238,11 @@ if ($erreur == 0)
         while ($result = $stmt_m_meca->fetch(PDO::FETCH_ASSOC)) { $meca_list[$result["meca_cod"]] = $result["meca_nom"]; }
         $meca_sens_list = [ 0 => "Activer", -1 => "Désactiver", 2 => "Inverser" ] ;
 
+        $req_m_ea = "select fonc_cod, fonc_trigger_param->>'fonc_trig_nom_ea' as ea_nom from fonction_specifique where fonc_trigger_param->>'fonc_trig_pos_etage'=? and fonc_trigger_param->>'fonc_trig_sens'=-2 order by fonc_cod desc";
+        $stmt_m_ea = $pdo->prepare($req_m_ea);
+        $stmt_m_ea = $pdo->execute(array($pos_etage), $stmt_m_ea);
+        $ea_list = ["0"=>""];
+        while ($result = $stmt_m_ea->fetch(PDO::FETCH_ASSOC)) { $ea_list[$result["fonc_cod"]] = $result["ea_nom"]; }
 
         echo "
         <form method='post' action='admin_meca_etage.php'>
@@ -278,16 +297,23 @@ if ($erreur == 0)
         if ($action_meca_active == null || count($action_meca_active->meca)==0) { $action_meca_active = (object)["meca" => [0 => (object)["meca_cod" => 0,  "meca_sens" => 0, "meca_delai" => 0]]]; }
         if ($action_meca_desactive == null || count($action_meca_desactive->meca)==0) { $action_meca_desactive = (object)["meca" => [0 => (object)["meca_cod" => 0,  "meca_sens" => 0, "meca_delai" => 0]]]; }
 
+        $action_ea_active = json_decode($meca->meca_si_active);
+        $action_ea_desactive = json_decode($meca->meca_si_desactive);
+        if ($action_ea_active == null || count($action_ea_active->ea)==0) { $action_ea_active = (object)["ea" => [0 => (object)["fonc_cod" => 0]]]; }
+        if ($action_ea_desactive == null || count($action_ea_desactive->ea)==0) { $action_ea_desactive = (object)["ea" => [0 => (object)["fonc_cod" => 0]]]; }
+
         //echo "<pre>";  print_r($action_meca_desactive); die();
 
 
-        echo '<br>Si mécanisme activé:<br><table width="95%" align="center">';
+        echo '<br>Si mécanisme activé:<br>';
+
+        //================================ Sur activation MECA ===> dechenchement autre MECA ==============================
+        echo '<table width="95%" align="center">';
         $style_tr = "display: block;";
         $param_id = 0;
 
         foreach ($action_meca_active->meca as $row => $action_meca)
         {
-
             $row_id = "row-$param_id-$row-";
             $aqelem_misc_nom = "";
             echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
@@ -303,7 +329,31 @@ if ($erreur == 0)
         echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
         echo '</table>';
 
-        echo '<br>Si mécanisme désactivé:<br><table width="95%" align="center">';
+
+        //================================ Sur activation MECA ===> dechenchement EA ==============================
+        echo '<table width="95%" align="center">';
+        $style_tr = "display: block;";
+        $param_id = 2;
+
+        foreach ($action_ea_active->ea as $row => $action_ea)
+        {
+            $row_id = "row-$param_id-$row-";
+            $aqelem_misc_nom = "";
+            echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
+            echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+            echo '<td>Déclencher EA 
+                        <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
+                        <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
+                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).' <em style="font-size: 10px">(sur 1 perso de la ou des cases conservées)</em>
+                        </td>';
+        }
+        echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+        echo '</table>';
+
+
+        //================================ Sur désactivation MECA ===> dechenchement autre MECA ==============================
+        echo '<br>Si mécanisme désactivé:<br>';
+        echo '<table width="95%" align="center">';
         $style_tr = "display: block;";
         $param_id = 1;
         foreach ($action_meca_desactive->meca as $row => $action_meca)
@@ -323,7 +373,27 @@ if ($erreur == 0)
         echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
         echo '</table>';
 
+        //================================ Sur désactivation MECA ===> dechenchement EA ==============================
+        echo '<table width="95%" align="center">';
+        $style_tr = "display: block;";
+        $param_id = 3;
 
+        foreach ($action_ea_desactive->ea as $row => $action_ea)
+        {
+            $row_id = "row-$param_id-$row-";
+            $aqelem_misc_nom = "";
+            echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
+            echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+            echo '<td>Déclencher EA 
+                        <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
+                        <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
+                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).' <em style="font-size: 10px">(sur 1 perso de la ou des cases conservées)</em>
+                        </td>';
+        }
+        echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+        echo '</table>';
+
+        //==============================================================================================================
         $bouton = ($meca->meca_cod > 0) ? "Modifier le mécanisme!" : "créer le mécanisme!";
         echo "<br><br><input type='submit' class='test' value='{$bouton}'/>";
         if ($meca->meca_cod > 0)
@@ -383,17 +453,27 @@ if ($erreur == 0)
 
             $action_meca_active = json_decode($result["meca_si_active"]);
             $action_meca_desactive = json_decode($result["meca_si_desactive"]);
-            $nb_si_activation = ($action_meca_active == null) ? 0 : count($action_meca_active->meca);
-            $nb_si_desactivation = ($action_meca_desactive == null) ? 0 : count($action_meca_desactive->meca);
+            $nb_meca_si_activation = ($action_meca_active == null) ? 0 : count($action_meca_active->meca);
+            $nb_meca_si_desactivation = ($action_meca_desactive == null) ? 0 : count($action_meca_desactive->meca);
+            $nb_ea_si_activation = ($action_meca_active == null) ? 0 : count($action_meca_active->ea);
+            $nb_ea_si_desactivation = ($action_meca_desactive == null) ? 0 : count($action_meca_desactive->ea);
             $span_si_activation = "";
             foreach ($action_meca_active->meca as $row => $action_meca)
             {
                 $span_si_activation.="Après ".$action_meca->meca_delai."h ".$meca_sens_list[$action_meca->meca_sens].": ".$meca_list[$action_meca->meca_cod]."\n";
             }
+            foreach ($action_meca_active->ea as $row => $action_ea)
+            {
+                $span_si_activation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]."\n";
+            }
             $span_si_desactivation = "";
             foreach ($action_meca_desactive->meca as $row => $action_meca)
             {
                 $span_si_desactivation.="Après ".$action_meca->meca_delai."h ".$meca_sens_list[$action_meca->meca_sens].": ".$meca_list[$action_meca->meca_cod]."\n";
+            }
+            foreach ($action_meca_desactive->ea as $row => $action_ea)
+            {
+                $span_si_desactivation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]."\n";
             }
 
             echo "
@@ -415,8 +495,8 @@ if ($erreur == 0)
                 <td>".($result['meca_mur_illusion']=="" ? "base" : ($result['meca_mur_illusion']=="O" ? "illusion": "infranchissable"))."</td>
                 <td>".($result['meca_pos_ter_cod']=="" ? "base" : ($result['meca_pos_ter_cod']=="0" ? "sans terrain": $result['ter_nom']))."</td>
                 <td>".($result['meca_pos_modif_pa_dep']=="" ? "base" : (int)$result['meca_pos_modif_pa_dep'] )."</td>
-                <td><span title=\"$span_si_activation\">".$nb_si_activation." différé(s).</span></td>
-                <td><span title=\"$span_si_desactivation\">".$nb_si_desactivation." différé(s).</span></td>
+                <td><span title=\"$span_si_activation\">".$nb_meca_si_activation." différé(s),".$nb_ea_si_activation." ea.</span></td>
+                <td><span title=\"$span_si_desactivation\">".$nb_meca_si_desactivation." différé(s),".$nb_ea_si_desactivation." ea.</span></td>
                 <td><b>".($result2["nb_count"]==0 ? "Inutilisé" : ($result2["nb_actif"]==0 ? "Désactivé" : "Activé".($result['meca_type']=="G" ? "" : " ".$result2["nb_actif"]."/".$result2["nb_count"])))."</b></td>
                 <td><a href=\"javascript:desactivermeca({$result['meca_cod']});\">Désactiver</a> / <a href=\"javascript:activermeca({$result['meca_cod']});\">Activer</a></td>
                 <td><a href=\"javascript:supprimermeca({$result['meca_cod']});\">Supprimer</a></td>

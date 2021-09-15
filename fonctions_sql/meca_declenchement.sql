@@ -58,7 +58,11 @@ declare
   v_meca_si_active json;
   v_meca_si_desactive json;
   v_meca_list json;
+  v_ea_list json;
   ligne record;                -- Une ligne d’enregistrements
+  row record;                -- Une row d’enregistrements
+  v_perso_cod integer;
+  v_fonc_cod integer;
 begin
 
   -- pour éviter le boulce infinie, on sort si le méca a déja été traité
@@ -210,6 +214,31 @@ begin
           end if;
       end loop;
 
+      -- déclencher les ea
+      v_ea_list := (v_meca_si_active->>'ea')::json;
+      for ligne in (select value from json_array_elements(v_ea_list) )
+      loop
+          if f_to_numeric(ligne.value->>'fonc_cod')>0  then
+                v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
+                if (v_meca_type = 'G') then
+                    -- declenchement de l'EA sur 1 perso de chaque case du mecanisme
+                    for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
+                    loop
+                        select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' order by random() limit 1;
+                        if v_perso_cod is not null then
+                            perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod)) ;
+                        end if;
+                    end loop;
+                else
+                    -- declenchement de l'EA sur 1 perso de la case conserné
+                    select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=v_target_pos_cod and perso_actif='O' order by random() limit 1;
+                    if v_perso_cod is not null then
+                        perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod)) ;
+                    end if;
+                end if;
+          end if;
+      end loop;
+
   -- -------------------------------------------------------------------------------------------------------------------
   elsif (v_pmeca_actif=1) and (v_sens=-1 or v_sens=2) then
       -- cas d'une désactivation (ou inversion)
@@ -326,6 +355,31 @@ begin
               INSERT INTO meca_action( ameca_meca_cod, ameca_date_action, ameca_sens_action,  ameca_pos_cod)
                     VALUES (f_to_numeric(ligne.value->>'meca_cod'), NOW()+ f_to_numeric(ligne.value->>'meca_delai') * '1 hour'::interval , f_to_numeric(ligne.value->>'meca_sens'),  v_target_pos_cod);
 
+          end if;
+      end loop;
+
+      -- déclencher les ea
+      v_ea_list := (v_meca_si_desactive->>'ea')::json;
+      for ligne in (select value from json_array_elements(v_ea_list) )
+      loop
+          if f_to_numeric(ligne.value->>'fonc_cod')>0  then
+                v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
+                if (v_meca_type = 'G') then
+                    -- declenchement de l'EA sur 1 perso de chaque case du mecanisme
+                    for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
+                    loop
+                        select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' order by random() limit 1;
+                        if v_perso_cod is not null then
+                            perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod)) ;
+                        end if;
+                    end loop;
+                else
+                    -- declenchement de l'EA sur 1 perso de la case conserné
+                    select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=v_target_pos_cod and perso_actif='O' order by random() limit 1;
+                    if v_perso_cod is not null then
+                        perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod)) ;
+                    end if;
+                end if;
           end if;
       end loop;
 
