@@ -481,6 +481,51 @@ class aquete_action
         return $retour;
     }
 
+
+
+    //==================================================================================================================
+    /**
+     * saut suit état de mécanisme =>  '[1:meca_etat|0%0],[2:valeur|1%1],[3:etape|1%1],[4:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_meca(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;                      // Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return $p3->aqelem_misc_cod ;   // Problème lecture passage à l'etape d'erreur
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "meca_etat", 0)) return $p3->aqelem_misc_cod ;              // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1))return $p3->aqelem_misc_cod  ;   // Problème lecture passage à l'etape suivante
+
+        // nombre de meca dans le bon état attendu.
+        $nb_attendu = $p2->aqelem_misc_cod ? $p2->aqelem_misc_cod : count($p1) ;
+
+        //passage en revue des mots attendus (dans l'ordre)
+        $nb_meca_ok = 0 ;
+        foreach ($p1 as $e => $elem)
+        {
+            $meca = new meca();
+            $meca->charge($elem->aqelem_misc_cod);
+            $etat = $meca->get_etat($elem->aqelem_param_num_3);
+            
+            if ($etat["nb_total"] > 0)
+            {
+                if (($elem->aqelem_param_num_1 == 0 && $etat["nb_actif"]==$etat["nb_total"]) ||($elem->aqelem_param_num_1 == -1 && $etat["nb_inactif"]==$etat["nb_total"]) )
+                {
+                    $nb_meca_ok ++ ; // le mécanisme est dans l'état demandé!
+                }
+            }
+        }
+
+
+        //y-a-t-il le quorum ?
+        if ($nb_meca_ok < $nb_attendu) return $p3->aqelem_misc_cod ;
+
+        // les conditions sont là !!!!
+        return $p4->aqelem_misc_cod ;
+    }
+
+
     //==================================================================================================================
     /**
      * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:position|1%0],[2:valeur|1%1],[3:etape|1%1],[4:choix_etape|1%0]'
@@ -2452,10 +2497,11 @@ class aquete_action
             if ( rand(0, 10000)/100 < $chance )
             {
                 // declencher !!!
-                $req = "select meca_declenchement(:meca_cod,:sens,null,:perso_pos_cod) as result; ";
+                $req = "select meca_declenchement(:meca_cod,:sens,:position,:perso_pos_cod) as result; ";
                 $stmt   = $pdo->prepare($req);
                 $pdo->execute(array(":meca_cod"         => $elem->aqelem_misc_cod,
                                     ":sens"             =>  $elem->aqelem_param_num_1,
+                                    ":position"         =>  $elem->aqelem_param_num_3,
                                     ":perso_pos_cod"    => $perso_pos_cod), $stmt);
             }
         }

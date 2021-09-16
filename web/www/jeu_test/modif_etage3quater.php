@@ -773,6 +773,18 @@ if ($erreur == 0)
                     else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($meca_map[$element->aqelem_misc_cod]))
                     {
                         $element->aqelem_misc_cod = $meca_map[$element->aqelem_misc_cod] ;
+                        if ($element->aqelem_param_num_3 > 0 )
+                        {
+                            $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                      WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                            $stmt2 = $pdo->prepare($req);
+                            $stmt2 = $pdo->execute(array(":pos_cod" => $element->aqelem_param_num_3, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt2);
+                            if ($result2 = $stmt2->fetch())
+                            {
+                                $element->aqelem_param_num_3 = $result2["pos_cod"] ;
+                            }
+                        }
                     }
                     //===== quete
                     else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))

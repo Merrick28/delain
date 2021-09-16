@@ -36,7 +36,7 @@ CREATE OR REPLACE FUNCTION meca_declenchement(integer,integer,integer,integer,in
 declare
   v_meca_cod alias for $1;
   v_sens alias for $2;    -- 0 ou 1 = active, -1 = desactive, 2 = inverse
-  v_meca_pos_cod alias for $3;
+  v_meca_pos_cod alias for $3;  -- si -1 pour un mecanisme individuel, activation de toutes les positions
   v_perso_pos_cod alias for $4;
   v_meca_cod_list alias for $5;
   v_target_pos_cod integer;
@@ -90,10 +90,16 @@ begin
       end if;
 
   else
-
-      select pmeca_actif into v_pmeca_actif from meca_position where pmeca_meca_cod=v_meca_cod and pmeca_pos_cod = v_target_pos_cod limit 1 ;
-      if not found then
-          return -1;    -- position de mécanisme non trouvé
+      if v_target_pos_cod = -1 then
+          -- cas d'un meca individuel pour lequel on va activer/desactiver/inverser toutes les positions
+          perform meca_declenchement(v_meca_cod,v_sens,pmeca_pos_cod,v_perso_pos_cod) from meca_position where pmeca_meca_cod=v_meca_cod ;
+          return 0 ;
+      else
+          -- cas d'un meca indivisuel sur une seul position
+          select pmeca_actif into v_pmeca_actif from meca_position where pmeca_meca_cod=v_meca_cod and pmeca_pos_cod = v_target_pos_cod limit 1 ;
+          if not found then
+              return -1;    -- position de mécanisme non trouvé
+          end if;
       end if;
 
   end if ;
