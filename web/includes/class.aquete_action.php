@@ -507,7 +507,7 @@ class aquete_action
             $meca = new meca();
             $meca->charge($elem->aqelem_misc_cod);
             $etat = $meca->get_etat($elem->aqelem_param_num_3);
-            
+
             if ($etat["nb_total"] > 0)
             {
                 if (($elem->aqelem_param_num_1 == 0 && $etat["nb_actif"]==$etat["nb_total"]) ||($elem->aqelem_param_num_1 == -1 && $etat["nb_inactif"]==$etat["nb_total"]) )
