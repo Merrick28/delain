@@ -404,6 +404,8 @@ if ($erreur == 0) {
     // -------------------------
     // debut sorts mémorisés
     // -------------------------
+    $combo1 = 0 ; // combo BS / ATT / MTS
+    $combo1_cout_pa = 0 ;
     if ($niveau_dieu < 2) {
         // Sorts mémorisés: count (psort_sort_cod)
         // Max: perso_int (/2) + amel sorts_memo
@@ -447,7 +449,13 @@ if ($erreur == 0) {
 			<td>
 			<table id="sm" style="display:;">';
             while ($result = $stmt->fetch()) {
-                $sort_cod = $result['sort_cod'];
+                $sort_cod = $result['sort_cod'] ;
+                if (in_array($sort_cod, [2,4,6]))
+                {
+                    $combo1 ++ ;
+                    $combo1_cout_pa += (int)$result['cout'] ;
+                }
+
                 $fav_add_style = ($result['is_fav'] == "false") ? '' : 'style="display:none;"';
                 $fav_del_style = ($result['is_fav'] == "true") ? '' : 'style="display:none;"';
                 $favoris = '<a ' . $fav_add_style . ' id="fav-add-sort-1-' . $sort_cod . '" href="javascript:addSortFavoris(1,' . $sort_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
@@ -465,11 +473,52 @@ if ($erreur == 0) {
 				</td>
 				</tr>';
             }
+
             $contenu_page .= '
 			</table>
 			</td>
 			</tr>
 			</form>';
+
+
+            // ajout des combos ===== type lancé=7
+            if ($combo1 == 3)
+            {
+
+                $req_sm = "select pfav_cod  from perso_favoris where pfav_perso_cod = $perso_cod and pfav_misc_cod = 1 and pfav_type = 'sort7'";
+                $stmt = $pdo->query($req_sm);
+                $nb_cb = $stmt->rowCount();
+                $result['is_fav'] = ($nb_cb) ? "true" : "false" ;
+
+                $fav_add_style = ($result['is_fav'] == "false") ? '' : 'style="display:none;"';
+                $fav_del_style = ($result['is_fav'] == "true") ? '' : 'style="display:none;"';
+                $favoris = '<a ' . $fav_add_style . ' id="fav-add-sort-7-1" href="javascript:addSortFavoris(7,1);"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
+                $favoris .= '<a ' . $fav_del_style . ' id="fav-del-sort-7-1" href="javascript:delSortFavoris(7,1);"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+
+                $cout_pa = $combo1_cout_pa;
+
+                $contenu_page .= '
+                    <form name="sort_cb" method="post" action="choix_sort.php">
+                    <input type="hidden" name="type_lance" value="7">
+                    <input type="hidden" name="sort">
+                    <tr><td><table id="scb" style="display:;">';
+
+                $contenu_page .= '
+                    <td class="soustitre2">' . $favoris . '</td>
+                    <td class="soustitre2">
+                        <a href="javascript:document.sort_cb.sort.value=1;document.sort_cb.submit();"><strong>Combo de Combat basique</a></strong> (' . $cout_pa . ' PA)
+                    </td>
+                    <td><em>Lance successivement: Botte Secrete, Mange ta Soupe et Attaque</em></td>
+                    <td> </td>
+                    </tr>';
+
+                $contenu_page .= '
+                    </table>
+                    </td>
+                    </tr>
+                    </form>';
+            }
+
         }
     }
     // -------------------------

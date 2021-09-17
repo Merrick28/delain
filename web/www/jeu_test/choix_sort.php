@@ -126,6 +126,7 @@ if ($type_lance == 0) // runes
     //($type_lance == 4) // parchemin
     //($type_lance == 5) // objets magiques => lancement de sort attaché
     //($type_lance == 6) // objets magiques => lancement de bonus attaché (comme des sorts)
+    //($type_lance == 7) // combo de sort (plusieur sort lancé successivement)
 
     $sort_cod = $_REQUEST['sort'];
     if ($sort_cod == '')
@@ -140,7 +141,41 @@ if ($type_lance == 0) // runes
     }
     $sort->charge($sort_cod);
 }
-if (($erreur == 0) && ($type_lance == 6))
+
+if (($erreur == 0) && ($type_lance == 7))
+{
+
+    if ($_REQUEST["sort"] == 1)
+    {
+        // Cas particulier, on ne lance pas  rellement un sort, mais un bonus comme si c'était un sort.
+        $nom_sort    = "Combo de Combat basique (BS/MTS/ATT)"   ;
+        echo "<br /><p> Vous vous apprêtez à lancer le sort <strong>" . $nom_sort . "</strong>.<br></p>";
+
+        $sort->charge(2);   // la combo à les mêmes caracs qu'une BS
+        $aggressif   = $sort->sort_aggressif;
+        $soi_meme    = $sort->sort_soi_meme;
+        $sort_joueur = $sort->sort_joueur;
+        $sort_dieu   = substr($sort->sort_fonction, 0, 2);
+        $dist_sort = $sort->sort_distance;
+        $type_cible  = "0";
+        if ($sort->sort_monstre == 'O')
+        {
+            $type_cible = $type_cible . ",2,3";
+        }
+        if ($sort->sort_joueur == 'O')
+        {
+            $type_cible = $type_cible . ",1";
+        }
+        include "include_magie.php";
+    }
+    else
+    {
+        echo "<p>Erreur combo inconnue!";
+        $erreur = 1;
+    }
+
+
+} else if (($erreur == 0) && ($type_lance == 6))
 {
     // Cas particulier, on ne lance pas  rellement un sort, mais un bonus comme si c'était un sort.
     $nom_sort    = isset( $_REQUEST["objsort_name"] ) ? $_REQUEST["objsort_name"] : $objsortbm->getNom()   ;

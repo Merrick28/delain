@@ -72,13 +72,15 @@ switch($_REQUEST["request"])
             "sort1" =>   "cout_pa_magie($perso_cod,$misc_cod,1)",
             "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)",
             "sort5" =>   "cout_pa_objet_sort($perso_cod,$misc_cod)",
-            "sort6" =>   "cout_pa_objet_sort_bm($perso_cod,$misc_cod)"
+            "sort6" =>   "cout_pa_objet_sort_bm($perso_cod,$misc_cod)",
+            "sort7" =>   "cout_pa_combo($perso_cod,$misc_cod)"
         );
         $list_link = array(
             "sort1" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,1])",
             "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])",
             "sort5" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,5,$misc_cod])",
-            "sort6" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,6,$misc_cod])"
+            "sort6" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,6,$misc_cod])",
+            "sort7" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,7])"
         );
 
         if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris sans nom."}');
@@ -96,7 +98,15 @@ switch($_REQUEST["request"])
         if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le comptage des favoris"}');
         if ($result["count"]*1>=10) die('{"resultat":1, "message":"Le nombre maximum de favoris est déjà atteint."}');
 
-        if ($type=="sort6")
+        if ($type=="sort7")
+        {
+            $req  = "SELECT $list_function_cout_pa[$type] as cout_pa  ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
+            $cout_pa = $result["cout_pa"] ;
+        }
+        else if ($type=="sort6")
         {
             $req  = "SELECT tonbus_libelle nom,  $list_function_cout_pa[$type] as cout_pa FROM bonus_type WHERE tbonus_cod=:sort_cod ";
             $stmt = $pdo->prepare($req);

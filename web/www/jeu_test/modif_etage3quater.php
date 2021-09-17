@@ -542,33 +542,9 @@ if ($erreur == 0)
                     }
                 }
 
-                // recalibrage des activations/desactivations de meca
-                // Boucle sur les mécas qui ont été dupliqués
-                $req  = "SELECT meca_cod from meca  WHERE meca_pos_etage = :meca_pos_etage; ";
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":meca_pos_etage" => $etage_cod), $stmt);
-                while ($result = $stmt->fetch())
-                {
-                    $meca = new meca();
-                    $meca->charge($result["meca_cod"]);
-
-                    $action_meca_active = json_decode($meca->meca_si_active);
-                    foreach ($action_meca_active->meca as $row => $action_meca)
-                    {
-                        $action_meca_active->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
-                    }
-                    $action_meca_desactive = json_decode($meca->meca_si_desactive);
-                    foreach ($action_meca_desactive->meca as $row => $action_meca)
-                    {
-                        $action_meca_desactive->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
-                    }
-
-                    $meca->meca_si_active = json_encode($action_meca_active);
-                    $meca->meca_si_desactive = json_encode($action_meca_desactive);
-                    $meca->stocke();
-                }
 
                 // les EA ============================================================================================
+                $ea_map = [] ;
 
                 // Dupliqurer les EA de l'étage
                 $req  = "SELECT fonc_cod, fonc_nom, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee, fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite, fonc_trigger_param 
@@ -655,7 +631,8 @@ if ($erreur == 0)
 
                     // appliquer les changement
                     $req  = "INSERT INTO fonction_specifique(fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee, fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite, fonc_trigger_param)
-                              VALUES (:fonc_nom, null, null, 'POS', :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_nombre_cible, :fonc_date_limite, :fonc_trigger_param)";
+                              VALUES (:fonc_nom, null, null, 'POS', :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_nombre_cible, :fonc_date_limite, :fonc_trigger_param)
+                              RETURNING fonc_cod";
                     $stmt2 = $pdo->prepare($req);
                     $stmt2 = $pdo->execute(array(   "fonc_nom" => $result["fonc_nom"],
                                                     "fonc_effet" => $result["fonc_effet"],
@@ -668,6 +645,43 @@ if ($erreur == 0)
                                                     "fonc_nombre_cible" => $result["fonc_nombre_cible"],
                                                     "fonc_date_limite" => $result["fonc_date_limite"],
                                                     "fonc_trigger_param" => $fonc_trigger_param), $stmt2);
+                    $result2 = $stmt2->fetch();
+                    $ea_map[ $result["fonc_cod"] ] = $result2["fonc_cod"];      // old => new !
+                }
+
+                // les MECA ============================================================================================
+                // recalibrage des activations/desactivations de meca (necessite le mapping MECA et EA)
+                // Boucle sur les mécas qui ont été dupliqués
+                $req  = "SELECT meca_cod from meca  WHERE meca_pos_etage = :meca_pos_etage; ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":meca_pos_etage" => $etage_cod), $stmt);
+                while ($result = $stmt->fetch())
+                {
+                    $meca = new meca();
+                    $meca->charge($result["meca_cod"]);
+
+                    $action_meca_active = json_decode($meca->meca_si_active);
+                    foreach ($action_meca_active->meca as $row => $action_meca)
+                    {
+                        $action_meca_active->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
+                    }
+                    foreach ($action_meca_active->ea as $row => $action_ea)
+                    {
+                        $action_meca_active->ea[$row]->fonc_cod = $ea_map[$action_ea->fonc_cod] ;
+                    }
+                    $action_meca_desactive = json_decode($meca->meca_si_desactive);
+                    foreach ($action_meca_desactive->meca as $row => $action_meca)
+                    {
+                        $action_meca_desactive->meca[$row]->meca_cod = $meca_map[$action_meca->meca_cod] ;
+                    }
+                    foreach ($action_meca_desactive->ea as $row => $ea_meca)
+                    {
+                        $action_meca_desactive->ea[$row]->fonc_cod = $ea_map[$ea_meca->fonc_cod] ;
+                    }
+
+                    $meca->meca_si_active = json_encode($action_meca_active);
+                    $meca->meca_si_desactive = json_encode($action_meca_desactive);
+                    $meca->stocke();
                 }
 
                 // les QA ============================================================================================
@@ -759,6 +773,18 @@ if ($erreur == 0)
                     else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($meca_map[$element->aqelem_misc_cod]))
                     {
                         $element->aqelem_misc_cod = $meca_map[$element->aqelem_misc_cod] ;
+                        if ($element->aqelem_param_num_3 > 0 )
+                        {
+                            $req   = "SELECT p2.pos_cod pos_cod from positions p1
+                                      join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
+                                      WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
+                            $stmt2 = $pdo->prepare($req);
+                            $stmt2 = $pdo->execute(array(":pos_cod" => $element->aqelem_param_num_3, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt2);
+                            if ($result2 = $stmt2->fetch())
+                            {
+                                $element->aqelem_param_num_3 = $result2["pos_cod"] ;
+                            }
+                        }
                     }
                     //===== quete
                     else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))

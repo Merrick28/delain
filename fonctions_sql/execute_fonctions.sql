@@ -37,6 +37,7 @@ declare
 	v_do_it bool;              -- Executer la fonction
 	v_chainage integer;        -- valeur du chainage des EA courant
 	v_chaine_ordre integer;    -- récupération du n° de chainage courrant
+	v_equipage integer;         -- récupération du n° de monture/cavalier (traitement specifique des dépacement de du couple)
 
 	-- variable specifique au BMC
 	v_perso_nom text;          -- Nom du perso avan modification
@@ -74,8 +75,9 @@ begin
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
 			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
-			              (  ( fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
-			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' ))))
+			              (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
 			order by coalesce(f_to_numeric(fonc_trigger_param->>'fonc_trig_proba_chain'),0)
 		)
@@ -85,7 +87,7 @@ begin
     v_do_it := true;
     
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'POS' then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' != -2 then -- -------------------------------------------------------------------------------------
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
@@ -102,16 +104,21 @@ begin
                 v_pos_cod := f_to_numeric(v_param->>'nouveau_pos_cod'::text) ;
             end if;
             -- injecter la case qui declenche l'ea dans les paramètres !
-            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '') || '}' )::jsonb)::json ;
+            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '0') || '}' )::jsonb)::json ;
 
 
             /* traitement des ré-armement du type bascule */
             if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2)  then
                 /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur la case */
 
-                /* boucler sur les perso qui sont sur la case déclenchant l'EA */
+                /* boucler sur les perso qui sont sur la case déclenchant l'EA (sauf la monture ou le cavalier qui sont considéré comme un seul élément, seul le pilote déclenche l'EA)*/
+                if f_to_numeric(v_param->>'pilote'::text) = v_perso_cod then
+                    v_equipage := coalesce(coalesce(f_perso_cavalier(v_perso_cod), f_perso_monture(v_perso_cod)), 0);
+                else
+                    v_equipage := 0 ;
+                end if;
                 for plist in (
-                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_cod!= v_equipage and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
                   )
                 loop
                     if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
@@ -130,9 +137,14 @@ begin
 
                 else
 
-                    /* boucler sur les perso qui sont sur toutes les cases de l'EA */
+                    /* boucler sur les persos qui sont sur toutes les cases de l'EA (sauf la monture ou le cavalier qui sont considéré comme un seul élément, seul le pilote déclenche l'EA)*/
+                    if f_to_numeric(v_param->>'pilote'::text) = v_perso_cod then
+                        v_equipage := coalesce(coalesce(f_perso_cavalier(v_perso_cod), f_perso_monture(v_perso_cod)), 0);
+                    else
+                        v_equipage := 0 ;
+                    end if;
                     for plist in (
-                      select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
+                      select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_cod!= v_equipage and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
                       )
                     loop
                         if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then

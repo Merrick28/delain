@@ -233,7 +233,7 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
@@ -256,6 +256,10 @@ if ($erreur == 0)
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 4) ;
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
+                        } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #MECA")))
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 3) ;
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 4));
                         } else
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
@@ -677,9 +681,29 @@ if ($erreur == 0)
                                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'meca\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                     &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","meca","Rechercher un mécanisme", ['.$pos_etage.']);\'> 
+                                    <span title="Position ciblée pour les mecanismes individuels (facultatif, mettre -1 pour cibler toutes les positions)">Position: <input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="5" value="'.$element->aqelem_param_num_3.'"></span>
                                     Déclenchement : '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Active","-1"=>"Désactive","2"=>"Inverse"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                      Chance (en %): <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'">
+                               </td>';
+                        break;
 
+                    case 'meca_etat':       // pour les mecanisme d'étage
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $meca = new meca() ;
+                            $meca->charge( $element->aqelem_misc_cod );
+                            $etage = new etage();
+                            $etage->charge( $meca->meca_pos_etage );
+                            $aqelem_misc_nom = $etage->etage_libelle." / ".$meca->meca_nom ;
+                        }
+                        echo   '<td>Mecanisme :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'meca\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","meca","Rechercher un mécanisme", ['.$pos_etage.']);\'> 
+                                    <span title="Position ciblée pour les mecanismes individuels (facultatif, mettre -1 pour cibler toutes les positions)">Position: <input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="5" value="'.$element->aqelem_param_num_3.'"></span>
+                                    Etat : '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Actif","-1"=>"Désactivé"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                </td>';
                         break;
 

@@ -257,4 +257,28 @@ class meca
             }
         }
     }
+
+    // return l'état d'un mécanisme (pour les mécanisme individuel un pos_cod peut être fourni)
+    function get_etat($pos_cod=0)
+    {
+        $pdo = new bddpdo;
+
+        if ($pos_cod >0)
+        {
+            // pour les mécanisme individuel on peut chercher l'état sur une position spécifique
+            $req = "select count(*) nb_total, sum(pmeca_actif) as nb_actif, sum(1-pmeca_actif) nb_inactif from meca_position where pmeca_meca_cod= :meca_cod and pmeca_pos_cod=:pmeca_pos_cod ";
+            $stmt = $pdo->prepare($req);
+            $pdo->execute([":meca_cod" => $this->meca_cod, ":pmeca_pos_cod" => $pos_cod],$stmt);
+        }
+        else
+        {
+            // recherche de l'état global
+            $req = "select count(*) nb_total, sum(pmeca_actif) as nb_actif, sum(1-pmeca_actif) nb_inactif from meca_position where pmeca_meca_cod= :meca_cod ";
+            $stmt = $pdo->prepare($req);
+            $pdo->execute([":meca_cod" => $this->meca_cod],$stmt);
+
+        }
+        $result = $stmt->fetch();
+        return $result;
+    }
 }
