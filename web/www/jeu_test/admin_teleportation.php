@@ -282,22 +282,35 @@ if ($erreur == 0)
                             $stmt = $pdo->query($req);
 
                             // Position de départ
-                            $req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
-                                    etage_arene
+                            $req_position = "select pos_etage, pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
+                                    etage_arene, coalesce(coalesce(f_perso_monture(ppos_perso_cod), f_perso_cavalier(ppos_perso_cod)), 0) as perso_equipage
                                 from perso_position
                                 inner join positions on pos_cod = ppos_pos_cod
                                 inner join etage on etage_numero = pos_etage
                                 where ppos_perso_cod = $mod_perso_cod ";
                             $stmt = $pdo->query($req_position);
                             $result = $stmt->fetch();
+                            $anc_pos_etage = $result['pos_etage'];
                             $anc_pos_cod = $result['pos_cod'];
                             $anc_arene = $result['etage_arene'];
                             $anc_position = $result['position'];
+                            $perso_equipage = $result['perso_equipage'];
                             $log .= "Déplacement de $anc_position vers $nv_position.";
 
                             // déplacement
                             $req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $mod_perso_cod ";
                             $stmt = $pdo->query($req);
+
+                            // Activer les EA de déplacement (cela peut casser des mécanismes de ne pas le faire)
+                            $req  = "select execute_fonctions($mod_perso_cod, null, 'DEP', json_build_object('pilote',$mod_perso_cod,'ancien_pos_cod',$anc_pos_cod,'ancien_etage',$anc_pos_etage,'nouveau_pos_cod',$pos_cod,'nouveau_etage',$new_etage)) ";
+                            $stmt = $pdo->query($req);
+
+                            // EA déclenché par la monture ou le cavalier qui lui est attaché
+                            if ($perso_equipage > 0 && $anc_pos_etage==$new_etage)
+                            {
+                                $req  = "select execute_fonctions($perso_equipage, null, 'DEP', json_build_object('pilote',$mod_perso_cod,'ancien_pos_cod',$anc_pos_cod,'ancien_etage',$anc_pos_etage,'nouveau_pos_cod',$pos_cod,'nouveau_etage',$new_etage)) ";
+                                $stmt = $pdo->query($req);
+                            }
 
                             switch ($anc_arene . $arene)
                             {
