@@ -228,7 +228,7 @@ begin
                 v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
                 if (v_meca_type = 'G') then
                     -- declenchement de l'EA sur 1 perso de chaque case du mecanisme
-                    for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
+                    for row in (select pmeca_pos_cod from meca_position where pmeca_meca_cod=v_meca_cod )
                     loop
                         select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' order by random() limit 1;
                         if v_perso_cod is not null then

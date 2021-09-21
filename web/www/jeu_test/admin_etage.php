@@ -40,7 +40,7 @@ $req_m_terrain= "select ter_cod, ter_nom from terrain where ter_cod > 0 order by
 $stmt_m_terrain = $pdo->query($req_m_terrain);
 $terrains = $stmt_m_terrain->fetchAll(PDO::FETCH_ASSOC);
 
-$req_m_ea= "select fonc_cod, fonc_trigger_param->>'fonc_trig_nom_ea' as nom_ea , fonc_trigger_param->>'fonc_trig_pos_cods' as pos_cods from fonction_specifique where fonc_trigger_param->>'fonc_trig_pos_etage'={$admin_etage} order by fonc_trigger_param->>'fonc_trig_nom_ea' ";
+$req_m_ea= "select fonc_cod, fonc_trigger_param->>'fonc_trig_nom_ea' as nom_ea , fonc_trigger_param->>'fonc_trig_pos_cods' as pos_cods from fonction_specifique where fonc_trigger_param->>'fonc_trig_pos_etage'={$admin_etage} and fonc_trigger_param->>'fonc_trig_sens'<>-2 order by fonc_trigger_param->>'fonc_trig_nom_ea' ";
 $stmt_m_ea = $pdo->query($req_m_ea);
 $effet_auto = $stmt_m_ea->fetchAll(PDO::FETCH_ASSOC);
 
