@@ -61,8 +61,11 @@ declare
   v_ea_list json;
   ligne record;                -- Une ligne d’enregistrements
   row record;                -- Une row d’enregistrements
-  v_perso_cod integer;
   v_fonc_cod integer;
+  v_nb_cible integer;
+  v_type_cible character varying(1);
+  v_arr_type_cible integer[];
+
 begin
 
   -- pour éviter le boulce infinie, on sort si le méca a déja été traité
@@ -225,23 +228,45 @@ begin
       for ligne in (select value from json_array_elements(v_ea_list) )
       loop
           if f_to_numeric(ligne.value->>'fonc_cod')>0  then
-                v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
-                if (v_meca_type = 'G') then
-                    -- declenchement de l'EA sur 1 perso de chaque case du mecanisme
-                    for row in (select pmeca_pos_cod from meca_position where pmeca_meca_cod=v_meca_cod )
-                    loop
-                        select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' order by random() limit 1;
-                        if v_perso_cod is not null then
-                            perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod)) ;
-                        end if;
-                    end loop;
-                else
-                    -- declenchement de l'EA sur 1 perso de la case conserné
-                    select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=v_target_pos_cod and perso_actif='O' order by random() limit 1;
-                    if v_perso_cod is not null then
-                        perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod)) ;
-                    end if;
-                end if;
+              v_type_cible := coalesce(ligne.value->>'cible', '') ;
+              if v_type_cible = 'J' then
+                  v_arr_type_cible := ARRAY[1];
+              elsif v_type_cible = 'L' then
+                  v_arr_type_cible := ARRAY[3];
+              elsif v_type_cible = 'M' then
+                  v_arr_type_cible := ARRAY[2];
+              elsif v_type_cible = 'P' then
+                  v_arr_type_cible := ARRAY[1,3];
+              elsif v_type_cible = 'T' then
+                  v_arr_type_cible := ARRAY[1,2,3];
+              else
+                v_type_cible := '';
+              end if;
+
+              -- si type de cible pour un porteur d'EA est valide
+              if ( v_type_cible != '' ) then
+                  v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
+                  v_nb_cible := coalesce(nullif(f_to_numeric(ligne.value->>'nb_cible'),0),1000) ;
+
+
+                  if (v_meca_type = 'G') then
+                      -- declenchement de l'EA sur les persos de chaque case du mecanisme
+                      for row in (select pmeca_pos_cod from meca_position where pmeca_meca_cod=v_meca_cod )
+                      loop
+                          perform execute_fonctions(perso_cod, perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod))
+                              from perso_position join perso on perso_cod=ppos_perso_cod
+                              where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' and perso_type_perso = ANY (v_arr_type_cible)
+                              order by random() limit v_nb_cible ;
+
+                      end loop;
+                  else
+                      -- declenchement de l'EA sur les perso de la case consernée
+                      perform execute_fonctions(perso_cod, perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod))
+                          from perso_position join perso on perso_cod=ppos_perso_cod
+                          where ppos_pos_cod=v_target_pos_cod and perso_actif='O' and perso_type_perso = ANY (v_arr_type_cible)
+                          order by random() limit v_nb_cible ;
+                  end if;
+              end if;
           end if;
       end loop;
 
@@ -369,23 +394,46 @@ begin
       for ligne in (select value from json_array_elements(v_ea_list) )
       loop
           if f_to_numeric(ligne.value->>'fonc_cod')>0  then
-                v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
-                if (v_meca_type = 'G') then
-                    -- declenchement de l'EA sur 1 perso de chaque case du mecanisme
-                    for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
-                    loop
-                        select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' order by random() limit 1;
-                        if v_perso_cod is not null then
-                            perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod)) ;
-                        end if;
-                    end loop;
-                else
-                    -- declenchement de l'EA sur 1 perso de la case conserné
-                    select perso_cod into v_perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where ppos_pos_cod=v_target_pos_cod and perso_actif='O' order by random() limit 1;
-                    if v_perso_cod is not null then
-                        perform execute_fonctions(v_perso_cod, v_perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod)) ;
-                    end if;
-                end if;
+
+              v_type_cible := coalesce(ligne.value->>'cible', '') ;
+              if v_type_cible = 'J' then
+                  v_arr_type_cible := ARRAY[1];
+              elsif v_type_cible = 'L' then
+                  v_arr_type_cible := ARRAY[3];
+              elsif v_type_cible = 'M' then
+                  v_arr_type_cible := ARRAY[2];
+              elsif v_type_cible = 'P' then
+                  v_arr_type_cible := ARRAY[1,3];
+              elsif v_type_cible = 'T' then
+                  v_arr_type_cible := ARRAY[1,2,3];
+              else
+                v_type_cible := '';
+              end if;
+
+              -- si type de cible pour un porteur d'EA est valide
+              if ( v_type_cible != '' ) then
+                  v_fonc_cod := f_to_numeric(ligne.value->>'fonc_cod') ;
+                  v_nb_cible := coalesce(nullif(f_to_numeric(ligne.value->>'nb_cible'),0),1000) ;
+
+                  if (v_meca_type = 'G') then
+                      -- declenchement de l'EA sur les persos de chaque case du mecanisme
+                      for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
+                      loop
+                          perform execute_fonctions(perso_cod, perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod))
+                              from perso_position join perso on perso_cod=ppos_perso_cod
+                              where ppos_pos_cod=row.pmeca_pos_cod and perso_actif='O' and perso_type_perso = ANY (v_arr_type_cible)
+                              order by random() limit v_nb_cible ;
+                      end loop;
+                  else
+                      -- declenchement de l'EA sur les persos de la case consernée
+                      perform execute_fonctions(perso_cod, perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',v_target_pos_cod))
+                          from perso_position join perso on perso_cod=ppos_perso_cod
+                          where ppos_pos_cod=v_target_pos_cod and perso_actif='O' and perso_type_perso = ANY (v_arr_type_cible)
+                          order by random() limit v_nb_cible ;
+                  end if;
+
+              end if;
+
           end if;
       end loop;
 
