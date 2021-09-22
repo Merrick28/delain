@@ -52,14 +52,14 @@ if ($erreur == 0)
             $si_active["ea"] = [] ;
             foreach ($_POST['aqelem_fonc_cod'][2] as $k => $action_ea_cod ){
                 if ( (int)$action_ea_cod > 0){
-                    $si_active["ea"][] = [ "fonc_cod" => (int)$action_ea_cod ] ;
+                    $si_active["ea"][] = [ "fonc_cod" => (int)$action_ea_cod,  "nb_cible" => (int)$_POST['aqelem_nb_cible'][2][$k], "cible" => $_POST['aqelem_cible'][2][$k] ] ;
                 }
             }
 
             $si_desactive["ea"] = [] ;
             foreach ($_POST['aqelem_fonc_cod'][3] as $k => $action_ea_cod ){
                 if ( (int)$action_ea_cod > 0){
-                    $si_desactive["ea"][] = [ "fonc_cod" => (int)$action_ea_cod ] ;
+                    $si_desactive["ea"][] = [ "fonc_cod" => (int)$action_ea_cod,  "nb_cible" => (int)$_POST['aqelem_nb_cible'][3][$k], "cible" => $_POST['aqelem_cible'][3][$k] ] ;
                 }
             }
             //echo "<pre>"; print_r([$si_active, $si_desactive, $_POST]); die();
@@ -244,6 +244,9 @@ if ($erreur == 0)
         $ea_list = ["0"=>""];
         while ($result = $stmt_m_ea->fetch(PDO::FETCH_ASSOC)) { $ea_list[$result["fonc_cod"]] = $result["ea_nom"]; }
 
+        // cibles dqui seront porteur de l'EA
+        $ea_cible = [ "" => "", "J" => "Aventuriers", "L" => "Familiers", "M" => "Monstres", "P" => "Aventuriers et Familiers",  "T" => "Tout le monde"];
+
         echo "
         <form method='post' action='admin_meca_etage.php'>
                     <input type='hidden' name='methode' value='editer_meca'>
@@ -299,8 +302,8 @@ if ($erreur == 0)
 
         $action_ea_active = json_decode($meca->meca_si_active);
         $action_ea_desactive = json_decode($meca->meca_si_desactive);
-        if ($action_ea_active == null || count($action_ea_active->ea)==0) { $action_ea_active = (object)["ea" => [0 => (object)["fonc_cod" => 0]]]; }
-        if ($action_ea_desactive == null || count($action_ea_desactive->ea)==0) { $action_ea_desactive = (object)["ea" => [0 => (object)["fonc_cod" => 0]]]; }
+        if ($action_ea_active == null || count($action_ea_active->ea)==0) { $action_ea_active = (object)["ea" => [0 => (object)["fonc_cod" => 0, "nb_cible"=>"", "cible"=>""]]]; }
+        if ($action_ea_desactive == null || count($action_ea_desactive->ea)==0) { $action_ea_desactive = (object)["ea" => [0 => (object)["fonc_cod" => 0, "nb_cible"=>"", "cible"=>""]]]; }
 
         //echo "<pre>";  print_r($action_meca_desactive); die();
 
@@ -344,7 +347,9 @@ if ($erreur == 0)
             echo '<td>Déclencher EA 
                         <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                         <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).' <em style="font-size: 10px">(sur 1 perso de la ou des cases conservées)</em>
+                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).'
+                        <span title="ATTENTION: chaque cible sera le porteur de l’EA qui sera déclenché.">sur nombre de cible : <input size="4" name="aqelem_nb_cible[' . $param_id . '][]" value="'.$action_ea->nb_cible.'"></span>
+                        '.create_selectbox('aqelem_cible[' . $param_id . '][]', $ea_cible, $action_ea->cible).'
                         </td>';
         }
         echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
@@ -387,7 +392,9 @@ if ($erreur == 0)
             echo '<td>Déclencher EA 
                         <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                         <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).' <em style="font-size: 10px">(sur 1 perso de la ou des cases conservées)</em>
+                        '.create_selectbox('aqelem_fonc_cod[' . $param_id . '][]', $ea_list, $action_ea->fonc_cod).'
+                        <span title="ATTENTION: chaque cible sera tour à tour le porteur de l’EA qui sera déclenchée.">sur nombre de cible : <input size="4" name="aqelem_nb_cible[' . $param_id . '][]" value="'.$action_ea->nb_cible.'"></span>
+                        '.create_selectbox('aqelem_cible[' . $param_id . '][]', $ea_cible, $action_ea->cible).'                        
                         </td>';
         }
         echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
@@ -464,7 +471,7 @@ if ($erreur == 0)
             }
             foreach ($action_meca_active->ea as $row => $action_ea)
             {
-                $span_si_activation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]."\n";
+                $span_si_activation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]." sur ".$action_ea->nb_cible." ".$ea_cible[$action_ea->cible ? $action_ea->cible : 'J']."\n";
             }
             $span_si_desactivation = "";
             foreach ($action_meca_desactive->meca as $row => $action_meca)
@@ -473,7 +480,7 @@ if ($erreur == 0)
             }
             foreach ($action_meca_desactive->ea as $row => $action_ea)
             {
-                $span_si_desactivation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]."\n";
+                $span_si_desactivation.="Déclenchement de l'ea: ".$ea_list[$action_ea->fonc_cod]." sur ".$action_ea->nb_cible." ".$ea_cible[$action_ea->cible ? $action_ea->cible : 'J']."\n";
             }
 
             echo "
