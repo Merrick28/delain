@@ -62,6 +62,7 @@ declare
 
   v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
   v_distance_min integer;      -- distance minimum requis pour la cible
+  v_cible_porteur varchar(1);      -- forcer le ciblage du porteur de l'EA (exclus par defaut)
 
 begin
         -- récupération du nom de la source de l'effet
@@ -103,6 +104,7 @@ begin
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
   end if;
   v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
+  v_cible_porteur := COALESCE((v_params->>'fonc_trig_cible_porteur')::text, 'N');
 
 	-- On compte le nombre de cibles réelles (utilisé pour le calcul futur du gain de PX)
 	select into v_cibles_nombre_reel min(v_cibles_nombre_max, count(*)::integer)
@@ -169,6 +171,9 @@ begin
 				(v_cibles_type = 'C' and perso_cod = v_cible_donnee) or
 				(v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
 				(v_cibles_type = 'T'))
+      -- ciblage specifique pour les dégats/soins
+      and
+        (perso_cod != v_source or v_cibles_type = 'S' or v_cible_porteur='O')
 		-- Dans les limites autorisées
 		order by random()
 		limit v_cibles_nombre_max)
@@ -216,7 +221,7 @@ begin
 			else
 				perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt || ', redonnant ' || valeur::text || ' PVs.', 'O', 'O', null);
 			end if;
-		elsif ligne.perso_cod != v_source or v_cibles_type = 'S' then	-- Perte de PVs (dégâts)
+		else	-- Perte de PVs (dégâts)
 			valeur_pvp := effectue_degats_perso(ligne.perso_cod, valeur, v_source);
 			code_retour := code_retour || '<br />' || v_nom_efaseur || ' inflige ' || valeur_pvp::text || ' dégâts à ' || ligne.perso_nom;
 			if v_bloque_magie = 1 then
