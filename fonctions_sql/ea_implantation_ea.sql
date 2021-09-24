@@ -152,7 +152,7 @@ begin
             fonc_proba,
             fonc_message,
             fonc_nombre_cible,
-            CASE WHEN COALESCE((v_params->>'fonc_trig_validite')::text, '0')='0' THEN null ELSE NOW() + ((v_params->>'fonc_trig_validite')::text || ' minutes')::interval end fonc_date_limite,
+            CASE WHEN COALESCE(nullif((v_params->>'fonc_trig_validite')::text, ''), '0')='0' THEN null ELSE NOW() + (coalesce((v_params->>'fonc_trig_validite')::text, '0') || ' minutes')::interval end fonc_date_limite,
             (('{"fonc_trig_implantation":"'||fonc_cod::text||'"}')::jsonb || coalesce(fonc_trigger_param, '{}')::jsonb)::json as fonc_trigger_param
           FROM fonction_specifique where fonc_cod=v_effet::integer ;
 
