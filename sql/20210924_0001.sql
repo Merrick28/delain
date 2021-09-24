@@ -1,0 +1,2 @@
+insert into quetes.aquete_type_carac (aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type, aqtypecarac_aff)
+  values(29, 'Chevauche une monture', 'VARIABLE', 'Chevauche une monture du type monstre générique');
