@@ -200,7 +200,7 @@ function getJS_ea_existant($req, $validite=false, $heritage=false)
                 // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
                 if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
-                $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage);
+                $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"Implantation #$fonc_id: $fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage);
                   ";
                 if ( $fonc_nom=="ea_implantation_ea" ) $implantation2[] = $fonc_effet ;
             };
