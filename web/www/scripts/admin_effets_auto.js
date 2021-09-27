@@ -794,10 +794,15 @@ EffetAuto.ChampCache = function (parametre, numero, valeur) {
 	return '<input type="hidden" value="' + valeur + '" name="fonc_' + parametre.nom + numero.toString() + '"/>';
 }
 
-EffetAuto.ChampLecture = function (parametre, valeur) {
+EffetAuto.ChampLecture = function (parametre, numero, valeur) {
 	var resultat = '<strong>' + parametre.label + '</strong>';
 	if (valeur != '')
 		resultat += ' : ' + valeur;
+
+	// cas particulier de l'EA, il faut ajouter un contenair pour afficher la definition de ce dernier
+	if (parametre.type && parametre.type == "ea")
+		resultat+= '<div id="ea-container-'+numero+'" data-child-id="'+valeur+'" data-child-numero=""></div>';
+
 	return resultat;
 }
 
@@ -1434,7 +1439,7 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'lecture':
 			if (typeof parametre.valeur !== "undefined")
 				valeur = parametre.valeur;
-			html = pd + EffetAuto.ChampLecture(parametre, valeur) + pf;
+			html = pd + EffetAuto.ChampLecture(parametre, numero, valeur) + pf;
 			break;
 		case 'ea':
 			html = pd + EffetAuto.ChampEA(parametre, numero, valeur) + pf;
