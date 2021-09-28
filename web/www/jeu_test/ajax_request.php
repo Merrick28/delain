@@ -43,6 +43,40 @@ $pdo    = new bddpdo;
 switch($_REQUEST["request"])
 {
     //==============================================================================================
+    case "save-qa-notes":
+    //==============================================================================================
+
+        $notes =  $_REQUEST["notes"] ; //  $notes = substr($_REQUEST["notes"], 0, 4096);
+
+        $pnotes = new aquete_perso_notes();
+        $isNew =  $pnotes->charge_par_perso($perso_cod) ? false : true  ;
+
+        $pnotes->aqperson_perso_cod = $perso_cod ;
+        $pnotes->aqperson_notes = $notes ;
+        $pnotes->aqperson_date = date("Y-m-d H:i:s") ;
+        $pnotes->stocke($isNew);
+
+        //if ($notes != $_REQUEST["notes"]) die('{"resultat":-1, "message":"Vos notes ont été tronquées (à 4096 caractères)"}');
+
+        break;
+
+    //==============================================================================================
+    case "add-qa-notes":
+    //==============================================================================================
+
+        $pnotes = new aquete_perso_notes();
+        $isNew =  $pnotes->charge_par_perso($perso_cod) ? false : true  ;
+
+        $notes =  $_REQUEST["notes"] ; // $notes = substr($_REQUEST["notes"], 0, 4092-strlen($pnotes->aqperson_notes));
+        $pnotes->aqperson_perso_cod = $perso_cod ;
+        $pnotes->aqperson_notes = $pnotes->aqperson_notes."<hr>".$notes ;
+        $pnotes->aqperson_date = date("Y-m-d H:i:s") ;
+        $pnotes->stocke($isNew);
+
+        //if ($notes != $_REQUEST["notes"]) die('{"resultat":-1, "message":"Vos notes ont été tronquées (à 4096 caractères)"}');
+
+        break;
+    //==============================================================================================
     case "add_favoris":
     //==============================================================================================
         $type = $_REQUEST["type"];

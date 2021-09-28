@@ -261,13 +261,18 @@ if ($methode == "interagir") {
 
     //** C'est ici que l'on vérifie l'avancement de la quete, (nota il faut que l'on y passe obligatoirement au démarrage après la première étape) **//
     $quete_perso->run();
-    $contenu_page .= $quete_perso->journal('O', 0, false);      // Texte avec l'historique de la quete jusqu'a l'étape en cours
 
-
+    $notes =  $quete_perso->journal('O', 0, false); ;
     // Si la quête est finie, proposer la fermeture au joueur!
     if (! $quete_perso->est_finie() )
     {
-        $contenu_page .= $quete_perso->get_texte_etape_courante();
+        $notes .= $quete_perso->get_texte_etape_courante();
+    }
+    $contenu_page .= "<span id='perso-journal'>$notes</span>";      // Texte avec l'historique de la quete jusqu'a l'étape en cours
+
+    if ($notes != "")
+    {
+        $contenu_page .= '<input style="float:right; margin-right:50px; margin-top:3px;" onclick="addQANotes(\'perso-journal\');" type="submit" class="test" value="  Ajouter dans mes Notes ">';
     }
 
     $contenu_page .= "<br><br>";
@@ -280,8 +285,12 @@ if ($methode == "interagir") {
     if ( !isset($_REQUEST["onglet"]) || (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="encours"))   )
     {
         // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
-        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) en cours</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
-        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
+        $contenu_page .= '<td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td>
+                            <td class="onglet" style="width: 25%"><p style="text-align:center">Quête(s) en cours</p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=notes">Mes notes</a></p></td>
+                            </tr>';
+        $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
 
 
         $quete_perso = new aquete_perso();
@@ -365,12 +374,18 @@ if ($methode == "interagir") {
             }
 
             $contenu_page .= "<div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>";
-            $contenu_page .= $quete_perso->journal('O', 1, $isAdminAnimation);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
+            $notes = $quete_perso->journal('O', 1, $isAdminAnimation);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
 
 
             // Si la quête est finie, proposer la fermeture au joueur!
             if ($quete_perso->est_finie())
             {
+                $contenu_page .= "<span id='perso-journal'>$notes</span>";      // Texte avec l'historique de la quete jusqu'a l'étape en cours
+                //if ($notes != "")
+                //{
+                //    $contenu_page .= '<input style="float:right; margin-right:50px; margin-top:3px;" onclick="addQANotes(\'perso-journal\');" type="submit" class="test" value="  Ajouter dans mes Notes ">';
+                //}
+
                 $contenu_page .= '&nbsp;&nbsp;&nbsp;<form method="post"><input type="hidden" name="methode" value="terminer"><input type="hidden" name="quete" value="' . $aquete_cod . '"><input type="submit" class="test" value="  Terminer  "></form>';
 
                 // Maintenant on force la fermeture ici, trop de joueur ne clique pas sur "Terminer"=================
@@ -389,16 +404,27 @@ if ($methode == "interagir") {
             else
             {
                 //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
-                $contenu_page .= $quete_perso->get_texte_etape_courante();
+                $notes .= $quete_perso->get_texte_etape_courante();
+                $contenu_page .= "<span id='perso-journal'>$notes</span>";      // Texte avec l'historique de la quete jusqu'a l'étape en cours
+                //if ($notes != "")
+                //{
+                //    $contenu_page .= '<input style="float:right; margin-right:50px; margin-top:3px;" onclick="addQANotes(\'perso-journal\');" type="submit" class="test" value="  Ajouter dans mes Notes ">';
+                //}
             }
+
+
 
             $contenu_page .= "<br><br>";
         }
     } else if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="apercu"))
     {
-        // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
-        $contenu_page .= '<td class="onglet" style="width: 30%"><p style="text-align:center">Aperçu</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
-        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
+        // --------------------------------------- ONGLET DES QUETES EN COURS APPERCU ------------------------------------------------------------
+        $contenu_page .= '<td class="onglet" style="width: 25%"><p style="text-align:center">Aperçu</p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=notes">Mes notes</a></p></td>
+                            </tr>';
+        $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
 
 
         $quete_perso = new aquete_perso();
@@ -430,11 +456,68 @@ if ($methode == "interagir") {
             }
         }
         $contenu_page .= "<br><br>";
+    } else if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="notes"))
+    {
+        // --------------------------------------- ONGLET DES QUETES EN COURS APPERCU ------------------------------------------------------------
+        // Editeur WYSIWYG pour le texte d'étape! (SCEdtor) / Avait été retiré? pourquoi? par qui ?
+        $contenu_page .=  '<link href="/styles/sceditor.min.css" rel="stylesheet">';
+        $contenu_page .=  '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
+        $contenu_page .=  '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></script>';
+        $contenu_page .=  '<script>//# sourceURL=quete_auto_edit_note.js
+  
+        $( document ).ready(function() {
+        
+               $("#id-textarea-notes").height( $("#id-textarea-notes")[0].scrollHeight);
+               sceditor.command.set("save", {
+                    exec: function() {
+                        // this is set to the editor instance
+                      console.log(this.val());
+                      runAsync({request: "save-qa-notes", data:{notes:this.val()}}, popSaveQANotesStatus, {})
+        
+                    },
+                    tooltip: "Sauvegarder les modifications!"
+                });              
+        
+                var textarea = document.getElementById("id-textarea-notes");
+                sceditor.create(textarea, {
+                    format: "xhtml",
+                    plugins: "plaintext",
+                    style: "/styles/sceditor.min.css",
+                    toolbar: "save|pastetext,bold,italic,underline,strike,subscript,superscript|size,color,removeformat|emoticon,image|maximize|source", 
+                });
+            });
+        </script>';
+
+
+        $contenu_page .= '<td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td>
+                            <td class="onglet" style="width: 25%"><p style="text-align:center">Mes notes</p></td>
+                            </tr>';
+        $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
+
+        $pnotes = new aquete_perso_notes();
+        $result = $pnotes->getBy_aqperson_perso_cod($perso_cod) ;
+        $notes = $result ? $result[0]->aqperson_notes : "" ;
+
+
+            // Affichage de la boite de selection
+        //$contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'>(les notes personnelles sont limitées à 4096 caractères)</em></center>";
+        $contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'></center>";
+        $contenu_page .= '<hr>';
+        $contenu_page .= '<textarea id="id-textarea-notes" style="min-height: 600px; width: 100%;">'.$notes.'</textarea>';
+
+        //$contenu_page .= "Le texte contient: <span id='id-textarea-taille'>".(strlen($notes))."</span>/ 4096";
+        $contenu_page .= "<br><br>";
     } else
     {
         // --------------------------------------- ONGLET DES QUETES TERMINE------------------------------------------------------------
-        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) terminée(s)</p></td></tr>';
-        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
+        $contenu_page .= '<td class="pas_onglet" style="width: é(%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td>
+                            <td class="onglet" style="width: 25%"><p style="text-align:center">Quête(s) terminée(s)</p></td>
+                            <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=notes">Mes notes</a></p></td>
+                            </tr>';
+        $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
 
         $quete_perso = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_terminee($perso_cod);

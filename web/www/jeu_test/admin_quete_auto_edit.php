@@ -17,7 +17,7 @@ echo '<script>//# sourceURL=admin_quete_auto_edit.js
     var textarea = document.getElementById("id-textarea-etape");
     sceditor.create(textarea, {
         format: "xhtml",
-        style: "/style/sceditor.min.css",
+        style: "/styles/sceditor.min.css",
         toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|table,quote,image|maximize|source",
     });
 });
