@@ -24,9 +24,10 @@ $resultat = '';
 
 if ($erreur == 0)
 {
-	if (isset($pos_etage) && $pos_etage == '--')
+
+	if (!isset($_REQUEST["methode"]) && isset($pos_etage) && $pos_etage == '--')
 		$methode = 'début_créer';
-	if (isset($pos_etage) && $pos_etage != '--')
+	if (!isset($_REQUEST["methode"]) && isset($pos_etage) && $pos_etage != '--')
 		$methode = 'début_modifier';
 
 	// Traitements
@@ -295,7 +296,7 @@ if ($erreur == 0)
     }
 ?>
 	Choix de l’étage à modifier
-	<form method="post">
+	<form method="post" action="modif_etage3.php">
 		<select name="pos_etage"><option value='--'>Créer un nouvel étage</option>
 	<?php 
 		if (!isset($pos_etage)) $pos_etage = '';
@@ -310,7 +311,7 @@ if ($erreur == 0)
 ?>
 	<p>Créer un nouvel étage</p>
 	<div id="etage" class="tableau2">
-		<form name="action_creer_etage" method="post">
+		<form name="action_creer_etage" method="post" action="modif_etage3.php">
 			<input type="hidden" name="methode" value="creer_etage">
 			Nom : <input type="text" name="nom"><br>
 			Description : <textarea name="description"></textarea><br>
@@ -395,7 +396,7 @@ if ($erreur == 0)
 ?>
 	<p>Modifier l’étage <?php echo  $etage_libelle; ?></p>
 	<div id="etage" class="tableau2">
-		<form name="action_modifier_etage" method="post">
+		<form name="action_modifier_etage" method="post" action="modif_etage3.php">
 			<input type="hidden" name="methode" value="modifier_etage" />
 			<input type="hidden" name="etage_numero" value="<?php echo  $pos_etage; ?>" />
 			Nom : <input type="text" name="nom" value="<?php echo  $etage_libelle; ?>" /><br>
