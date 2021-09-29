@@ -127,8 +127,8 @@ if ($erreur == 0)
         }
         echo    '<table width="80%" align="center">';
 
-        echo '<tr><td><strong>Nom de référence admin</strong>:</td><td><input type="text" name="aquete_nom_alias" value="'.htmlspecialchars($quete->aquete_nom_alias).'"></td></tr>';
-        echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
+        echo '<tr><td><strong>Nom de référence admin</strong>:</td><td><input size=80 type="text" name="aquete_nom_alias" value="'.htmlspecialchars($quete->aquete_nom_alias).'"></td></tr>';
+        echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input size=80 type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
         echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="'.htmlspecialchars($quete->aquete_description).'"></td></tr>';
         echo '<tr><td><strong>Quête ouverte </strong>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <em>activation/désactivation général</em></td></tr>';
         if ($pos_etage==0) {

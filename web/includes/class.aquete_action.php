@@ -226,6 +226,66 @@ class aquete_action
         return $etape;
     }
 
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:selecteur|1%1|{1~Force},{2~Dextérité},{3~Intelligence},{4~Constitution},{5~Vue}],[2:valeur|1%1],[3:valeur|1%1],[4:etape|1%1],[5:etape|1%1],[6:etape|1%1],[7:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return integer (etape)
+     */
+    function saut_condition_carac(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "selecteur", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1)) return 0 ;             // (mini) Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur", 1)) return 0 ;             // (dificulté) Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return 0 ;              // (reussite critique) Problème lecture passage à l'etape suivante
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 1)) return 0 ;              // (reussite) Problème lecture passage à l'etape suivante
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape", 1)) return 0 ;              // (echec) Problème lecture passage à l'etape suivante
+        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, "etape", 1)) return 0 ;              // (echec critique) Problème lecture passage à l'etape suivante
+
+        $perso = new perso();
+        if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p6->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
+
+        // recupe de la carac en focntion du selecteur
+        $carac = 0;
+        if ($p1->aqelem_misc_cod = 1)  $carac = $perso->perso_for ;
+        else if ($p1->aqelem_misc_cod = 2)  $carac = $perso->perso_dex ;
+        else if ($p1->aqelem_misc_cod = 3)  $carac = $perso->perso_int ;
+        else if ($p1->aqelem_misc_cod = 4)  $carac = $perso->perso_con ;
+        else if ($p1->aqelem_misc_cod = 5)  $carac = $perso->distance_vue() ;
+        else return $p6->aqelem_misc_cod ;
+
+        // Si le perso n'a pas le niveau requis dans la carac
+        if ( $carac <= $p2->aqelem_param_num_1) return 0 ;                              // etape suivante: pas le niveau
+
+        // Lancé du jet de dé 1D100 en tenant compte des malédiction/bénédiction pour retourner les chances de réussite
+        $pdo = new bddpdo;
+        $req = "select lancer_des3(1,100, (valeur_bonus(:perso_cod, 'BEN') + valeur_bonus(:perso_cod, 'MAU'))::integer) as reussite, lancer_des3(1,100, 0) as opposition";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso_cod" => $aqperso->aqperso_perso_cod
+        ), $stmt);
+        if ( !$result = $stmt->fetch() ) return $p7->aqelem_misc_cod ;        // echec classique
+        $reussite = $result["reussite"];
+        $oposition = $result["opposition"];
+
+        if ($reussite>96) {
+            $etape = $p7->aqelem_misc_cod  ;        // Echec critique
+        } else if (($reussite - $carac) < ($oposition - $p3->aqelem_param_num_1)) {
+            $etape = $p6->aqelem_misc_cod  ;        // echec classique
+        } else if ($result["reussite"] <= 5 ) {
+            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5
+        } else {
+            $etape = $p5->aqelem_misc_cod  ;        // Réussite standard
+        }
+
+        //echo "<pre>"; print_r([$etape, $reussite, $competence, $result]);die();
+
+        // retourner l'étape !
+        return $etape;
+    }
+
     //==================================================================================================================
     /**
      * On recherche le n° d'étape suivant en fonction des condition =>  '[1:quete_etape|0%0],[2:etape|1%1]'
