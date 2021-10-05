@@ -94,7 +94,11 @@ function popSaveQANotesStatus(r, context)
 function addQANotes(id)
 {
     var notes = "";
-    $("#"+id).find("div").each(  function (index) {  notes+=$(this).html();  } );
+    $("#"+id).find("div").each(  function (index) {
+        var n = $(this).clone() ;
+        n.find("p").contents().unwrap();
+        notes+=n.html();
+    } );
 
     runAsync({request: "add-qa-notes", data:{notes:notes }}, popSaveQANotesStatus, {})
 

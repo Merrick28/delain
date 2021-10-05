@@ -471,7 +471,6 @@ if ($methode == "interagir") {
                sceditor.command.set("save", {
                     exec: function() {
                         // this is set to the editor instance
-                      console.log(this.val());
                       runAsync({request: "save-qa-notes", data:{notes:this.val()}}, popSaveQANotesStatus, {})
         
                     },

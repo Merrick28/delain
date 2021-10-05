@@ -281,12 +281,11 @@ class aquete_action
         if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p6->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
 
         // recupe de la carac en focntion du selecteur
-        $carac = 0;
-        if ($p1->aqelem_misc_cod = 1)  $carac = $perso->perso_for ;
-        else if ($p1->aqelem_misc_cod = 2)  $carac = $perso->perso_dex ;
-        else if ($p1->aqelem_misc_cod = 3)  $carac = $perso->perso_int ;
-        else if ($p1->aqelem_misc_cod = 4)  $carac = $perso->perso_con ;
-        else if ($p1->aqelem_misc_cod = 5)  $carac = $perso->distance_vue() ;
+        if ($p1->aqelem_misc_cod = 1)  {$coeff=3; $carac = $perso->perso_for ; }
+        else if ($p1->aqelem_misc_cod = 2)  {$coeff=3; $carac = $perso->perso_dex ;}
+        else if ($p1->aqelem_misc_cod = 3)  {$coeff=3; $carac = $perso->perso_int ;}
+        else if ($p1->aqelem_misc_cod = 4)  {$coeff=3; $carac = $perso->perso_con ;}
+        else if ($p1->aqelem_misc_cod = 5)  {$coeff=5; $carac = $perso->distance_vue() ;}
         else return $p6->aqelem_misc_cod ;
 
         // Si le perso n'a pas le niveau requis dans la carac
@@ -305,21 +304,21 @@ class aquete_action
         ), $stmt);
         if ( !$result = $stmt->fetch() ) return $p7->aqelem_misc_cod ;        // echec classique
         $reussite = $result["reussite"];
-        $oposition = $result["opposition"];
+        $opposition = $result["opposition"];
 
         $texte_lancer = "Votre lancer de dé est : ".$reussite ;
         if ($reussite>96) {
             $etape = $p7->aqelem_misc_cod  ;        // Echec critique
             $texte_lancer.= ", il s'agit d'un echec critique.";
-        } else if (($carac-$reussite) < ($p3->aqelem_param_num_1 - $oposition)) {
+        } else if ((($carac*$coeff)-$reussite) < (($p3->aqelem_param_num_1*$coeff) - $opposition)) {
             $etape = $p6->aqelem_misc_cod  ;        // echec classique
-            $texte_lancer.= ", il s'agit d'un echec, le jet d'opposition ($oposition) sur la caractéristique est meilleur que le votre.";
+            $texte_lancer.= ", il s'agit d'un echec, le jet d'opposition ($opposition) sur la caractéristique est meilleur que le votre.";
         } else if ($result["reussite"] <= 5 ) {
             $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5
             $texte_lancer.= ", il s'agit d'une réussite critique.";
         } else {
             $etape = $p5->aqelem_misc_cod  ;        // Réussite standard
-            $texte_lancer.= ", il s'agit d'une réussite, votre jet de dé sous votre caractéristique est meilleur que le jet d'opposition ($oposition).";
+            $texte_lancer.= ", il s'agit d'une réussite, votre jet de dé sous votre caractéristique est meilleur que le jet d'opposition ($opposition).";
         }
 
         $this->injection_journal($aqperso, $texte_lancer);
