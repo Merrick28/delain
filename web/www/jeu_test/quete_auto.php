@@ -458,12 +458,13 @@ if ($methode == "interagir") {
         $contenu_page .= "<br><br>";
     } else if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="notes"))
     {
-        // --------------------------------------- ONGLET DES QUETES EN COURS APPERCU ------------------------------------------------------------
-        // Editeur WYSIWYG pour le texte d'étape! (SCEdtor) / Avait été retiré? pourquoi? par qui ?
-        $contenu_page .=  '<link href="/styles/sceditor.min.css" rel="stylesheet">';
-        $contenu_page .=  '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
-        $contenu_page .=  '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></script>';
-        $contenu_page .=  '<script>//# sourceURL=quete_auto_edit_note.js
+
+            // --------------------------------------- ONGLET DES QUETES EN COURS APPERCU ------------------------------------------------------------
+            // Editeur WYSIWYG pour le texte d'étape! (SCEdtor) / Avait été retiré? pourquoi? par qui ?
+            $contenu_page .=  '<link href="/styles/sceditor.min.css" rel="stylesheet">';
+            $contenu_page .=  '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
+            $contenu_page .=  '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></script>';
+            $contenu_page .=  '<script>//# sourceURL=quete_auto_edit_note.js
   
         $( document ).ready(function() {
         
@@ -488,26 +489,34 @@ if ($methode == "interagir") {
         </script>';
 
 
-        $contenu_page .= '<td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td>
+            $contenu_page .= '<td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td>
                             <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td>
                             <td class="pas_onglet" style="width: 25%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td>
                             <td class="onglet" style="width: 25%"><p style="text-align:center">Mes notes</p></td>
                             </tr>';
-        $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
+            $contenu_page .= '<tr><td colspan="4" class="reste_onglet">';
 
-        $pnotes = new aquete_perso_notes();
-        $result = $pnotes->getBy_aqperson_perso_cod($perso_cod) ;
-        $notes = $result ? $result[0]->aqperson_notes : "" ;
+        // Récupération des Quetes en cours
+        if ($perso->perso_type_perso != 1)
+        {
+            // Affichage de la boite de selection
+            $contenu_page .= "<br><br><br><br><center>Les familiers ne savent pas écrire!!!!<center><br><br><br><br>";
+        } else {
+            $pnotes = new aquete_perso_notes();
+            $result = $pnotes->getBy_aqperson_perso_cod($perso_cod) ;
+            $notes = $result ? $result[0]->aqperson_notes : "" ;
 
 
             // Affichage de la boite de selection
-        //$contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'>(les notes personnelles sont limitées à 4096 caractères)</em></center>";
-        $contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'></center>";
-        $contenu_page .= '<hr>';
-        $contenu_page .= '<textarea id="id-textarea-notes" style="min-height: 600px; width: 100%;">'.$notes.'</textarea>';
+            //$contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'>(les notes personnelles sont limitées à 4096 caractères)</em></center>";
+            $contenu_page .= "<br><center><strong>Mes notes personnelles</strong> <em style='font-size:10px;'></center>";
+            $contenu_page .= '<hr>';
+            $contenu_page .= '<textarea id="id-textarea-notes" style="min-height: 600px; width: 100%;">'.$notes.'</textarea>';
 
-        //$contenu_page .= "Le texte contient: <span id='id-textarea-taille'>".(strlen($notes))."</span>/ 4096";
-        $contenu_page .= "<br><br>";
+            //$contenu_page .= "Le texte contient: <span id='id-textarea-taille'>".(strlen($notes))."</span>/ 4096";
+            $contenu_page .= "<br><br>";
+        }
+
     } else
     {
         // --------------------------------------- ONGLET DES QUETES TERMINE------------------------------------------------------------
