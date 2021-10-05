@@ -162,6 +162,34 @@ class aquete_perso_journal
         }
     }
 
+    // Charge le dernier step du journal (pour une étape donné)
+    function  chargeDernierePageEtape($aqperso_cod, $etape_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select aqpersoj_cod
+                from quetes.aquete_perso_journal
+                join (
+                    select aqpersoj_aqperso_cod perso_cod, aqpersoj_realisation realisation, max(aqpersoj_quete_step) quete_step 
+                    from quetes.aquete_perso_journal where aqpersoj_etape_cod=:etape_cod 
+                    group by aqpersoj_aqperso_cod, aqpersoj_realisation
+                    having aqpersoj_realisation=max(aqpersoj_realisation)
+                ) page on aqpersoj_aqperso_cod=perso_cod and aqpersoj_realisation=realisation and aqpersoj_quete_step=quete_step
+                where aqpersoj_aqperso_cod=:aqperso_cod order by aqpersoj_cod desc ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array("aqperso_cod"=>$aqperso_cod, ":etape_cod"=>$etape_cod),$stmt);
+        if ( $result = $stmt->fetch() )
+        {
+            $this->charge($result["aqpersoj_cod"]);
+        }
+        else
+        {
+            // Prépare avec le peu d'information que l'on a
+            $this->aqpersoj_aqperso_cod = $aqperso_cod;
+            $this->aqpersoj_etape_cod = $etape_cod;
+            $this->quete_step = 0 ;
+        }
+    }
+
     /**
      * retourne un tableau avec les index des réalisations qui ont été conservées dans le journal
      * @global bdd_mysql $pdo

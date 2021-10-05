@@ -867,3 +867,5 @@ p.thought:after {
 	font-family: "MedievalSharp";
 	src: url('/fonts/MedievalSharp-Regular.ttf');
 }
+
+.sceditor-button-save div { background: url('/images/save_16.png')!important; }

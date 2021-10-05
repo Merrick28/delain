@@ -79,6 +79,32 @@ function post(path, params, values)
 }
 
 //------------------------------------------------------------------------------------------------------------------
+//--- sauvegarde des notes de QA
+function popSaveQANotesStatus(r, context)
+{
+    if (r.resultat==0)
+    {
+        $.nok({message: "Vos notes personnelles ont été sauvegardées!!", type: "success", stay: 3, sticky: false});
+    } else {
+        $.nok({ message: r.message, type: "info", stay: 5, sticky: false });
+    }
+
+}
+
+function addQANotes(id)
+{
+    var notes = "";
+    $("#"+id).find("div").each(  function (index) {
+        var n = $(this).clone() ;
+        n.find("p").contents().unwrap();
+        notes+=n.html();
+    } );
+
+    runAsync({request: "add-qa-notes", data:{notes:notes }}, popSaveQANotesStatus, {})
+
+}
+
+//------------------------------------------------------------------------------------------------------------------
 //--- gestion des favoris
 function popRequestStatus(r, context)
 {
