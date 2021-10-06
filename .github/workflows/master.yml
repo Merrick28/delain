@@ -23,22 +23,7 @@ jobs:
           echo "Lancement des tests unitaires"
           echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
 
-      - name: lance les tests unitaires
-        if: "!contains(github.event.head_commit.message, 'ci skip')"
-        run: |
 
-          cd ${GITHUB_WORKSPACE}
-          docker-compose -f docker-compose-tu.yml pull
-          docker-compose -f docker-compose-tu.yml up -d
-          echo "Wait for postgres to be up"
-          /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
-          echo 'PHP Unit tests'
-          ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
-          cd ${GITHUB_WORKSPACE}
-          /usr/local/bin/docker-compose -f docker-compose-tu.yml down
-      - name: Gestion d'erreur
-        if: ${{ failure() }}
-        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Anomalie sur la livraison (job prelivraison)" ${{ secrets.WEBHOOK_ROCKETCHAT }}
 
 
   livraison:
