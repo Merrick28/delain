@@ -459,7 +459,7 @@ if ($methode == "interagir") {
     } else if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="notes"))
     {
 
-            // --------------------------------------- ONGLET DES QUETES EN COURS APPERCU ------------------------------------------------------------
+            // --------------------------------------- ONGLET DES NOTES DE QUETES  ------------------------------------------------------------
             // Editeur WYSIWYG pour le texte d'étape! (SCEdtor) / Avait été retiré? pourquoi? par qui ?
             $contenu_page .=  '<link href="/styles/sceditor.min.css" rel="stylesheet">';
             $contenu_page .=  '<script src="/scripts/sceditor.min.js" type="text/javascript"></script>';
