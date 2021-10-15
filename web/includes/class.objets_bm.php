@@ -16,6 +16,7 @@ class objets_bm
     var $objbm_tbonus_cod;
     var $objbm_nom;
     var $objbm_bonus_valeur;
+    var $objbm_equip_requis = true ;
     var $bonus_type;                // Le type de bonus de rattachement
 
     function __construct()
@@ -45,6 +46,7 @@ class objets_bm
         $this->objbm_tbonus_cod = $result['objbm_tbonus_cod'];
         $this->objbm_nom = $result['objbm_nom'];
         $this->objbm_bonus_valeur = $result['objbm_bonus_valeur'];
+        $this->objbm_equip_requis = $result['objbm_equip_requis'];
         return true;
     }
 
@@ -63,14 +65,16 @@ class objets_bm
             objbm_obj_cod,
             objbm_tbonus_cod,
             objbm_nom,
-            objbm_bonus_valeur                     )
+            objbm_bonus_valeur ,
+            objbm_equip_requis                     )
                     values
                     (
                         :objbm_gobj_cod,
                         :objbm_obj_cod,
                         :objbm_tbonus_cod,
-                        :objbm_nom,
-                        :objbm_bonus_valeur                    )
+                        :objbm_nom ,
+                        :objbm_bonus_valeur   ,
+                        :objbm_equip_requis                 )
     returning objbm_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -79,6 +83,7 @@ class objets_bm
                 ":objbm_tbonus_cod" => $this->objbm_tbonus_cod,
                 ":objbm_nom" => $this->objbm_nom,
                 ":objbm_bonus_valeur" => $this->objbm_bonus_valeur,
+                ":objbm_equip_requis" => $this->objbm_equip_requis,
             ),$stmt);
 
 
@@ -93,7 +98,8 @@ class objets_bm
             objbm_obj_cod = :objbm_obj_cod,
             objbm_tbonus_cod = :objbm_tbonus_cod,
             objbm_nom = :objbm_nom,
-            objbm_bonus_valeur = :objbm_bonus_valeur                       where objbm_cod = :objbm_cod ";
+            objbm_bonus_valeur = :objbm_bonus_valeur ,
+            objbm_equip_requis = :objbm_equip_requis                       where objbm_cod = :objbm_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objbm_cod" => $this->objbm_cod,
@@ -101,7 +107,8 @@ class objets_bm
                 ":objbm_obj_cod" => $this->objbm_obj_cod,
                 ":objbm_tbonus_cod" => $this->objbm_tbonus_cod,
                 ":objbm_nom" => $this->objbm_nom,
-                ":objbm_bonus_valeur" => $this->objbm_bonus_valeur
+                ":objbm_bonus_valeur" => $this->objbm_bonus_valeur,
+                ":objbm_equip_requis" => $this->objbm_equip_requis
             ),$stmt);
         }
     }

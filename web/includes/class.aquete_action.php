@@ -206,7 +206,7 @@ class aquete_action
         }
 
         // Si le perso n'a pas le niveau requis
-        if ( $perso_competence->pcomp_modificateur <= $p2->aqelem_param_num_1)                          // etape suivante: pas le niveau
+        if ( $perso_competence->pcomp_modificateur < $p2->aqelem_param_num_1)                          // etape suivante: pas le niveau
         {
             $this->injection_journal($aqperso, "Vous n'avez pas le niveau requis pour essayer.");
             return 0 ;
@@ -289,7 +289,7 @@ class aquete_action
         else return $p6->aqelem_misc_cod ;
 
         // Si le perso n'a pas le niveau requis dans la carac
-        if ( $carac <= $p2->aqelem_param_num_1)                              // etape suivante: pas le niveau
+        if ( $carac < $p2->aqelem_param_num_1)                              // etape suivante: pas le niveau
         {
             $this->injection_journal($aqperso, "Votre caracteristique est trop faible pour essayer.");
             return 0 ;

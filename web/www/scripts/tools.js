@@ -94,7 +94,9 @@ function popSaveQANotesStatus(r, context)
 function addQANotes(id)
 {
     var notes = "";
-    $("#"+id).find("div").each(  function (index) {
+    var texte = $("#"+id).clone() ;
+    texte.find("form").remove();
+    texte.find("div").each(  function (index) {
         var n = $(this).clone() ;
         n.find("p").contents().unwrap();
         notes+=n.html();

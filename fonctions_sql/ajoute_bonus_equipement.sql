@@ -7,7 +7,7 @@ LANGUAGE plpgsql
 AS $_$-- Rajoute un bonus d'équipement à un perso
 -- $1 = Le code du perso en question
 -- $2 = Le type de bonus
--- $3 = le code du bonus
+-- $3 = le code du objbm
 -- $4 = le code de l'objet qui donne ce bonus
 -- $5 = La valeur du bonus
 
