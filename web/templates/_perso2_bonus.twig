@@ -35,6 +35,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class="soustitre2"><strong>Bonus</strong></td>
                         <td class="soustitre2"><strong>Valeur</strong></td>
                         <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class="soustitre2"><strong>Equipement</strong></td>
                         <td class=""></td>
                         {% for detail_bonus in TAB_BONUS.0 %}
 
@@ -51,6 +52,9 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                 Equipement
                             </div>
                         </td>
+                        <td>
+                            <a href="visu_desc_objet3.php?objet={{ detail_bonus.obj_cod }}&origine=i">{{ detail_bonus.obj_nom }}</a>
+                        </td>
                         <td style="text-align:center"><img src="{{ detail_bonus.img }}"></td>
                     </tr>
                     {% endfor %}
@@ -63,6 +67,9 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                             <td>
                                 <div style='text-align:center;'>Equipement
                                 </div>
+                            </td>
+                            <td>
+                                <a href="visu_desc_objet3.php?objet={{ bonus.6 }}&origine=i">{{ bonus.7 }}</a>
                             </td>
                             <td>
                                 <div style='text-align:center;'><img src="{{ bonus.img }}"></div>
@@ -84,6 +91,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class="soustitre2"><strong>Malus</strong></td>
                         <td class="soustitre2"><strong>Valeur</strong></td>
                         <td class="soustitre2"><strong>Échéance</strong></td>
+                        <td class="soustitre2"><strong>Equipement</strong></td>
                         <td class=""></td>
                     </tr>
                     {% for detail_malus in TAB_MALUS.0 %}
@@ -101,6 +109,9 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                     {% endif %}
                                 </div>
                             </td>
+                            <td>
+                                <a href="visu_desc_objet3.php?objet={{ detail_malus.obj_cod }}&origine=i">{{ detail_malus.obj_nom }}</a>
+                            </td>
                             <td style="text-align:center"><img src="{{ detail_malus.img }}"></td>
                         </tr>
 
@@ -117,7 +128,10 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                 </div>
                             </td>
                             <td>
-                                <div style='text-align:center;'><img src="{{ malus.img }}}"></div>
+                                <a href="visu_desc_objet3.php?objet={{ malus.6 }}&origine=i">{{ malus.7 }}</a>
+                            </td>
+                            <td>
+                                <div style='text-align:center;'><img src="{{ malus.img }}"></div>
                             </td>
                         </tr>
                     {% endfor %}

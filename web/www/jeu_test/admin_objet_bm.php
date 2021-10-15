@@ -41,28 +41,37 @@ include_once '../includes/tools.php';
             //executer le service asynchrone
             $('tr[id^="bmlist-"]').removeClass("soustitre2");
             $('#bouton-supprimer').hide();
+
             if (row >= 0) {
                 $('#bmlist-' + row).addClass("soustitre2");
                 $('#bouton-supprimer').show();
-            }
 
-            runAsync({request: "get_table_info", data: {info: "objets_bm", objbm_cod: objbm_cod}}, function (d) {
-                if (d.resultat == 0) {
-                    var data = d.data;
-                    $("#objbm_cod").val(data.objbm_cod ? data.objbm_cod : 0);
-                    $("#sort-0-misc_cod").val(data.objbm_tbonus_cod ? data.objbm_tbonus_cod : "");
-                    if ($("#sort-0-misc_cod").val() > 0) {
-                        setNomByBMCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                runAsync({request: "get_table_info", data: {info: "objets_bm", objbm_cod: objbm_cod}}, function (d) {
+                    if (d.resultat == 0) {
+                        var data = d.data;
+                        $("#objbm_cod").val(data.objbm_cod ? data.objbm_cod : 0);
+                        $("#sort-0-misc_cod").val(data.objbm_tbonus_cod ? data.objbm_tbonus_cod : "");
+                        if ($("#sort-0-misc_cod").val() > 0) {
+                            setNomByBMCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                        }
+                        else {
+                            $("#sort-0-misc_nom").val("");
+                            $("#sort-0-libc").val("");
+                        }
+                        $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
+                        $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
+                        $("#objbm_equip_requis").val((!data.objbm_equip_requis || data.objbm_equip_requis =='false') ? 'N' : 'O');
                     }
-                    else {
-                        $("#sort-0-misc_nom").val("");
-                        $("#sort-0-libc").val("");
-                    }
-                    $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
-                    $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
-                    $("#objbm_equip_requis").val((!data.objbm_equip_requis || data.objbm_equip_requis =='false') ? 'N' : 'O');
-                }
-            });
+                });
+            } else {
+                $("#objbm_cod").val(0);
+                $("#sort-0-misc_cod").val("");
+                $("#sort-0-libc").val("");
+                $("#sort-0-misc_nom").text("");
+                $("#objbm_nom").val("");
+                $("#objbm_bonus_valeur").val("");
+                $("#objbm_equip_requis").val('O');
+            }
         }
 
     </script>
@@ -124,16 +133,15 @@ if ($erreur == 0)
 
                     foreach ($list as $pobj)
                     {
-                        if ($pobj->perobj_equipe == 'O')
+                        if ($pobj->perobj_equipe == 'O' || !$objbm->objbm_equip_requis )
                         {
                             // Mise à jour des BM d'équipement pour l'objet de ce joueur!
-                            $req    = "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+                            $req    = "select retire_bonus_equipement(:perso_cod,:obj_cod,:objbm_cod)  as modif;";
                             $stmt   = $pdo->prepare($req);
                             $stmt   = $pdo->execute(array(
-                                                        ":perso_cod" => $pobj->perobj_perso_cod,
-                                                        ":modif"     => 'D',
-                                                        ":objbm_cod" => $objbm->objbm_cod,
-                                                        ":obj_cod"   => $pobj->perobj_obj_cod), $stmt);
+                                ":perso_cod" => $pobj->perobj_perso_cod,
+                                ":obj_cod"   => $pobj->perobj_obj_cod,
+                                ":objbm_cod" => $objbm->objbm_cod), $stmt);
                             $result = $stmt->fetch();
 
                             $nb_obj++;
@@ -149,14 +157,12 @@ if ($erreur == 0)
             {
                 // Cas d'une creation/modification
                 $clone_os = clone $objbm;
-                $clone_os->objbm_equip_requis = $clone_os->objbm_equip_requis ? "true" : "false" ;
-
                 $objbm->objbm_gobj_cod     = 1 * (int)$_REQUEST["objbm_gobj_cod"];
                 $objbm->objbm_obj_cod      = null;
                 $objbm->objbm_tbonus_cod   = 1 * (int)$_REQUEST["objbm_tbonus_cod"];
                 $objbm->objbm_nom          = $_REQUEST["objbm_nom"] == '' ? null : $_REQUEST["objbm_nom"];
                 $objbm->objbm_bonus_valeur = (int)$_REQUEST["objbm_bonus_valeur"];
-                $objbm->objbm_equip_requis = $_REQUEST["objbm_equip_requis"]=="O" ? "true" : "false" ;
+                $objbm->objbm_equip_requis = $_REQUEST["objbm_equip_requis"]=="O" ? 1 : 0 ;
 
                 $objbm->stocke($new);
 
@@ -188,7 +194,7 @@ if ($erreur == 0)
                             $nb_obj++;
 
                             // redonner le bonus si les conditions sont toujours là ou elles le sont devenues
-                            if ( $pobj->perobj_equipe == 'O' || $objbm->objbm_equip_requis == "false") {
+                            if ( $pobj->perobj_equipe == 'O' || ! $objbm->objbm_equip_requis ) {
                                 $req    = "select ajoute_bonus_equipement(:perso_cod,:tbonus_libc,:objbm_cod, :obj_cod, :valeur)  as modif;";
                                 $stmt   = $pdo->prepare($req);
                                 $stmt   = $pdo->execute(array(
