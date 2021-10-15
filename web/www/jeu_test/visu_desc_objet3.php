@@ -289,7 +289,7 @@ if ($autorise == 1)
                     $img = '<img src="/../images/interface/bonus/' . strtoupper($typebm) . '.png">';
                 }
 
-                echo "<tr><td class=\"soustitre2\">" . ($typebm == "Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>") . "</td>";
+                echo "<tr><td class=\"soustitre2\">" . ($typebm == "Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>") .( $objbm->objbm_equip_requis ? "<em> (si équipé)<em>" : "" ). "</td>";
                 echo "<td>" . $img . " <strong>" . ($objbm->objbm_bonus_valeur > 0 ? "+" : "") . $objbm->objbm_bonus_valeur . "</strong> : " . $tbonus->tonbus_libelle . "</td>";
                 echo "<tr>";
             }

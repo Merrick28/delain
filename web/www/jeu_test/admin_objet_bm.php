@@ -124,16 +124,15 @@ if ($erreur == 0)
 
                     foreach ($list as $pobj)
                     {
-                        if ($pobj->perobj_equipe == 'O')
+                        if ($pobj->perobj_equipe == 'O' || !$objbm->objbm_equip_requis || $objbm->objbm_equip_requis == "false" )
                         {
                             // Mise à jour des BM d'équipement pour l'objet de ce joueur!
-                            $req    = "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+                            $req    = "select retire_bonus_equipement(:perso_cod,:obj_cod,:objbm_cod)  as modif;";
                             $stmt   = $pdo->prepare($req);
                             $stmt   = $pdo->execute(array(
-                                                        ":perso_cod" => $pobj->perobj_perso_cod,
-                                                        ":modif"     => 'D',
-                                                        ":objbm_cod" => $objbm->objbm_cod,
-                                                        ":obj_cod"   => $pobj->perobj_obj_cod), $stmt);
+                                ":perso_cod" => $pobj->perobj_perso_cod,
+                                ":obj_cod"   => $pobj->perobj_obj_cod,
+                                ":objbm_cod" => $objbm->objbm_cod), $stmt);
                             $result = $stmt->fetch();
 
                             $nb_obj++;

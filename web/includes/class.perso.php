@@ -3232,15 +3232,17 @@ class perso
                  case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text
                  end as bonus_nb_tours,
                  bonus_mode,
-                 sum(bonus_valeur) as bonus_valeur
+                 sum(bonus_valeur) as bonus_valeur,
+                 obj_cod, obj_nom
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  left join objets on obj_cod = bonus_obj_cod
                   where bonus_perso_cod = ?
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur < 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
-                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
+                  group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
@@ -3260,15 +3262,17 @@ class perso
                  coalesce(tbonus_description, tonbus_libelle) as tbonus_description,
                  case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours,
                  bonus_mode,
-                 sum(bonus_valeur) as bonus_valeur
+                 sum(bonus_valeur) as bonus_valeur,
+                 obj_cod, obj_nom
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  left join objets on obj_cod = bonus_obj_cod
                   where bonus_perso_cod = ?
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur > 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
-                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
+                  group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
