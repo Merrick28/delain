@@ -562,7 +562,7 @@ class aquete_action
         // refus ou pas assez de PA
         if ($perso->perso_pa<$nb_pa || $dialogue == '')
         {
-            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->status = true ;  // l'étape est terminée sur un fail !
             $retour->etape = $p4->aqelem_misc_cod;
             return $retour;
         }
@@ -572,14 +572,14 @@ class aquete_action
         $perso->stocke();
 
         // Code faux
-        if ($perso->perso_pa<$nb_pa || $dialogue != $p2->aqelem_param_txt_1)
+        if ($dialogue != $p2->aqelem_param_txt_1)
         {
-            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->status = true ;  // l'étape est terminée sur un fail !
             $retour->etape = $p4->aqelem_misc_cod;
             return $retour;
         }
 
-        $retour->status = true ;  // l'étape est pas terminée sur un success !
+        $retour->status = true ;  // l'étape est terminée sur un success !
         $retour->etape = $p5->aqelem_misc_cod;
         return $retour;
     }
