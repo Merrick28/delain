@@ -411,6 +411,8 @@ switch ($methode) {
                     $modifs_case = explode(',', $tab_infos_case[1]);
                     $set_case = array();    // on regroupe les changements qui s’effectuent sur une même case
                     $set_mur = array();        // on regroupe les changements qui s’effectuent sur un même mur
+                    $del_mur = false;        // le mur de la case doit être supprimé
+                    $ins_mur = "";        // le mur de la case doit être ajouté
 
                     foreach ($modifs_case as $une_modif) {
                         $donnees = explode('=', $une_modif);
@@ -445,9 +447,9 @@ switch ($methode) {
                             case 'm': // murs
                                 $req = '';
                                 if ($valeur == 0)    // suppression de mur
-                                    $req = "delete from murs where mur_pos_cod = $case";
+                                    $del_mur = true;
                                 elseif ($mur_ancien == -1)    // ajout de mur
-                                    $req = "insert into murs (mur_pos_cod, mur_type, mur_tangible) values ($case, $valeur, 'O') ";
+                                    $ins_mur = $valeur;
                                 else                // et modif de mur
                                     $set_mur[] = "mur_type = $valeur";
                                 $cpt_mur++;
@@ -482,6 +484,17 @@ switch ($methode) {
                     $result = $stmt->fetch();
 
                     if ($result["count"]<=0) {
+                        // ajout ou suppression du mur (dans le cas ou il ne s'agit pas d'un méca activé)
+                        if ($del_mur ) {
+                            $req = "delete from murs where mur_pos_cod = $case";
+                            $pdo->query($req);
+                        }
+
+                        if ($ins_mur != ""){
+                            $req = "insert into murs (mur_pos_cod, mur_type, mur_tangible) values ($case, $ins_mur, 'O') ";
+                            $pdo->query($req);
+                        }
+
                         // Traitement sur les cases normales seulement si elles n'ont pas été activées par un mécanisme!
                         $set_req = implode(',', $set_case);
                         if ($set_req !== "") {
@@ -493,6 +506,17 @@ switch ($methode) {
                             $req = "update murs set $set_req where mur_pos_cod = $case";
                             $pdo->query($req);
                         }
+                    }
+
+                    // ensuite on traite les modifications sur les mécanismes (traitement des ajout/suppression de mur)
+                    if ($del_mur) {
+                        $req = "update meca_position set pmeca_base_mur_type=null where pmeca_pos_cod = $case";
+                        $pdo->query($req);
+                    }
+
+                    if ($ins_mur != ""){
+                        $req = "update meca_position set pmeca_base_mur_type=$ins_mur where pmeca_pos_cod = $case";
+                        $pdo->query($req);
                     }
 
                     // ensuite on traite les modifications sur les mécanismes (sauvegarde de leur nouvelle base)
@@ -511,7 +535,6 @@ switch ($methode) {
                         $req = "update meca_position set $set_req where pmeca_pos_cod = $case";
                         $pdo->query($req);
                     }
-
 
                 } else {
                     $cpt_erreur++;
