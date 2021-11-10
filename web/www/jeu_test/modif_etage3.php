@@ -182,6 +182,7 @@ if ($erreur == 0)
 						etage_familier_actif = '$etage_familier_actif',
 						etage_quatrieme_perso = '$etage_quatrieme_perso',
 						etage_quatrieme_mortel = '$etage_quatrieme_mortel',
+						etage_reference = $etage_reference,
 						etage_mort = $etage_mort,
 						etage_retour_rune_monstre = $etage_retour_rune_monstre,
 						etage_mine = $etage_mine,
@@ -384,6 +385,7 @@ if ($erreur == 0)
 		$etage_quatrieme_perso = $result['etage_quatrieme_perso'];
 		$etage_quatrieme_mortel = $result['etage_quatrieme_mortel'];
 		$etage_mort = $result['etage_mort'];
+		$etage_reference = $result['etage_reference'];
 		$etage_retour_rune_monstre = $result['etage_retour_rune_monstre'];
 		$etage_mine = $result['etage_mine'];
 		$etage_mine_type = $result['etage_mine_type'];
@@ -407,11 +409,16 @@ if ($erreur == 0)
 					echo "<option value='$unStyle' " . (($unStyle == $etage_affichage) ? 'selected="selected"' : '') . ">$unStyle</option>";
 			?>
 			</select> <a href='modif_etage3_fonds.php' target='_blank'>Voir tous les styles</a><br /><br />
-			Étage de référence en cas de mort : <select name="etage_mort"><option value="--">Par défaut</option>
+			Étage de référence  : <select name="etage_reference">
 	<?php 
-		echo $html->etage_select($etage_mort, ' where etage_reference = etage_numero');
+		echo $html->etage_select($etage_reference, ' where etage_numero='.$pos_etage.' or etage_reference = etage_numero');
 	?>
 			</select><br />
+            Étage de référence en cas de mort : <select name="etage_mort"><option value="--">Par défaut</option>
+                <?php
+                echo $html->etage_select($etage_mort, ' where etage_reference = etage_numero');
+                ?>
+            </select><br />
 	<?php 
 		$sel_arene_O = ($etage_arene == 'O') ? 'selected="selected"' : '';
 		$sel_arene_N = ($etage_arene == 'N') ? 'selected="selected"' : '';
