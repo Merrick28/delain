@@ -23,6 +23,7 @@ class guilde_banque_transactions
 
     function __construct()
     {
+        $this->perso = new perso();
     }
 
     /**
@@ -140,10 +141,8 @@ class guilde_banque_transactions
         {
             $temp = new guilde_banque_transactions;
             $temp->charge($result["gbank_tran_cod"]);
+            $temp->perso ->charge($temp->gbank_tran_perso_cod);
             $retour[] = $temp;
-            $ptemp    = new perso;
-            $temp->charge($temp->gbank_tran_perso_cod);
-            $temp->perso = $ptemp;
             unset($ptemp);
             unset($temp);
         }
