@@ -6,6 +6,7 @@ if (!defined('APPEL'))
     define('APPEL', 1);
 }
 
+include "fonctions.php";
 include "blocks/_test_lieu.php";
 $perso     = $verif_connexion->perso;
 $perso_cod = $verif_connexion->perso_cod;
@@ -160,10 +161,11 @@ if ($erreur == 0)
                 break;
             case "creer_compte_guilde":
                 // TRAITEMENT: UN ADMIN CREE UN COMPTE POUR SA GUILDE
-                if (($nb_guilde > 0) and ($adm == "O"))
+                //if (($nb_guilde > 0) and ($adm == "O"))
+                if (($adm == "O"))
                 {
                     $gbank      = new guilde_banque();
-                    $guilde_cod = get_request_var('guilde_cod');
+                    //$guilde_cod = get_request_var('guilde_cod');
                     // CONTROLE: COMPTE NON EXISTANT
                     if ($gbank->getByGuilde($guilde_cod))
                     {
@@ -267,7 +269,8 @@ if ($erreur == 0)
                 break;
             case "retrait_compte_guilde":
                 // TRAITEMENT: UN ADMIN FAIT UN RETRAIT SUR LE COMPTE DE SA GUILDE
-                if (($nb_guilde > 0) and ($adm == "O"))
+                //if (($nb_guilde > 0) and ($adm == "O"))
+                if (($adm == "O"))
                 {
                     $quantite = get_request_var('quantite');
                     if ($quantite <= 0)
@@ -277,10 +280,10 @@ if ($erreur == 0)
                     }
                     // CONTROLE: ARGENT DISPONIBLE
                     $gbank = new guilde_banque();
-                    $gbank->getByGuilde($_REQUEST['guilde_cod']);
 
-                    if ($gbank->getByGuilde($_REQUEST['guilde_cod']))
+                    if ($gbank->getByGuilde($guilde_cod))
                     {
+
                         if ($gbank->gbank_or < $quantite)
                         {
                             $erreur = 1;
@@ -422,16 +425,17 @@ if ($erreur == 0)
                                 $style = "";
                             }
                             $i++;
-                            echo "<TR><TD $style>", $result->perso['perso_nom'], "</TD>";
-                            echo "<TD $style>", format_date($result['gbank_tran_date']), "</TD>";
-                            if ($result['gbank_tran_debit_credit'] == 'D')
+                            echo "<TR><TD $style>". $result->perso->perso_nom."</TD>";
+                            echo "<TD $style>", format_date($result->gbank_tran_date), "</TD>";
+                            if ($result->gbank_tran_debit_credit == 'D')
                             {
-                                echo "<TD $style>", $result['gbank_tran_montant'], "</TD><TD $style></TD>";
+                                echo "<TD $style>", $result->gbank_tran_montant, "</TD><TD $style></TD>";
                             } else
                             {
-                                echo "<TD $style></TD><TD $style>", $result['gbank_tran_montant'], "</TD>";
+                                echo "<TD $style></TD><TD $style>", $result->gbank_tran_montant, "</TD>";
                             }
                             echo "</TR>";
+
                         } ?>
                         <TR>
                             <TD>&nbsp;</TD>
