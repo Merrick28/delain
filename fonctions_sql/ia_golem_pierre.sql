@@ -324,6 +324,10 @@ begin
                 --quantite := cree_monstre_pos(187,pos_actuelle);
                 -- Un jet d'acide sur les persos autour
                 -- A faire
+
+                -- ajout d'un evenement
+                perform insere_evenement(v_monstre, v_monstre, 112, '[perso_cod1] a vomi.', 'O', 'N', null);
+
             end if;
         --On se déplace si le tas n'est pas sur la case
         else
