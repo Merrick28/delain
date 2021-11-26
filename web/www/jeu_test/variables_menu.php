@@ -6,7 +6,7 @@
  *
  */
 
-$__VERSION = "20211013";    // A changer aussi dans constante.php
+$__VERSION = "20211126";    // A changer aussi dans constante.php
 
 $benchmark       = $profiler->start('Variables menu');
 $verif_connexion = new verif_connexion();
