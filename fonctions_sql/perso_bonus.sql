@@ -35,6 +35,7 @@ begin
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
 		and bonus_tbonus_libc = tbonus_libc
+		and bonus_valeur<>0
 		and bonus_mode != 'E' loop
 			if (ligne.bonus_valeur > 0) then
 				bonus_signe := '+';
