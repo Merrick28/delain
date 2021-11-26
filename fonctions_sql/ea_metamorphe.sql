@@ -65,6 +65,8 @@ declare
 	v_genre text;
 	objet_etat_min integer;
 	objet_etat_max integer;
+	v_fonc_cod integer;
+	v_temp integer;
 
 	ligne record;
 begin
@@ -154,9 +156,21 @@ begin
             where perobj_equipe='O' and perobj_perso_cod =  v_code_perso ;
 
         /* ******************************************************************************* */
-        /* on supprime les EA qui a généré la métamorphose si elle n'est pas lié au générique*/
+        /* on supprime l'EA qui a généré la métamorphose si elle n'est pas lié au générique*/
+        /* et qu'il n'est pas persistant, sinon s'assurer d'avoir la persistance           */
         /* ******************************************************************************* */
-        delete from fonction_specifique where fonc_nom = 'ea_metamorphe' and fonc_perso_cod = v_code_perso ;
+        if  COALESCE((v_params->>'fonc_trig_ea_persistant')::text, 'N') = 'N' then
+            delete from fonction_specifique where fonc_nom = 'ea_metamorphe' and fonc_perso_cod = v_code_perso ;
+        else
+            v_fonc_cod := ((v_params->>'ea_fonc_cod')::text)::integer ;
+            select fonc_perso_cod into v_temp from fonction_specifique where fonc_cod = v_fonc_cod and fonc_perso_cod = v_code_perso ;
+            if not found then
+                -- l'ea est persistant et le perso en a hérité de son générique, comme il vient de changer de generique on lui créé un nouvel ea dédié
+                insert into fonction_specifique( fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee,  fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite,  fonc_trigger_param)
+                  select  fonc_nom, null as fonc_gmon_cod, v_code_perso as fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_portee,  fonc_proba, fonc_message, fonc_nombre_cible, fonc_date_limite,  fonc_trigger_param
+                      from fonction_specifique where fonc_cod = v_fonc_cod ;
+            end if;
+        end if;
 
         /*****************************************/
         /* choix d'une arme            */
