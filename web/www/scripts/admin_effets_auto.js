@@ -559,6 +559,7 @@ EffetAuto.Types = [
 			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de métamorphose, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nouveau nom de base)'},
+			{ nom: 'trig_ea_persistant', type: 'checkbox', label: 'EA persistant?', description: 'Si coché, cet EA sera persistant, le monstre métamorphosé conservera encore cette facultée.' },
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_monstre', type: 'invocation', label: 'Liste de monstre', description: 'Liste de monstre generique et chance de metamorphose en l’un d’eux.' }
 		],
