@@ -2656,6 +2656,17 @@ class aquete_action
                     // s'était le dernier perso, on désactive completment
                     $quete->aquete_actif = 'N';
                     $quete->stocke();
+                } else if (!$hasPersoCondition && $quete->aquete_actif = 'O') {
+                    // la quete est ouverte et le perso n'avait pas de condition d'accès,on lui interdit l'ccès par une condition de refus
+                    $elem->aqelem_aquete_cod = $quete->aquete_cod ;
+                    $elem->aqelem_aqetape_cod = $quete->aquete_etape_cod ;
+                    $elem->aqelem_param_id = 0 ;
+                    $elem->aqelem_type = "perso_condition" ;
+                    $elem->aqelem_misc_cod = 27 ;
+                    $elem->aqelem_param_num_1 = 0 ;
+                    $elem->aqelem_param_txt_1 = "!=" ;
+                    $elem->aqelem_param_txt_2 = $aqperso->aqperso_perso_cod ;
+                    $elem->stocke(true);
                 }
             }
             else
@@ -2678,6 +2689,8 @@ class aquete_action
      **/
     function quete_activation(aquete_perso $aqperso)
     {
+        $pdo = new bddpdo;
+
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
         $p2 = $element->get_aqperso_element( $aqperso, 2, "selecteur" ) ;
@@ -2701,6 +2714,12 @@ class aquete_action
                 {
                     if ($e->aqelem_misc_cod == 27 && $e->aqelem_param_txt_2 == $aqperso->aqperso_perso_cod)
                     {
+                        if ($e->aqelem_param_txt_1 == "!=")
+                        {
+                            $req = "delete from quetes.aquete_element where aqelem_cod=:aqelem_cod ";
+                            $stmt   = $pdo->prepare($req);
+                            $pdo->execute(array(":aqelem_cod"    => $e->aqelem_cod), $stmt);
+                        }
                         $hasPersoCondition = true ;
                         break;
                     }
