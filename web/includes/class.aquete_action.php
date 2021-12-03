@@ -2656,7 +2656,7 @@ class aquete_action
                     // s'était le dernier perso, on désactive completment
                     $quete->aquete_actif = 'N';
                     $quete->stocke();
-                } else if (!$hasPersoCondition && $quete->aquete_actif = 'O') {
+                } else if (!$hasPersoCondition && $quete->aquete_actif == 'O') {
                     // la quete est ouverte et le perso n'avait pas de condition d'accès,on lui interdit l'ccès par une condition de refus
                     $elem->aqelem_aquete_cod = $quete->aquete_cod ;
                     $elem->aqelem_aqetape_cod = $quete->aquete_etape_cod ;
