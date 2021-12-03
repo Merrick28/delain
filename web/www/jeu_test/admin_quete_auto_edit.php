@@ -233,14 +233,14 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #PA", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #PERSO", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #PA", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
-                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PA")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
+                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PERSO")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PA")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
                             {
                                 $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3));
                             }
