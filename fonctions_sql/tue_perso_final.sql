@@ -92,6 +92,7 @@ declare
 	temp_int integer;            -- Variable de calcul pour les transactions
 	texte text;                  -- Variable pour le texte de l'évènement des transaction
 	v_type_arene integer;        -- Type d'arene
+	v_etage_mort_speciale integer;        -- comportement specifique
 	v_imp_F integer;             -- durée impalpabilité d'un familier dans l'étage
         v_imp_P integer;             -- durée impalpabilité d'un personnage dans l'étage
         v_taux_xp integer;           -- taux de perte d'xps de l'étage
@@ -168,13 +169,14 @@ end if;
 	/* Etape 1 : on récupère les infos de la cible    */
 	/**************************************************/
 	texte_prison := '';
-	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_perso_mortel, v_type_arene
-		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, perso_mortel, etage_type_arene
+	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_perso_mortel, v_type_arene, v_etage_mort_speciale
+		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, perso_mortel, etage_type_arene, etage_mort_speciale
 	from perso_position, perso, positions, etage
 	where ppos_perso_cod = v_cible
 		and perso_cod = v_cible
 		and ppos_pos_cod = pos_cod
 		and pos_etage = etage_numero;
+
 
   /*
   marlyza - 2021-03-24 :
@@ -185,19 +187,6 @@ end if;
       ==> Pour corriger le problème, on va prendre le type d'arène sur le perso tueur plutot que sur le perso tué.
    */
 	select etage_arene into v_etage_arene from perso_position, perso, positions, etage where ppos_perso_cod = v_attaquant and perso_cod = v_attaquant and ppos_pos_cod = pos_cod and pos_etage = etage_numero;
-
-	select into malediction ptitre_type
-	from perso_titre
-	where ptitre_type = 1
-		and ptitre_perso_cod = v_cible;
-	if found then 					-- Une malédiction sera lancée sur chaque participant au meurtre
-		malediction := 3;			-- Le code du titre de malédiction
-
-		select into dieu_cible dieu_nom
-		from dieu_perso, dieu
-		where dper_perso_cod = v_cible
-			and dper_dieu_cod = dieu_cod;
-	end if;
 
 	select into kharma_attaquant, v_perso_vampire
 		perso_kharma, perso_niveau_vampire
@@ -212,7 +201,64 @@ end if;
 	from perso
 	where perso_cod = v_attaquant;
 
-        select into v_imp_F, v_imp_P, v_taux_xp etage_duree_imp_f, etage_duree_imp_p, etage_perte_xp from etage where etage_numero = cible_etage;
+  select into v_imp_F, v_imp_P, v_taux_xp etage_duree_imp_f, etage_duree_imp_p, etage_perte_xp from etage where etage_numero = cible_etage;
+
+  -- ===================================================================================================================
+  --   marlyza - 2021-12-07 :
+  --   Traitement de la mort particulière pour la course de léno (map delain-kart)
+  if  v_etage_mort_speciale = 1 then
+
+  	if type_cible = 1 then
+        -- en course, le perso respawn au même endroit, mais sans sa monture
+        update perso set perso_pv=GREATEST(perso_pv_max/3,5), perso_tangible = CASE WHEN v_imp_P>0 THEN 'N' ELSE 'O' END, perso_nb_tour_intangible = v_imp_P, perso_monture=null where perso_cod = v_cible ;
+        text_retour := 'Vous avez tuez un concurrent, mais en course il réapparait au même endroit.';
+
+	  elsif type_cible = 2 then
+        -- en course, les monstres sont des montures imortelles on les laisse vivantes à 1 PV!
+        update perso set perso_pv=1 where perso_cod = v_cible ;
+        text_retour := 'Les montures de course sont immortelles, vous laissez celle-ci avec seulement 1 PV.';
+
+	  elsif type_cible = 3 then
+        -- en course, le familier respawn au même endroit
+        update perso set perso_pv=GREATEST(perso_pv_max/3,5), perso_tangible = CASE WHEN v_imp_F>0 THEN 'N' ELSE 'O' END, perso_nb_tour_intangible = v_imp_F where perso_cod = v_cible ;
+        text_retour := 'Vous avez tué un concurrent, mais en course il réapparait au même endroit.';
+
+    end if;
+
+    /* evts pour mort */
+    if v_attaquant = v_cible then
+      texte_evt := '[attaquant] est mort en position x=' || trim(to_char(cible_x, '999')) || ', y=' || trim(to_char(cible_y, '999')) || ', etage=' || trim(to_char(cible_etage, '999')) || ', en course de monture.';
+      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+        values(nextval('seq_levt_cod'), 10, now(), 1, v_attaquant, texte_evt, 'O', 'O', v_attaquant, v_cible);
+    else
+      texte_evt := '[attaquant] a tué [cible] en position x=' || trim(to_char(cible_x, '999')) || ', y=' || trim(to_char(cible_y, '999')) || ', etage=' || trim(to_char(cible_etage, '999')) || ', en course de monture.';
+      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+        values(nextval('seq_levt_cod'), 10, now(), 1, v_attaquant, texte_evt, 'O', 'O', v_attaquant, v_cible);
+      texte_evt := '[attaquant] a tué [cible] en position x=' || trim(to_char(cible_x, '999')) || ', y=' || trim(to_char(cible_y, '999')) || ', etage=' || trim(to_char(cible_etage, '999')) || ', en course de monture.';
+      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+        values(nextval('seq_levt_cod'), 10, now(), 1, v_cible, texte_evt, 'N', 'O', v_attaquant, v_cible);
+    end if;
+
+    code_retour := '0;<p><b>Aucun PX gagné en course.</b><br>;;' || text_retour || ';' ;
+    return code_retour;
+
+  end if;
+
+  -- Fin du traitement des morts sur les étage avec comportement spécial
+  -- ===================================================================================================================
+
+	select into malediction ptitre_type
+	from perso_titre
+	where ptitre_type = 1
+		and ptitre_perso_cod = v_cible;
+	if found then 					-- Une malédiction sera lancée sur chaque participant au meurtre
+		malediction := 3;			-- Le code du titre de malédiction
+
+		select into dieu_cible dieu_nom
+		from dieu_perso, dieu
+		where dper_perso_cod = v_cible
+			and dper_dieu_cod = dieu_cod;
+	end if;
 
 --
 -- compteurs de morts
