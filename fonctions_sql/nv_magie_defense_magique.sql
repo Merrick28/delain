@@ -53,7 +53,18 @@ declare
 -------------------------------------------------------------
     des                      integer; -- lancer de dés
     compt                    integer; -- fourre tout
+    temp                    integer; -- fourre tout
 begin
+    -------------------------------------------------------------
+-- Etape 0 : vérification des pre-requis
+-------------------------------------------------------------
+    -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1)
+    select etage_mort_speciale into temp from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=cible;
+    if temp = 1 then
+        return  '<br>l''usage de la défense magique n''est pas autorisé pendant les courses de monture!!<br>';
+    end if;
+
+
     -------------------------------------------------------------
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
