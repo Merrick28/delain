@@ -212,12 +212,19 @@ class aquete_perso
     function get_perso_nb_quete($perso_cod)
     {
         $pdo = new bddpdo;
-        $req = "select sum(case when aqperso_actif<>'N' then 1 else 0 end) nb_encours, count(*) as nb_total from quetes.aquete_perso where aqperso_perso_cod=?";
+        $req = "select sum(case when aqperso_actif<>'N' then 1 else 0 end) nb_encours, count(*) as nb_total 
+                  from quetes.aquete_perso 
+                  join quetes.aquete on aquete_cod= aqperso_aquete_cod 
+                  where aquete_interaction='N' and aqperso_perso_cod=?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $req = "select count(*) journal_nb_news from quetes.aquete_perso join quetes.aquete_perso_journal on aqpersoj_aqperso_cod=aqperso_cod where aqperso_perso_cod=? and aqperso_actif<>'N' and aqpersoj_lu='N'";
+        $req = "select count(*) journal_nb_news 
+                  from quetes.aquete_perso 
+                  join quetes.aquete on aquete_cod= aqperso_aquete_cod 
+                  join quetes.aquete_perso_journal on aqpersoj_aqperso_cod=aqperso_cod 
+                  where aquete_interaction='N' and aqperso_perso_cod=? and aqperso_actif<>'N' and aqpersoj_lu='N'";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         $result_j = $stmt->fetch(PDO::FETCH_ASSOC);
