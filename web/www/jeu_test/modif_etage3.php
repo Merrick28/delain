@@ -2,6 +2,7 @@
 /* Création d’étages, modification des paramètres de case de l’étage */
 
 include "blocks/_header_page_jeu.php";
+include "tools.php";
 
 
 
@@ -431,16 +432,29 @@ if ($erreur == 0)
 					echo "<option value='$unStyle' " . (($unStyle == $etage_affichage) ? 'selected="selected"' : '') . ">$unStyle</option>";
 			?>
 			</select> <a href='modif_etage3_fonds.php' target='_blank'>Voir tous les styles</a><br /><br />
-			Étage de référence  : <select name="etage_reference">
-	<?php 
-		echo $html->etage_select($etage_reference, ' where etage_numero='.$pos_etage.' or etage_reference = etage_numero');
+
+			Étage de référence  :
+	<?php
+        //echo "<select name=\"etage_reference\">";
+		//echo $html->etage_select($etage_reference, ' where etage_numero='.$pos_etage.' or etage_reference = etage_numero');
+        //echo "</select>";
+		echo create_selectbox_from_req(
+            "etage_reference",
+            "select etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle  from etage where etage_numero=$pos_etage or etage_reference = etage_numero order by case when etage_reference>0 then -etage_reference else etage_reference end desc, etage_numero",
+            $etage_reference);
 	?>
-			</select><br />
-            Étage de référence en cas de mort : <select name="etage_mort"><option value="--">Par défaut</option>
-                <?php
-                echo $html->etage_select($etage_mort, ' where etage_reference = etage_numero');
-                ?>
-            </select><br />
+			<br />
+            Étage de référence en cas de mort :
+    <?php
+            //echo "<select name=\"etage_mort\"><option value=\"--\">Par défaut</option>";
+            //echo $html->etage_select($etage_mort, ' where etage_reference = etage_numero');
+            //echo " </select>";
+            echo create_selectbox_from_req(
+                "etage_mort",
+                "select etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle  from etage where etage_reference = etage_numero order by case when etage_reference>0 then -etage_reference else etage_reference end desc, etage_numero",
+                $etage_mort);
+    ?>
+           <br />
 	<?php 
 		$sel_arene_O = ($etage_arene == 'O') ? 'selected="selected"' : '';
 		$sel_arene_N = ($etage_arene == 'N') ? 'selected="selected"' : '';
