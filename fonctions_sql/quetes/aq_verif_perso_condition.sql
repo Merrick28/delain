@@ -58,7 +58,8 @@ begin
   (26, 'Nombre de lock', 'VARIABLE'),
   (27, 'Code du perso', 'CARAC'),
   (28, 'Possède un type d’objet générique', 'OBJET')
-  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE');
+  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
+  (30, 'Monstre générique', 'MONSTRE');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -202,6 +203,10 @@ begin
 
   elsif (v_carac_cod = 29) then                  --  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
     select coalesce(m.perso_gmon_cod,0) into v_perso_carac from perso p left join perso m on m.perso_cod=p.perso_monture where p.perso_cod=v_perso_cod ;
+
+  elsif (v_carac_cod = 30) then                  --  (30, 'Monstre générique', 'MONSTRE', 'Monstre générique');
+    select into v_perso_carac perso_gmon_cod::text from perso where perso_cod = v_perso_cod ;
+
   else
     return 0 ;    -- erreur dans les paramètres
 
