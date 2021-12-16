@@ -202,7 +202,8 @@ begin
     end if;
 
   elsif (v_carac_cod = 29) then                  --  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
-    select coalesce(m.perso_gmon_cod,0) into v_perso_carac from perso p left join perso m on m.perso_cod=p.perso_monture where p.perso_cod=v_perso_cod ;
+    -- le 12/16/2021: ajout d'un patch pour le doppelganger qui change de cod de monstre #1548 mais dont le nom commence par Doppelganger
+    select coalesce(case when m.perso_nom ilike 'Doppelganger%' then 1548 else m.perso_gmon_cod end,0) into v_perso_carac from perso p left join perso m on m.perso_cod=p.perso_monture where p.perso_cod=v_perso_cod ;
 
   elsif (v_carac_cod = 30) then                  --  (30, 'Monstre générique', 'MONSTRE', 'Monstre générique');
     select into v_perso_carac perso_gmon_cod::text from perso where perso_cod = v_perso_cod ;
