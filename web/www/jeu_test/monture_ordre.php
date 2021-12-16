@@ -32,7 +32,7 @@ if ($perso->perso_type_perso == 3){
 
     $monture = new perso();
     $monture->charge( $perso->perso_monture );
-    $dist_max = 2 * max(3, $monture->perso_vue) ;
+    $dist_max = min(8,  max(2, $monture->distance_vue()) ); // ordre entre mini 2 et maxi 8
     $contenu_page .= "<br><p>Vous chevaucher actuellement: <a href=\"visu_desc_perso.php?visu=".$monture->perso_cod."\">".$monture->perso_nom."</a></p>";
     $contenu_page .= "<hr>";
     
@@ -46,7 +46,7 @@ if ($perso->perso_type_perso == 3){
         $dir_y = (int)$dir[1];
         $dist = (int)$_REQUEST["distance"];
         if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
-        if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>de 2x la vue de base</b> de votre monture! ";
+        if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>la vue</b> de votre monture (limité à 8)! ";
         if ($msg != "")
         {
             $contenu_page .= $msg."<br>L'ordre n'est <b>pas valide</b>, les PA n'ont pas été depensés!<br>";
@@ -140,7 +140,7 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= '</tr>';
     }
 
-    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à '.$dist_max.' cases.<span></form>';
+    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à la vue de la monture ('.$dist_max.' cases).<span></form>';
     $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
