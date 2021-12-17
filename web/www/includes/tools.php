@@ -55,6 +55,30 @@ function obj_diff($obj1, $obj2, $texte="")
     return $diff;
 }
 
+
+//=======================================================================================
+// Fonction calul la moyenne d'une chaine au format dé rolliste
+//=======================================================================================
+function moy_des_rolliste($des)
+{
+    $pdo = new bddpdo;
+
+    if (is_int($des)) return $des;
+
+    $val = explode("D", strtoupper("$des"));
+    if ( sizeof($val) != 2 ) return (int)$val[0] ;
+
+    if (strpos($val[1], "+") ) {
+        $v = explode("+", $val[1] ) ;
+        return round((int)$val[0] * (1 + (int)$v[0]) / 2,0) + (int)$v[1] ;
+    } else if (strpos($val[1], "-") ) {
+        $v = explode("-", $val[1] ) ;
+        return round((int)$val[0] * (1 + (int)$v[0]) / 2,0) - (int)$v[1] ;
+    }
+
+    return round((int)$val[0] * (1 + (int)$val[1]) / 2,0) ;
+}
+
 //=======================================================================================
 // Fonction bm_progressivite retourne une chaine avec l'evolution de d'un BM cumulatif
 //=======================================================================================
@@ -64,7 +88,7 @@ function bm_progressivite($fonc_effet, $fonc_force)
 
     $req = "select bonus_progressivite(:bm, :force) as progressivite";
     $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
+    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => moy_des_rolliste($fonc_force) ), $stmt);
     if ($progres = $stmt->fetch())
     {
         return $progres["progressivite"];
