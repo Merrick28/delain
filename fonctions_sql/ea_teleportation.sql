@@ -98,6 +98,9 @@ begin
   -- ciblage du porteur et de ses compagnons (familier/cavalier/monture)
   v_exclure_porteur := COALESCE((v_params->>'fonc_trig_exclure_porteur')::text, 'N')  ;
   v_equipage = COALESCE(f_perso_cavalier(v_source), COALESCE(f_perso_monture(v_source),0));
+  if v_compagnon=0 and v_equipage != 0  then
+      v_compagnon:=v_equipage ;
+  end if;
 
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv, pos_etage
