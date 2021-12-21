@@ -146,6 +146,8 @@ begin
   if not found  then
       if statique_hors_combat = 'N' then
           dep_aleatoire := f_deplace_aleatoire(v_monstre,v_pos);
+          -- pour eviter une trop grosse dispersion pendant les courses de montures, on ne fait qu'un seul deplacement par DLT
+          update perso set perso_pa = 0 where perso_cod=v_monstre ;
           return code_retour||'Monture libre, déplacement aléatoire.<br>';
       else
           return code_retour||'Monture libre, mais statique!<br>';
