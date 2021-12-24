@@ -16,10 +16,11 @@ AS $_$declare
   v_perso_type_perso integer;
   temp_competence text;   -- text du jet de compétence
   v_nb_action integer;   -- nombre de désarçonnage déjà fait dans le tour
+  v_perso_monture integer;   -- monture du desarçonneur
 begin
 	code_retour := '';
 
-  select ppos_pos_cod, perso_pa, perso_type_perso into v_perso_pos_cod, v_perso_pa, v_perso_type_perso from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod=v_perso ;
+  select ppos_pos_cod, perso_pa, perso_type_perso, perso_monture into v_perso_pos_cod, v_perso_pa, v_perso_type_perso, v_perso_monture from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod=v_perso ;
   if not found then
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
@@ -69,8 +70,18 @@ begin
       perform insere_evenement(v_perso, v_cavalier, 109, '[cible] a été désarçonner de sa monture par [attaquant]', 'O', NULL);
 
   else
-      -- si echec du jet de compétence
-      code_retour := code_retour||'<br><p>Vous n’avez pas réussi à désarçonner: ' || v_cavalier_nom || ' !<br>';
+
+      if split_part(temp_competence,';',2) = '0' and v_perso_monture is not null then
+          -- si echec critique du jet de compétence, alors par maladresse le perso tombe de monture
+          update perso set perso_monture=null where perso_cod=v_perso ;
+
+          -- evenement désarçonnage (108)
+          perform insere_evenement(v_perso, v_cavalier, 109, 'En tentant de désarçonner [cible], [attaquant] est tombé de sa monture', 'O', NULL);
+
+          code_retour := code_retour||'<br><p>En tentant de désarçonner : ' || v_cavalier_nom || ', vous êtes tombé de votre monture!<br>';
+      else
+          code_retour := code_retour||'<br><p>Vous n’avez pas réussi à désarçonner: ' || v_cavalier_nom || ' !<br>';
+      end if;
   end if;
 
   return code_retour ;
