@@ -281,8 +281,8 @@ begin
       -- ajout des bonus / malus
       v_comp_cible := GREATEST(1, v_comp_cible + bonus_equitation(v_perso_cible));
 
-      -- on regarde si la cible est bénie ou maudite
-      bonmal := valeur_bonus(v_perso_cible, 'BEN') + valeur_bonus(v_perso_cible, 'MAU');
+      -- on regarde si la cible est bénie ou maudite, on donne à la cible une bénédiction additionnelle de 30% pour ne pas rendre le désaçonnage trop facile
+      bonmal := valeur_bonus(v_perso_cible, 'BEN') + valeur_bonus(v_perso_cible, 'MAU') - 30 ;
       if bonmal <> 0 then
         des_cible := lancer_des3(1,100,bonmal);
       else
