@@ -3293,6 +3293,17 @@ class perso
         return $result['bonus_degats_melee'];
     }
 
+    public function get_familier()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select pfam_familier_cod from perso_familier join perso on perso_cod=pfam_familier_cod where pfam_perso_cod=:perso and perso_actif='O' order by perso_dcreat desc limit 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+
+        return $result["pfam_familier_cod"];
+    }
+
     public function efface()
     {
         $pdo  = new bddpdo;

@@ -964,6 +964,56 @@ class aquete_action
      * @param aquete_perso $aqperso
      * @return bool
      */
+    function change_impalpabilite(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'selecteur')) return false ;      // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;      // Problème lecture des paramètres
+
+        $nb_tour = (int)$p2->aqelem_param_num_1 ;
+        $texte_evt = "[attaquant] a été rendu ". ( $nb_tour > 0 ? "impalpable." : "palpable." ) ;
+
+        $perso = new perso();
+        if ( ! $perso->charge($aqperso->aqperso_perso_cod) ) return false ;
+
+        // Mettre l'impalpabilité sur le meneur
+        if ($p1->aqelem_misc_cod==1 || $p1->aqelem_misc_cod==3)
+        {
+            $perso->perso_tangible = $nb_tour > 0 ? 'N' : 'O' ;
+            $perso->perso_nb_tour_intangible = $nb_tour  ;
+            $perso->stocke();
+            $evt = new ligne_evt();
+            $evt->evenement(54, $texte_evt, $aqperso->aqperso_perso_cod );
+        }
+
+        // Mettre l'impalpabilité sur le familier (s'il y en a un)
+        if ($p1->aqelem_misc_cod==2 || $p1->aqelem_misc_cod==3)
+        {
+            if ($fam_cod = $perso->get_familier())
+            {
+                $familier = new perso();
+                if ( $familier->charge($fam_cod) )
+                {
+                    $familier->perso_tangible = $nb_tour > 0 ? 'N' : 'O' ;
+                    $familier->perso_nb_tour_intangible = $nb_tour  ;
+                    $familier->stocke();
+                    $evt = new ligne_evt();
+                    $evt->evenement(54, $texte_evt, $fam_cod );
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    //==================================================================================================================
+    /**
+     * Distribution en PX PO => '[1:texte|1%1|Titre]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
     function recevoir_titre(aquete_perso $aqperso)
     {
         $element = new aquete_element();
@@ -988,6 +1038,7 @@ class aquete_action
         }
         return true;
     }
+
     //==================================================================================================================
     /**
      *Distribution en PX PO => '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]'

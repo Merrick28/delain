@@ -988,6 +988,11 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+                case "#CHANGE #IMPALPABILITE":
+                    // mettre palpable/impalpable
+                    $this->action->change_impalpabilite($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (étape toujours reussie)
+                    break;
 
                 case "#RECEVOIR #PX":
                     // On distribution PO et PX
