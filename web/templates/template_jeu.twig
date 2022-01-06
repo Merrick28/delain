@@ -331,14 +331,14 @@
 
         {% if PERSO.perso_type_perso==1 %}
             {% if PERSO.perso_monture %}
-                {% if false and PERSO.monture_ordonable() %}
+                {% if PERSO.monture_ordonable() %}
                     <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_ordre.php">Diriger la monture</a><br>
                 {% endif %}
                 <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_dechevaucher.php">Pied à terre (4 PA)</a><br>
             {%  elseif PERSO.monture_chevauchable()|length > 0 %}
                 <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_chevaucher.php">Chevaucher (4 PA)</a><br>
             {% endif %}
-            {% if false and PERSO.monture_desarconnable %}
+            {% if PERSO.monture_desarconnable %}
                 <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_desarconner.php">Désarçonner (6 PA)</a><br>
             {% endif %}
         {% endif %}
