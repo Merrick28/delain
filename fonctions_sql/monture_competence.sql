@@ -256,7 +256,11 @@ begin
   -- on regarde si on améliore la comp
   if (v_comp <= getparm_n(1) and des <= 96) or (v_retour = 1) then
 
-      code_retour := code_retour||'Votre compétence est inférieure à '||trim(to_char(getparm_n(1),'9999'))||' %. Vous tentez une amélioration.<br>';
+      if (v_comp <= getparm_n(1) ) then
+          code_retour := code_retour||'Votre compétence est inférieure à '||trim(to_char(getparm_n(1),'9999'))||' %. Vous tentez une amélioration.<br>';
+      else
+          code_retour := code_retour||'Vous tentez une amélioration.<br>';
+      end if;
       temp_ameliore_competence := ameliore_competence_px(v_perso_cod,104,v_comp);
       code_retour := code_retour||'Votre lancer de dés est de <b>'||split_part(temp_ameliore_competence,';',1)||'</b>, ';
       if split_part(temp_ameliore_competence,';',2) = '1' then
