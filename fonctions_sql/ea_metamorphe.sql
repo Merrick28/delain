@@ -124,7 +124,7 @@ begin
             perso_dex = v_dex,
             perso_int = v_int,
             perso_con = v_con,
-            perso_race_cod = v_race,
+            -- perso_race_cod = v_race, -- ne pas changer de race, en general c'est un changeforme, c'est un moyen de l'identifier
             perso_temps_tour = v_temps_tour,
             perso_des_regen = v_des_regen,
             perso_valeur_regen = v_valeur_regen,
