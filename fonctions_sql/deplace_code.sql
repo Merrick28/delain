@@ -299,7 +299,7 @@ begin
     if v_cavalier is not null then
 
         -- cas particulier d'un monstre qui se déplace avec un joueur sur le dos. (event=54 effet auto)
-        texte := '[attaquant] c’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
+        texte := '[attaquant] s’est déplacé avec [cible] de ' || trim(to_char(ancien_x,'99999999')) || ',' || trim(to_char(ancien_y,'99999999')) || ',' || trim(to_char(ancien_etage,'99999999')) || ' vers ' || trim(to_char(x,'99999999')) || ',' || trim(to_char(y,'99999999')) || ',' || trim(to_char(e,'99999999'));
         perform insere_evenement(num_perso, v_cavalier, 54, texte, 'O', 'N', null);
 
     end if;
