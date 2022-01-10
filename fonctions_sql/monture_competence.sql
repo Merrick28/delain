@@ -48,6 +48,7 @@ declare
   v_pos_pvp varchar(1);   -- zone PvP
   v_pos_protegee varchar(1);  -- Lieu protégé
   v_comp integer; -- valeur de base du perso sur la compétence
+  v_comp_monture integer; -- valeur de base de la monture sur la compétence
   v_comp_modifie integer; -- valeur de la compétence avec les bonus/malus
   v_special integer; -- valeur de la compétence avec les bonus/malus
 	bonmal integer;			-- bonus malus au lancé de des
@@ -181,7 +182,13 @@ begin
 
   -- pour l'action chevaucher, on ajoute aussi le bonus/malus de la monture que l'on souhaite monter!
   if v_action = 1 then
+
+      select pcomp_modificateur into v_comp_monture from perso_competences where pcomp_perso_cod = v_perso_cible and pcomp_pcomp_cod = 104;
+      if found then
+          v_comp_modifie := v_comp_modifie + v_comp_monture ;
+      end if;
       v_comp_modifie := v_comp_modifie + bonus_equitation(v_perso_cible);
+      
   end if;
 
   -- on regarde s il y a concentration
