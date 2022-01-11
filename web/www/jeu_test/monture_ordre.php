@@ -23,6 +23,7 @@ $perso = new perso();
 $perso->charge($perso_cod);
 $liste_cavalier = $perso->monture_ordonable();
 
+
 if ($perso->perso_type_perso == 3){
     $contenu_page .= "<br><p>Les familiers ne peuvent diriger une monture!</p><br>";
 }else if ( ! $perso->monture_ordonable()  ){
@@ -98,6 +99,7 @@ if ($perso->perso_type_perso == 3){
     }
 
     // affichage des ordres actifs =====================================================================================
+    $perso->charge($perso_cod); // recharger au cas ou le nombre de PA a changé
     $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br> <br>";
     $ordres = json_decode($monture->perso_misc_param) ;
     if (sizeof($ordres->ia_monture_ordre) >0)
@@ -114,7 +116,12 @@ if ($perso->perso_type_perso == 3){
         {
             $o = $ordres->ia_monture_ordre[$k] ;
             $img = "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img[$o->dir_y.":".$o->dir_x]."'>";
-            $contenu_page .=  "<tr><td><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (4 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
+            if ($perso->perso_pa<4)
+            {
+                $contenu_page .=  "<tr><td><span>Supprimer (4 PA requis) : ";
+            } else {
+                $contenu_page .=  "<tr><td><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (4 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
+            }
             for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
             $contenu_page .= "&nbsp;&nbsp;</span></td></tr>" ;
         }
@@ -136,7 +143,13 @@ if ($perso->perso_type_perso == 3){
             }
             $contenu_page .= '</td>';
         }
-        if ($l==1 && $c>3) $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;<input name="ORDRE_ADD" type="submit" value="Donner l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
+        if ($l==1 && $c>3) {
+            if ($perso->perso_pa<4) {
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner (4 PA requis)</td>';
+            } else {
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;<input '.($perso->perso_pa<4 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
+            }
+        }
         $contenu_page .= '</tr>';
     }
 
