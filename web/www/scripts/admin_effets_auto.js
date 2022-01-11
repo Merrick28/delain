@@ -951,6 +951,7 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	html += '<option value="L" ' + ((valeur == 'L') ? 'selected="selected"' : '' ) + '>Son Compagnon (Familier si Aventurier et inversement)</option>';
 	html += '<option value="C" ' + ((valeur == 'C') ? 'selected="selected"' : '' ) + '>La cible actuelle du monstre</option>';
 	html += '<option value="O" ' + ((valeur == 'O') ? 'selected="selected"' : '' ) + '>Le protagoniste (tueur, tué, attaquant...)</option>';
+	html += '<option value="M" ' + ((valeur == 'M') ? 'selected="selected"' : '' ) + '>Monture/Cavalier du protagoniste</option>';
 	html += '<option value="T" ' + ((valeur == 'T') ? 'selected="selected"' : '' ) + '>Tout le monde</option></select>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';

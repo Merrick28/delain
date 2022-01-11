@@ -134,6 +134,7 @@ begin
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or
                        (v_cibles_type = 'C' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
+                       (v_cibles_type = 'M' and perso_cod = COALESCE(f_perso_cavalier(v_cible_donnee), COALESCE(f_perso_monture(v_cible_donnee),0))) or
                        (v_cibles_type = 'T'))
                 -- Dans les limites autorisées
                 order by random()
