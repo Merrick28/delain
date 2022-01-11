@@ -188,7 +188,7 @@ begin
           v_comp_modifie := v_comp_modifie + v_comp_monture ;
       end if;
       v_comp_modifie := v_comp_modifie + bonus_equitation(v_perso_cible);
-      
+
   end if;
 
   -- on regarde s il y a concentration
