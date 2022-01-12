@@ -116,11 +116,11 @@ if ($perso->perso_type_perso == 3){
         {
             $o = $ordres->ia_monture_ordre[$k] ;
             $img = "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img[$o->dir_y.":".$o->dir_x]."'>";
-            if ($perso->perso_pa<4)
+            if ($perso->perso_pa<2)
             {
-                $contenu_page .=  "<tr><td><span>Supprimer (4 PA requis) : ";
+                $contenu_page .=  "<tr><td><span>Supprimer (2 PA requis) : ";
             } else {
-                $contenu_page .=  "<tr><td><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (4 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
+                $contenu_page .=  "<tr><td><span><input onclick=\"$('#num_ordre').val(".($o->ordre).");\" name=\"ORDRE_DEL\" type=\"submit\" value=\"Supprimer (2 PA)\"  class=\"test\">&nbsp;&nbsp;&nbsp;&nbsp;N° {$o->ordre} : ";
             }
             for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
             $contenu_page .= "&nbsp;&nbsp;</span></td></tr>" ;

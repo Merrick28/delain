@@ -144,10 +144,9 @@ begin
 /***********************************/
   select perso_cod into v_cavalier from perso where perso_monture = v_monstre ;
   if not found  then
-      if statique_hors_combat = 'N' then
+      if statique_hors_combat = 'N' and v_pa = 12 then
           dep_aleatoire := f_deplace_aleatoire(v_monstre,v_pos);
-          -- pour eviter une trop grosse dispersion pendant les courses de montures, on ne fait qu'un seul deplacement par DLT
-          update perso set perso_pa = 0 where perso_cod=v_monstre ;
+          -- pour eviter une trop grosse dispersion pendant les courses de montures, on ne fait qu'un seul deplacement par DLT (celui ou la monture commence avec 12 PA)
           return code_retour||'Monture libre, déplacement aléatoire.<br>';
       else
           return code_retour||'Monture libre, mais statique!<br>';
