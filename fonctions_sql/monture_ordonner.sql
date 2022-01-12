@@ -32,7 +32,7 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  if v_perso_pa < 2 then
+  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 4 and v_ordre = 'ADD') then
     return '<p>Erreur ! Vous n''avez pas suffisament de PA !';
   end if;
 
@@ -57,15 +57,18 @@ begin
   if v_ordre = 'ADD' then
       v_difficulte := 5 * v_nb_ordre ;    -- 5% de difficulté par ordre au dessus du premier
 
+      -- Test de compétence équitation => gère le la consommation de PA
+      temp_competence := monture_competence(v_perso, 3, v_monture, v_difficulte);
+      code_retour := code_retour||split_part(temp_competence,';',3);
+
   elsif v_ordre = 'DEL'  then
-      v_difficulte := 0 ;                 -- pas de difficulté pour la supression
+      v_difficulte := 0 ;                 -- pas de difficulté pour la suppression
+      temp_competence := '1;2;';          -- pas de test de compétence, toujours une réussite standard!
+      update perso set perso_pa = perso_pa  - 2 where perso_cod = v_perso;
   else
       return '<p>Erreur ! Type d''ordre inconnu !';
   end if;
 
-  -- Test de compétence équitation => gère le la consommation de PA
-  temp_competence := monture_competence(v_perso, 3, v_monture, v_difficulte);
-  code_retour := code_retour||split_part(temp_competence,';',3);
 
   -- Test sur le jet de compétence
   if split_part(temp_competence,';',1) = '1' then
