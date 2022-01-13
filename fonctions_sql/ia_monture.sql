@@ -170,7 +170,8 @@ begin
   if not found  then
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
       update perso set perso_pa = GREATEST(0, perso_pa - 4) where perso_cod=v_monstre ;
-      return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine!<br>';
+      perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] n''a pas d''ordre à traiter et glande un peu.', 'O', 'N', null);
+      return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine(glande)!<br>';
   end if;
 
   v_num_ordre := f_to_numeric(v_ordre->>'ordre') ;
@@ -224,6 +225,8 @@ begin
 
           if text_evt <> '' then
               perform insere_evenement(v_cavalier, v_monstre, 2, text_evt, 'O', 'N', null);
+          else
+              perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] ne peut pas traiter l''ordre de son cavalier et préfère glander.', 'O', 'N', null);
           end if;
 
 
