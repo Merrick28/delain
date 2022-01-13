@@ -161,8 +161,22 @@ begin
                 perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a donné un ordre à sa monture [cible] qui ne l''a pas compris.', 'O', NULL);
 
                 -- mise à jour des ordres de la monture
+                v_num := f_to_numeric(v_param->>'num_ordre') ;
                 v_num_ordre := v_num_ordre + 1 ;
                 dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
+
+                if v_ordre = 'ADD' and v_num!=0 then
+                        -- ajout de +1 sur chaque ordre supérieur à celui-ci programmé
+                        select jsonb_agg ( v::jsonb || jsonb_build_object('ordre', CASE WHEN (v->>'ordre')::integer<v_num THEN (v->>'ordre')::integer ELSE (v->>'ordre')::integer+1 END) )
+                            into v_param_ia  from ( select  json_array_elements( v_param_ia ) as v ) s ;
+                        -- le nouveau numero d'ordre
+                        v_num_ordre := v_num ;
+                elseif v_ordre = 'UPD' then
+                        -- d'abord supprimer l'ordre à modifier
+                        select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
+                        v_num_ordre := v_num ;
+                end if;
+
                 update perso
                     set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
                     where perso_cod=v_monture ;
