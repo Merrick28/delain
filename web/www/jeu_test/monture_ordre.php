@@ -46,6 +46,8 @@ if ($perso->perso_type_perso == 3){
         $dir_x = (int)$dir[0];
         $dir_y = (int)$dir[1];
         $dist = (int)$_REQUEST["distance"];
+        $type_ordre = ($_REQUEST["ORDRE_NUM"] == "" || substr($_REQUEST["ORDRE_NUM"], 0, 1) == "A") ? "ADD" : "UPD" ;
+        $num = ($_REQUEST["ORDRE_NUM"] == "") ? 0 : (int)substr($_REQUEST["ORDRE_NUM"], 1) ;
         if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
         if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>la vue</b> de votre monture (limité à 8)! ";
         if ($msg != "")
@@ -54,7 +56,7 @@ if ($perso->perso_type_perso == 3){
         }
         else
         {
-            $contenu_page .= $perso->monture_ordre( "ADD", [ "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist ] );
+            $contenu_page .= $perso->monture_ordre( $type_ordre, [ "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist, "num_ordre" => $num ] );
             $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
         }
 
@@ -130,6 +132,20 @@ if ($perso->perso_type_perso == 3){
     $contenu_page .= "<hr>";
 
     // PDonner un ordre ================================================================================================
+
+    $selector = '<select style="width:90%;" name="ORDRE_NUM">';
+    foreach ($a_ordres as $k)
+    {
+        $o = $ordres->ia_monture_ordre[$k] ;
+        $selector.= '<option value="M'.$o->ordre.'">Modifier ordre #'.$o->ordre.'</option>';
+    }
+    foreach ($a_ordres as $k)
+    {
+        $o = $ordres->ia_monture_ordre[$k] ;
+        $selector.= '<option value="A'.$o->ordre.'">Ajouter avant ordre #'.$o->ordre.'</option>';
+    }
+    $selector.= '<option selected value="">Ajouter à la fin</option></select>';
+
     $contenu_page .= "<br><b><u>Donner un nouvel ordre</u></b>: <br>Sélectionner la direction et la distance<sup>*</sup> à parcourir:<br><br>";
     $contenu_page .= '<form name="monture_order" id="monture_order" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
     for ($l=1; $l<=3; $l++) {
@@ -147,7 +163,7 @@ if ($perso->perso_type_perso == 3){
             if ($perso->perso_pa<4) {
                 $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner (4 PA requis)</td>';
             } else {
-                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;<input '.($perso->perso_pa<4 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: left;">&nbsp;&nbsp;'.$selector.'<br><br>&nbsp;&nbsp;<input '.($perso->perso_pa<4 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner/Modifier l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
             }
         }
         $contenu_page .= '</tr>';

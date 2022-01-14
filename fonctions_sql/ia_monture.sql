@@ -199,63 +199,66 @@ begin
   select perso_pa into v_perso_pa  from perso,perso_position,positions where perso_cod = v_monstre 	and ppos_perso_cod = v_monstre and ppos_pos_cod = pos_cod;
 	if v_perso_pa = v_pa then
 
-	      -- le monstre a essayé de ce déplacer, il n'a pas réussi, on lui consomme quand même des PA liés à la tentative
-          text_evt := '[cible] ne peut pas emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
-          if temp_txt = '' then
-              temp := '0' ;
-          else
-              temp := split_part(temp_txt,'#',3) ;
-          end if;
+        -- le monstre a essayé de ce déplacer, il n'a pas réussi, on lui consomme quand même des PA liés à la tentative
+        text_evt := '[cible] ne peut pas emmener [attaquant] vers ' || trim(to_char(v_x + dir_x,'99999999')) || ',' || trim(to_char(v_y + dir_y,'99999999')) || ',' || trim(to_char(v_etage,'99999999'));
+        if temp_txt = '' then
+            temp := '0' ;
+        else
+            temp := split_part(temp_txt,'#',3) ;
+        end if;
 
-          if temp = '2' then
-              text_evt := text_evt || ' (mur)';
-          elsif temp = '6' then
-              text_evt := text_evt || ' (innacessible)';
-          elsif temp = '7' then
-              text_evt := text_evt || ' (terrain)';
-          elsif temp = '8' then
-              text_evt := text_evt || ' (poids)';
-          elsif temp = '9' then
-              text_evt := text_evt || ' (hors étage)';
-          elsif temp = '10' then
-              text_evt := text_evt || ' (fuite)';
-          else
-              text_evt := '';
-          end if;
+        if temp = '2' then
+            text_evt := text_evt || ' (mur)';
+        elsif temp = '6' then
+            text_evt := text_evt || ' (innacessible)';
+        elsif temp = '7' then
+            text_evt := text_evt || ' (terrain)';
+        elsif temp = '8' then
+            text_evt := text_evt || ' (poids)';
+        elsif temp = '9' then
+            text_evt := text_evt || ' (hors étage)';
+        elsif temp = '10' then
+            text_evt := text_evt || ' (fuite)';
+        else
+            text_evt := '';
+        end if;
 
-          if text_evt <> '' then
-              perform insere_evenement(v_cavalier, v_monstre, 2, text_evt, 'O', 'N', null);
-          else
-              perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] ne peut pas traiter l''ordre de son cavalier et préfère glander.', 'O', 'N', null);
-          end if;
+        if text_evt <> '' then
+            perform insere_evenement(v_cavalier, v_monstre, 2, text_evt, 'O', 'N', null);
+        else
+            perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] ne peut pas traiter l''ordre de son cavalier et préfère glander.', 'O', 'N', null);
+        end if;
 
 
-	    update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;
-      code_retour := code_retour||'Consommation de PA.<br>';
-	end if;
+        update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;
+        code_retour := code_retour||'Consommation de PA.<br>';
 
-  -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
-  select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param ) as v ) s where v->>'ordre' <> v_num_ordre ;
-  if dist = 1 then
-      -- sauvgarder les nouvelles infos de ia_monture (avec supression du premier ordre)
-      code_retour := code_retour||'Suppression de l''ordre.<br>';
-      update perso
-          set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
-          where perso_cod=v_monstre ;
   else
-        -- sauvgarder les nouvelles infos de ia_monture (avec modification du premier ordre avec une distance de moins)
-      code_retour := code_retour||'Modification de l''ordre.<br>';
-      dist := dist - 1;
-      update perso
-          set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
-          where perso_cod=v_monstre ;
-  end if;
+
+        -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
+      select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param ) as v ) s where v->>'ordre' <> v_num_ordre ;
+      if dist = 1 then
+          -- sauvgarder les nouvelles infos de ia_monture (avec supression du premier ordre)
+          code_retour := code_retour||'Suppression de l''ordre.<br>';
+          update perso
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+              where perso_cod=v_monstre ;
+      else
+            -- sauvgarder les nouvelles infos de ia_monture (avec modification du premier ordre avec une distance de moins)
+          code_retour := code_retour||'Modification de l''ordre.<br>';
+          dist := dist - 1;
+          update perso
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              where perso_cod=v_monstre ;
+      end if;
+
+	end if;
 
 
 /*************************************************/
 /* Etape 4 : tout semble fini                    */
 /*************************************************/
-	return code_retour||'La monture a traité un ordre.<br>';
+	return code_retour||'La monture a fini de traiter un ordre.<br>';
 
 end;
 $_$;

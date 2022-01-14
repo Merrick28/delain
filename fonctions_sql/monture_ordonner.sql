@@ -20,6 +20,7 @@ AS $_$declare
   dist integer ;     --  ordre: distance
   v_param_ia json ;     --  ordre: distance
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
+  v_num integer ;     --  N° d'ordre actuel pour calcul
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_difficulte integer ;     -- difficulté de l'ordre
   v_nb_action integer;   -- nombre d'echec d'ordre
@@ -32,7 +33,7 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 4 and v_ordre = 'ADD') then
+  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 4 and v_ordre != 'DEL') then
     return '<p>Erreur ! Vous n''avez pas suffisament de PA !';
   end if;
 
@@ -54,7 +55,7 @@ begin
 
 
   -- traitement de la difficulté de l'ordre
-  if v_ordre = 'ADD' then
+  if v_ordre = 'ADD' or v_ordre = 'UPD' then
       v_difficulte := 5 * v_nb_ordre ;    -- 5% de difficulté par ordre au dessus du premier
 
       -- Test de compétence équitation => gère le la consommation de PA
@@ -82,14 +83,50 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
+          v_num := f_to_numeric(v_param->>'num_ordre') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
+
+          if ( v_num != 0) then
+              -- ajout de +1 sur chaque ordre supérieur à celui-ci programmé
+              select jsonb_agg ( v::jsonb || jsonb_build_object('ordre', CASE WHEN (v->>'ordre')::integer<v_num THEN (v->>'ordre')::integer ELSE (v->>'ordre')::integer+1 END) )
+                  into v_param_ia  from ( select  json_array_elements( v_param_ia ) as v ) s ;
+              -- le nouveau numero d'ordre
+              v_num_ordre := v_num ;
+          end if;
 
           -- mise à jour des ordres de la monture
           update perso
               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
+
+      elseif v_ordre = 'UPD' then
+          code_retour := code_retour || '<p>Vous avez modifié un ordre avec succès pour ' || v_monture_nom || ' !<br>';
+
+          -- evenement déchevaucher (107)
+          perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a modifié un ordre pour [cible].', 'O', NULL);
+
+          -- ajouter un ordre à la fin de la liste des ordres
+          v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;
+          dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
+          dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
+          dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
+
+          -- dabord supprimer l'ordre existant
+          select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
+
+
+          -- mise à jour des ordres de la monture
+          update perso
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+              where perso_cod=v_monture ;
+
+          -- Ajout du nouvel ordres de la monture
+          update perso
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              where perso_cod=v_monture ;
+
       else
           code_retour := code_retour || '<p>Vous avez supprimé avec succès un ordre qui avait été donné à ' || v_monture_nom || ' !<br>';
 
@@ -105,11 +142,12 @@ begin
           update perso
               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
               where perso_cod=v_monture ;
+
       end if;
 
   else
       -- si echec du jet de compétence
-      if v_ordre = 'ADD' then
+      if v_ordre = 'ADD' or v_ordre = 'UPD'  then
 
           if v_num_ordre > 0 then
               update perso_nb_action set pnbact_nombre=pnbact_nombre+1, pnbact_date_derniere_action=now() where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
@@ -123,13 +161,27 @@ begin
                 perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a donné un ordre à sa monture [cible] qui ne l''a pas compris.', 'O', NULL);
 
                 -- mise à jour des ordres de la monture
+                v_num := f_to_numeric(v_param->>'num_ordre') ;
                 v_num_ordre := v_num_ordre + 1 ;
                 dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
+
+                if v_ordre = 'ADD' and v_num!=0 then
+                        -- ajout de +1 sur chaque ordre supérieur à celui-ci programmé
+                        select jsonb_agg ( v::jsonb || jsonb_build_object('ordre', CASE WHEN (v->>'ordre')::integer<v_num THEN (v->>'ordre')::integer ELSE (v->>'ordre')::integer+1 END) )
+                            into v_param_ia  from ( select  json_array_elements( v_param_ia ) as v ) s ;
+                        -- le nouveau numero d'ordre
+                        v_num_ordre := v_num ;
+                elseif v_ordre = 'UPD' then
+                        -- d'abord supprimer l'ordre à modifier
+                        select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
+                        v_num_ordre := v_num ;
+                end if;
+
                 update perso
                     set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
                     where perso_cod=v_monture ;
 
-           else
+          else
                 code_retour := code_retour||'<br><p>Vous n’avez pas réussi à donner un ordre à ' || v_monture_nom || '!<br>';
           end if;
 
