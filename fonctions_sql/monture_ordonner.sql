@@ -114,7 +114,7 @@ begin
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
 
           -- dabord supprimer l'ordre existant
-          select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
+          select coalesce(jsonb_agg(v), '[]'::jsonb) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
 
 
           -- mise à jour des ordres de la monture
