@@ -22,6 +22,7 @@ AS $_$declare
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
   v_num integer ;     --  N° d'ordre actuel pour calcul
   v_num_ordre integer ;     --  N° d'ordre actuel
+  v_num_prems integer ;     --  N° du 1er ordre
   v_difficulte integer ;     -- difficulté de l'ordre
   v_nb_action integer;   -- nombre d'echec d'ordre
 
@@ -42,15 +43,14 @@ begin
     return '<p>Erreur ! la monture n''a pas été trouvée !';
   end if;
 
-	select count(*), coalesce(max(f_to_numeric(value->>'ordre')) , 0) into v_nb_ordre, v_num_ordre from json_array_elements (v_param_ia);
-
+	select count(*), coalesce(max(f_to_numeric(value->>'ordre')) , 0), coalesce(min(f_to_numeric(value->>'ordre')) , 0) into v_nb_ordre, v_num_ordre, v_num_prems from json_array_elements (v_param_ia);
 
   -- On autorise un seul échec d'ajout d'ordre par DLT, après celui-ci la monture refuse tout ordre supplémentaire !!!!
   select pnbact_nombre into v_nb_action from perso_nb_action where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
   if not found then
       insert into perso_nb_action(pnbact_perso_cod, pnbact_action, pnbact_nombre, pnbact_date_derniere_action) values(v_perso, 'EQI-ordonner', 0, now());
-  elsif v_nb_action > 0 then
-      return '<p>Votre monture est <b>devenue incontrolable</b>, vous ne pouvez plus modifier ses ordres pendant cette DLT !';
+  elsif v_nb_action > 0 AND  ( f_to_numeric(v_param->>'num_ordre') > v_num_prems OR (f_to_numeric(v_param->>'num_ordre') = 0 AND v_nb_ordre > 0) ) then
+      return '<p>Votre monture est <b>devenue incontrolable</b>, excepté le premier ordre, vous ne pouvez plus modifier ou donner de nouveaux ordres pendant cette DLT !';
   end if;
 
 
