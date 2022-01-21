@@ -382,7 +382,16 @@
         <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/groupe.php">Coterie</a>
         <hr/>
 
+{%  else %}
+
+    {% if PERSO.perso_type_perso==2 and PERSO.est_chevauche() %}
+        <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_show.php">Voir les ordres</a><br>
+        <hr/>
+    {%  endif %}
 {%  endif %}
+
+
+
 
         {% if DROIT.controle == 'O' %}
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/visu_amelioration.php">Améliorations</a>
