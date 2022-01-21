@@ -173,7 +173,7 @@ begin
                         v_num_ordre := v_num ;
                 elseif v_ordre = 'UPD' then
                         -- d'abord supprimer l'ordre à modifier
-                        select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
+                        select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num ;
                         v_num_ordre := v_num ;
                 end if;
 
