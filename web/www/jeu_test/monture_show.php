@@ -23,8 +23,10 @@ $perso = new perso();
 $perso->charge($perso_cod);
 $cavalier_cod = $perso->est_chevauche() ;
 
-if ( ! $cavalier_cod ){
-    $contenu_page .= "<br><p>Vous n'êtes pas chevauché par un cavalier, vous ne traitez plus d'ordre!</p><br>";
+if ( $perso->perso_type_perso != 2  ) {
+    $contenu_page .= "<br><p>Vous n'êtes pas une monture !!! </p><br>";
+}else if ( ! $cavalier_cod ){
+    $contenu_page .= "<br><p>Vous n'êtes pas chevauché par un cavalier!</p><br>";
 } else {
     //$directions = [ "N"=>"N (nord)", "NE"=>"NE (nord-est)", "E"=>"E (est)", "SE"=>"SE (sud-est)", "S"=>"S (sud)", "SO"=>"SO (sud-ouest)", "O"=>"O (ouest)","NO"=>"NO (nord-ouest)"  ];
 
