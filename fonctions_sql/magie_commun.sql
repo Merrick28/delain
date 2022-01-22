@@ -1,4 +1,3 @@
-﻿
 --
 -- Name: magie_commun(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
@@ -143,6 +142,16 @@ begin
 		code_retour := code_retour||'0;<p>Erreur : ce sort ne peut être lancé que sur soi-même !</p>';
 		return code_retour;
 	end if;
+
+
+-------------------------------------------------------------
+-- Etape 2bis : vérification des pre-requis spécifique sur certaine map (comme la course
+-------------------------------------------------------------
+    -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1)
+    select etage_mort_speciale into temp from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=cible;
+    if temp = 1 and num_sort=39 then
+        return  '0;<p>l''usage de la défense magique n''est pas autorisé pendant les courses de monture!!</p>';
+    end if;
 
 	-- sort distortion temporelle
 	if num_sort = 146 then
