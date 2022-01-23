@@ -79,7 +79,7 @@ begin
       cout_pa := 4 ;
   elsif v_action = 3 then
       -- 'donner un ordre à la monture';
-      cout_pa := 4 ;
+      cout_pa := 2 ;
   elsif v_action = 4 then
       -- 'désarçonner';
       cout_pa := 6 ;
