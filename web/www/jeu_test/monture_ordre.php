@@ -160,10 +160,10 @@ if ($perso->perso_type_perso == 3){
             $contenu_page .= '</td>';
         }
         if ($l==1 && $c>3) {
-            if ($perso->perso_pa<4) {
-                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner (4 PA requis)</td>';
+            if ($perso->perso_pa<2) {
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner (2 PA requis)</td>';
             } else {
-                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: left;">&nbsp;&nbsp;'.$selector.'<br><br>&nbsp;&nbsp;<input '.($perso->perso_pa<4 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner/Modifier l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: left;">&nbsp;&nbsp;'.$selector.'<br><br>&nbsp;&nbsp;<input '.($perso->perso_pa<2 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner/Modifier l\'ordre(2 PA)"  class="test">&nbsp;&nbsp;</td>';
             }
         }
         $contenu_page .= '</tr>';
