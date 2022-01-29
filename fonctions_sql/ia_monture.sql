@@ -230,7 +230,8 @@ begin
         end if;
 
 
-        update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;
+        -- update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;
+        update perso set perso_pa = GREATEST(0, perso_pa - 1 ) where perso_cod = v_monstre ;
         code_retour := code_retour||'Consommation de PA.<br>';
 
   else
