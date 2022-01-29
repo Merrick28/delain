@@ -49,7 +49,7 @@ begin
   select pnbact_nombre into v_nb_action from perso_nb_action where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
   if not found then
       insert into perso_nb_action(pnbact_perso_cod, pnbact_action, pnbact_nombre, pnbact_date_derniere_action) values(v_perso, 'EQI-ordonner', 0, now());
-  elsif v_nb_action > 0 AND  ( f_to_numeric(v_param->>'num_ordre') > v_num_prems OR (f_to_numeric(v_param->>'num_ordre') = 0 AND v_nb_ordre > 0) ) then
+  elsif v_nb_action > 1 AND  ( f_to_numeric(v_param->>'num_ordre') > v_num_prems OR (f_to_numeric(v_param->>'num_ordre') = 0 AND v_nb_ordre > 0) ) then
       return '<p>Votre monture est <b>devenue incontrolable</b>, excepté le premier ordre, vous ne pouvez plus modifier ou donner de nouveaux ordres pendant cette DLT !';
   end if;
 
