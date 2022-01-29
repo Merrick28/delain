@@ -169,7 +169,7 @@ begin
   select v into v_ordre from ( select json_array_elements(v_param) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
   if not found  then
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
-      update perso set perso_pa = GREATEST(0, perso_pa - 4) where perso_cod=v_monstre ;
+      update perso set perso_pa = GREATEST(0, perso_pa - 1) where perso_cod=v_monstre ;
       perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] n''a pas d''ordre à traiter et glande un peu.', 'O', 'N', null);
       return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine(glande)!<br>';
   end if;
