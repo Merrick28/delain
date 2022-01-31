@@ -210,7 +210,7 @@ begin
         if temp = '2' then
             text_evt := text_evt || ' (mur)';
         elsif temp = '6' then
-            text_evt := text_evt || ' (innacessible)';
+            text_evt := text_evt || ' (inaccessible)';
         elsif temp = '7' then
             text_evt := text_evt || ' (terrain)';
         elsif temp = '8' then

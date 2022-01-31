@@ -184,7 +184,7 @@ if ($perso->perso_type_perso == 3){
     $contenu_page .= "<b><u>La carte</u></b>: <br> <br><table style=\"border: 1px solid black;\"><tr><td>";
     include('vue_gauche.php');
     $contenu_page .= $vue_gauche ;
-    $contenu_page .= '<div style="font-size: 10px;">&nbsp;&nbsp;<div style="display:inline-block;" class="horseBlink"><div class="pasvu caseVue" title=""><img src="/images/del.gif" width="18" height="18" alt=""></div></div>= Terrain innacessible avec votre monture.</div>';
+    $contenu_page .= '<div style="font-size: 10px;">&nbsp;&nbsp;<div style="display:inline-block;" class="horseBlink"><div class="pasvu caseVue" title=""><img src="/images/del.gif" width="18" height="18" alt=""></div></div>= Terrain inaccessible avec votre monture.</div>';
     $contenu_page .= "</td></tr></table>";
 }
 
