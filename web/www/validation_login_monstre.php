@@ -3,15 +3,21 @@ include_once 'classes.php';
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
+$compt_cod  = $verif_connexion->compt_cod;
 include_once 'fonctions.php';
 
 $pdo = new bddpdo;
 
 ob_start();
 
+$compte        = new compte;
+$compte->charge($compt_cod);
+if ( !$compte->is_admin_monstre() )
+{
+    die('Erreur sur le compte..');
+}
 
 // On trouve le monstre
-
 $monstre = new perso;
 if (!$monstre->charge($_REQUEST['numero']))
 {
@@ -21,6 +27,7 @@ if (($monstre->perso_type_perso != 2) && ($monstre->perso_pnj != 1))
 {
     die('Erreur sur le type de perso');
 }
+
 
 $num_droits = 0;
 
