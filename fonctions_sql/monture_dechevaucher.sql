@@ -37,7 +37,7 @@ begin
 
   -- Test de compétence équitation (difficulté 0) => gère le la consommation de PA
   /* update perso set perso_pa = perso_pa  - 4 where perso_cod = v_perso; fait par le test de compétence */
-   temp_competence := monture_competence(v_perso, 1, v_monture, 0);
+   temp_competence := monture_competence(v_perso, 2, v_monture, 0);
   code_retour := code_retour||split_part(temp_competence,';',3);
 
   -- Réaliser les actions du dé-chevauchement (ou la chute, le résultat est le même :-) !!!
