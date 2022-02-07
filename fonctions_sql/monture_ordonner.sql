@@ -34,7 +34,7 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 2 and v_ordre != 'DEL') then
+  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 4 and v_ordre != 'DEL') then
     return '<p>Erreur ! Vous n''avez pas suffisament de PA !';
   end if;
 
