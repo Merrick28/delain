@@ -11,6 +11,9 @@ define('SERVER_HOST','localhost');
 define('SERVER_USERNAME','webdelain');
 define('SERVER_PASSWORD','xxxxxxxxxx');
 define('SERVER_DBNAME','delain');
+define('SERVER_PORT',5432);
+
+define('USE_PG_BOUNCER', false);
 
 // URL API
 define('URL_API','http://localhost/api/');
