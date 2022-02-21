@@ -362,6 +362,24 @@ class objets
     }
 
     /***
+     * Retourne la liste des sorts de bonus attachés sur l'objet
+     * @return array|bool
+     */
+    function get_sorts_bm_attaches()
+    {
+        $retour = array();
+
+        $objsort = new objets_sorts_bm();
+        $retour = $objsort->get_objets_sorts_bm($this) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /***
      * Retourne la liste des bonus/malus attachés sur l'objet
      * @return array|bool
      */
@@ -412,6 +430,21 @@ class objets
         if ($result["est_equipable"]==1) return true;
 
         return false ;
+    }
+
+    /**
+     * Retourne vrai si le perso passé en paramètre peu equiper l'objet, et false sinon
+     * @return boolean
+     */
+    function trouve_objet()
+    {
+        $pdo = new bddpdo;
+        $req = "select trouve_objet(:obj_cod) as trouve_objet; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        return $result["trouve_objet"] ;
     }
 
     /***

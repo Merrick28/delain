@@ -1,13 +1,38 @@
 <?php
-$nom          = $perso->perso_nom;
-$perso_nom    = str_replace(chr(39), " ", $nom);
-$maintenant   = date("d/m/Y H:i:s");
-$perso_mortel = $perso->perso_mortel;
-$num_perso    = $perso->perso_cod;
-$perso_cod    = $num_perso;
-$autorise     = 0;
-$type_perso   = $perso->perso_type_perso;
-if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
+$nom            = $perso->perso_nom;
+$perso_nom      = str_replace(chr(39), " ", $nom);
+$maintenant     = date("d/m/Y H:i:s");
+$perso_mortel   = $perso->perso_mortel;
+$num_perso      = $perso->perso_cod;
+$perso_cod      = $num_perso;
+$autorise       = 0;
+$type_perso     = $perso->perso_type_perso;
+$perso_cavalier = $perso->est_chevauche();
+
+if ($type_perso == 2 && $perso_cavalier)
+{
+    $pcompt = new perso_compte();
+    $tab    = $pcompt->getBy_pcompt_perso_cod($perso_cavalier);
+    if ($tab !== false)
+    {
+        if ($tab[0]->pcompt_compt_cod == $compte->compt_cod)
+        {
+            // le compte compt_cod correspond au compt_cod courant, on autorise
+            $autorise = 1;
+        }
+        else
+        {
+            // pas le comtpe directe, peut-être en sitting
+            $cs = new compte_sitting();
+            if ($cs->isSittingValide($compte->compt_cod, $perso_cavalier))
+            {
+                $autorise = 1;
+            }
+        }
+    }
+}
+
+if (($autorise==0) && ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre)))
 {
     // on va quand même charger le perso_compte
     $pcompt = new perso_compte();

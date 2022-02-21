@@ -55,7 +55,8 @@ begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de « saut sur cible ».';
+    -- return 'Pas d’effet automatique de « saut sur cible ».';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -121,6 +122,7 @@ begin
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or
                        (v_cibles_type = 'C' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
+                       (v_cibles_type = 'M' and perso_cod = COALESCE(f_perso_cavalier(v_cible_donnee), COALESCE(f_perso_monture(v_cible_donnee),0))) or
                        (v_cibles_type = 'T'))
                 -- Dans les limites autorisées
                 order by random()
@@ -186,13 +188,13 @@ begin
       ---------------------------
       -- les EA liés au déplacement (le saut est considéré comme un déplacement)
       ---------------------------
-      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source)) ;
+      code_retour := code_retour || execute_fonctions(v_source, ligne.perso_cod, 'DEP', json_build_object('ancien_pos_cod',v_position_source,'ancien_etage',v_et_source, 'nouveau_pos_cod',ligne.pos_cod,'nouveau_etage',v_et_source)) ;
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « saut sur cible »';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « saut sur cible »';
+  -- end if;
 
   return code_retour;
 end;$_$;

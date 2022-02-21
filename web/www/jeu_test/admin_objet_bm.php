@@ -41,27 +41,37 @@ include_once '../includes/tools.php';
             //executer le service asynchrone
             $('tr[id^="bmlist-"]').removeClass("soustitre2");
             $('#bouton-supprimer').hide();
+
             if (row >= 0) {
                 $('#bmlist-' + row).addClass("soustitre2");
                 $('#bouton-supprimer').show();
-            }
 
-            runAsync({request: "get_table_info", data: {info: "objets_bm", objbm_cod: objbm_cod}}, function (d) {
-                if (d.resultat == 0) {
-                    var data = d.data;
-                    $("#objbm_cod").val(data.objbm_cod ? data.objbm_cod : 0);
-                    $("#sort-0-misc_cod").val(data.objbm_tbonus_cod ? data.objbm_tbonus_cod : "");
-                    if ($("#sort-0-misc_cod").val() > 0) {
-                        setNomByBMCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                runAsync({request: "get_table_info", data: {info: "objets_bm", objbm_cod: objbm_cod}}, function (d) {
+                    if (d.resultat == 0) {
+                        var data = d.data;
+                        $("#objbm_cod").val(data.objbm_cod ? data.objbm_cod : 0);
+                        $("#sort-0-misc_cod").val(data.objbm_tbonus_cod ? data.objbm_tbonus_cod : "");
+                        if ($("#sort-0-misc_cod").val() > 0) {
+                            setNomByBMCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                        }
+                        else {
+                            $("#sort-0-misc_nom").val("");
+                            $("#sort-0-libc").val("");
+                        }
+                        $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
+                        $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
+                        $("#objbm_equip_requis").val((!data.objbm_equip_requis || data.objbm_equip_requis =='false') ? 'N' : 'O');
                     }
-                    else {
-                        $("#sort-0-misc_nom").val("");
-                        $("#sort-0-libc").val("");
-                    }
-                    $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
-                    $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
-                }
-            });
+                });
+            } else {
+                $("#objbm_cod").val(0);
+                $("#sort-0-misc_cod").val("");
+                $("#sort-0-libc").val("");
+                $("#sort-0-misc_nom").text("");
+                $("#objbm_nom").val("");
+                $("#objbm_bonus_valeur").val("");
+                $("#objbm_equip_requis").val('O');
+            }
         }
 
     </script>
@@ -123,16 +133,15 @@ if ($erreur == 0)
 
                     foreach ($list as $pobj)
                     {
-                        if ($pobj->perobj_equipe == 'O')
+                        if ($pobj->perobj_equipe == 'O' || !$objbm->objbm_equip_requis )
                         {
                             // Mise à jour des BM d'équipement pour l'objet de ce joueur!
-                            $req    = "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+                            $req    = "select retire_bonus_equipement(:perso_cod,:obj_cod,:objbm_cod)  as modif;";
                             $stmt   = $pdo->prepare($req);
                             $stmt   = $pdo->execute(array(
-                                                        ":perso_cod" => $pobj->perobj_perso_cod,
-                                                        ":modif"     => 'D',
-                                                        ":objbm_cod" => $objbm->objbm_cod,
-                                                        ":obj_cod"   => $pobj->perobj_obj_cod), $stmt);
+                                ":perso_cod" => $pobj->perobj_perso_cod,
+                                ":obj_cod"   => $pobj->perobj_obj_cod,
+                                ":objbm_cod" => $objbm->objbm_cod), $stmt);
                             $result = $stmt->fetch();
 
                             $nb_obj++;
@@ -148,17 +157,22 @@ if ($erreur == 0)
             {
                 // Cas d'une creation/modification
                 $clone_os = clone $objbm;
-
                 $objbm->objbm_gobj_cod     = 1 * (int)$_REQUEST["objbm_gobj_cod"];
                 $objbm->objbm_obj_cod      = null;
                 $objbm->objbm_tbonus_cod   = 1 * (int)$_REQUEST["objbm_tbonus_cod"];
                 $objbm->objbm_nom          = $_REQUEST["objbm_nom"] == '' ? null : $_REQUEST["objbm_nom"];
                 $objbm->objbm_bonus_valeur = (int)$_REQUEST["objbm_bonus_valeur"];
+                $objbm->objbm_equip_requis = $_REQUEST["objbm_equip_requis"]=="O" ? 1 : 0 ;
+
                 $objbm->stocke($new);
 
                 // Vérification de l'ipact sur les objets en jeu!
-                if (($clone_os->objbm_tbonus_cod != $objbm->objbm_tbonus_cod) || ($clone_os->objbm_bonus_valeur != $objbm->objbm_bonus_valeur))
+                if (($clone_os->objbm_tbonus_cod != $objbm->objbm_tbonus_cod) || ($clone_os->objbm_bonus_valeur != $objbm->objbm_bonus_valeur) || ($clone_os->objbm_equip_requis != $objbm->objbm_equip_requis))
                 {
+
+                    $bonus = new bonus_type();
+                    $bonus->charge($objbm->objbm_tbonus_cod);
+
                     $nb_obj = 0;
                     $perobj = new perso_objets();
                     $list   = $perobj->getByObjetGenerique($objbm->objbm_gobj_cod);
@@ -168,37 +182,44 @@ if ($erreur == 0)
 
                         foreach ($list as $pobj)
                         {
-                            if ($pobj->perobj_equipe == 'O')
-                            {
-                                // Mise à jour des BM d'équipement pour l'objet de ce joueur!
-                                $req    =
-                                    "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+
+                            // modification complex du BM, le supprime pour eventuellement le recréer
+                            $req    = "select retire_bonus_equipement(:perso_cod,:obj_cod,:objbm_cod)  as modif;";
+                            $stmt   = $pdo->prepare($req);
+                            $stmt   = $pdo->execute(array(
+                                ":perso_cod" => $pobj->perobj_perso_cod,
+                                ":obj_cod"   => $pobj->perobj_obj_cod,
+                                ":objbm_cod" => $objbm->objbm_cod), $stmt);
+                            $result = $stmt->fetch();
+                            $nb_obj++;
+
+                            // redonner le bonus si les conditions sont toujours là ou elles le sont devenues
+                            if ( $pobj->perobj_equipe == 'O' || ! $objbm->objbm_equip_requis ) {
+                                $req    = "select ajoute_bonus_equipement(:perso_cod,:tbonus_libc,:objbm_cod, :obj_cod, :valeur)  as modif;";
                                 $stmt   = $pdo->prepare($req);
                                 $stmt   = $pdo->execute(array(
-                                                            ":perso_cod" => $pobj->perobj_perso_cod,
-                                                            ":modif"     => $new ? 'C' : 'U',
-                                                            ":objbm_cod" => $objbm->objbm_cod,
-                                                            ":obj_cod"   => $pobj->perobj_obj_cod), $stmt);
+                                    ":perso_cod" => $pobj->perobj_perso_cod,
+                                    ":tbonus_libc"  => $bonus->tbonus_libc,
+                                    ":objbm_cod" => $objbm->objbm_cod,
+                                    ":obj_cod"   => $pobj->perobj_obj_cod,
+                                    ":valeur"   => $objbm->objbm_bonus_valeur), $stmt);
+
                                 $result = $stmt->fetch();
-
-                                $nb_obj++;
-
                             }
+
                         }
                     }
                     if ($nb_obj > 0) echo "<div class='bordiv'><pre><strong><u>ATTENTION</u></strong>: Les {$nb_obj} objet(s) équipé(s) par les joueurs ont été impactés par cette modification!</pre></div>";
-                    $stmt2 = $pdo->prepare("select f_modif_carac_perso(:bonus_perso_cod, :tbonus_libc); ");
+
+                    /*$stmt2 = $pdo->prepare("select f_modif_carac_perso(:bonus_perso_cod, :tbonus_libc); ");
                     while ($result = $stmt->fetch())
                     {
                         $bonus_perso_cod = $result['corig_perso_cod'];
                         $perso_list      .= '#' . $result['perso_cod'] . ' (' . $result['perso_nom'] . '), ';
 
                         // On recalcule le changement des limites pour ce perso
-
-                        $pdo->execute(array(":bonus_perso_cod" => $bonus_perso_cod,
-                                            ":tbonus_libc"     => $tbonus_libc), $stmt2);
-                    }
-
+                        $pdo->execute(array(":bonus_perso_cod" => $bonus_perso_cod, ":tbonus_libc"     => $tbonus_libc), $stmt2);
+                    }*/
 
                 }
 
@@ -253,6 +274,7 @@ if ($erreur == 0)
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
                 </td></tr>
                 <tr><td>Valeur du bonus/malus :</td><td><input type="text" id="objbm_bonus_valeur" name="objbm_bonus_valeur" size="50">&nbsp;<em></em></td></tr>
+                <tr><td>Equip. requis :</td><td>'.create_selectbox("objbm_equip_requis", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objbm_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être équipé pour subir le bonus/malus?</em></td></tr>
                 <tr style="display:none;"><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em></em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                  </table>
@@ -269,6 +291,7 @@ if ($erreur == 0)
                       <td><strong>Bonus/malus</strong></td>
                       <td><strong>Valeur</strong></td>
                       <td><strong>Type</strong></td>
+                      <td><strong>Equip.</strong></td>
                       <td style=\"display:none;\"><strong>Nom sur l'objet</strong></td>
                     </tr>";
             foreach ($lbm as $k => $os)
@@ -281,6 +304,7 @@ if ($erreur == 0)
                       <td>{$bm->tonbus_libelle} / #{$os->objbm_tbonus_cod} ({$bm->tbonus_libc})</td>
                       <td>{$os->objbm_bonus_valeur}</td>
                       <td>" . (($bm->tbonus_gentil_positif == 't') ? ($os->objbm_bonus_valeur > 0 ? "BONUS" : "MALUS") : ($os->objbm_bonus_valeur > 0 ? "MALUS" : "BONUS")) . "</td>
+                      <td>".( $os->objbm_equip_requis ? "O" : "N" )."</td></tr>
                       <td style=\"display:none;\">" . $os->getNom() . "</td>
                      </tr>";
             }

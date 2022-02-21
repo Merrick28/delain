@@ -1035,6 +1035,10 @@ if ($erreur == 0)
 						order by tonbus_libelle ";
                 echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
+                // Liste des conditions de perso
+                $req = "select aqtypecarac_cod, aqtypecarac_nom from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod ";
+                echo '<select id="liste_perso_condition_modele" style="display:none;">' . $html->select_from_query($req, 'aqtypecarac_cod', 'aqtypecarac_nom') . '</select>';
+
                 // Liste des sorts
                 $req = "select distinct dsort_dieu_cod, sort_cod, case when dsort_dieu_cod is null then '' else 'Divin - ' end || sort_nom || ' (' || case when sort_case='O' then 'case/' else '' end || case when sort_aggressif='O' then 'agressif)' when sort_soutien='O' then 'soutien)' else 'neutre)' end sort_nom
                         from sorts
@@ -1226,7 +1230,7 @@ if ($erreur == 0)
 
                                     $req_m_terrain= "select ter_cod, ter_nom 
                                                                 from terrain 
-                                                                where not exists(select 1 from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod) order by ter_nom";
+                                                                where not exists(select 1 from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod) order by CASE WHEN ter_cod<=0 then 0 ELSE 1 END, ter_nom, ter_cod";
                                     $stmt_m_terrain      = $pdo->query($req_m_terrain);
                                     while ($result_m_terrain = $stmt_m_terrain->fetch())
                                     {

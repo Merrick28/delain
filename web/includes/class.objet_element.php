@@ -190,7 +190,7 @@ class objet_element
      * @return bool|array => false pas réussi a supprimer
      * @global bdd_mysql $pdo
      */
-    function clean($objelem_gobj_cod, $element_list)
+    function clean_generique($objelem_gobj_cod, $element_list)
     {
         $where = "";
         if (sizeof($element_list)>0)
@@ -214,7 +214,41 @@ class objet_element
 
         $req    = "DELETE from objet_element where objelem_gobj_cod = ? $where ";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($objelem_gobj_cod), $stmt);
+        $pdo->execute(array($objelem_gobj_cod), $stmt);
+
+        return (count($retour) == 0) ?  false : $retour ;
+    }
+
+    /**
+     * supprime tous les éléments d'un objet generique qui ne sont pas dans la liste des elements
+     * @return bool|array => false pas réussi a supprimer
+     * @global bdd_mysql $pdo
+     */
+    function clean_specifique($objelem_obj_cod, $element_list)
+    {
+        $where = "";
+        if (sizeof($element_list)>0)
+        {
+            foreach ($element_list as $k => $e) $where .= (1*$e)."," ;
+            $where = " and objelem_cod not in (". substr($where, 0, -1) .") ";
+        }
+
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "SELECT * from objet_element where objelem_obj_cod = ?  $where ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($objelem_obj_cod), $stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new objet_element;
+            $temp->charge($result["objelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
+        $req    = "DELETE from objet_element where objelem_obj_cod = ? $where ";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array($objelem_obj_cod), $stmt);
 
         return (count($retour) == 0) ?  false : $retour ;
     }

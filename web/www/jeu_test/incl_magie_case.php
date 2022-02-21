@@ -51,7 +51,7 @@ if (isset($etage_actuel))
     <?php
     require "blocks/_req_vue_max.php";
 
-    $req_map_vue = "select * from vue_perso6($perso_cod) where t_dist <= $distance_vue";
+    $req_map_vue = "select * from vue_perso7($perso_cod) where t_dist <= $distance_vue";
     $stmt        = $pdo->query($req_map_vue);
     while ($result = $stmt->fetch())
     {
@@ -69,6 +69,7 @@ if (isset($etage_actuel))
         $style = 'caseVue v' . $result['t_type_case'];
         echo '<td class="' . $style . '">';
         $aff_lock = false;
+        $terrain_chevauchable = true ;
         require "blocks/_detail_vue_1.php";
         echo '</td>';
 

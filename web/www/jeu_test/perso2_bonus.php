@@ -45,6 +45,8 @@ for ($loop = 0; $loop < 2; $loop++)
         $bm                     = $detail_carac_orig['bonus_carac'];
         $corig_mode             = $detail_carac_orig['corig_mode'];
         $tbonus_description     = $detail_carac_orig['tbonus_description'];
+        $corig_obj_cod          = $detail_carac_orig['corig_obj_cod'];
+        $obj_nom                = $detail_carac_orig['obj_nom'];
         if ($detail_carac_orig['corig_mode'] == 'E')
         {
             $duree = "Equipement";
@@ -65,6 +67,8 @@ for ($loop = 0; $loop < 2; $loop++)
             $bonus_carac[$loop][$record][3] = $corig_mode;
             $bonus_carac[$loop][$record][4] = $tbonus_description;
             $bonus_carac[$loop][$record][5] = $lib_carac;
+            $bonus_carac[$loop][$record][6] = $corig_obj_cod;
+            $bonus_carac[$loop][$record][7] = $obj_nom;
         } else
         {
             $malus_carac[$loop][$record]    = array();
@@ -74,6 +78,8 @@ for ($loop = 0; $loop < 2; $loop++)
             $malus_carac[$loop][$record][3] = $corig_mode;
             $malus_carac[$loop][$record][4] = $tbonus_description;
             $malus_carac[$loop][$record][5] = $lib_carac;
+            $malus_carac[$loop][$record][6] = $corig_obj_cod;
+            $malus_carac[$loop][$record][7] = $obj_nom;
         }
         $record++;
     }

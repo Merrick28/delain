@@ -452,7 +452,7 @@ class objets_poste
 		if ($this->opost_dest_perso_cod)
 		{
 			$ligne_evt->levt_perso_cod1 = $this->opost_dest_perso_cod   ;
-			$ligne_evt->levt_cible = $this->opost__perso_cod  ;			
+			$ligne_evt->levt_cible = $this->opost_emet_perso_cod  ;
 			$ligne_evt->levt_texte = "L’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") envoyé par [cible] pour [perso_cod1] a été consfisqué par le relais de la poste.";
 			$ligne_evt->stocke(true);		// Nouvel évènement	
 		}

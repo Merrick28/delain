@@ -52,12 +52,15 @@ declare
 
   v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
   v_distance_min integer;      -- distance minimum requis pour la cible
+  v_exclure_porteur text;      -- le porteur et les compagnons sont inclus dans le ciblage
+  v_equipage integer;          -- le partenaire d'équipage: cavalier/monture
 
 begin
 
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet « implantation » d’effet-automatique.';
+    -- return 'Pas d’effet « implantation » d’effet-automatique.';
+    return '';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -91,6 +94,12 @@ begin
       v_distance := CASE WHEN  v_distance=-1 THEN distance_vue(v_source) ELSE LEAST(v_distance, distance_vue(v_source)) END ;
   end if;
   v_distance_min := CASE WHEN COALESCE((v_params->>'fonc_trig_min_portee')::text, '')='' THEN 0 ELSE ((v_params->>'fonc_trig_min_portee')::text)::integer END ;
+  -- ciblage du porteur et de ses compagnons (familier/cavalier/monture)
+  v_exclure_porteur := COALESCE((v_params->>'fonc_trig_exclure_porteur')::text, 'N')  ;
+  v_equipage = COALESCE(f_perso_cavalier(v_source), COALESCE(f_perso_monture(v_source),0));
+  if v_compagnon=0 and v_equipage != 0  then
+      v_compagnon:=v_equipage ;
+  end if;
 
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con
@@ -109,6 +118,8 @@ begin
                       and ( trajectoire_vue(pos_cod, v_position_source) = '1' or (v_params->>'fonc_trig_vue')::text != 'O')
                       -- Hors refuge si on le souhaite
                       and (v_cibles_type = 'P' or coalesce(lieu_refuge, 'N') = 'N')
+                      -- cas d'exclusion du porteur d'ea et de ses compagnos
+                      and (perso_cod not in (v_source, v_equipage, v_compagnon) or (v_exclure_porteur='N') or (v_cibles_type = 'S') )
                       -- Parmi les cibles spécifiées
                       and
                       ((v_cibles_type = 'S' and perso_cod = v_source) or
@@ -123,6 +134,7 @@ begin
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or
                        (v_cibles_type = 'C' and perso_cod = v_cible_donnee) or
                        (v_cibles_type = 'O' and perso_cod = v_cible_donnee) or
+                       (v_cibles_type = 'M' and perso_cod = COALESCE(f_perso_cavalier(v_cible_donnee), COALESCE(f_perso_monture(v_cible_donnee),0))) or
                        (v_cibles_type = 'T'))
                 -- Dans les limites autorisées
                 order by random()
@@ -151,7 +163,7 @@ begin
             fonc_proba,
             fonc_message,
             fonc_nombre_cible,
-            CASE WHEN COALESCE((v_params->>'fonc_trig_validite')::text, '0')='0' THEN null ELSE NOW() + ((v_params->>'fonc_trig_validite')::text || ' minutes')::interval end fonc_date_limite,
+            CASE WHEN COALESCE(nullif((v_params->>'fonc_trig_validite')::text, ''), '0')='0' THEN null ELSE NOW() + (coalesce((v_params->>'fonc_trig_validite')::text, '0') || ' minutes')::interval end fonc_date_limite,
             (('{"fonc_trig_implantation":"'||fonc_cod::text||'"}')::jsonb || coalesce(fonc_trigger_param, '{}')::jsonb)::json as fonc_trigger_param
           FROM fonction_specifique where fonc_cod=v_effet::integer ;
 
@@ -168,9 +180,9 @@ begin
 
   end loop;
 
-  if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour « implantation » d’effet-automatique';
-  end if;
+  -- if code_retour = '' then
+  --   code_retour := 'Aucune cible éligible pour « implantation » d’effet-automatique';
+  -- end if;
 
   return code_retour;
 end;$_$;

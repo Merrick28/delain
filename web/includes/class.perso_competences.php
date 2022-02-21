@@ -144,9 +144,12 @@ class perso_competences
             102=> "102, 103"
         ];
         //vérifions qu'il s'agit d'un compétence à niveau, sinon on charge la compétence de base.
-        if (! isset($comp_level[$comp])) return getByPersoComp($perso, $comp);
+        if (! isset($comp_level[$comp])) {
+            $competences = $comp ;
+        } else {
+            $competences = $comp_level[$comp] ;
+        }
 
-        $competences = $comp_level[$comp] ;
 
         $pdo  = new bddpdo;
         $req  = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_pcomp_cod in ({$competences}) order by pcomp_pcomp_cod desc limit 1";

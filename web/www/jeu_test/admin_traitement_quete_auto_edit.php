@@ -62,6 +62,15 @@ switch ($methode)
             $_REQUEST["aquete_nb_max_quete"] == "" ? NULL : $_REQUEST["aquete_nb_max_quete"];
         $quete->aquete_max_delai          = $_REQUEST["aquete_max_delai"] == "" ? NULL : $_REQUEST["aquete_max_delai"];
 
+        /// interraction ou QA standard
+        if (isset($_REQUEST["aquete_pos_etage"]) && (int)$_REQUEST["aquete_pos_etage"]>0) {
+            $quete->aquete_interaction = 'O' ;
+            $quete->aquete_pos_etage =  (int)$_REQUEST["aquete_pos_etage"];
+        } else {
+            $quete->aquete_interaction = 'N' ;
+            $quete->aquete_pos_etage =  NULL;
+        }
+
         $quete->stocke($new);
         $aquete_cod = $quete->aquete_cod;  // rerendre l'id (pour le cas de la création)
 
@@ -160,7 +169,7 @@ switch ($methode)
         // Agencement entre les étapes (chemin par defaut)
         // Si c'est la première etape, il faut mettre à jour la quête sinon la dernière étape avant celle-ci
         $deniere_etape = $quete->get_derniere_etape();
-        if ($etape_modele->aqetapmodel_tag == "#START")
+        if ($etape_modele->aqetapmodel_tag == "#START" || $etape_modele->aqetapmodel_tag == "#START #INTERACTION")
         {
             // C'est la première etape, mettre à jour la quete
             $quete->aquete_etape_cod = $etape->aqetape_cod;

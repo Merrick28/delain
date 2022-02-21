@@ -136,6 +136,10 @@ declare
   v_limite_quatriemes smallint;   -- Vaut 1 pour limiter les quatrième persos, 0 sinon.
   v_duree_vie interval;   -- Durée de vie, utilisé pour les monstres.
   texte_evt text;				-- texte de l evenement
+  v_perso_nom text;   -- nom du perso
+  v_modif_pa_dep integer;   -- cout du depacement hors BM
+  v_ter_cod integer;      -- cod du terrain
+  v_pos_cod integer;      -- cod du monstre genrique si c'est le cas!
 
 begin
   v_limite_quatriemes := 1;
@@ -145,8 +149,8 @@ begin
   -----------------------------------------------------------------
   -- calcul dlt
   -----------------------------------------------------------------
-  select into dlt_actuelle,v_niveau_vampire,v_type_perso,v_perso_priere,v_effets_auto,v_perso_pnj,v_actif,v_perso_mortel,v_perso_px
-    perso_dlt,perso_niveau_vampire,perso_type_perso,perso_priere,perso_effets_auto,perso_pnj,perso_actif,perso_mortel,perso_px
+  select into dlt_actuelle,v_niveau_vampire,v_type_perso,v_perso_priere,v_effets_auto,v_perso_pnj,v_actif,v_perso_mortel,v_perso_px,v_perso_nom, v_pv_max
+    perso_dlt,perso_niveau_vampire,perso_type_perso,perso_priere,perso_effets_auto,perso_pnj,perso_actif,perso_mortel,perso_px,perso_nom,perso_pv_max
   from perso
   where perso_cod = personnage for update;
 
@@ -458,6 +462,62 @@ begin
 
       delete from groupe_perso where pgroupe_perso_cod = personnage and pgroupe_statut = 2;
     end if;
+
+    /* gestion des montures sur un terrain normalement innacessible: la monture doit sortir en 2 tours avec des mouvements restent dependant du terrain */
+    select pos_cod, coalesce(pos_ter_cod,0) into v_pos_cod, v_ter_cod from perso join monstre_generique on gmon_cod=perso_gmon_cod and gmon_monture='O'  join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_type_perso=2 limit 1;
+    if found then
+        v_modif_pa_dep := get_pa_dep_terrain(personnage, v_pos_cod);
+
+        -- terrain impraticable pour une monture!!!
+        if v_modif_pa_dep<0 or v_modif_pa_dep>12 then
+              -- checher le text d'ambiance spécifique au terrain
+              select ter_msg_inaccessible into texte_evt from terrain where ter_cod=v_ter_cod ;
+              code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Vous devez sortir de cette zone rapidement.</strong>';
+
+              -- perte de PV lié au terrains
+              v_dgm_int := floor(v_pv_max / 2) ;   -- dommage de terrain = 1/2 des PV max, soit 3 tours max avec une bonne REG :-) !
+              update perso set perso_pv = perso_pv - v_dgm_int where perso_cod = personnage;
+              code_retour := code_retour || '<br>A cause de ce terrain trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
+
+              perform insere_evenement(personnage , personnage, 54, texte_evt || ' [cible] perd <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.', 'O', NULL);
+
+              select into pv_actuel perso_pv from perso where perso_cod = personnage;
+              if pv_actuel <= 0 then
+                temp_tue := tue_perso_final(personnage,personnage);
+                code_retour := code_retour || '<br>Vous êtes <b>mort !</b><br>';
+              end if;
+        end if;
+    end if;
+
+
+    /* gestion des perso sur un terrain normalement innacessible: le perso doit sortir en 3 tours avec des mouvements à 12PA */
+    v_modif_pa_dep := 0 ;
+    select  getparm_n(9) + pos_modif_pa_dep, coalesce(pos_ter_cod,0) into v_modif_pa_dep, v_ter_cod
+      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_monture is null and perso_type_perso in (1,3) limit 1;
+    if v_modif_pa_dep>12 then
+
+        -- checher le text d'ambiance spécifique au terrain
+        select ter_msg_inaccessible into texte_evt from terrain where ter_cod=v_ter_cod ;
+        if v_type_perso = 1 then
+            code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Vous devez sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+        else
+            code_retour := code_retour || '<br> <strong style="color:red;">'|| REPLACE(texte_evt, '[cible]', v_perso_nom) ||'</strong><br><u>ATTENTION</u>: <strong>Votre maitre doit sortir de cette zone rapidement et ici les déplacements coûtent 12PA.</strong>';
+        end if;
+
+        -- perte de PV lié au terrains
+        v_dgm_int := floor(v_pv_max / 3) ;   -- dommage de terrain = 1/3 des PV max, soit 4 tours max avec une bonne REG :-) !
+        update perso set perso_pv = perso_pv - v_dgm_int where perso_cod = personnage;
+        code_retour := code_retour || '<br>A cause de ce terrain trop dangereux, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.<br>';
+
+        perform insere_evenement(personnage , personnage, 54, texte_evt || ' [cible] perd <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie.', 'O', NULL);
+
+        select into pv_actuel perso_pv from perso where perso_cod = personnage;
+        if pv_actuel <= 0 then
+          temp_tue := tue_perso_final(personnage,personnage);
+          code_retour := code_retour || '<br>Vous êtes <b>mort !</b><br>';
+        end if;
+    end if;
+
     /* garde manger */
     if valeur_bonus(personnage, 'DGM') != 0 then
       v_dgm := valeur_bonus(personnage, 'DGM');
@@ -628,27 +688,23 @@ begin
     update lock_combat set lock_nb_tours = lock_nb_tours - 1 where lock_attaquant = personnage;
 
     /* ripostes */
-    update riposte set riposte_nb_tours = riposte_nb_tours - 1
-    where riposte_cible = personnage;
+    update riposte set riposte_nb_tours = riposte_nb_tours - 1 where riposte_cible = personnage;
 
     /* nombre competences */
-    update perso_nb_comp
-    set pnb_nombre = 0
-    where pnb_perso_cod = personnage;
+    update perso_nb_comp set pnb_nombre = 0  where pnb_perso_cod = personnage;
 
     /* nombre sorts */
-    update perso_nb_sorts
-    set pnbs_nombre = 0
-    where pnbs_perso_cod = personnage;
+    update perso_nb_sorts set pnbs_nombre = 0 where pnbs_perso_cod = personnage;
+
+    /* nombre sort objet bonus  */
+    update perso_nb_sorts_bm set pnbsbm_nombre = 0 where pnbsbm_perso_cod = personnage;
+
+    /* nombre autres actions */
+    update perso_nb_action set pnbact_nombre = 0 where pnbact_perso_cod = personnage;
 
     /* transactions */
-    update transaction
-    set tran_nb_tours = tran_nb_tours - 1
-    where tran_acheteur = personnage;
-
-    delete from transaction
-    where tran_acheteur = personnage
-          and tran_nb_tours <= 0;
+    update transaction set tran_nb_tours = tran_nb_tours - 1 where tran_acheteur = personnage;
+    delete from transaction  where tran_acheteur = personnage  and tran_nb_tours <= 0;
 
     /* bonus */
     update bonus

@@ -19,6 +19,8 @@ declare
 	v_pos_modif_pa_dep integer;
 	v_monture integer;
 	v_monture_pa integer;
+  v_ter_cod integer; -- terrain specifique
+  v_gmon_cod integer;  -- code du monstre generique pour une monture
 
 begin
 
@@ -40,14 +42,11 @@ begin
 		where ppos_perso_cod = personnage
 		and ppos_pos_cod = pos_cod;
 
+  select perso_type_perso into v_type_perso from perso where perso_cod = personnage;
+
 	-- cas de l'étage de l'araigné, un malus de deplacement sur tous l'étage pour les joueurs
-	if v_etage = 16 then
-		select into v_type_perso perso_type_perso
-			from perso
-			where perso_cod = personnage;
-		if v_type_perso != 2 then
+	if v_etage = 16 and v_type_perso != 2 then
 			code_retour := code_retour + 2;
-		end if;
 	end if;
 	code_retour := code_retour + v_pos_modif_pa_dep;
 
@@ -57,22 +56,34 @@ begin
 		code_retour := code_retour + 1;
 	end if;
 
-  -- s'il y a un terrain specifique a cette position, on regarde si c'est une monture avec des caracs speciales sur ce terrain
-  select tmon_terrain_pa into v_monture_pa
-      from perso
+  -- récupération du type de terrain pour un monstre avec des capacités de terrain
+    select coalesce(pos_ter_cod,0), perso_gmon_cod into v_ter_cod, v_gmon_cod  from perso
       join perso_position on ppos_perso_cod=perso_cod
       join positions on pos_cod=ppos_pos_cod
-      join monstre_terrain on tmon_gmon_cod = perso_gmon_cod and tmon_ter_cod=pos_ter_cod
       where perso_cod=personnage and perso_type_perso=2 limit 1;
   if found then
-      -- cas d'une monture sur un terrain où la monture a une capacité spéciales (bonus ou malus)!
-      code_retour := code_retour + v_monture_pa ;
+      -- cas d'un mosntre sur un terrain pécifique, on recarge les capacité de la monture sur ce terrain
+      select tmon_terrain_pa into v_monture_pa from monstre_terrain where tmon_gmon_cod = v_gmon_cod and tmon_ter_cod=v_ter_cod limit 1;
+      if found then
+           code_retour := code_retour + v_monture_pa ;
+      else
+          -- si auncun capacité de terrain n'a pas été trouvé on regarde s'il y a une condition sur "autre trerrain v_ter_cod = -1 !
+          select tmon_terrain_pa into v_monture_pa from monstre_terrain where tmon_gmon_cod = v_gmon_cod and tmon_ter_cod=-1 limit 1;
+          if found then
+               code_retour := code_retour + v_monture_pa ;
+          end if;
+      end if;
   end if;
 
   -- Marlyza le 14/01/2021 : modification du seuil minimal (en accord avec phenix et pnarcade)
   -- seuil minimum de 1 pour les déplacements!
 	if code_retour < 1 then
 		code_retour := 1;
+	end if;
+
+	-- Marlyza le 16/03/2021 : modification du seuil minimal (sauf monstre) 2PA si terrain standard/malus et 1PA si terrains à bonus
+	if code_retour=1 and v_pos_modif_pa_dep>=0 and v_type_perso != 2  then
+	  code_retour := 2;
 	end if;
 
 	-- fin de traitement, retourner le nombre de PA

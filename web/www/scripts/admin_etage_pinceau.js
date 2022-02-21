@@ -1,21 +1,13 @@
 console.log('chargement admin_etage_pinceau');
 
-var defautImageUrl = "http://www.jdr-delain.net/images/del.gif";
-var cheminImages = "http://www.jdr-delain.net/images/";
+var defautImageUrl = "/images/del.gif";
+var cheminImages = "/images/";
 var Fonds = {};
 Fonds.donnees = new Array();
-Fonds.isDefaut = function (id) {
-	return false;
-};
-Fonds.getUrl = function (id) {
-	return cheminImages + 'f_' + Etage.style + '_' + id + '.png';
-};
-Fonds.getClass = function (id) {
-	return 'v' + id;
-};
-Fonds.getId = function (id) {
-	return 'fond' + id;
-};
+Fonds.isDefaut = function (id) { return false; };
+Fonds.getUrl = function (id) { return cheminImages + 'f_' + Etage.style + '_' + id + '.png'; };
+Fonds.getClass = function (id) { return 'v' + id; };
+Fonds.getId = function (id) { return 'fond' + id; };
 Fonds.type = "Fond";
 Fonds.enlevable = false;
 Fonds.getSousType = function (id) { return true; }
@@ -64,9 +56,18 @@ Speciaux.donnees = [
 	{id: 'tangibleTOGGLE', valeur: true, nom: 'Change mur tangibilité', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'illusionTOGGLE', valeur: true, nom: 'Change mur illusion', type: 'illusion', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'illusionOK', valeur: true, nom: 'Mur illusion', type: 'illusion', url: 'special-brush.png', css: 'pinceauOn'},
+	{id: 'illusionNOK', valeur: false, nom: 'Mur physique', type: 'illusion', url: 'special-brush.png', css: 'pinceauOff'},
 	{id: 'areneTOGGLE', valeur: true, nom: 'Change Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOn'},
 	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: 'special-brush.png', css: 'pinceauOff'},
+	{id: 'terrain-dep', valeur: false, nom: 'Terrain/Déplacement', type: 'terrain-dep', url: 'special-brush.png', css: ''},
+	{id: 'terrain', valeur: false, nom: 'Terrain', type: 'terrain', url: 'special-brush.png', css: ''},
+	{id: 'deplacement', valeur: false, nom: 'Déplacement', type: 'deplacement', url: 'special-brush.png', css: ''},
+	{id: 'ea-dep', valeur: false, nom: 'Effet-auto', type: 'ea-dep', url: 'special-brush.png', css: ''},
+	{id: 'qa-dep', valeur: false, nom: 'Quête-auto', type: 'qa-dep', url: 'special-brush.png', css: ''},
+	{id: 'meca-dep', valeur: false, nom: 'Mecanisme', type: 'meca-dep', url: 'special-brush.png', css: ''},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -144,10 +145,47 @@ Pinceau.appliqueCase = function (idx) {
 	var idxModif = (ancienneCase.modifiee) ? Etage.TrouveCaseModifieeParId(ancienneCase.id) : -1;
 	if (idxModif > -1) {	// Case déjà modifiée
 		var caseModif = Etage.CasesModifiees[idxModif];
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: caseModif.mur, decor: caseModif.decor, decor_dessus: caseModif.decor_dessus, fond: caseModif.fond, passage: caseModif.passage, pvp: caseModif.pvp, creusable: caseModif.creusable, tangible: caseModif.tangible, entree_arene: caseModif.entree_arene };
+		nvlleCase = {
+			idx: idx,
+			id: ancienneCase.id,
+			mur: caseModif.mur,
+			decor: caseModif.decor,
+			decor_dessus: caseModif.decor_dessus,
+			fond: caseModif.fond,
+			passage: caseModif.passage,
+			pvp: caseModif.pvp,
+			creusable: caseModif.creusable,
+			tangible: caseModif.tangible,
+			illusion: caseModif.illusion,
+			entree_arene: caseModif.entree_arene,
+			ter_cod: caseModif.ter_cod,
+			pa_dep: caseModif.pa_dep,
+			ea_dep: caseModif.ea_dep,
+			qa_dep: caseModif.qa_dep,
+			meca_dep: caseModif.meca_dep
+		};
 		Etage.CasesModifiees.splice(idxModif, 1);
-	} else			// Case pas encore modifiée
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: ancienneCase.mur, decor: ancienneCase.decor, decor_dessus: ancienneCase.decor_dessus, fond: ancienneCase.fond, passage: ancienneCase.passage, pvp: ancienneCase.pvp, creusable: ancienneCase.creusable, tangible: ancienneCase.tangible, entree_arene: ancienneCase.entree_arene };
+	} else {		// Case pas encore modifiée
+		nvlleCase = {
+			idx: idx,
+			id: ancienneCase.id,
+			mur: ancienneCase.mur,
+			decor: ancienneCase.decor,
+			decor_dessus: ancienneCase.decor_dessus,
+			fond: ancienneCase.fond,
+			passage: ancienneCase.passage,
+			pvp: ancienneCase.pvp,
+			creusable: ancienneCase.creusable,
+			tangible: ancienneCase.tangible,
+			illusion: ancienneCase.illusion,
+			entree_arene: ancienneCase.entree_arene,
+			ter_cod: ancienneCase.ter_cod,
+			pa_dep: ancienneCase.pa_dep,
+			ea_dep: ancienneCase.ea_dep,
+			qa_dep: ancienneCase.qa_dep,
+			meca_dep: ancienneCase.meca_dep
+		};
+	}
 
 	// récupération et mise à jour des données
 	switch (Pinceau.type) {
@@ -170,12 +208,82 @@ Pinceau.appliqueCase = function (idx) {
 		case Speciaux.type:
 
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
-			if (pinceauSpecial.id=="passageTOGGLE" || pinceauSpecial.id=="pvpTOGGLE" || pinceauSpecial.id=="creusableTOGGLE" || pinceauSpecial.id=="tangibleTOGGLE" || pinceauSpecial.id=="areneTOGGLE") {
+			if (pinceauSpecial.id=="meca-dep" ) {
+				var meca_cod = $("#select-meca-dep").val();
+
+				nvlleCase.meca_dep[meca_cod] = nvlleCase.meca_dep[meca_cod] ? 0 : 1;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.meca_dep[meca_cod] == 0 ? false : true);
+
+				var liste = $("#meca-liste-cases-" + meca_cod).val();
+				if (nvlleCase.meca_dep[meca_cod] == 0) {
+					liste = liste.replace(" " + nvlleCase.id + ",", "");
+				} else {
+					liste = liste + " " + nvlleCase.id + ",";
+				}
+
+				$("#meca-liste-cases-" + meca_cod).val(liste);
+				$("#meca-modif-cases-" + meca_cod).val(1);			// Pos_cod list des MECA modifiée!
+			} else if (pinceauSpecial.id=="qa-dep" ) {
+				var aquete_cod = $("#select-qa-dep").val();
+
+				nvlleCase.qa_dep[aquete_cod] = nvlleCase.qa_dep[aquete_cod] ? 0 : 1;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.qa_dep[aquete_cod] == 0 ? false : true);
+
+				var liste = $("#qa-liste-cases-" + aquete_cod).val();
+				if (nvlleCase.qa_dep[aquete_cod] == 0) {
+					liste = liste.replace(" " + nvlleCase.id + ",", "");
+				} else {
+					liste = liste + " " + nvlleCase.id + ",";
+				}
+
+				$("#qa-liste-cases-" + aquete_cod).val(liste);
+				$("#qa-modif-cases-" + aquete_cod).val(1);			// Pos_cod list des MECA modifiée!
+
+			} else if (pinceauSpecial.id=="ea-dep" ) {
+				var fonc_cod = $("#select-ea-dep").val();
+
+				nvlleCase.ea_dep[fonc_cod] = nvlleCase.ea_dep[fonc_cod] ? 0 : 1 ;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ea_dep[fonc_cod] == 0 ? false : true);
+
+				if (fonc_cod==0) var liste = $("#ea-liste-cases").text(); else var liste = $("#ea-liste-cases-"+fonc_cod).val();
+				if (nvlleCase.ea_dep[fonc_cod] == 0) {
+					liste = liste.replace(" "+nvlleCase.id+",", "");
+				} else {
+					liste = liste+" "+nvlleCase.id+",";
+				}
+				if (fonc_cod==0) {
+					$("#ea-liste-cases").text( liste );
+				} else {
+					$("#ea-liste-cases-"+fonc_cod).val(liste);
+					$("#ea-modif-cases-"+fonc_cod).val(1);			// Pos_cod list des EA modifiée!
+				}
+
+			} else if (pinceauSpecial.id=="terrain" ) {
+				var ter_cod = $("#select-terrain").val();
+				nvlleCase.ter_cod = nvlleCase.ter_cod == ter_cod ? 0 : ter_cod;
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ter_cod == ter_cod ? true : false);
+
+			} else if (pinceauSpecial.id=="deplacement" ) {
+				var  pa_dep = $("#dep_pa").val();
+				nvlleCase.pa_dep = nvlleCase.pa_dep == pa_dep ? 0 : pa_dep ;
+				$(Etage.Cases[idx].divSpecial).text(nvlleCase.pa_dep == 0 ? '' : nvlleCase.pa_dep );
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.pa_dep == pa_dep ? false : true);
+
+			} else if (pinceauSpecial.id=="terrain-dep" ) {
+				var  ter_cod = $("#select-terrain-dep").val();
+				var  pa_dep = $("#terrain-dep_pa").val();
+				nvlleCase.pa_dep = nvlleCase.ter_cod == ter_cod ? ancienneCase.pa_dep : pa_dep ;
+				nvlleCase.ter_cod = nvlleCase.ter_cod == ter_cod ? 0 : ter_cod ;
+				$(Etage.Cases[idx].divSpecial).text(nvlleCase.pa_dep == 0 ? '' : nvlleCase.pa_dep );
+				Etage.changeCaseCSS(Speciaux, idx, nvlleCase.ter_cod == ter_cod ? true : false );
+
+			} else if (pinceauSpecial.id=="passageTOGGLE" || pinceauSpecial.id=="pvpTOGGLE" || pinceauSpecial.id=="creusableTOGGLE" || pinceauSpecial.id=="tangibleTOGGLE" || pinceauSpecial.id=="illusionTOGGLE" || pinceauSpecial.id=="areneTOGGLE") {
 				switch (pinceauSpecial.type) {
 					case 'passage': nvlleCase.passage = !nvlleCase.passage; Etage.changeCase (Speciaux, idx, nvlleCase.passage ? "passageOK":"passageNOK");break;
 					case 'pvp': nvlleCase.pvp = !nvlleCase.pvp; Etage.changeCase (Speciaux, idx, nvlleCase.pvp ? "pvpOK":"pvpNOK");break;
 					case 'creusable': nvlleCase.creusable = !nvlleCase.creusable; Etage.changeCase (Speciaux, idx, nvlleCase.creusable ? "creusableOK":"creusableNOK");break;
 					case 'tangible': nvlleCase.tangible = !nvlleCase.tangible; Etage.changeCase (Speciaux, idx, nvlleCase.tangible ? "tangibleOK":"tangibleNOK");break;
+					case 'illusion': nvlleCase.illusion = !nvlleCase.illusion; Etage.changeCase (Speciaux, idx, nvlleCase.illusion ? "illusionOK":"illusionNOK");break;
 					case 'entree_arene': nvlleCase.entree_arene = !nvlleCase.entree_arene; Etage.changeCase (Speciaux, idx, nvlleCase.entree_arene ? "areneOK":"areneNOK");break;
 				}
 			} else {
@@ -185,6 +293,7 @@ Pinceau.appliqueCase = function (idx) {
 					case 'pvp': nvlleCase.pvp = pinceauSpecial.valeur; break;
 					case 'creusable': nvlleCase.creusable = pinceauSpecial.valeur; break;
 					case 'tangible': nvlleCase.tangible = pinceauSpecial.valeur; break;
+					case 'illusion': nvlleCase.illusion = pinceauSpecial.valeur; break;
 					case 'entree_arene': nvlleCase.entree_arene = pinceauSpecial.valeur; break;
 				}
 			}
@@ -214,7 +323,25 @@ Pinceau.annuleCase = function (idx) {
 		Etage.changeCase (Speciaux, idx, (caseDebut.pvp) ? 'pvpOK' : 'pvpNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.creusable) ? 'creusableOK' : 'creusableNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.tangible) ? 'tangibleOK' : 'tangibleNOK');
+		Etage.changeCase (Speciaux, idx, (caseDebut.illusion) ? 'illusionOK' : 'illusionNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.entree_arene) ? 'areneOK' : 'areneNOK');
+
+		var spec = $('input[name="special"]:checked').val();
+		if (spec=="ea-dep" ) {
+
+			var liste = $("#ea-liste-cases").text();
+			liste = liste.replace(" " + caseDebut.id + ",", "");
+			$("#ea-liste-cases").text(liste);
+		} else if (spec=="terrain") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="deplacement") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.dep_pa == $("#dep_pa").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}else if (spec=="terrain-dep") {
+			Etage.changeCaseCSS(Speciaux, idx,  caseDebut.ter_cod == $("#select-terrain-dep").val() ? true : false);
+			$(Etage.Cases[idx].divSpecial).text(caseDebut.pa_dep == 0 ? '' : caseDebut.pa_dep );
+		}
 
 		// On supprime la case de la liste des modifs
 		Etage.CasesModifiees.splice(idxModif, 1);
@@ -224,7 +351,7 @@ Pinceau.annuleCase = function (idx) {
 
 Pinceau.dessineListe = function (objet, parent) {
 	var imagesParLigne = 5;
-	var lignesVisibles = 8;
+	var lignesVisibles = 10;
 	var nombreDeLignes = objet.donnees.length / imagesParLigne;
 	var largeurPX = (imagesParLigne * 30);
 	var hauteurPX = (nombreDeLignes * 30);

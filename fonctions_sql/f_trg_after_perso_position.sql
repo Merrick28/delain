@@ -15,20 +15,41 @@ declare
 	v_ppos_cod integer;
 	v_perso_cod integer;    -- perso_cod de la monture ou du cavalier
 	v_familier integer;    -- perso_cod du familier s'il y en a un
+	v_p_etage integer;    -- etage du perso
+	v_m_etage integer;    -- etage de la monture
+	v_pa_terrain integer;    -- etat du terrain de la zone d'arrivée!
 begin
 
   -- cas d'un joueur qui se déplace
-  select ppos_cod, m.perso_cod into v_ppos_cod, v_perso_cod
+  select ppos_cod, m.perso_cod, pp.pos_etage, mp.pos_etage into v_ppos_cod, v_perso_cod, v_p_etage, v_m_etage
       from perso as p
       join perso as m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
       join perso_position on ppos_perso_cod = m.perso_cod
+      join positions mp on mp.pos_cod=ppos_pos_cod
+      join positions pp on pp.pos_cod=NEW.ppos_pos_cod
       where p.perso_cod=NEW.ppos_perso_cod and p.perso_type_perso=1 and ppos_pos_cod<>NEW.ppos_pos_cod ;
   if found then
-      -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture !
-      update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
-      delete from lock_combat where lock_attaquant = v_perso_cod;
-      delete from lock_combat where lock_cible = v_perso_cod;
-      delete from riposte where riposte_attaquant = v_perso_cod;
+      -- le joueur a une monture active qui n'est pas sur ça case, on bouge sa monture (seulement s'il n'y a pas de changement d'étage)!
+      -- ou la zone ciblé est innacessible à la monture (à cause du terrain)
+      v_pa_terrain := get_pa_dep_terrain(v_perso_cod, NEW.ppos_pos_cod);
+      if v_p_etage = v_m_etage and v_pa_terrain >=0 and v_pa_terrain <=12 then
+          -- on deplace la monture sur la case du joueur
+          update perso_position set ppos_pos_cod=NEW.ppos_pos_cod where ppos_cod=v_ppos_cod ;
+          delete from lock_combat where lock_attaquant = v_perso_cod;
+          delete from lock_combat where lock_cible = v_perso_cod;
+          delete from riposte where riposte_attaquant = v_perso_cod;
+      else
+          -- le joueur change d'étage, ou il va sur un terrain innacessible à la monture on le détache de sa monture
+          update perso set perso_monture=null where perso_cod = NEW.ppos_perso_cod ;
+
+          -- evenement chevaucher (108)
+          if v_p_etage = v_m_etage then
+              perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture, [cible] refuse d’aller sur ce terrain.', 'O', NULL);
+          else
+              perform insere_evenement(NEW.ppos_perso_cod , v_perso_cod, 108, '[attaquant] a été éjecté de sa monture, [cible] ne peut pas changer d’étage.', 'O', NULL);
+          end if;
+
+      end if;
   end if;
 
   -- cas d'une monture qui se déplace

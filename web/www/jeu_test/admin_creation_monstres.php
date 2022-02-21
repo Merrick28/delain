@@ -205,7 +205,7 @@ if ($erreur == 0)
     $stmt          = $pdo->query($req);
     while ($result = $stmt->fetch())
     {
-        $texte_select  = ($result['compt_cod'] == $compt_cod) ? 'selected="selected"' : '';
+        $texte_select  = ""; //($result['compt_cod'] == $compt_cod) ? 'selected="selected"' : '';
         $option_compte .= "<option value=\"" . $result['compt_cod'] . "\" $texte_select>" . $result['compt_nom'] . "</option>";
     }
 
@@ -222,7 +222,7 @@ if ($erreur == 0)
     $stmt          = $pdo->query($req);
     while ($result = $stmt->fetch())
     {
-        $option_combat .= "<option value=\"" . $result['mcom_cod'] . "\">" . $result['mcom_nom'] . "</option>";
+        $option_combat .= "<option ".($result['mcom_cod'] == 0 ? "selected" : "")." value=\"" . $result['mcom_cod'] . "\">" . $result['mcom_nom'] . "</option>";
     }
 
 

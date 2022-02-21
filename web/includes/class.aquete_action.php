@@ -65,6 +65,18 @@ class aquete_action
     }
 
     //==================================================================================================================
+    private function injection_journal($aqperso, $texte_lancer)
+    {
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePageEtape($aqperso->aqperso_cod, $aqperso->aqperso_etape_cod);
+        if (strpos($perso_journal->aqpersoj_texte, "[[#aqaction]") !== false) {
+            $perso_journal->aqpersoj_texte = str_replace("[[#aqaction]]", $texte_lancer, $perso_journal->aqpersoj_texte);
+            $perso_journal->stocke();
+        }
+    }
+
+
+    //==================================================================================================================
     /**
      * On supprime tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
      * @param aquete_perso $aqperso
@@ -187,16 +199,29 @@ class aquete_action
         if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p7->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
 
         $perso_competence = new perso_competences();
-        if (!$perso_competence->getByPersoCompetenceNiveau($perso->perso_cod, $p1->aqelem_misc_cod)) return 0 ;         // etape suivante: pas la compétence
+        if (!$perso_competence->getByPersoCompetenceNiveau($perso->perso_cod, $p1->aqelem_misc_cod))
+        {
+            $this->injection_journal($aqperso, "Vous ne disposez pas de la compétence.");
+            return 0 ;
+        }
 
         // Si le perso n'a pas le niveau requis
-        if ( $perso_competence->pcomp_modificateur <= $p2->aqelem_param_num_1 ) return 0 ;                              // etape suivante: pas le niveau
+        if ( $perso_competence->pcomp_modificateur < $p2->aqelem_param_num_1)                          // etape suivante: pas le niveau
+        {
+            $this->injection_journal($aqperso, "Vous n'avez pas le niveau requis pour essayer.");
+            return 0 ;
+        }
 
         // On ajoute la difficulté au niveau de compétence du perso
         $competence = $perso_competence->pcomp_modificateur + $p3->aqelem_param_num_1;
 
         // Si la difficulté est supérieure au niveau du perso
-        if ($competence <= 0 ) return 0 ;                                                                               // etape suivante: trop dificille
+        if ($competence <= 0 )
+        {
+            $this->injection_journal($aqperso, "Le difficulté est trop grande pour pouvoir faire quelque chose.");
+            return 0 ;
+        }
+        // etape suivante: trop dificille
 
         // Lancé du jet de dé 1D100 en tenant compte des malédiction/bénédiction pour retourner les chances de réussite
         $pdo = new bddpdo;
@@ -208,17 +233,97 @@ class aquete_action
         if ( !$result = $stmt->fetch() ) return $p7->aqelem_misc_cod ;        // echec classique
         $reussite = $result["reussite"];
 
+        $texte_lancer = "Votre lancer de dé est : ".$reussite ;
         if ($reussite>96) {
             $etape = $p8->aqelem_misc_cod  ;        // Echec critique
+            $texte_lancer.= ", il s'agit d'un echec critique.";
         } else if ($reussite>$competence) {
             $etape = $p7->aqelem_misc_cod  ;        // echec classique
-        } else if ($result["reussite"] <= ( 5*$competence/100) ) {
-            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5% de la compétence
+            $texte_lancer.= ", il s'agit d'un echec.";
+        } else if ($result["reussite"] <= 5 ) {
+            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5
+            $texte_lancer.= ", il s'agit d'une réussite critique.";
         } else if ($result["reussite"] <= ( 10*$competence/100) ) {
             $etape = $p5->aqelem_misc_cod  ;        // Réussite spéciale à 10% de la compétence
+            $texte_lancer.= ", il s'agit d'une réussite spéciale.";
         } else {
             $etape = $p6->aqelem_misc_cod  ;        // Réussite standard
+            $texte_lancer.= ", il s'agit d'une réussite.";
         }
+
+        $this->injection_journal($aqperso, $texte_lancer);
+
+        //echo "<pre>"; print_r([$etape, $reussite, $competence, $result]);die();
+
+        // retourner l'étape !
+        return $etape;
+    }
+
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:selecteur|1%1|{1~Force},{2~Dextérité},{3~Intelligence},{4~Constitution},{5~Vue}],[2:valeur|1%1],[3:valeur|1%1],[4:etape|1%1],[5:etape|1%1],[6:etape|1%1],[7:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return integer (etape)
+     */
+    function saut_condition_carac(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "selecteur", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1)) return 0 ;             // (mini) Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur", 1)) return 0 ;             // (dificulté) Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return 0 ;              // (reussite critique) Problème lecture passage à l'etape suivante
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 1)) return 0 ;              // (reussite) Problème lecture passage à l'etape suivante
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape", 1)) return 0 ;              // (echec) Problème lecture passage à l'etape suivante
+        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, "etape", 1)) return 0 ;              // (echec critique) Problème lecture passage à l'etape suivante
+
+        $perso = new perso();
+        if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p6->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
+
+        // recupe de la carac en focntion du selecteur
+        if ($p1->aqelem_misc_cod = 1)  {$coeff=3; $carac = $perso->perso_for ; }
+        else if ($p1->aqelem_misc_cod = 2)  {$coeff=3; $carac = $perso->perso_dex ;}
+        else if ($p1->aqelem_misc_cod = 3)  {$coeff=3; $carac = $perso->perso_int ;}
+        else if ($p1->aqelem_misc_cod = 4)  {$coeff=3; $carac = $perso->perso_con ;}
+        else if ($p1->aqelem_misc_cod = 5)  {$coeff=5; $carac = $perso->distance_vue() ;}
+        else return $p6->aqelem_misc_cod ;
+
+        // Si le perso n'a pas le niveau requis dans la carac
+        if ( $carac < $p2->aqelem_param_num_1)                              // etape suivante: pas le niveau
+        {
+            $this->injection_journal($aqperso, "Votre caracteristique est trop faible pour essayer.");
+            return 0 ;
+        }
+
+        // Lancé du jet de dé 1D100 en tenant compte des malédiction/bénédiction pour retourner les chances de réussite
+        $pdo = new bddpdo;
+        $req = "select lancer_des3(1,100, (valeur_bonus(:perso_cod, 'BEN') + valeur_bonus(:perso_cod, 'MAU'))::integer) as reussite, lancer_des3(1,100, 0) as opposition";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso_cod" => $aqperso->aqperso_perso_cod
+        ), $stmt);
+        if ( !$result = $stmt->fetch() ) return $p7->aqelem_misc_cod ;        // echec classique
+        $reussite = $result["reussite"];
+        $opposition = $result["opposition"];
+
+        $texte_lancer = "Votre lancer de dé est : ".$reussite ;
+        if ($reussite>96) {
+            $etape = $p7->aqelem_misc_cod  ;        // Echec critique
+            $texte_lancer.= ", il s'agit d'un echec critique.";
+        } else if ((($carac*$coeff)-$reussite) < (($p3->aqelem_param_num_1*$coeff) - $opposition)) {
+            $etape = $p6->aqelem_misc_cod  ;        // echec classique
+            $texte_lancer.= ", il s'agit d'un echec, le jet d'opposition ($opposition) sur la caractéristique est meilleur que le votre.";
+        } else if ($result["reussite"] <= 5 ) {
+            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5
+            $texte_lancer.= ", il s'agit d'une réussite critique.";
+        } else {
+            $etape = $p5->aqelem_misc_cod  ;        // Réussite standard
+            $texte_lancer.= ", il s'agit d'une réussite, votre jet de dé sous votre caractéristique est meilleur que le jet d'opposition ($opposition).";
+        }
+
+        $this->injection_journal($aqperso, $texte_lancer);
+
+        //echo "<pre>"; print_r([$aqperso->aqperso_cod, $aqperso->aqperso_etape_cod, $perso_journal]);die();
 
         // retourner l'étape !
         return $etape;
@@ -374,6 +479,155 @@ class aquete_action
         // Sortie par défaut!! demander une autre saisie du joueur
         return $retour;
     }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_pa(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if (!isset($_REQUEST["dialogue"]) || $_REQUEST["dialogue"] == "")
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue = $_REQUEST["dialogue"] ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "valeur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape" )) return $retour ;    // Problème lecture (blocage)
+
+        $nb_pa = $p1->aqelem_param_num_1 ;
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+
+        // refus ou pas assez de PA
+        if ($perso->perso_pa<$nb_pa || $dialogue != 'O')
+        {
+            $retour->status = true ;  // l'étape est pas terminée sur un fail !
+            $retour->etape = $p2->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // Consommer les PA
+        $perso->perso_pa = $perso->perso_pa - $nb_pa ;
+        $perso->stocke();
+
+        $retour->status = true ;  // l'étape est pas terminée sur un success !
+        $retour->etape = $p3->aqelem_misc_cod;
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_code(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if (!isset($_REQUEST["dialogue"]) )
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue =  $_REQUEST["dialogue"] ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "selecteur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "texte" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape" )) return $retour ;    // Problème lecture (blocage)
+
+        $nb_pa = $p3->aqelem_param_num_1 ;
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+
+        // refus ou pas assez de PA
+        if ($perso->perso_pa<$nb_pa || $dialogue == '')
+        {
+            $retour->status = true ;  // l'étape est terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // Consommer les PA
+        $perso->perso_pa = $perso->perso_pa - $nb_pa ;
+        $perso->stocke();
+
+        // Code faux
+        if ($dialogue != $p2->aqelem_param_txt_1)
+        {
+            $retour->status = true ;  // l'étape est terminée sur un fail !
+            $retour->etape = $p4->aqelem_misc_cod;
+            return $retour;
+        }
+
+        $retour->status = true ;  // l'étape est terminée sur un success !
+        $retour->etape = $p5->aqelem_misc_cod;
+        return $retour;
+    }
+
+
+
+    //==================================================================================================================
+    /**
+     * saut suit état de mécanisme =>  '[1:meca_etat|0%0],[2:valeur|1%1],[3:etape|1%1],[4:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_meca(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;                      // Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return $p3->aqelem_misc_cod ;   // Problème lecture passage à l'etape d'erreur
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "meca_etat", 0)) return $p3->aqelem_misc_cod ;              // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1))return $p3->aqelem_misc_cod  ;   // Problème lecture passage à l'etape suivante
+
+        // nombre de meca dans le bon état attendu.
+        $nb_attendu = $p2->aqelem_misc_cod ? $p2->aqelem_misc_cod : count($p1) ;
+
+        //passage en revue des mots attendus (dans l'ordre)
+        $nb_meca_ok = 0 ;
+        foreach ($p1 as $e => $elem)
+        {
+            $meca = new meca();
+            $meca->charge($elem->aqelem_misc_cod);
+            $etat = $meca->get_etat($elem->aqelem_param_num_3);
+
+            if ($etat["nb_total"] > 0)
+            {
+                if (($elem->aqelem_param_num_1 == 0 && $etat["nb_actif"]==$etat["nb_total"]) ||($elem->aqelem_param_num_1 == -1 && $etat["nb_inactif"]==$etat["nb_total"]) )
+                {
+                    $nb_meca_ok ++ ; // le mécanisme est dans l'état demandé!
+                }
+            }
+        }
+
+
+        //y-a-t-il le quorum ?
+        if ($nb_meca_ok < $nb_attendu) return $p3->aqelem_misc_cod ;
+
+        // les conditions sont là !!!!
+        return $p4->aqelem_misc_cod ;
+    }
+
 
     //==================================================================================================================
     /**
@@ -710,6 +964,56 @@ class aquete_action
      * @param aquete_perso $aqperso
      * @return bool
      */
+    function change_impalpabilite(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'selecteur')) return false ;      // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;      // Problème lecture des paramètres
+
+        $nb_tour = (int)$p2->aqelem_param_num_1 ;
+        $texte_evt = "[attaquant] a été rendu ". ( $nb_tour > 0 ? "impalpable." : "palpable." ) ;
+
+        $perso = new perso();
+        if ( ! $perso->charge($aqperso->aqperso_perso_cod) ) return false ;
+
+        // Mettre l'impalpabilité sur le meneur
+        if ($p1->aqelem_misc_cod==1 || $p1->aqelem_misc_cod==3)
+        {
+            $perso->perso_tangible = $nb_tour > 0 ? 'N' : 'O' ;
+            $perso->perso_nb_tour_intangible = $nb_tour  ;
+            $perso->stocke();
+            $evt = new ligne_evt();
+            $evt->evenement(54, $texte_evt, $aqperso->aqperso_perso_cod );
+        }
+
+        // Mettre l'impalpabilité sur le familier (s'il y en a un)
+        if ($p1->aqelem_misc_cod==2 || $p1->aqelem_misc_cod==3)
+        {
+            if ($fam_cod = $perso->get_familier())
+            {
+                $familier = new perso();
+                if ( $familier->charge($fam_cod) )
+                {
+                    $familier->perso_tangible = $nb_tour > 0 ? 'N' : 'O' ;
+                    $familier->perso_nb_tour_intangible = $nb_tour  ;
+                    $familier->stocke();
+                    $evt = new ligne_evt();
+                    $evt->evenement(54, $texte_evt, $fam_cod );
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    //==================================================================================================================
+    /**
+     * Distribution en PX PO => '[1:texte|1%1|Titre]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
     function recevoir_titre(aquete_perso $aqperso)
     {
         $element = new aquete_element();
@@ -734,6 +1038,7 @@ class aquete_action
         }
         return true;
     }
+
     //==================================================================================================================
     /**
      *Distribution en PX PO => '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]'
@@ -1009,6 +1314,16 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                              // Problème lecture des paramètres
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return false ;       // Problème lecture des paramètres
+        $p3 = $element->get_aqperso_element( $aqperso, 3, 'selecteur') ;        // ce parametre est optionnel(innexistant dans les premières versions)
+        $p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur') ;           // ce parametre est optionnel(innexistant dans les premières versions)
+
+        // Parametre de dispertion pour distribution au sol!
+        $dispersion = $p4 ? $p4->aqelem_param_num_1 : 0 ;
+
+        // Recherche de la zone centrale de départ
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+        $perso_pos_pos = $perso->get_position()["pos"]->pos_cod ;
 
         shuffle($p2);                                       // ordre aléatoire pour les objets
 
@@ -1041,36 +1356,64 @@ class aquete_action
         $param_ordre = 0 ;
         foreach ($liste_objet as $k => $elem)
         {
-
-            // instancier l'objet générique
-            $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
-
-            if ($result = $stmt->fetch())
+            if ($p3 && $p3->aqelem_misc_cod==1)
             {
-                if (1*$result["obj_cod"]>0)
-                {
-                    $objet = new objets();
-                    $objet->charge(1*$result["obj_cod"]);
+                // drop de l'objet au sol
+                $req = "select cree_objet_pos(:gobj_cod, pos_alentour(:pos_cod, :dispersion)) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":pos_cod" => $perso_pos_pos, ":dispersion" => $dispersion  ), $stmt);
 
-                    $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
-                        ":texte_evt"=> $texte_evt,
-                        ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
-                        ":levt_cible" => $aqperso->aqperso_perso_cod ,
-                        ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
-                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
-                    $elem->aqelem_type = 'objet';
-                    $elem->aqelem_misc_cod =  $objet->obj_cod ;
-                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
-                    $param_ordre ++ ;
-                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"] > 0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
                 }
             }
+            else
+            {
+                // mettre l'objet directement dans l'inventaire du meneur de quete
+
+                // instancier l'objet générique
+                $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+                if ($result = $stmt->fetch())
+                {
+                    if (1*$result["obj_cod"]>0)
+                    {
+                        $objet = new objets();
+                        $objet->charge(1*$result["obj_cod"]);
+
+                        $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                        $stmt   = $pdo->prepare($req);
+                        $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                            ":texte_evt"=> $texte_evt,
+                            ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
+                            ":levt_cible" => $aqperso->aqperso_perso_cod ,
+                            ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+                        // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                        $elem->aqelem_type = 'objet';
+                        $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                        $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                        $param_ordre ++ ;
+                        $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    }
+                }
+            }
+
         }
 
         return true;
@@ -1844,7 +2187,7 @@ class aquete_action
         $param_ordre = 0 ;
         for ($k=0; $k<$nbmonstre ; $k++)
         {
-            $req = "select cree_monstre_pos(choix_monstre_etage(:etage_numero),pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $req = "select cree_monstre_pos(choix_monstre_etage(:etage_numero, 0),pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(  ":etage_numero" => $etage_numero ,
                                             ":pos_cod" => $pos_cod ,
@@ -2280,6 +2623,173 @@ class aquete_action
                 $pdo->execute(array(":perso_cod" => $result["perso_cod"]), $stmt2);
             }
         }
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:meca|0%0]',
+     * p1=meca
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function meca_declenchement(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'meca', 0)) return false ;
+
+        // Recherche de la zone centrale de départ
+        $perso = new perso();
+        $perso->charge( $aqperso->aqperso_perso_cod );
+        $perso_pos_cod = $perso->get_position()["pos"]->pos_cod ;
+
+        foreach ($p1 as $k => $elem)
+        {
+            $chance = $elem->aqelem_param_num_2 > 0 ? $elem->aqelem_param_num_2 : 100;
+            if ( rand(0, 10000)/100 < $chance )
+            {
+                // declencher !!!
+                $req = "select meca_declenchement(:meca_cod,:sens,:position,:perso_pos_cod) as result; ";
+                $stmt   = $pdo->prepare($req);
+                $pdo->execute(array(":meca_cod"         => $elem->aqelem_misc_cod,
+                                    ":sens"             =>  $elem->aqelem_param_num_1,
+                                    ":position"         =>  $elem->aqelem_param_num_3,
+                                    ":perso_pos_cod"    => $perso_pos_cod), $stmt);
+            }
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:quete|1%0]',
+     * p1=quete
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function quete_desactivation(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+        $p2 = $element->get_aqperso_element( $aqperso, 2, "selecteur" ) ;
+
+        $aquete_cod = $p1->aqelem_misc_cod ? $p1->aqelem_misc_cod  : $aqperso->aqperso_aquete_cod ;
+
+        if ($aquete_cod)
+        {
+            $quete = new aquete();
+            $quete->charge($aquete_cod);
+
+            if ($p2 && $p2->aqelem_misc_cod==1)
+            {
+                // supprimer la règle si elle existe "OU perso_cod = meneur (si c'est pas déjà le cas)
+                $elem = new aquete_element();
+                $elist = $elem->getBy_etape_param_id($quete->aquete_etape_cod, 0);
+                $hasPersoCondition = false ;
+                foreach ($elist as $k => $e)
+                {
+                    if ($e->aqelem_misc_cod == 27 && $e->aqelem_param_txt_2 == $aqperso->aqperso_perso_cod && $e->aqelem_param_txt_1 == "=")
+                    {
+                        $hasPersoCondition = true ;
+                        $req = "delete from quetes.aquete_element where aqelem_cod=:aqelem_cod ";
+                        $stmt   = $pdo->prepare($req);
+                        $pdo->execute(array(":aqelem_cod"    => $e->aqelem_cod), $stmt);
+                        break;
+                    }
+                }
+                if ($hasPersoCondition && count($elist)==1)
+                {
+                    // s'était le dernier perso, on désactive completment
+                    $quete->aquete_actif = 'N';
+                    $quete->stocke();
+                } else if (!$hasPersoCondition && $quete->aquete_actif == 'O') {
+                    // la quete est ouverte et le perso n'avait pas de condition d'accès,on lui interdit l'ccès par une condition de refus
+                    $elem->aqelem_aquete_cod = $quete->aquete_cod ;
+                    $elem->aqelem_aqetape_cod = $quete->aquete_etape_cod ;
+                    $elem->aqelem_param_id = 0 ;
+                    $elem->aqelem_type = "perso_condition" ;
+                    $elem->aqelem_misc_cod = 27 ;
+                    $elem->aqelem_param_num_1 = 0 ;
+                    $elem->aqelem_param_txt_1 = "!=" ;
+                    $elem->aqelem_param_txt_2 = $aqperso->aqperso_perso_cod ;
+                    $elem->stocke(true);
+                }
+            }
+            else
+            {
+                // pas de consition on supprime pour tout le monde
+                $quete->aquete_actif = 'N';
+                $quete->stocke();
+            }
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:quete|1%0]',
+     * p1=quete
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function quete_activation(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'quete')) return false ;
+        $p2 = $element->get_aqperso_element( $aqperso, 2, "selecteur" ) ;
+
+        $aquete_cod = $p1->aqelem_misc_cod ;
+
+        if ($aquete_cod)
+        {
+            $quete = new aquete();
+            $quete->charge($aquete_cod);
+            $quete->aquete_actif = 'O' ;
+            $quete->stocke();
+
+            if ($p2 && $p2->aqelem_misc_cod==1)
+            {
+                // ajouter règle "OU perso_cod = meneur (si c'est pas déjà le cas)
+                $elem = new aquete_element();
+                $elist = $elem->getBy_etape_param_id($quete->aquete_etape_cod, 0);
+                $hasPersoCondition = false ;
+                foreach ($elist as $k => $e)
+                {
+                    if ($e->aqelem_misc_cod == 27 && $e->aqelem_param_txt_2 == $aqperso->aqperso_perso_cod)
+                    {
+                        if ($e->aqelem_param_txt_1 == "!=")
+                        {
+                            $req = "delete from quetes.aquete_element where aqelem_cod=:aqelem_cod ";
+                            $stmt   = $pdo->prepare($req);
+                            $pdo->execute(array(":aqelem_cod"    => $e->aqelem_cod), $stmt);
+                        }
+                        $hasPersoCondition = true ;
+                        break;
+                    }
+                }
+                if (!$hasPersoCondition )
+                {
+                    $elem->aqelem_aquete_cod = $quete->aquete_cod ;
+                    $elem->aqelem_aqetape_cod = $quete->aquete_etape_cod ;
+                    $elem->aqelem_param_id = 0 ;
+                    $elem->aqelem_type = "perso_condition" ;
+                    $elem->aqelem_misc_cod = 27 ;
+                    $elem->aqelem_param_num_1 = 1 ;
+                    $elem->aqelem_param_txt_1 = "=" ;
+                    $elem->aqelem_param_txt_2 = $aqperso->aqperso_perso_cod ;
+                    $elem->stocke(true);
+                }
+            }
+        }
+
         return true;
     }
 

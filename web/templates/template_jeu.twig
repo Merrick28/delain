@@ -18,12 +18,15 @@
     <!-- Bootstrap custom CSS -->
     <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
     <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}vendor/drum/lib/drum.css?v{{ __VERSION }}" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v{{ __VERSION }}" type="text/javascript"></script>
     <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v{{ __VERSION }}" type="text/javascript"></script>
     <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/drum/contrib/hammerjs/hammer.min.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/drum/lib/drum.js?v{{ __VERSION }}" type="text/javascript"></script>
 </head>
 <body>
 
@@ -67,33 +70,47 @@
 
 {# BARRE MENU ICONE #}
 <div id="colonne0-icons" class="centrer">
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/frame_vue.php">
-            <img title="Vue" src="{{ G_IMAGES }}eye.png"></a></div>
-    <div style="float: left;  width:12.5%;">
-        <a href="/jeu_test/evenements.php">
-            <img title="Evénements" src="{{ G_IMAGES }}events.png"></a>
-        {% if PERSO.has_evt_non_lu %}
-            <span class="badge">{{ PERSO.getEvtNonLu|length }}</span>
-        {% endif %}
+            <img title="Vue" src="{{ G_IMAGES }}eye.png"></a>
     </div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
+        <a href="/jeu_test/perso2.php">
+            <img title="Fiche perso" src="{{ G_IMAGES }}profil.png"></a>
+    </div>
+    <div style="float: left;  width:11.11%;">
+        {% set perso_nb_demarrage_quete = PERSO.perso_nb_demarrage_quete %}
+        {%  if  perso_nb_demarrage_quete > 0 %}
+            <a href="/jeu_test/quete_perso.php">
+                <img title="Interactions" src="{{ G_IMAGES }}quete.png"></a>
+                <span class="badge">{{ perso_nb_demarrage_quete }}</span>
+        {% else %}
+            <a href="/jeu_test/quete_auto.php?onglet=apercu">
+                <img title="Quêtes" src="{{ G_IMAGES }}quete.png"></a>
+                    {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0  %}
+                        <span class="badge">{{ PERSO.perso_nb_auto_quete.journal_nb_news }}</span>
+                    {% endif %}
+        {% endif %}
+
+    </div>
+{% if not CAVALIER or COMPTE.is_admin %}
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/inventaire.php">
             <img title="Inventaire" src="{{ G_IMAGES }}chest.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/transactions2.php">
-            <img title="Transaction" src="{{ G_IMAGES }}transac.png"></a>
+            <img title="Transactions" src="{{ G_IMAGES }}transac.png"></a>
         {% if PERSO.transactions !=0 %}
             <span class="badge">{{ PERSO.transactions }}</span>
         {% endif %}
     </div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/combat.php">
             <img title="Combat" src="{{ G_IMAGES }}war.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/magie.php">
             <img title="Magie" src="{{ G_IMAGES }}book.png"></a></div>
-    <div style="float: left;  width:12.5%;">
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/messagerie2.php">
             <img title="Messagerie" src="{{ G_IMAGES }}mail.png"></a>
         {% if PERSO.getMsgNonLu|length > 0 %}
@@ -102,7 +119,14 @@
         </span>
         {% endif %}
     </div>
-    <div style="float: left;  width:12.5%;">
+{%  else %}
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+    <div style="float: left;  width:11.11%;">&nbsp;</div>
+{% endif %}
+    <div style="float: left;  width:11.11%;">
         <a href="/jeu_test/switch.php">
             <img title="Gestion de compte" src="{{ G_IMAGES }}castle.png"></a></div>
 </div>
@@ -160,37 +184,31 @@
             </div>
             <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
                 <strong>{{ POSITION.pos_y }}</strong>
+                {%  set pa_dep = PERSO.get_pa_dep() %}
                 {% if not PERSO.is_fam %}
 
-                    {% if PERSO.perso_monture %}&nbsp;
+                    {% if PERSO.perso_monture or CAVALIER %}&nbsp;
 
-                        {%  if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
-                                                            src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">:
-                                                          <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {%  else %}&nbsp;<img src="{{ G_IMAGES }}horse.png" title="Déplacement"
-                                                      alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {%  if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span>
+                                                    <img src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {%  else %}&nbsp;<img src="{{ G_IMAGES }}horse.png" title="Déplacement" alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% endif %}
 
-                    {% elseif PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
-                            src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">:
-                        <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% elseif PERSO.is_locked() %}&nbsp; <span class="badge-profil">{{ PERSO.nb_locks() }}</span>
+                                                    <img src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">: <strong>{{ pa_dep }}</strong>
                     {% else %}
-                        {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"
-                                                           alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"
-                                                              alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                        {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">:
-                            <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% if pa_dep==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% elseif pa_dep<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% elseif pa_dep>12 %}<img src="{{ G_IMAGES }}skullred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% endif %}
                     {% endif %}
                 {% endif %}
-                <br><strong><a
-                            href="/jeu_test/desc_etage.php"><img alt="" src="/images/iconmap.gif"
-                                                       style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
-                    </a></strong>
+                <br><strong><a href="/jeu_test/desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}  </a></strong>
             </div>
         </div>
-        <div style="padding:0 10 0 10px; text-align:center;">
+{% if not CAVALIER or COMPTE.is_admin %}
+        <div style="padding:0px 10px 0px 10px; text-align:center;">
             {{ PERSO_ANIMATION|raw }}
             <div id="passageniveau">
                 {% if PERSO.perso_px >= PERSO.px_limite %}
@@ -199,7 +217,7 @@
             </div>
             <div id="quete">
                 {% if PERSO.is_perso_quete %}
-                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/quete_perso.php"><strong>Quête</strong></a>
+                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/quete_perso.php"><strong>Quête / Interaction</strong></a>
                 {% endif %}
             </div>
             <div id="lieu">
@@ -213,7 +231,8 @@
                 {% endif %}
             </div>
         </div>
-        {% if PERSO.get_favoris|length > 0 %}
+{% endif  %}
+        {% if PERSO.get_favoris|length > 0 and  not CAVALIER %}
             <div style="padding:0px 10px 0px 10px; text-align:left;">
                 <div id="barre-favoris">
                     <hr/>
@@ -237,7 +256,8 @@
         <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="/jeu_test/perso2.php">Fiche de perso</a><br>
         <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
         <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
-        {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
+        {# if PERSO.perso_nb_auto_quete.nb_total > 0 and  not CAVALIER #}
+        {% if not PERSO.is_fam and  not CAVALIER %}
             <img src="{{ G_IMAGES }}calice.png"> <a
                 href="/jeu_test/quete_auto.php?onglet=apercu"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}
             <strong>{% endif %}Mes quêtes
@@ -248,7 +268,7 @@
 
         {% endif %}
         <hr/>
-
+{%  if not CAVALIER or COMPTE.is_admin %}
         <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/inventaire.php">Inventaire</a><br>
         <div id="ramasser">
             {% if (PERSO.nb_obj_case != 0) or (PERSO.nb_or_case != 0) %}
@@ -309,10 +329,18 @@
             <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/objets/pioche.php">Creuser</a><br>
         {% endif %}
 
-        {% if PERSO.perso_monture %}
-            <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/action.php?methode=dechevaucher">Pied à terre (4 PA)</a><br>
-        {%  elseif PERSO.monture_chevauchable()|length > 0 %}
-            <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_chevaucher.php">Chevaucher (4 PA)</a><br>
+        {% if PERSO.perso_type_perso==1 %}
+            {% if PERSO.perso_monture %}
+                {% if PERSO.monture_ordonable() %}
+                    <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_ordre.php">Diriger la monture</a><br>
+                {% endif %}
+                <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_dechevaucher.php">Pied à terre (4 PA)</a><br>
+            {%  elseif PERSO.monture_chevauchable()|length > 0 %}
+                <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_chevaucher.php">Chevaucher (4 PA)</a><br>
+            {% endif %}
+            {% if PERSO.monture_desarconnable %}
+                <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_desarconner.php">Désarçonner (6 PA)</a><br>
+            {% endif %}
         {% endif %}
 
         {% if PERSO.is_enlumineur %}
@@ -354,6 +382,17 @@
         <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/groupe.php">Coterie</a>
         <hr/>
 
+{%  else %}
+
+    {% if PERSO.perso_type_perso==2 and PERSO.est_chevauche() %}
+        <img src="{{ G_IMAGES }}horse.gif" alt=""> <a href="/jeu_test/monture_show.php">Voir les ordres</a><br>
+        <hr/>
+    {%  endif %}
+{%  endif %}
+
+
+
+
         {% if DROIT.controle == 'O' %}
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/visu_amelioration.php">Améliorations</a>
             <br>
@@ -362,7 +401,7 @@
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches comptes</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions du 4e</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Interactions du 4e</a><br>
         {% endif %}
 
         {% if DROIT.controle_admin == 'O' %}
@@ -472,6 +511,7 @@
         <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a>
         - {% if COMPTE.is_admin_monstre %}
         <a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>
+
     {% else %}
         <a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>
         {% endif %}<br>

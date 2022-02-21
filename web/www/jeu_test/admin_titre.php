@@ -234,13 +234,13 @@ function insert_evt($mod_perso_cod, $texte_evt, $levt_visible = 'N', $levt_lu = 
                 if ((d.resultat == 0) && (d.data) && (d.data.length > 0)) {
                     for (k in d.data) {
                         var data = d.data[k];
-                        if (!isInTitrageList(data.perso_cod) && isAuthorized(data.perso_type_perso) && (nb_perso < 200))     // si pas déjà dans la list et autorisé
+                        if (!isInTitrageList(data.perso_cod) && isAuthorized(data.perso_type_perso) && (nb_perso < 1000))     // si pas déjà dans la list et autorisé
                         {
                             if (data.perso_type_perso == 2) nb_monstre++; else nb_perso++;
                             content += '<div id="s-list-' + k + '" data-perso_cod="' + data.perso_cod + '" data-type_perso="' + data.perso_type_perso + '"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList(' + k + ')"></a>&nbsp;</span>' + data.perso_nom + ' <em style="font-size:10px;"> (X=' + data.pos_x + ' X=' + data.pos_y + ' ' + data.etage_libelle + ')</em></div>';
                         }
                     }
-                    if (nb_perso == 300) content += "<br>L'affichage a été limité aux 300 premiers persos.";
+                    if (nb_perso == 1000) content += "<br>La selection a été limitée aux 1000 premiers persos.";
                     if (content != "") content += '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
                     if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
                     if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';

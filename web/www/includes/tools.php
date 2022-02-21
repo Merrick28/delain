@@ -55,6 +55,30 @@ function obj_diff($obj1, $obj2, $texte="")
     return $diff;
 }
 
+
+//=======================================================================================
+// Fonction calul la moyenne d'une chaine au format dé rolliste
+//=======================================================================================
+function moy_des_roliste($des)
+{
+    $pdo = new bddpdo;
+
+    if (is_int($des)) return $des;
+
+    $val = explode("D", strtoupper("$des"));
+    if ( sizeof($val) != 2 ) return (int)$val[0] ;
+
+    if (strpos($val[1], "+") ) {
+        $v = explode("+", $val[1] ) ;
+        return round((int)$val[0] * (1 + (int)$v[0]) / 2,0) + (int)$v[1] ;
+    } else if (strpos($val[1], "-") ) {
+        $v = explode("-", $val[1] ) ;
+        return round((int)$val[0] * (1 + (int)$v[0]) / 2,0) - (int)$v[1] ;
+    }
+
+    return round((int)$val[0] * (1 + (int)$val[1]) / 2,0) ;
+}
+
 //=======================================================================================
 // Fonction bm_progressivite retourne une chaine avec l'evolution de d'un BM cumulatif
 //=======================================================================================
@@ -64,7 +88,7 @@ function bm_progressivite($fonc_effet, $fonc_force)
 
     $req = "select bonus_progressivite(:bm, :force) as progressivite";
     $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
+    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => moy_des_roliste($fonc_force) ), $stmt);
     if ($progres = $stmt->fetch())
     {
         return $progres["progressivite"];
@@ -84,11 +108,12 @@ function get_ea_trigger_param($post, $numero)
     foreach ($post as $key => $val) {
         if ((substr($key, 0, 10) == "fonc_trig_") && (substr($key, -strlen("{$numero}")) == $numero) && !isset($_POST['checkbox_' . $key])) {
             if (is_array($val)) {
-                // regarder s'il y a des objets à imbriquer (nom = object_[fonc_trig_nom+n°]_XXXXX
+                // regarder s'il y a des objets à imbriquer (nom = obj_[fonc_trig_nom+n°]_XXXXX
                 $base = substr($key, 0, -strlen("{$numero}"));
+
                 foreach ($_POST as $k => $v) {
                     if (substr($k, 0, strlen("obj_{$key}_")) == "obj_{$key}_") {
-                        $name = substr($k, strlen("obj_{$base}_") + 1);
+                        $name = substr($k, strlen("obj_{$base}_") + strlen("{$numero}"));
                         foreach ($v as $kk => $vv) {
                             if (!is_array($val[$kk])) $val[$kk] = [];
                             $val[$kk][$name] = $vv;
@@ -107,6 +132,7 @@ function get_ea_trigger_param($post, $numero)
         }
     }
 
+    //echo "<pre>"; print_r(array("post"=>$post, "numero"=>$numero, "fonc_trigger_param"=>$fonc_trigger_param)); echo "</pre>";
     return $fonc_trigger_param;
 }
 
@@ -260,6 +286,9 @@ function get_texte_declenchement($fonc_type)
             break;
         case 'MAC':
             $texteDeclenchement = 'le perso est ciblé par un sort.';
+            break;
+        case 'POS':
+            $texteDeclenchement = 'lorsqu’il arrive ou quitte une case à EA.';
             break;
     }
 

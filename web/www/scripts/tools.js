@@ -79,6 +79,34 @@ function post(path, params, values)
 }
 
 //------------------------------------------------------------------------------------------------------------------
+//--- sauvegarde des notes de QA
+function popSaveQANotesStatus(r, context)
+{
+    if (r.resultat==0)
+    {
+        $.nok({message: "Vos notes personnelles ont été sauvegardées!!", type: "success", stay: 3, sticky: false});
+    } else {
+        $.nok({ message: r.message, type: "info", stay: 5, sticky: false });
+    }
+
+}
+
+function addQANotes(id)
+{
+    var notes = "";
+    var texte = $("#"+id).clone() ;
+    texte.find("form").remove();
+    texte.find("div").each(  function (index) {
+        var n = $(this).clone() ;
+        n.find("p").contents().unwrap();
+        notes+=n.html();
+    } );
+
+    runAsync({request: "add-qa-notes", data:{notes:notes }}, popSaveQANotesStatus, {})
+
+}
+
+//------------------------------------------------------------------------------------------------------------------
 //--- gestion des favoris
 function popRequestStatus(r, context)
 {
@@ -184,6 +212,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-meca-etage_cod" ).length ) params.etage_cod = $( "#spop-tablecod-meca-etage_cod" ).val() ;
     if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
     if ( $( "#spop-tablecod-etape-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-etape-aqetape_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
@@ -194,6 +223,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-position-x" ).length ) params.position_x = $( "#spop-tablecod-position-x" ).val() ;
     if ( $( "#spop-tablecod-position-y" ).length ) params.position_y = $( "#spop-tablecod-position-y" ).val() ;
     if ( $( "#spop-tablecod-objet-generique-sort" ).length ) params.objet_generique_sort = $( "#spop-tablecod-objet-generique-sort" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-objet-generique-sort-bm" ).length ) params.objet_generique_sort_bm = $( "#spop-tablecod-objet-generique-sort-bm" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-objet-generique-bm" ).length ) params.objet_generique_bm = $( "#spop-tablecod-objet-generique-bm" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-objet-generique-equipe" ).length ) params.objet_generique_equipe = $( "#spop-tablecod-objet-generique-equipe" ).prop( "checked" ) ? true : false ;
 
@@ -273,11 +303,15 @@ function getTableCod(divname, table, titre, params)
         options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
         options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
+    } else if (table=="meca")
+    {
+        options += '<input id="spop-tablecod-meca-etage_cod" type="hidden" value="'+params[0]+'">';
    } else if (table=="objet_generique")
    {
-        options += 'Limiter: Sort(s) rattaché(s): <input type="checkbox" id="spop-tablecod-objet-generique-sort" onChange="getTableCod_update();"> ';
+        options += 'Limiter: Attach. Sorts: <input type="checkbox" id="spop-tablecod-objet-generique-sort" onChange="getTableCod_update();"> ';
+        options += 'Sorts BM: <input type="checkbox" id="spop-tablecod-objet-generique-sort-bm" onChange="getTableCod_update();"> ';
         options += ' Bonus/malus : <input type="checkbox" id="spop-tablecod-objet-generique-bm" onChange="getTableCod_update();"> ';
-        options += ' Cond. Equip.(s): <input type="checkbox" id="spop-tablecod-objet-generique-equipe" onChange="getTableCod_update();"> ';
+        options += ' Cond. Equip.: <input type="checkbox" id="spop-tablecod-objet-generique-equipe" onChange="getTableCod_update();"> ';
    }
 
     $("#" + divname_cod).parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
@@ -403,4 +437,12 @@ function  setQuetePositionCod(rowid)
         }
     });
 
+}
+
+function copyToClipboard(element) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
 }

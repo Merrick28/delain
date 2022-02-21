@@ -146,6 +146,17 @@ begin
 	if type_lancer in (2, 4, 5) then
 		facteur_reussite := to_number(split_part(res_controle, ';', 2), '9999999999999');
 	end if;
+
+	-------------------------------------------------------------
+-- Vérification des pre-requis spécifique sur certaine map (comme la course
+-------------------------------------------------------------
+    -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1)
+    select etage_mort_speciale into temp from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=lanceur;
+    if temp = 1 and ( num_sort=45 or num_sort=48) then
+        return  '0;<p>l''usage de ce sort n''est pas autorisé pendant les courses de monture!!</p>';
+    end if;
+
+
 ------------------------------------------------------------
 -- les controles semblent bons, on peut passer à la suite
 ------------------------------------------------------------

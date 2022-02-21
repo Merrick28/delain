@@ -29,7 +29,7 @@ if ($stmt->rowCount() > 0)
 
     }
 
-    if (isset($methode) && $methode == 'renonce_mission' && isset($_REQUEST['fac_cod']))
+    if (isset($methode) && $methode == 'renonce_mission' && isset($_REQUEST['fac_cod']) && isset($_REQUEST['fac_perso_cod']) && $_REQUEST['fac_perso_cod']==$perso_cod )
     {
         $fac_cod = (int)$_REQUEST['fac_cod'];
         $req_mission = "select mission_renoncer($perso_cod, $fac_cod) as resultat";
@@ -124,7 +124,7 @@ if ($stmt->rowCount() > 0)
 
         if ($revalider) {
             $contenu_page .= "<div>Vous avez une mission en cours. Vous pouvez <a href='?m=5&methode=valide_mission'>vérifier si elle est réalisée.</a></div>";
-            $contenu_page .= "<div>Ou <a href='?m=5&methode=renonce_mission&fac_cod=$fac_cod'>renoncer à cette mission.</a>.</div>";
+            $contenu_page .= "<div>Ou <a href='?m=5&methode=renonce_mission&fac_cod=$fac_cod&fac_perso_cod=$perso_cod'>renoncer à cette mission.</a>.</div>";
             $contenu_page .= "<div><u><b>ATTENTION</b></u>: <span style='font-size: 9px'>en renonçant vous perdrez le double de la renommée que vous auriez gagné en la menant à terme.</span></div>";
         }
 

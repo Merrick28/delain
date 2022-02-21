@@ -1,10 +1,10 @@
 <?php // gestion des quêtes sur les centres de maîtrise magique.
 
+$verif_connexion = new verif_connexion();
+$verif_connexion::verif_appel();
 
 $methode2          = get_request_var('methode2', 'debut');
 
-$perso = new perso;
-$perso = $verif_connexion->perso;
 
 $comp_enlumineur = 0;
 

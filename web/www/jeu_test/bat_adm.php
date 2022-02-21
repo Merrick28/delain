@@ -117,6 +117,7 @@ if ($erreur == 0)
             echo "<input type=\"submit\" value=\"Entrer (4 PA)\" />";
             echo "</form>";
 
+            if ($perso->perso_monture>0) echo "<strong>ATTENTION: vous ne pouvez pas rentrer dans une arène <u>avec votre monture</u>!</strong> (<em>Si vous rentrez, votre monture restera ici!</em>)";
             echo "<hr>";
 
             // Recherche d'une inscription dans les registres pour retour rapide en arene
@@ -126,9 +127,9 @@ if ($erreur == 0)
             $result = $stmt->fetch();
             if ($result['est_inscrit'] > 0)
             {
-                echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
+                echo "<div style=\"text-align:center; font-size:20px; width:100%; color:white; background-color:#800000;\">LES REGISTRES</div><form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_registre\">";
-                echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaitez, retourner directement dans l'arène au bureau d'inscription.<br>";
+                echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaitez, retourner directement dans l'arène au bureau d'inscription ou au dernier point de passage.<br>";
                 echo "Même pas peur: <input class=\"test\" type=\"submit\" value=\"J'y retourne !\" /><br><br>";
                 echo "</form>";
                 echo "<hr>";

@@ -55,7 +55,12 @@ begin
   (23, 'Niveau Forgemage', 'COMPETENCE'),
   (24, 'Niveau Enluminure', 'COMPETENCE'),
   (25, 'A terminé l''étape de QA', 'QUETE'),
-  (26, 'Nombre de lock', 'VARIABLE');
+  (26, 'Nombre de lock', 'VARIABLE'),
+  (27, 'Code du perso', 'CARAC'),
+  (28, 'Possède un type d’objet générique', 'OBJET')
+  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
+  (30, 'Monstre générique', 'MONSTRE'),
+  (31, 'Renommée / Renommée magique', 'CARAC');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -177,6 +182,35 @@ begin
 
   elsif (v_carac_cod = 26) then                  --    (26, 'Nombre de lock', 'VARIABLE')
     select into v_perso_carac count(*) from lock_combat where lock_cible = v_perso_cod or lock_attaquant = v_perso_cod ;
+
+  elsif (v_carac_cod = 27) then                  --   (27, 'Code du perso', 'CARAC');
+    select into v_perso_carac perso_cod::text from perso where perso_cod = v_perso_cod ;
+
+  elsif (v_carac_cod = 28) then                  --   (28, 'Possède un type d’objet générique', 'OBJET')
+    select obj_cod into v_perso_carac from perso_objets join objets on perobj_obj_cod=obj_cod where perobj_perso_cod = v_perso_cod and obj_gobj_cod = TO_NUMBER(v_param_txt_2, '9999999999.99') LIMIT 1 ;
+    if found then
+      if (v_param_txt_1 = '=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    else
+      if (v_param_txt_1 = '!=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    end if;
+
+  elsif (v_carac_cod = 29) then                  --  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
+    -- le 12/16/2021: ajout d'un patch pour le doppelganger qui change de cod de monstre #1548 mais dont le nom commence par Doppelganger
+    select coalesce(case when m.perso_nom ilike 'Doppelganger%' then 1548 else m.perso_gmon_cod end,0) into v_perso_carac from perso p left join perso m on m.perso_cod=p.perso_monture where p.perso_cod=v_perso_cod ;
+
+  elsif (v_carac_cod = 30) then                  --  (30, 'Monstre générique', 'MONSTRE', 'Monstre générique');
+    select into v_perso_carac perso_gmon_cod::text from perso where perso_cod = v_perso_cod ;
+
+  elsif (v_carac_cod = 31) then                  --  (31, 'Renommée / Renommée magique', 'CARAC', 'Renommée / Renommée magique');
+    select into v_perso_carac abs(perso_renommee/perso_renommee_magie)::text from perso where perso_cod = v_perso_cod ;
 
   else
     return 0 ;    -- erreur dans les paramètres

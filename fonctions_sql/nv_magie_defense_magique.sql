@@ -53,7 +53,9 @@ declare
 -------------------------------------------------------------
     des                      integer; -- lancer de dés
     compt                    integer; -- fourre tout
+    temp                    integer; -- fourre tout
 begin
+
     -------------------------------------------------------------
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------

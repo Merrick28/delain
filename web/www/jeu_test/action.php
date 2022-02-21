@@ -38,8 +38,11 @@ $methode          = get_request_var('methode', '');
 $menu_deplacement = isset($_POST['menu_deplacement']) ? $_POST['menu_deplacement'] : '';
 $inc_vue          = ($methode == 'deplacement') && (!$menu_deplacement);
 
-
-if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
+if (!$compte->is_admin() && !$compte->is_admin_monstre() && $perso->perso_type_perso == 2 && $perso->est_chevauche())
+{
+    $contenu_page .= '<p>Vous ne pouvez pas effectuer des actions avec une monture !';
+}
+else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
 {
     switch ($methode)
     {
@@ -223,6 +226,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 if ($menu_deplacement === '') include('frame_vue.php');
                 die('');
             }
+            if (! $perso->monture_controlable() )
+            {
+                $contenu_page .= '<p>Votre monture n’accepte pas ce mode de déplacement !</p>';
+                $resultat_dep = $contenu_page;
+                if ($menu_deplacement === '') include('frame_vue.php');
+                die('');
+            }
             if (isset($_POST['position']))
             {
                 $position = $_POST['position'];
@@ -259,7 +269,16 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $page_retour = 'deplacement.php';
                 $retour      = '<hr /><p><a href="' . $page_retour . '">Retour !</a></p>';
             }
-            $contenu_page .= $result[1];
+            if ( $result[1] != 'Déplacement effectué !'){
+                if ( strpos($result[1], "Déplacement effectué !") !== false ) {
+                    $contenu_page .= "Déplacement effectué !" ;
+                    $resultat_ea_dep = str_replace("<b>Effets automatiques :</b>", "<b style='font-size:14px; color: #800000;'>Effets automatiques :</b>", str_replace("Déplacement effectué !", "", $result[1]) );
+                } else {
+                    $resultat_ea_dep = str_replace("<b>Effets automatiques :</b>", "<b style='font-size:14px; color: #800000;'>Effets automatiques :</b>", $result[1] );
+                }
+            } else {
+                $contenu_page .= $result[1];
+            }
 
             if (strpos($result[1], 'Erreur') !== 0)
             {
@@ -382,7 +401,6 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-
             $perso_cible = new perso;
             $perso_cible->charge($cible);
             $logger->warning('Cible ' . print_r($perso_cible, true));
@@ -402,38 +420,84 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-
             if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
 
-            $sort = new sorts;
-            $sort->charge($sort_cod);
 
-            if ($perso_cible->is_refuge() and $sort->sort_aggressif == 'O')
+            /* cas particulier de la combo BS/MTS/ATT */
+            if ($type_lance == 7)
             {
-                $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
-                break;
+                $sort = new sorts;
+                foreach([2,4,6] as $sort_cod)
+                {
+                    $sort->charge($sort_cod);
+                    $contenu_page .= '<p>Lancement de : <b>'.$sort->sort_nom.'</b>';
+                    $req  = 'select nv_' . $sort->sort_fonction . '(:perso_cod,:cible,1) as resultat ';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(':perso_cod'  => $perso_cod,':cible'      => $perso_cible->perso_cod), $stmt);
+                    $result       = $stmt->fetch();
+                    $contenu_page .= $result['resultat'];
+                }
+
             }
-            if ($perso_cod == $perso_cible->perso_cod and $sort->sort_aggressif == 'O')
+            /* cas particulier d'un bonus/malus lancé comme un sort */
+            else if ($type_lance == 6)
             {
-                $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
-                break;
+                $objsortbm = new objets_sorts_bm();
+                $objsortbm->charge($_REQUEST["objsort_cod"]);
+
+                if ($perso_cible->is_refuge() and $objsortbm->objsortbm_bonus_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
+                    break;
+                }
+                if ($perso_cod == $perso_cible->perso_cod and $objsortbm->objsortbm_bonus_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
+                    break;
+                }
+
+                $req  =  'select sort_lance_bonus(:perso_cod,:cible,:objsortbm_cod) as resultat ';
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(
+                    array(  ':perso_cod'     => $perso_cod,
+                            ':cible'         => $perso_cible->perso_cod,
+                            ':objsortbm_cod' => $objsortbm->objsortbm_cod), $stmt
+                );
+                $result       = $stmt->fetch();
+                $contenu_page .= $result['resultat'];
             }
-            $prefixe = 'nv_';
-            if ($type_lance == 3)
+            else
             {
-                $prefixe = 'dv_';
+                $sort = new sorts;
+                $sort->charge($sort_cod);
+
+                if ($perso_cible->is_refuge() and $sort->sort_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
+                    break;
+                }
+                if ($perso_cod == $perso_cible->perso_cod and $sort->sort_aggressif == 'O')
+                {
+                    $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
+                    break;
+                }
+                $prefixe = 'nv_';
+                if ($type_lance == 3)
+                {
+                    $prefixe = 'dv_';
+                }
+                require "blocks/_action_sort_objet.php";
+                $stmt = $pdo->execute(
+                    array(':perso_cod'  => $perso_cod,
+                          ':cible'      => $perso_cible->perso_cod,
+                          ':type_lance' => $type_lance), $stmt
+                );
+                require "blocks/_action_sort_objet2.php";
             }
-            require "blocks/_action_sort_objet.php";
-            $stmt = $pdo->execute(
-                array(':perso_cod'  => $perso_cod,
-                      ':cible'      => $perso_cible->perso_cod,
-                      ':type_lance' => $type_lance), $stmt
-            );
-            require "blocks/_action_sort_objet2.php";
             break;
 
         case 'magie_case':
@@ -1016,6 +1080,10 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
         case 'dechevaucher':
             $contenu_page .= $perso->monture_dechevaucher();
+            break;
+
+        case 'desarconner':
+            $contenu_page .= $perso->monture_desarconner($_REQUEST['cavalier']);
             break;
 
         default :

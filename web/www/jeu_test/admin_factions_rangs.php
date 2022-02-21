@@ -26,6 +26,8 @@ else
 	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les rangs définis pour la faction « $fac_nom »</div><br />";
 }
+
+//print_r($_REQUEST);
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
@@ -128,8 +130,18 @@ if ($fac_cod > -1)
         $rfac_description = $result['rfac_description'];
         $rfac_intro       = $result['rfac_intro'];
 
-        echo ")'/>
-			</td></tr></form>";
+        echo "<form action='#' method='POST' onsubmit='if (this.methode == \"rang_supprime\") return confirm(\"Êtes-vous sûr de vouloir supprimer ce rang ?\");'><tr>
+			<td class='soustitre2'>$i. <input type='text' value='$rfac_nom' name='rfac_nom' size='20' /></td>
+			<td class='soustitre2'><input type='text' value='$rfac_seuil' name='rfac_seuil' size='7' /></td>
+            <td class='soustitre2'><textarea cols='40' rows='3' name='rfac_description'>$rfac_description</textarea></td>
+        	<td class='soustitre2'><textarea cols='40' rows='3' name='rfac_intro'>$rfac_intro</textarea></td>
+			<td class='soustitre2'><input type='hidden' value='$rfac_seuil' name='rfac_seuil_prec' />
+				<input type='hidden' value='$fac_cod' name='fac_cod' />
+				<input type='hidden' value='rang_modif' name='methode' id='methode$rfac_seuil' />
+				<input type='submit' class='test' value='Modifier' onclick='changeMethode($rfac_seuil, \"rang_modif\");'/>
+				<input type='submit' class='test' value='Supprimer' onclick='changeMethode($rfac_seuil, \"rang_supprime\");'/>
+            </td></tr></form>";
+				
         $i++;
     }
 

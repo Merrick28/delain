@@ -17,9 +17,20 @@ function filtre_table_search(table)
         {
             var data_type = $('#row-'+index).attr('data-type');
             var data_partisans = $('#row-'+index).attr('data-partisans');
+            var data_chevauche = $('#row-'+index).attr('data-chevauche');
+            if (!data_chevauche) data_chevauche = '0' ;
+            var data_monture = $('#row-'+index).attr('data-monture');
+            if (!data_monture) data_monture = 'N' ;
 
             if (   ((search=='') || ($('#row-'+index+' td:nth-child('+col+')').text().toLowerCase().includes(search)))
-                && ((type==-1) || ((type==0) && (data_partisans=='O')) || ((type==1) && (type==data_type) && (data_partisans=='N')) || ((type==2) && (type==data_type)) || ((type==3) && (type==data_type)))
+                && (    (type==-1)
+                     || ((type==0) && (data_partisans=='O'))
+                     || ((type==1) && (type==data_type) && (data_partisans=='N'))
+                     || ((type==2) && (type==data_type) && (data_monture=='N'))
+                     || ((type==-2) && (data_monture=='O') && (data_chevauche=='0'))
+                     || ((type==3) && (type==data_type))
+                     || ((type==3) && (data_chevauche!='0'))
+                   )
             )
             {
                 $('#row-'+index).show();

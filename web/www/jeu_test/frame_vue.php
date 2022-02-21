@@ -24,7 +24,8 @@ $options_twig = array(
     'VUE_GAUCHE'   => $vue_gauche,
     'VUE_DROITE'   => $vue_droite,
     'VUE_BAS'      => $vue_bas,
-    'VUE_RESULTAT' => (isset($resultat_dep) ? $resultat_dep : '')
+    'VUE_RESULTAT' => (isset($resultat_dep) ? $resultat_dep : '') ,
+    'VUE_EFFET_AUTO' => (isset($resultat_ea_dep) ? $resultat_ea_dep : '')
 
 );
 echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

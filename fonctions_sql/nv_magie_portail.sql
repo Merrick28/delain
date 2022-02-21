@@ -168,6 +168,8 @@ begin
             perform ajoute_bonus(lanceur, 'VUE', v_bonus_tour, v_bonus_valeur);
             code_retour := code_retour ||
                            '<br>Vous béneficiez en tant que maîtres des arcanes d''un léger bonus en vue qui ne vient pas écraser un bonus existant <br>';
+            -- 2021-06-02 - marlyza - maj de l'automap avec le changement de vu
+            perform update_automap(lanceur);
         end if;
     end if;
     code_retour := code_retour || '<br>Vous avez créé avec succès un passage magique.';

@@ -71,6 +71,9 @@ declare
     v_dex integer;
     v_for integer;
     v_multi numeric;
+    v_carac integer;
+    v_valeur numeric;
+    v_carac_orig integer;
     limite integer;                 -- Seuil limite qui permet ou pas l'amélioration
     v_resultat f_resultat;          -- resultat de cette fonction pour la fonction appelante
     v_diff integer;                 -- amélioration réelle, car s'il y a des bonus de caracs en changeant la base on change aussi les min/max
@@ -638,18 +641,19 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 return v_resultat;
         end if;
 
-        select into temp, v_diff
-            corig_carac_valeur_orig, f_modif_carac_limit('FOR', corig_carac_valeur_orig+1, perso_for+1+valeur_bonus(corig_perso_cod, 'FOR')::integer)-perso_for
+        select into v_carac_orig, v_carac, v_valeur
+            corig_carac_valeur_orig, perso_for, sum(corig_valeur)
             from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'FOR' limit 1;
+            and corig_type_carac = 'FOR' group by corig_carac_valeur_orig, perso_for limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'FOR';
+            v_diff := f_modif_carac_limit('FOR', v_carac_orig+1, v_carac_orig+1+v_valeur::integer) - v_carac ;
         else
-          v_diff := 1 ;
+            v_diff := 1 ;
         end if;
 
         update perso set perso_for = perso_for + v_diff,perso_enc_max = perso_enc_max + (v_diff*3) where perso_cod = personnage;
@@ -669,18 +673,19 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 return v_resultat;
         end if;
 
-        select into temp, v_diff
-            corig_carac_valeur_orig, f_modif_carac_limit('DEX', corig_carac_valeur_orig+1, perso_dex+1++valeur_bonus(corig_perso_cod, 'DEX')::integer)-perso_dex
+        select into v_carac_orig, v_carac, v_valeur
+            corig_carac_valeur_orig, perso_dex, sum(corig_valeur)
             from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'DEX' limit 1;
+            and corig_type_carac = 'DEX' group by corig_carac_valeur_orig, perso_dex limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'DEX';
+            v_diff := f_modif_carac_limit('DEX', v_carac_orig+1, v_carac_orig+1+v_valeur::integer) - v_carac ;
         else
-          v_diff := 1 ;
+            v_diff := 1 ;
         end if;
 
         update perso set perso_dex = perso_dex + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;
@@ -700,18 +705,19 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 return v_resultat;
         end if;
 
-        select into temp, v_diff
-            corig_carac_valeur_orig, f_modif_carac_limit('CON', corig_carac_valeur_orig+1, perso_con+1+valeur_bonus(corig_perso_cod, 'CON')::integer)-perso_con
+        select into v_carac_orig, v_carac, v_valeur
+            corig_carac_valeur_orig, perso_con, sum(corig_valeur)
             from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'CON' limit 1;
+            and corig_type_carac = 'CON' group by corig_carac_valeur_orig, perso_con limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'CON';
+            v_diff := f_modif_carac_limit('CON', v_carac_orig+1, v_carac_orig+1+v_valeur::integer) - v_carac ;
         else
-          v_diff := 1 ;
+            v_diff := 1 ;
         end if;
 
         update perso set perso_con = perso_con + v_diff, perso_pv_max = perso_pv_max + (v_diff * 3), perso_pv = perso_pv + (v_diff * 3) where perso_cod = personnage;
@@ -731,18 +737,19 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 return v_resultat;
         end if;
 
-        select into temp, v_diff
-            corig_carac_valeur_orig, f_modif_carac_limit('INT', corig_carac_valeur_orig+1, perso_int+1+valeur_bonus(corig_perso_cod, 'INT')::integer)-perso_int
+        select into v_carac_orig, v_carac, v_valeur
+            corig_carac_valeur_orig, perso_int, sum(corig_valeur)
             from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'INT' limit 1;
+            and corig_type_carac = 'INT' group by corig_carac_valeur_orig, perso_int limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'INT';
+            v_diff := f_modif_carac_limit('INT', v_carac_orig+1, v_carac_orig+1+v_valeur::integer) - v_carac ;
         else
-          v_diff := 1;
+            v_diff := 1;
         end if;
 
         update perso set perso_int = perso_int + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;

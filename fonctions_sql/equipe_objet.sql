@@ -187,6 +187,10 @@ end if;
 	texte_evt := '[perso_cod1] a équipé l’objet n°'||trim(to_char(num_objet,'9999999999999'));
 	insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
 		values(nextval('seq_levt_cod'),6,now(),1,personnage,texte_evt,'O','N');
+
+  -- 2021-06-02 - marlyza - automap (pour le cas des casques et autre bonus de vu)
+  perform update_automap(personnage);
+
 	return code_retour;
 end;
 $_$;

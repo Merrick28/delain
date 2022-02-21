@@ -70,11 +70,11 @@
         }
 
         //#LAG: rechercher la liste de perso sur la case
-        $req = "select lower(perso_nom) as minusc,etat_perso(perso_cod) as bless,perso_nom from perso,perso_position where ppos_pos_cod = $position
-		and ppos_perso_cod = perso_cod
-		and perso_actif = 'O'
-		and perso_type_perso = 1
-		order by minusc";
+        $req = "select lower(p.perso_nom) as minusc,etat_perso(p.perso_cod) as bless, p.perso_nom, m.perso_nom as monture, m.perso_cod as monture_cod, etat_perso(m.perso_cod) as bless_monture
+                  from perso p 
+                  join perso_position on ppos_perso_cod = p.perso_cod
+                  left join perso m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
+                  where ppos_pos_cod = $position and p.perso_actif = 'O' and p.perso_type_perso = 1 order by minusc";
         $stmt = $pdo->query($req);
         ?>
 
@@ -83,6 +83,7 @@
                 <td class="soustitre2" valign="top"><strong><?php echo $stmt->rowCount(); ?> persos.</strong></br>
                     <?php
 
+                    $monture_list = "" ;
                     if ($stmt->rowCount() != 0)
                     {
                         while ($result = $stmt->fetch())
@@ -91,15 +92,24 @@
                             if (($result['bless'] != "indemne") && ($result['bless'] != "égratigné"))
                                 echo "<em> - " . $result['bless'], "</em>";
                             echo "<br>";
+                            if ($result['monture'] != "")
+                            {
+                                $monture_list .= ",".$result['monture_cod'];
+                                echo "<span style='font-size: 11px; color:darkblue'>sur ". $result['monture'];
+                                if (($result['bless_monture'] != "indemne") && ($result['bless_monture'] != "égratigné"))
+                                    echo "<em> - " . $result['bless_monture'], "</em>";
+                                echo "</span><br>";
+                            }
                         }
                     }
 
 
                     $req = "select lower(perso_nom) as minusc,etat_perso(perso_cod) as bless,perso_nom from perso,perso_position where ppos_pos_cod = $position
-		and ppos_perso_cod = perso_cod
-		and perso_actif = 'O'
-		and perso_type_perso in (2,3)
-		order by minusc";
+                                and ppos_perso_cod = perso_cod
+                                and perso_actif = 'O'
+                                and perso_type_perso in (2,3)".
+                                ($monture_list== "" ? "" : "and perso_cod not in (".substr($monture_list,1).") ")
+                                ."order by minusc";
                     $stmt = $pdo->query($req);
                     ?>
                 </td>

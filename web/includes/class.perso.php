@@ -1326,6 +1326,19 @@ class perso
         return false;
     }
 
+    public function is_fam_4eme_perso()
+    {
+        if ($this->perso_type_perso == 3)
+        {
+            $p = new perso();
+            $pf = new perso_familier();
+            $pf->getByFamilier($this->perso_cod);
+            $p->charge( $pf->pfam_perso_cod ) ;
+            return $p->is_4eme_perso();
+        }
+        return false;
+    }
+
     public function is_admin_dieu()
     {
         $dp  = new dieu_perso();
@@ -1552,6 +1565,28 @@ class perso
         return sizeof($tab_quete["quetes"]) > 0;
     }
 
+    // Retourne vrai si le perso est sur un endroit permettant le démarrage d'une nouvelle quête (quete auto ou standard)
+    public function perso_nb_demarrage_quete()
+    {
+        $pdo  = new bddpdo;
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+
+        $req
+                = 'select count(perso_cod) as nombre from perso,perso_position
+			where ppos_pos_cod = ?
+				and perso_quete in (\'quete_ratier.php\',\'enchanteur.php\',\'quete_alchimiste.php\',\'quete_chasseur.php\',\'quete_dispensaire.php\',\'quete_dame_cygne.php\',\'quete_forgeron.php\',\'quete_groquik.php\')
+				and perso_cod = ppos_perso_cod';
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
+        $result = $stmt->fetch();
+
+        // Verification quete auto
+        $quete     = new aquete;
+        $tab_quete = $quete->get_debut_quete($this->perso_cod);
+        return sizeof($tab_quete["quetes"]) + $result['nombre'] ;
+    }
+
     // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
     public function perso_nb_auto_quete()
     {
@@ -1596,7 +1631,7 @@ class perso
                 $critere_tri = 'mpf_statut desc';
                 break;
             case 'date':
-                $critere_tri = 'mpf_date_debut desc';
+                $critere_tri = 'mpf_date_debut::date desc';
                 break;
             default:
                 break;
@@ -1808,6 +1843,15 @@ class perso
         }
 
         return $news;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getNbEvtNonLu()
+    {
+        $levt = new ligne_evt();
+        return $levt->getNbEvtByPersoNonLu($this->perso_cod);
     }
 
     /**
@@ -3188,15 +3232,17 @@ class perso
                  case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text
                  end as bonus_nb_tours,
                  bonus_mode,
-                 sum(bonus_valeur) as bonus_valeur
+                 sum(bonus_valeur) as bonus_valeur,
+                 obj_cod, obj_nom
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  left join objets on obj_cod = bonus_obj_cod
                   where bonus_perso_cod = ?
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur < 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
-                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
+                  group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
@@ -3216,15 +3262,17 @@ class perso
                  coalesce(tbonus_description, tonbus_libelle) as tbonus_description,
                  case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours,
                  bonus_mode,
-                 sum(bonus_valeur) as bonus_valeur
+                 sum(bonus_valeur) as bonus_valeur,
+                 obj_cod, obj_nom
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  left join objets on obj_cod = bonus_obj_cod
                   where bonus_perso_cod = ?
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur > 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
-                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
+                  group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
@@ -3245,12 +3293,79 @@ class perso
         return $result['bonus_degats_melee'];
     }
 
+    public function get_familier()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select pfam_familier_cod from perso_familier join perso on perso_cod=pfam_familier_cod where pfam_perso_cod=:perso and perso_actif='O' order by perso_dcreat desc limit 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+
+        return $result["pfam_familier_cod"];
+    }
+
     public function efface()
     {
         $pdo  = new bddpdo;
         $req  = "select efface_perso(:perso)";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+    }
+
+    /**
+     *regarde si une monture est chevauché et retour ne perso_cod du cavalier?
+     */
+    public function est_chevauche()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select p.perso_cod
+                    from perso m 
+                    join perso p on p.perso_monture = m.perso_cod and p.perso_type_perso=1
+                    join monstre_generique on gmon_cod = m.perso_gmon_cod
+                    where m.perso_cod=:perso and m.perso_type_perso=2  and gmon_monture = 'O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["perso_cod"];
+    }
+
+    /**
+     *regarde si la monture est chevauché est ordonable par le joueur (le joueur peut lui donner des ordres)
+     */
+    public function monture_ordonable()
+    {
+        if ( !$this->perso_monture) return false ;
+
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["ordonable"] == 'O';
+    }
+
+
+    /**
+     *regarde si la monture est chevauché est controlable par le joueur (le joueur peut se déplacer la monture suivra) ou le joueur n'a pas de monture
+     */
+    public function monture_controlable()
+    {
+        if ( !$this->perso_monture) return true ;
+
+        $pdo  = new bddpdo;
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18) THEN 'N' ELSE 'O' END as controlable
+                         from perso 
+                         join monstre_generique on gmon_cod=perso_gmon_cod
+                         left join perso_ia on pia_perso_cod=perso_cod
+                         where perso_cod=:perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_monture), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        return $result["controlable"] == 'O';
     }
 
     /**
@@ -3263,9 +3378,28 @@ class perso
                     from perso p 
                     join perso_position pp on p.perso_cod=pp.ppos_perso_cod
                     join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
-                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 and m.perso_actif='O'
                     join monstre_generique on gmon_cod = m.perso_gmon_cod
                     where p.perso_cod=:perso and gmon_monture = 'O' and not exists (select * from perso where perso_monture = m.perso_cod )";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
+    /**
+     *donne la liste des couple/monture est disponible pour être désarconner?
+     */
+    public function monture_desarconnable()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select m.perso_cod, m.perso_nom , mm.perso_cod as monture_perso_cod, mm.perso_nom monture_perso_nom
+                    from perso p 
+                    join perso_position pp on p.perso_cod=pp.ppos_perso_cod
+                    join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=1 and m.perso_actif='O'
+                    join perso mm on mm.perso_cod=m.perso_monture and mm.perso_type_perso=2 and mm.perso_actif='O'
+                    where p.perso_cod=:perso";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetchAll();
@@ -3280,9 +3414,7 @@ class perso
         $pdo    = new bddpdo();
         $req    = "select monture_chevaucher(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $monture), $stmt);
+        $stmt   = $pdo->execute(array( ":perso" => $this->perso_cod, ":cible" => $monture), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -3295,8 +3427,34 @@ class perso
         $pdo    = new bddpdo();
         $req    = "select monture_dechevaucher(:perso) as resultat";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    /**
+     *regarde si une monture est disponible pour être montée?
+     */
+    public function monture_desarconner($cavalier)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_desarconner(:perso, :cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":cible" => $cavalier), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
+    /**
+     * donne un ordre à la monture (l'ia se chargera de le réaliser)
+     */
+    public function monture_ordre($ordre, $parametres)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select monture_ordonner(:perso, :ordre, :param) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":ordre" => $ordre, ":param" => json_encode($parametres)), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }

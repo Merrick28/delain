@@ -128,7 +128,7 @@ class guilde_banque
         {
             return false;
         }
-        return $this->charge($result['gbnak_cod']);
+        return $this->charge($result['gbank_cod']);
 
     }
 

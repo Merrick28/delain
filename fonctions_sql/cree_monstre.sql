@@ -59,12 +59,14 @@ declare
 	v_pv integer;
   v_nb_recep integer;
   v_voie_magique integer;   --Marlyza - 2018-08-14 - ajout de la voie magique sur les mosntres generique
+  v_type_portail integer;        -- portail à monture (41) ou à monstre (8) ?
+  v_gmon_cod integer;        -- cod generique
 -- variables globales
 	compt integer;
 	v_code_perso integer;
 	retour_cree_perso integer;
 	nb_portail integer;
-	num_portail integer;
+	-- num_portail integer;     -- utilité ?
 	pos_portail integer;
 	ligne record;
 	ligne_objet record;
@@ -74,13 +76,14 @@ declare
 	objet_etat_min integer;
 	objet_etat_max integer;
 	texte text;
+	v_nb_portail integer;
 begin
 /**********************************************/
 /* Etape 1 : on insère dans perso les valeurs */
 /**********************************************/
 	code_retour := 0;
 	v_code_perso := nextval('seq_perso');
-	select into compt gmon_cod from monstre_generique
+	select into v_gmon_cod,v_type_portail gmon_cod,  CASE WHEN gmon_monture='N' THEN 8 ELSE 41 END from monstre_generique
 		where gmon_cod = v_gmon;
 	if not found then
 		code_retour := -1;
@@ -89,35 +92,58 @@ begin
 	/*******************************/
 	/* Position                    */
 	/*******************************/
+	/*
+	Marlyza - 2021-04-15 - On calcul un nombre de portail mais on ne s'en sert pas? => supression de cette portion de code
 	select into nb_portail count(*)
 		from lieu,lieu_position,positions
-		where lieu_tlieu_cod = 8
+		where lieu_tlieu_cod = v_type_portail
 		and lpos_lieu_cod = lieu_cod
 		and lpos_pos_cod = pos_cod
 		and pos_etage = v_level;
 	num_portail := lancer_des(1,nb_portail);
 	num_portail := num_portail - 1;
-	if lancer_des(1,100) >= 50 then
-		select into pos_portail pos_cod
-			from lieu,lieu_position,positions
-			where lieu_tlieu_cod = 8
-			and lpos_lieu_cod = lieu_cod
-			and lpos_pos_cod = pos_cod
-			and pos_etage = v_level
-			order by random()
-			limit 1;
-	else
-		select into pos_portail pos_cod
-			from lieu,lieu_position,positions
-			where lieu_tlieu_cod = 8
-			and lpos_lieu_cod = lieu_cod
+  */
 
-			and lpos_pos_cod = pos_cod
-			and pos_etage = v_level
-			order by random()
-			limit 1;
-	end if;
-	if pos_portail is null then
+  -- choisir un portail
+  v_nb_portail :=0 ;
+  if v_type_portail = 8 then
+      -- recherche d'un portail démoniaque
+      select into pos_portail pos_cod
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 8
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level
+        order by random()
+        limit 1;
+  else
+      -- recherche d'un portail à monture compatible avecles terrains accessibles pour la monture
+      select count(*) into v_nb_portail
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 41
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level ;
+
+      select into pos_portail pos_cod
+        from lieu,lieu_position,positions
+        where lieu_tlieu_cod = 41
+        and lpos_lieu_cod = lieu_cod
+        and lpos_pos_cod = pos_cod
+        and pos_etage = v_level
+        and coalesce(pos_ter_cod,0) in (
+              select ter_cod from terrain
+              left join monstre_terrain mt on mt.tmon_ter_cod=ter_cod and mt.tmon_gmon_cod=v_gmon_cod
+              left join monstre_terrain mtd on mtd.tmon_ter_cod=-1 and mtd.tmon_gmon_cod=v_gmon_cod
+              where ter_cod>=0 and coalesce(coalesce(mt.tmon_accessible, mtd.tmon_accessible), CASE WHEN ter_cod=0 THEN 'O' else 'N'end) = 'O'
+              order by random()
+        )
+        order by random()
+        limit 1;
+  end if;
+
+  -- Si pas de portail trouvé, pour les monstre on pop au hazard (pas pour les montures sauf si aucun portail a monture suer l'étage)
+	if pos_portail is null and (v_type_portail=8 or v_nb_portail=0) then
 		pos_portail := pos_aleatoire(v_level);
 	end if;
 	if pos_portail is null then 

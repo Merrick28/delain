@@ -7,6 +7,11 @@
 {%if QUATRIEME %}{% set NBCOL=NBPERSO+3 %}{% else %}{% set NBCOL=NBPERSO+2 %}{% endif %}
 
      <td class="titre">Objets</td>
+{%if COFFRE %}
+    {% set NBCOL=NBCOL+1 %}
+    <td class="titre" style="width:{{ 100/(NBCOL+1) }}%;">COFFRE</td>
+{% endif %}
+
 {%if QUATRIEME %}
      <td class="titre" style="width:{{ 100/(NBCOL+1) }}%;">TOTAL TRIPLETTE</td>
      <td class="titre" style="width:{{ 100/(NBCOL+1) }}%;">TOTAL 4ÈME</td>
@@ -41,6 +46,7 @@
 
      <tr>
          <td class="soustitre2">Brouzoufs</td>
+         {% if COFFRE %} <td class="soustitre2" style="text-align:right;">&nbsp;</td>{% endif %}
          <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> Bzf</td>
          {% if QUATRIEME %} <td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> Bzf</td>{% endif %}
          {% for p in PERSOS  %}
@@ -62,6 +68,7 @@
 
      <tr>
          <td class="soustitre2">Banque</td>
+         {% if COFFRE %} <td class="soustitre2" style="text-align:right;">&nbsp;</td>{% endif %}
          <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> Bzf</td>
          {% if QUATRIEME %} <td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> Bzf</td>{% endif %}
 
@@ -99,6 +106,7 @@
              {% endif %}
          {% endfor %}
 
+         {% if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_RUNES[0][r].count >0 %}{{ PERSO_RUNES[0][r].count }} <em style="font-size: 8px;">({{ PERSO_RUNES[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
          <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
          {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
          {% for p in PERSOS  %}
@@ -135,6 +143,7 @@
                  {% endif %}
              {% endfor %}
 
+             {%  if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_QUETES[0][r].count >0 %}{{ PERSO_QUETES[0][r].count }} <em style="font-size: 8px;">({{ PERSO_QUETES[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
              <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
              {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
              {% for p in PERSOS  %}
@@ -172,6 +181,7 @@
                  {% endif %}
              {% endfor %}
 
+             {%  if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_COMPOS[0][r].count >0 %}{{ PERSO_COMPOS[0][r].count }} <em style="font-size: 8px;">({{ PERSO_COMPOS[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
              <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
              {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
              {% for p in PERSOS  %}
@@ -211,6 +221,7 @@
                  {% endif %}
              {% endfor %}
 
+             {% if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_DIVERS[0][r].count >0 %}{{ PERSO_DIVERS[0][r].count }} <em style="font-size: 8px;">({{ PERSO_DIVERS[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
              <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
              {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
              {% for p in PERSOS  %}
@@ -246,6 +257,7 @@
                  {% endif %}
              {% endfor %}
 
+             {% if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_MONNAIES[0][r].count >0 %}{{ PERSO_MONNAIES[0][r].count }} <em style="font-size: 8px;">({{ PERSO_MONNAIES[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
              <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
              {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
              {% for p in PERSOS  %}
@@ -254,6 +266,45 @@
 
          </tr>
      {% endfor %}
+     {% endif %}
+
+     {#============================ Divers ==================================#}
+     {% if MATOS|length > 0 %}
+         <tr>
+             <td colspan="{{ NBCOL }}" class="titre">
+                 <div class="titre">Matos (Armures, Armes, etc...)</div>
+             </td>
+         </tr>
+
+         {%  set type_obj = "" %}
+         {% for r in MATOS  %}
+             {% if type_obj != MATOS_TYPE[r] %}<tr> <td colspan="{{ NBCOL }}"><strong style="font-size: 10px;">{{ MATOS_TYPE[r] }}</strong></td></tr>{% endif %}
+             {%  set type_obj =  MATOS_TYPE[r] %}
+             <tr>
+                 <td class="soustitre2">{{ r }}</td>
+                 {%  set total = 0 %}
+                 {%  set total_poids = 0 %}
+                 {%  set total4 = 0 %}
+                 {%  set total4_poids = 0 %}
+                 {% for p in PERSOS  %}
+                     {% if p.perso_pnj == 2  %}
+                         {%  set total4 = total4 + PERSO_MATOS[p.perso_cod][r].count  %}
+                         {%  set total4_poids = total4_poids + PERSO_DIVERS[p.perso_cod][r].poids  %}
+                     {% else %}
+                         {%  set total = total + PERSO_MATOS[p.perso_cod][r].count  %}
+                         {%  set total_poids = total_poids + PERSO_MATOS[p.perso_cod][r].poids  %}
+                     {% endif %}
+                 {% endfor %}
+
+                 {% if COFFRE %}<td class="soustitre2" style="color:#800000; font-weight: bold; text-align:right;">{% if  PERSO_MATOS[0][r].count >0 %}{{ PERSO_MATOS[0][r].count }} <em style="font-size: 8px;">({{ PERSO_MATOS[0][r].poids }} kg)</em>{% endif %}</td>{% endif %}
+                 <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong> <em style="font-size: 8px;">({{ total_poids }} kg)</em></td>
+                 {% if QUATRIEME %}<td class="soustitre2" style="text-align:right;"><strong>{{ total4 }}</strong> <em style="font-size: 8px;">({{ total4_poids }} kg)</em></td>{% endif %}
+                 {% for p in PERSOS  %}
+                     <td class="soustitre2" style="text-align:right;">{% if  PERSO_MATOS[p.perso_cod][r].count >0 %}{{ PERSO_MATOS[p.perso_cod][r].count }} <em style="font-size: 8px;">({{ PERSO_MATOS[p.perso_cod][r].poids }} kg)</em>{% endif %}</td>
+                 {% endfor %}
+
+             </tr>
+         {% endfor %}
      {% endif %}
 
  </table>

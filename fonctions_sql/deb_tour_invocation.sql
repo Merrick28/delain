@@ -30,7 +30,7 @@ declare
 begin
 	code_retour := '';
 	v_des := lancer_des(1,100);
-	code_retour := code_retour || 'lancer: ' || v_des;
+	-- code_retour := code_retour || 'lancer: ' || v_des;
 		if v_des < v_chance then
 				--select into v_cible perso_cible from perso where perso_cod = monstre;
 				select into v_cible nullif(choix_perso_vue_aleatoire(perso_cod, 1) ,0) from perso where perso_cod = monstre;

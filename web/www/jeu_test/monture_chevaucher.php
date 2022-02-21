@@ -11,7 +11,9 @@ $perso = new perso();
 $perso->charge($perso_cod);
 $liste_monture = $perso->monture_chevauchable();
 
-if ($perso->perso_monture){
+if ($perso->perso_type_perso == 3){
+    $contenu_page .= "<br><p>Les familiers ne peuvent pas chevaucher de monture!</p><br>";
+} else if ($perso->perso_monture){
     $contenu_page .= "<br><p>Vous êtes déjà sur une monture</p><br>";
 }else if (count($liste_monture)==0  ){
     $contenu_page .= "<br><p>Il n'y a pas de monture ici!</p><br>";

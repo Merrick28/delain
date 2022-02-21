@@ -53,6 +53,17 @@ $perso         = new perso;
 $perso         = $verif_connexion->perso;
 $perso_pos_cod = $perso->get_position()['pos']->pos_cod;
 
+
+//===========================================================================================
+// details de l'objet poste
+$objets_poste = new objets_poste;
+$options_twig = array(); // on affiche rien par defaut!
+$zone_couverture = $objets_poste->getTexteZoneCouverture($perso_pos_cod);
+$options_twig_colis = array(
+    "perso_po" => $perso->perso_po,
+    "zone_couverture" => $zone_couverture);    //la fortune dont on dispose
+
+
 //===========================================================================================
 // ----- Traitement du lieu ---------------------------------------------
 if ($erreur != 0)
@@ -60,33 +71,28 @@ if ($erreur != 0)
 
     //cas d'un erreur de lieu (dans la cas par exemple d'un perso qui aurait changer de lieu avec une autre page web)
     $template = $twig->load('lieu_anomalie.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('LIEU' => "un relais poste")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('LIEU' => "un relais poste")));
 
-} else if ($perso->is_4eme_perso())
+} else if ($perso->is_4eme_perso() || $perso->is_fam_4eme_perso())
 {
 
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('INTERDIT' => "quatrième personnage")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('INTERDIT' => "quatrième personnage")));
 
 } else if ($perso->is_monstre())
 {
 
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, array('INTERDIT' => "monstre")));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, array('INTERDIT' => "monstre")));
 
 } else
 {
     //===========================================================================================
-    // details de l'objet poste
-    $objets_poste = new objets_poste;
-    $options_twig = array(); // on affiche rien par defaut!
+    // Gestion du coffre avec les relais
+    $cc = new compte_coffre();
+    $cc->loadBy_ccompt_compt_cod($compt_cod);
 
     //===========================================================================================
-    $zone_couverture = $objets_poste->getTexteZoneCouverture($perso_pos_cod);
-    $options_twig_colis = array(
-        "perso_po" => $perso->perso_po,
-        "zone_couverture" => $zone_couverture);    //la fortune dont on dispose
-
     // On commence par regarder s'il y a déjà des objets envoyés --------------------------------
     $objets_poste_emet = $objets_poste->getBy_opost_emet_perso_cod($perso_cod);
     if ($objets_poste_emet)
@@ -227,6 +233,18 @@ if ($erreur != 0)
             //on cherche son proprietaire
             $perso_compte = new perso_compte;
             $perso_compte = $perso_compte->getBy_pcompt_perso_cod($destinataire_list[0]->perso_cod)[0];
+
+            // On va supprimer d'eventuelle vieux colis que le perso ciblé n'aurait pas receptionné à temps!
+            $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
+            if ($perso_attend_colis)
+            {
+                foreach ($perso_attend_colis as $k => $objet)
+                {
+                        $objet->Confisque($destinataire_list[0]->perso_cod) ;
+                }
+            }
+            // Recharger après nettoyage
+            $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
 
             //on cherche aussi s'il n'y a pas déjà des colis pour lui
             $perso_attend_colis = $objets_poste->getBy_opost_dest_perso_cod($destinataire_list[0]->perso_cod);
@@ -526,5 +544,5 @@ if ($erreur != 0)
 
     //---------------------------------------rendering ! ---------------------------------------
     $template = $twig->load('lieu_relais_poste.twig');
-    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, $options_twig));
+    echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, $options_twig, ["COFFRE" => $cc]));
 }

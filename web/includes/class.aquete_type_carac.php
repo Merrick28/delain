@@ -163,6 +163,14 @@ class aquete_type_carac
                 else $param_txt_3 = "inconnu" ;
             }
         }
+        else if ($objelem->objelem_misc_cod==27) {
+
+            // cas du Code perso
+            $p = new perso();
+            $p->charge($objelem->objelem_param_txt_2);
+            $param_txt_2 = $p->perso_nom ;
+
+        }
 
         return $this->aqtypecarac_aff." ".$signe[$objelem->objelem_param_txt_1]." ".$param_txt_2.($param_txt_3=="" ? "" : " et ".$param_txt_3);
     }

@@ -35,6 +35,9 @@ declare
   v_sante_max integer;       -- fourchette haute
   v_pfonc_param json;        -- Paramètre mémorisé pour cet EA
 	v_do_it bool;              -- Executer la fonction
+	v_chainage integer;        -- valeur du chainage des EA courant
+	v_chaine_ordre integer;    -- récupération du n° de chainage courrant
+	v_equipage integer;         -- récupération du n° de monture/cavalier (traitement specifique des dépacement de du couple)
 
 	-- variable specifique au BMC
 	v_perso_nom text;          -- Nom du perso avan modification
@@ -45,9 +48,14 @@ declare
 	v_sort_aggressif text;     -- sort de agressif
 	v_sort_soutien text;       -- sort de agressif
 
+	-- variable specifique au POS
+  v_pos_cod integer;         -- position de l'EA de type POS
+	plist record;              -- list de perso
+
 begin
 
   v_raz := 'N';                     -- pas de RAZ du compteur par défaut (pour type EA = BMC)
+  v_chainage := 0 ;                 -- traitement des EA chainés
 
   -- Eventuellement les fonctions du monstre générique
 	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
@@ -65,9 +73,13 @@ begin
   -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for row in (
 		select * from fonction_specifique
-		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and v_evenement='BMC'))
-			and (fonc_type = v_evenement OR fonc_type = 'CES' )
+		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
+			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
+			              (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
+			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
 			and (fonc_date_limite >= now() OR fonc_date_limite IS NULL)
+			order by coalesce(f_to_numeric(fonc_trigger_param->>'fonc_trig_proba_chain'),0)
 		)
 	loop
 
@@ -75,10 +87,82 @@ begin
     v_do_it := true;
     
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' != -2 then -- -------------------------------------------------------------------------------------
+
+        -- par défaut on ne déclenche pas
+        v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
+
+        -- vérifier si le perso verifie les conditions demandée
+        if  verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+
+            v_do_it := true ;   /* le perso vérifie les condition, par défaut on active l'EA */
+
+            /* passer en parametre la case qui déclenche l'EA (ncecessaire pour les EA sur les mécanismes individuels)*/
+            if row.fonc_trigger_param->>'fonc_trig_sens' != 0  AND  row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
+                v_pos_cod := f_to_numeric(v_param->>'ancien_pos_cod'::text) ;
+            else
+                v_pos_cod := f_to_numeric(v_param->>'nouveau_pos_cod'::text) ;
+            end if;
+            -- injecter la case qui declenche l'ea dans les paramètres !
+            v_param := (v_param::jsonb || ('{"ea_pos_cod":' || coalesce(nullif(v_pos_cod,0)::text, '0') || '}' )::jsonb)::json ;
+
+
+            /* traitement des ré-armement du type bascule */
+            if ( row.fonc_trigger_param->>'fonc_trig_rearme' = 2)  then
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur la case */
+
+                /* boucler sur les perso qui sont sur la case déclenchant l'EA (sauf la monture ou le cavalier qui sont considéré comme un seul élément, seul le pilote déclenche l'EA)*/
+                if f_to_numeric(v_param->>'pilote'::text) = v_perso_cod then
+                    v_equipage := coalesce(coalesce(f_perso_cavalier(v_perso_cod), f_perso_monture(v_perso_cod)), 0);
+                else
+                    v_equipage := 0 ;
+                end if;
+                for plist in (
+                  select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_cod!= v_equipage and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod = v_pos_cod
+                  )
+                loop
+                    if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+                        v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (case) , on ne l'active pas */
+                        exit ;
+                    end if;
+                end loop;
+
+
+            elseif ( row.fonc_trigger_param->>'fonc_trig_rearme' = 3)  then
+
+                /* activer seulement, si d'autre perso sur la case ne vérifie pas encore la condition sur toutes les cases de l'EA */
+                if row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' and row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%' then
+                    -- le perso arrive (ou quitte) sur une case EA type bascule, mais il quitte (ou arrive) lui même sur une autre case de ce même EA, il n'y a pas de re-declechement
+                    v_do_it := false  ;
+
+                else
+
+                    /* boucler sur les persos qui sont sur toutes les cases de l'EA (sauf la monture ou le cavalier qui sont considéré comme un seul élément, seul le pilote déclenche l'EA)*/
+                    if f_to_numeric(v_param->>'pilote'::text) = v_perso_cod then
+                        v_equipage := coalesce(coalesce(f_perso_cavalier(v_perso_cod), f_perso_monture(v_perso_cod)), 0);
+                    else
+                        v_equipage := 0 ;
+                    end if;
+                    for plist in (
+                      select perso_cod from perso_position join perso on perso_cod=ppos_perso_cod where perso_cod!= v_perso_cod and perso_cod!= v_equipage and perso_type_perso != 3 and perso_actif = 'O' and ppos_pos_cod in (select f_to_numeric(v) from (select unnest(string_to_array(row.fonc_trigger_param->>'fonc_trig_pos_cods',',')) as v) s )
+                      )
+                    loop
+                        if verif_perso_condition(plist.perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1 then
+                            v_do_it := false ;  /* un autre perso vérifie les conditions, et l'EA est du type bascule (grappe), on ne l'active pas */
+                            exit ;
+                        end if;
+                    end loop;
+
+                end if;
+
+            end if;
+
+        end if;
+
+	  elseif row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
 	      -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
 
-        -- par défaut on ne déclenceh pas
+        -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type CES avec des conditions non-remplies pour cet EA (pas encore le passage de seuil ou premier passage)
 
         select pfonc_param into v_pfonc_param from fonction_specifique_perso where pfonc_fonc_cod=row.fonc_cod and pfonc_perso_cod=v_perso_cod ;
@@ -138,8 +222,12 @@ begin
         end if;
 
     elseif v_evenement = 'MAL' then -- ---------------------------------------------------------------------------------
-        -- Rechercher les infos sur le sorts
-        select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        -- Rechercher les infos sur le sorts si code fourni ou si on les a directement (cas des objets bonus)
+        if (v_param->>'num_sort'::text)::numeric is not null then
+            select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        else
+            select v_param->>'sort_aggressif'::text, v_param->>'sort_soutien'::text into v_sort_aggressif, v_sort_soutien ;
+        end if;
 
         if NOT (
                 (
@@ -160,8 +248,12 @@ begin
         end if;
 
     elseif v_evenement = 'MAC' then -- ---------------------------------------------------------------------------------
-        -- Rechercher les infos sur le sorts
-        select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        -- Rechercher les infos sur le sorts si code fourni ou si on les a directement (cas des objets bonus)
+        if (v_param->>'num_sort'::text)::numeric is not null then
+            select sort_aggressif, sort_soutien into v_sort_aggressif, v_sort_soutien from sorts where sort_cod=(v_param->>'num_sort'::text)::numeric ;
+        else
+            select v_param->>'sort_aggressif'::text, v_param->>'sort_soutien'::text into v_sort_aggressif, v_sort_soutien ;
+        end if;
 
         if NOT (
                 (row.fonc_trigger_param->>'fonc_trig_type_benefique'::text = 'O' and v_sort_soutien = 'O')
@@ -232,17 +324,30 @@ begin
             if trim(row.fonc_trigger_param->>'fonc_trig_raz'::text) = 'O' then
                 v_raz := 'O' ;
             end if;
+        elseif row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_rearme' = 1 then
+
+            -- l'EA devait être déclenché une seule fois, il l'a été, on le positionne à jamais de rearmement = rearmement manuel
+            update fonction_specifique set fonc_trigger_param=jsonb_set(row.fonc_trigger_param::jsonb, '{"fonc_trig_rearme"}', '-1') where fonc_cod=row.fonc_cod ;
         end if;
 
+        -- traitement du chainage des EA.
+        v_chaine_ordre :=  coalesce(f_to_numeric(row.fonc_trigger_param->>'fonc_trig_proba_chain'),0) ;
+        if (v_chaine_ordre = 0) or (v_chaine_ordre <= (v_chainage +1)) then
 
-        -- --------------- maintenant executer la fonction de l'EA trouvée !
-        -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
-        retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            -- --------------- maintenant executer la fonction de l'EA trouvée !
+            -- retour_fonction := 'Exec fonc_cod=' || row.fonc_cod::text  || execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
+            retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, row.fonc_cod, v_param) ;
 
-        if coalesce(retour_fonction, '') != '' then
-          code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            if coalesce(retour_fonction, '') != '' then
+                -- seulement s'il y a un retour indiquant que l'EA a été déclenchée, on augmente le niveau de chainage si nécéssaire!
+                if (v_chaine_ordre > v_chainage) then
+                    v_chainage := v_chaine_ordre ;
+                end if;
+                code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+            end if;
+
         end if;
-        
+
     end if;
     
 	end loop;

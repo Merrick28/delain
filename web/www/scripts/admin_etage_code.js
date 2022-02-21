@@ -13,7 +13,7 @@ Etage.ModeVisu.AfficheSpecial = false;
 
 Etage.ModeVisu.AfficheSpeciaux = function () {
 	var typeSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)].type;
-	if (Etage.ModeVisu.AfficheSpecial == typeSpecial) return true;
+	if (Etage.ModeVisu.AfficheSpecial == typeSpecial && typeSpecial!="terrain" && typeSpecial!="terrain-dep" && typeSpecial!="ea-dep" && typeSpecial!="meca-dep" && typeSpecial!="qa-dep") return true;
 	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
 
 	var cssTrue = Speciaux.getClass(Speciaux.getIdFromValeur (typeSpecial, true));
@@ -53,10 +53,112 @@ Etage.ModeVisu.AfficheSpeciaux = function () {
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
 		break;
+		case 'illusion':
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.illusion) ? cssTrue : cssFalse;
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
 		case 'entree_arene':
 			for (var i = 0; i < Etage.Cases.length; i++) {
 				var donneesCourantes = Etage.TrouveCaseActuelle(i);
 				var classe = (donneesCourantes.entree_arene) ? cssTrue : cssFalse;
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
+		case 'terrain-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="terrain-dep"]').prop( "checked", true );
+			var  ter_cod = $("#select-terrain-dep").val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.ter_cod == ter_cod) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
+		case 'terrain':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="terrain"]').prop( "checked", true );
+			var  ter_cod = $("#select-terrain").val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.ter_cod == ter_cod) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
+		case 'deplacement':
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				var classe = (donneesCourantes.pa_dep != 0) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+				$(Etage.Cases[i].divSpecial).text(donneesCourantes.pa_dep == 0 ? '' : donneesCourantes.pa_dep );
+			}
+		break;
+		case 'meca-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="meca-dep"]').prop( "checked", true );
+			var  meca_cod = $("#select-meca-dep").val();
+			 var liste = $("#meca-liste-cases-"+meca_cod).val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				if (!donneesCourantes.meca_dep) donneesCourantes.meca_dep = [] ;
+				if (!donneesCourantes.meca_dep[meca_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.meca_dep[meca_cod] = 1 ;
+					else
+						donneesCourantes.meca_dep[meca_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.meca_dep[meca_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
+		case 'qa-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="qa-dep"]').prop( "checked", true );
+			var  aquete_cod = $("#select-qa-dep").val();
+			 var liste = $("#qa-liste-cases-"+aquete_cod).val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				if (!donneesCourantes.qa_dep) donneesCourantes.qa_dep = [] ;
+				if (!donneesCourantes.qa_dep[aquete_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.qa_dep[aquete_cod] = 1 ;
+					else
+						donneesCourantes.qa_dep[aquete_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.qa_dep[aquete_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
+				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+			}
+		break;
+		case 'ea-dep':
+			$( 'input[name="special"]' ).prop( "checked", false );
+			$( 'input[name="special"]' ).filter('[value="ea-dep"]').prop( "checked", true );
+			$("#ea-liste-container").show();
+			var  fonc_cod = $("#select-ea-dep").val();
+			if (fonc_cod==0) var liste = $("#ea-liste-cases").text(); else var liste = $("#ea-liste-cases-"+fonc_cod).val();
+			for (var i = 0; i < Etage.Cases.length; i++) {
+				var donneesCourantes = Etage.TrouveCaseActuelle(i);
+				if (!donneesCourantes.ea_dep) donneesCourantes.ea_dep = [] ;
+				if (!donneesCourantes.ea_dep[fonc_cod]) {
+					if (liste.indexOf(" "+donneesCourantes.id+",") >= 0)
+						donneesCourantes.ea_dep[fonc_cod] = 1 ;
+					else
+						donneesCourantes.ea_dep[fonc_cod] = 0 ;
+				}
+
+				var classe = (donneesCourantes.ea_dep[fonc_cod] != 0) ? 'pinceauOn' : 'pinceauOff';
 				ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
 				if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
 			}
@@ -70,11 +172,13 @@ Etage.ModeVisu.EnleveSpeciaux = function () {
 	for (var i = 0; i < Etage.Cases.length; i++) {
 		ManipCss.enleveClasse (Etage.Cases[i].divSpecial, 'pinceauOn');
 		ManipCss.enleveClasse (Etage.Cases[i].divSpecial, 'pinceauOff');
-		if (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli)
-			ManipCss.enleveClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+		if (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli) ManipCss.enleveClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+		$(Etage.Cases[i].divSpecial).text('');
 	}
 	Etage.ModeVisu.AfficheSpecial = false;
+	$("#ea-liste-container").hide();
 };
+
 
 Etage.ModeVisu.Change = function (nouveauMode) {
 	//if (nouveauMode == Etage.ModeVisu.Courant)
@@ -251,6 +355,7 @@ Etage.getValeurFromType = function (type, idx, sousType) {
 				case 'pvp': resultat = Speciaux.getIdFromValeur (sousType, laCase.pvp); break;
 				case 'creusable': resultat = Speciaux.getIdFromValeur (sousType, laCase.creusable); break;
 				case 'tangible': resultat = Speciaux.getIdFromValeur (sousType, laCase.tangible); break;
+				case 'illusion': resultat = Speciaux.getIdFromValeur (sousType, laCase.illusion); break;
 				case 'entree_arene': resultat = Speciaux.getIdFromValeur (sousType, laCase.entree_arene); break;
 			}
 		break;
@@ -331,6 +436,11 @@ Etage.changeCase = function (objet, idx, nvlleValeur) {
 	}
 };
 
+Etage.changeCaseCSS = function (objet, idx, nvlleValeur) {
+	var divCourante = Etage.getDivFromType (objet.type, idx);
+	ManipCss.remplaceClasse(divCourante, nvlleValeur ? "pinceauOff" : "pinceauOn" , nvlleValeur ? "pinceauOn" : "pinceauOff");
+};
+
 Etage.getCoucheAction = function(i) {
 	var div = document.createElement("div");
 	div.id = 'actions_' + Etage.Cases[i].id;
@@ -362,9 +472,12 @@ Etage.ecrireModifs = function () {
 		var modif_pvp = Etage.Cases[c.idx].pvp != c.pvp;
 		var modif_pio = Etage.Cases[c.idx].creusable != c.creusable;
 		var modif_tan = Etage.Cases[c.idx].tangible != c.tangible;
+		var modif_alu = Etage.Cases[c.idx].illusion != c.illusion;
 		var modif_arn = Etage.Cases[c.idx].entree_arene != c.entree_arene;
+		var modif_ter = Etage.Cases[c.idx].ter_cod != c.ter_cod;
+		var modif_dep = Etage.Cases[c.idx].pa_dep != c.pa_dep;
 
-		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_arn)
+		if (modif_mur || modif_dec || modif_fon || modif_des || modif_psg || modif_pvp || modif_pio || modif_tan || modif_alu || modif_arn || modif_ter || modif_dep)
 		{
 			valeur += c.id + "|";
 			if (modif_mur) valeur += "m=" + c.mur + ",";
@@ -375,7 +488,10 @@ Etage.ecrireModifs = function () {
 			if (modif_pvp) valeur += "v=" + ((c.pvp) ? "1" : "0") + ",";
 			if (modif_pio) valeur += "c=" + ((c.creusable) ? "1" : "0") + ",";
 			if (modif_tan) valeur += "t=" + ((c.tangible) ? "1" : "0") + ",";
+			if (modif_alu) valeur += "i=" + ((c.illusion) ? "1" : "0") + ",";
 			if (modif_arn) valeur += "a=" + ((c.entree_arene) ? "1" : "0") + ",";
+			if (modif_ter) valeur += "g=" + c.ter_cod + ",";
+			if (modif_dep) valeur += "b=" + c.pa_dep + ",";
 			valeur += ";";
 		}
 	}
@@ -399,4 +515,18 @@ Etage.deselectionne = function() {
 		ManipCss.enleveClasse(uneCase.divSpecial, "etageSurligne");
 	}
 	Etage.CasesSelectionnees = new Array();
+}
+
+// Désélectionne et désurligne toutes les cases
+Etage.nettoyer_ea_list = function() {
+	var joli = (Etage.ModeVisu.Courant == Etage.ModeVisu.Joli);
+	$("#ea-liste-cases").text("");
+	for (var i = 0; i < Etage.Cases.length; i++) {
+		var donneesCourantes = Etage.TrouveCaseActuelle(i);
+		if (!donneesCourantes.ea_dep) donneesCourantes.ea_dep = [] ;
+		donneesCourantes.ea_dep[0] = 0 ;
+		var classe = 'pinceauOff' ;
+		ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, classe);
+		if (joli) ManipCss.ajouteClasse (Etage.Cases[i].divSpecial, 'pinceauOnOffJoli');
+	}
 }

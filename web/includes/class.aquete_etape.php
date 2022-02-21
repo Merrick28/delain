@@ -247,6 +247,59 @@ class aquete_etape
     }
 
     /**
+     * definit des element de position pour une étape du model interaction
+     * @global bdd_mysql $pdo
+     * @param array $pos_liste => list des positions
+     */
+    function set_interaction_positions($pos_liste)
+    {
+        $pdo    = new bddpdo;
+
+        $where = "";        // liste des elements
+        $ordre = 1;
+        foreach ($pos_liste as $item)
+        {
+            if ((int)$item != 0)
+            {
+                $element = new aquete_element;
+
+                $req    = "SELECT aqelem_cod FROM quetes.aquete_element where aqelem_misc_cod=:aqelem_misc_cod and aqelem_aqetape_cod=:aqelem_aqetape_cod and aqelem_param_id=1 and aqelem_aqperso_cod is null ";
+                $stmt   = $pdo->prepare($req);
+
+                $stmt   = $pdo->execute(array(":aqelem_aqetape_cod" => $this->aqetape_cod, ":aqelem_misc_cod" => (int)$item ), $stmt);
+                if ($result = $stmt->fetch())
+                {
+                   // element déjà existant, mettre à jour
+                    $element->charge($result["aqelem_cod"]);
+                    $element->aqelem_param_ordre = $ordre ;
+                }
+                else
+                {
+                    // inserer nouvel element
+                    $element->aqelem_aquete_cod = $this->aqetape_aquete_cod;
+                    $element->aqelem_aqetape_cod = $this->aqetape_cod;
+                    $element->aqelem_param_id = 1;
+                    $element->aqelem_type = "position" ;
+                    $element->aqelem_misc_cod = (int)$item ;
+                    $element->aqelem_param_ordre = $ordre ;
+                    $element->stocke(true);
+                }
+                $ordre ++;
+                $where .= $element->aqelem_cod."," ;        // ajouter cet element à la list
+            }
+        }
+        $where = " and aqelem_cod not in (". substr($where, 0, -1) .") ";
+
+        // supprimer tous les elements (ayant le même parametres) qui ne sont pas dans la liste.
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod=:aqelem_aqetape_cod and aqelem_param_id=1 and aqelem_aqperso_cod is null $where ";
+
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array(":aqelem_aqetape_cod" => $this->aqetape_cod), $stmt);
+
+    }
+
+
+    /**
      * retourne toutes les etapes de la quete dans l'ordre chronologique !
      * @global bdd_mysql $pdo
      * @param integer $quete => quete dont on veut les etapes
@@ -403,6 +456,83 @@ class aquete_etape
         &nbsp;&nbsp;&nbsp;Vous : <input name="dialogue" type="text" size="80"><br>
         <br>&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="choix_etape" value="Valider" >
         </form>' ;
+    }
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (validation d'une dépense de PA)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_texte_choix_pa(aquete_perso $aqperso)
+    {
+        $hydrate_texte = "" ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        if ($perso->perso_pa <  $p1->aqelem_param_num_1)
+        {
+            $hydrate_texte .= "Vous n'avez pas assez de PA pour continuer!";
+        }
+        else
+        {
+            $link = "/jeu_test/quete_auto.php?methode=dialogue&quete=".$this->aqetape_aquete_cod."&dialogue=O" ;
+            $hydrate_texte .= '<br><a href="'.$link.'" style="margin:25px;">OUI</a>';
+            $link = "/jeu_test/quete_auto.php?methode=dialogue&quete=".$this->aqetape_aquete_cod."&dialogue=N" ;
+            $hydrate_texte .= '<a href="'.$link.'" style="margin:25px;">NON</a>';
+        }
+
+
+        return $hydrate_texte ;
+    }
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un code)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_texte_choix_code(aquete_perso $aqperso)
+    {
+        $hydrate_texte = "" ;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'selecteur')) return false ;                              // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'texte')) return false ;                              // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        if ($perso->perso_pa <  $p3->aqelem_param_num_1)
+        {
+            $hydrate_texte .= "Vous n'avez pas assez de PA pour essayer!";
+        }
+        else
+        {
+
+            $hydrate_texte .='<form method="post" action="quete_auto.php">
+                                <input type="hidden" name="methode" value="dialogue">
+                                <input type="hidden" id="cryptex_value" name="dialogue" value="">
+                                <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">';
+
+            $cryptex = new cryptex($p1->aqelem_misc_cod, $p2->aqelem_param_txt_1);
+            $hydrate_texte .= $cryptex->display();
+            $hydrate_texte .="<div>";
+
+            $hydrate_texte .="</div>";
+            $hydrate_texte .='<br><input style="margin-left:20px; margin-top:20px;" onclick="$(\'#cryptex_value\').val(getCryptexValue());" class="test" type="submit" name="choix_etape" value="Valider'.( $p3->aqelem_param_num_1 > 0 ? " ({$p3->aqelem_param_num_1} PA)" : "").'"">';
+            if ($p3->aqelem_param_num_1 > 0)
+            {
+                $hydrate_texte .= '<input style="margin-left:20px;" class="test" type="submit" name="choix_etape" value="Ignorer">';
+            }
+            $hydrate_texte .='</form>';
+        }
+
+
+        return $hydrate_texte ;
     }
 
     /**

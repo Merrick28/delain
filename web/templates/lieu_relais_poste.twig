@@ -18,6 +18,15 @@
 </center>
 
 {% else %}
+{#------------------- SWITCH SUR LA GESTION DU COFFRE-------------------#}
+{% if COFFRE.ccompt_cod %}
+    <form name="retraitposte" method="post" action="">
+    <table width="100%">
+        <tr width="100%"><td class="soustitre2" colspan="9"><br>Vous disposez d'un coffre: <b>Voir les livraisons <a href="relais_coffre.php
+">depuis/vers mon Coffre</a></b></td></tr>
+    </table>
+    </form>
+{% endif %}
 {#------------------- RETRAIT 0 -------------------#}
 {% if (objets_poste_emet or objets_poste_dest) and action=="poste1" %}
 
@@ -192,7 +201,7 @@
 {% endif %}	
 	
 Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ destinataire }}" type="text">
-<br><br>	
+<br><span style="font-size: 9px; font-style: italic">Cela doit-être le nom d'un aventurier qui ne fait pas partie de votre triplette.</span><br><br>
 <input class="test" type="submit" name="cancel" value="Annuler">&nbsp;&nbsp;	
 <input class="test" type="submit" name="next" value="Passer à la suite">
 </center>

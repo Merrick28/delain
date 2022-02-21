@@ -77,13 +77,33 @@ else
 }
 .murSimple { background: black; }
 .pasMurSimple { background: lightgreen; }
-.pinceauOnOffJoli { opacity: 0.85; text-align:center; font-size:9px; }
-.pinceauOn { background: lightgreen; }
-.pinceauOff { background: pink; }
+.pinceauOnOffJoli { opacity: 0.60; }
+.pinceauOn { background: lightgreen; text-align:center; font-size:9px; }
+.pinceauOff { background: pink; text-align:center; font-size:9px; }
 .pinceauOn.murSimple { background: darkgreen; }
 .pinceauOff.murSimple{ background: darkred; }
 .pinceauOn.pasMurSimple { background: lightgreen; }
 .pinceauOff.pasMurSimple{ background: pink; }
+
+.horseBlink {
+    animation: blinkingBackGroundHorse 2s infinite;
+}
+@keyframes blinkingBackGroundHorse{
+    0% {
+        background-image: url(/images/interface/horse-w.png);
+        background-repeat: no-repeat;
+        background-position-x: 8px;
+        background-position-y: 8px;
+    }
+    100% {
+        background-image: url(/images/interface/horse-b.png);
+        background-repeat: no-repeat;
+        background-position-x: 8px;
+        background-position-y: 8px;
+
+    }
+}
+
 <?php 
 if (empty($source) || ($source != 'bdd' && $source != 'fichiers'))
 	$source = 'bdd';
@@ -161,6 +181,7 @@ echo ".objet{ background-image:url('" . G_IMAGES . "t_" , $etage, "_obj.png'); }
 // MURS
 ?>
 .mur_0 { background: none; }
+.mur_-1 { background-image:url('/images/remove.png'); }
 <?php if ($source == 'bdd')
 {
 	$req_styles = "select distinct mur_type from murs
