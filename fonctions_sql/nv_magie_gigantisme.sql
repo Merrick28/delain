@@ -96,7 +96,7 @@ begin
     if v_voie_magique = 5 then
         compt := compt + 1;
         code_retour := code_retour ||
-                       '<br>Votre connaissance des enchantements vous permet d''acroitre plus vite la taille de votre cible.''<br>';
+                       '<br>Votre connaissance des enchantements vous permet d''accroître plus vite la taille de votre cible.''<br>';
     end if;
 -- On détermine les dégâts
     degats := 0;
