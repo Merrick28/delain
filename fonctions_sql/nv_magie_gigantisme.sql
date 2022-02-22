@@ -180,5 +180,4 @@ begin
 end;
 $_$;
 
-
 ALTER FUNCTION public.nv_magie_gigantisme(integer, integer, integer) OWNER TO delain;
