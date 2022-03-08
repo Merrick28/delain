@@ -49,19 +49,20 @@ if ($erreur == 0)
 {
     //	Préparer la liste des images d'avatar déjà présete sur le serveur.
     $baseimage   = "../images/objets";
-    $rep         = opendir($baseimage);
+    $files = scandir($baseimage);
+    sort($files);
     $images_list = "";
     $img         = 0;
-    while (false !== ($filename = readdir($rep)))
-    {
-        $imagesize = @getimagesize($baseimage . '/' . $filename);
-        if (($imagesize[0] > 28) && ($imagesize[1] > 28))
-        {     // on ne prend que des images de taille raisonnable
-            $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" data-img-filename=\"{$filename}\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
-            $img++;
+    foreach ($files as $filename) {
+        if ($filename != '.' && $filename != '..') {
+            $imagesize = @getimagesize($baseimage . '/' . $filename);
+            if (($imagesize[0] > 28) && ($imagesize[1] > 28))
+            {     // on ne prend que des images de taille raisonnable
+                $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" data-img-filename=\"{$filename}\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
+                $img++;
+            }
         }
     }
-
     // On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
     if (($_POST["type-img-objet"] == "upload") && ($_FILES["image_file"]["tmp_name"] != ""))
     {

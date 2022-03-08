@@ -7,24 +7,23 @@ $perso = $verif_connexion->perso;
 
 
 //	Préparer la liste des images d'avatar déjà présete sur le serveur.
-$baseimage   = "../images/avatars";
-$rep         = opendir($baseimage);
+$baseimage   = "../images/avatars";;
+$files = scandir($baseimage);
+sort($files);
 $images_list = "";
 $img         = 0;
-while (false !== ($filename = readdir($rep)))
-{
-    $avatar_perso_cod = 1 * (int)substr($filename, 0, -4);
-    if ($avatar_perso_cod == 0)
-    {   // si le pattern correspond, c'est une image de perso (pas de monstre) on ne l'affiche pas!
-        $imagesize = @getimagesize($baseimage . '/' . $filename);
-        if (($imagesize[0] > 28) && ($imagesize[1] > 28))
-        {     // on ne prend que des images de taille raisonnable
-            $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" height=\"60px\" id=\"img-serveur-{$img}\" data-img-filename=\"{$filename}\" src=\"{$baseimage}/{$filename}\"></div>";
-            $img++;
+foreach ($files as $filename) {
+    if ($filename != '.' && $filename != '..') {
+        $avatar_perso_cod = 1 * (int)substr($filename, 0, -4);
+        if ($avatar_perso_cod == 0) {   // si le pattern correspond, c'est une image de perso (pas de monstre) on ne l'affiche pas!
+            $imagesize = @getimagesize($baseimage . '/' . $filename);
+            if (($imagesize[0] > 28) && ($imagesize[1] > 28)) {     // on ne prend que des images de taille raisonnable
+                $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" height=\"60px\" id=\"img-serveur-{$img}\" data-img-filename=\"{$filename}\" src=\"{$baseimage}/{$filename}\"></div>";
+                $img++;
+            }
         }
     }
 }
-
 
 
 //
