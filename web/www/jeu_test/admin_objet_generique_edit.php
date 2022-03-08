@@ -4,7 +4,7 @@ ob_start();
 
 ?>
 
-  <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
+  <script language="javascript">//# sourceURL=admin_objet_generique_edit.js
 
         function preview_image(event) {
             var reader = new FileReader();
@@ -31,8 +31,9 @@ ob_start();
             $("#output_image")[0].src = $("#img-serveur-" + img)[0].src;
             $("#images-container").css("display", "none");
             $("#type-img-objet").val("server");
-            var path_image = $("#img-serveur-" + img)[0].src.split("/");
-            var file_image = path_image[path_image.length - 1];
+            //var path_image = $("#img-serveur-" + img)[0].src.split("/");
+            //var file_image = path_image[path_image.length - 1];
+            var file_image = $("#img-serveur-" + img).data("img-filename");
             $("#id-gobj_image").val('objets/'+file_image);
         }
     </script>
@@ -56,7 +57,7 @@ if ($erreur == 0)
         $imagesize = @getimagesize($baseimage . '/' . $filename);
         if (($imagesize[0] > 28) && ($imagesize[1] > 28))
         {     // on ne prend que des images de taille raisonnable
-            $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
+            $images_list .= "<div style=\"margin - left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img})\" data-img-filename=\"{$filename}\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
             $img++;
         }
     }
