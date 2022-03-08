@@ -360,7 +360,7 @@ if ($erreur == 0)
                         } ?>>oui
                         </option>
                     </select>
-                    Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa"
+                    Coût en PA (pour les passages ondulants, passages tunnels, etc.) <input type="text" name="cout_pa"
                                                                               value="<?php echo $cout_pa ?>">
                     <input type="submit" value="Modifier !" class='test'>
                 </form>
