@@ -198,7 +198,7 @@ if ($erreur == 0)
 					<option value="N">non</option>
 					<option value="O">oui</option>
 					</select>
-					</td></tr><tr><td>Coût en pa : </td><td><input size=3 type="text" name="cout_pa"> (pour les passages ondulants uniquement)	
+					</td></tr><tr><td>Coût en PA : </td><td><input size=3 type="text" name="cout_pa"> (passages ondulants, tunnels, etc.)	
 					</td></tr><tr><td>Densité : </td><td><select name="densite">
 					<option value="3">clairsemé </option>
 					<option value="2">dense</option>
