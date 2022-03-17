@@ -80,11 +80,11 @@ begin
     end if;
     code_retour := split_part(magie_commun_txt, ';', 3);
     px_gagne := split_part(magie_commun_txt, ';', 4);
-    if ajoute_bonus(cible, 'ARM', 2, 5) != 0 then
+    if ajoute_bonus(cible, 'ARM', 3, 6) != 0 then
         insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee)
         values (3, lanceur, cible, 5 * ln(v_pv_cible));
     end if;
-    code_retour := code_retour || '<br>' || nom_cible || ' gagne un bonus de +5 en armure pendant 2 tours.<br>';
+    code_retour := code_retour || '<br>' || nom_cible || ' gagne un bonus de +6 en Armure pendant 3 tours.<br>';
     code_retour := code_retour || '<br>Vous gagnez ' || px_gagne || ' PX pour cette action.<br>';
     texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible].';
 
