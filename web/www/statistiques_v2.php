@@ -56,12 +56,9 @@ $escape_list=[
 ];
 
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
-$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"7\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
-$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quête en cours</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
+$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"8\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
+$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes terminés</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
 foreach ($escape_list as $etage => $escape){
-    $quete = new aquete;
-    $quete->charge($escape["aquete_cod"]);
-    $nb_quete = (int)$quete->get_nb_en_cours() ;
 
     $req          =
             "select etage_libelle
@@ -77,11 +74,13 @@ foreach ($escape_list as $etage => $escape){
     $result = $stmt->fetch();
 
 
-    $req2          =" select min(aqperso_date_debut) as premier_entree ,min( aqperso_date_fin ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
-    $result2 = $stmt->fetch();
+    $req2          =" select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, sum(case when aqperso_actif='O' then 0 else 1 end) nb_fini, min(aqperso_date_debut) as premier_entree ,min( aqperso_date_fin ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
+    $stmt2         = $pdo->query($req2);
+    $result2       = $stmt2->fetch();
 
     $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td class=\"soustitre2\">" .
-        $nb_quete . "</td><td class=\"soustitre2\">" .
+        ($result2['nb_encours'] ?? '') . "</td><td class=\"soustitre2\">" .
+        ($result2['nb_fini'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['premier_entree'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['premier_sortie'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result['nb_perso'] ?? 0) . "</td><td class=\"soustitre2\">" .
