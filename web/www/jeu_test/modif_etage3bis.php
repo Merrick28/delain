@@ -360,7 +360,7 @@ if ($erreur == 0)
                         } ?>>oui
                         </option>
                     </select>
-                    Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa"
+                    Coût en PA (passages ondulants, passages tunnels, etc.) <input type="text" name="cout_pa"
                                                                               value="<?php echo $cout_pa ?>">
                     <input type="submit" value="Modifier !" class='test'>
                 </form>
@@ -407,7 +407,7 @@ if ($erreur == 0)
                         <option value="N">non</option>
                         <option value="O">oui</option>
                     </select>
-                    Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa" value="0">
+                    Coût en PA (passages ondulants, passages tunnels, etc.) <input type="text" name="cout_pa" value="0">
 
                     <input type="submit" class='test' value="créer !"/><br>
                     <em><u>Nota</em></u>: &nbsp;<em><span style="color:#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</span></em>

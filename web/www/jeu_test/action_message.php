@@ -629,9 +629,9 @@ switch ($methode)
         //$contenu_page .= "<pre>".print_r($tab_dest_msg, true). "</pre>";
         $nb_dest = count($tab_dest_msg);
 
-        if ($nb_dest > 100)
+        if ($nb_dest > 300)
         {
-            $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 100 destinataires ! *********</strong><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 300 destinataires ! *********</strong><br><br>';
             $erreur       = 1;
         }
         if ($nb_dest == 0)

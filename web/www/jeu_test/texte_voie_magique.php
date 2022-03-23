@@ -52,6 +52,6 @@ if ($nv5 > 0 && $mem > 5)
 } // Fin de vérification d'autorisation
 else
 {
-    $contenu_page .= 'Mauvaise idée. C\'est pas joli tout ça...';
+    $contenu_page .= 'Vous ne pouvez pas accéder aux voies spécialisées. Il faut maîtriser au moins six sortilèges pour cela.';
 }
 
