@@ -81,8 +81,8 @@ foreach ($escape_list as $etage => $escape){
     $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td class=\"soustitre2\">" .
         ($result2['nb_encours'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['nb_fini'] ?? '') . "</td><td class=\"soustitre2\">" .
-        ($result2['premier_entree'] ?? '') . "</td><td class=\"soustitre2\">" .
-        ($result2['premier_sortie'] ?? '') . "</td><td class=\"soustitre2\">" .
+        ($result2['premier_entree'] ? substr($result2['premier_entree'], 0,19) : '') . "</td><td class=\"soustitre2\">" .
+        ($result2['premier_sortie'] ? substr($result2['premier_sortie'], 0,19) : '') . "</td><td class=\"soustitre2\">" .
         ($result['nb_perso'] ?? 0) . "</td><td class=\"soustitre2\">" .
         ($result['nb_fam']  ?? 0) . "</td><td class=\"soustitre2\">"  .
         ($result['nb_monstre']  ?? 0) . "</td></tr>";
