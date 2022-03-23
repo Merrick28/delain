@@ -61,6 +61,7 @@ switch($methode)
 			case 6:	    //artefact
 			case 7:	    //relique
 			case 27:	//signes distinctifs
+			case 46:	//Colliers
 				$app_req = ' where tenc_artefact = 1 ';
 				break;
 		}
