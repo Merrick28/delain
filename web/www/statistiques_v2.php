@@ -47,23 +47,54 @@ $contenu_page .= (" et <strong>$nb_monstre</strong> monstres dans les souterrain
 
 $contenu_page .= '<br /><em>Statistiques sur les 30 derniers jours seulement</em>';
 
-$contenu_page .= '<div class="titre">Statistiques des personnages</div>';
-// classement par niveau
-$req_niveau   = "select perso_niveau,count(perso_cod) as nb from perso 
-    where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_dlt >= now() - '30 days'::INTERVAL 
-    group by perso_niveau 
-    order by perso_niveau desc ";
-$stmt         = $pdo->query($req_niveau);
+$contenu_page .= '<div class="titre">Statistiques Escape-Game</div>';
+
+$escape_list=[
+  "Catacombe I" => ["etage_cod"=>157, "aquete_cod"=>158 ],
+  "Catacombe II" => ["etage_cod"=>172, "aquete_cod"=>438  ],
+  "Catacombe III" => ["etage_cod"=>173, "aquete_cod"=>439  ],
+];
+
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
-$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"2\"><p style=\"text-align:center;\">Répartition par niveau</td></tr>");
-$contenu_page .= ("<tr><td class=\"soustitre2\">Niveau :</td><td class=\"soustitre2\">Nombre de personnages :</td></tr>");
-while ($result = $stmt->fetch())
-{
-    $contenu_page .= "<tr><td class=\"soustitre2\">" . $result['perso_niveau'] . "</td><td class=\"soustitre2\">" .
-                     $result['nb'] . "</td></tr>";
+$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"7\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
+$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quête en cours</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
+foreach ($escape_list as $etage => $escape){
+    $quete = new aquete;
+    $quete->charge($escape["aquete_cod"]);
+    $nb_quete = (int)$quete->get_nb_en_cours() ;
+
+    $req          =
+            "select etage_libelle
+                ,sum(case when perso_type_perso=1 then 1 else 0 end) nb_perso
+                ,sum(case when perso_type_perso=3 then 1 else 0 end) nb_fam  
+                ,sum(case when perso_type_perso=2 then 1 else 0 end) nb_monstre 
+                from perso_position join positions on pos_cod=ppos_pos_cod join perso on perso_cod=ppos_perso_cod  
+                join etage on etage_cod=pos_etage
+                 where perso_actif='O' and pos_etage = ".($escape["etage_cod"])."
+                group by etage_libelle order by etage_libelle
+    ";
+    $stmt         = $pdo->query($req);
+    $result = $stmt->fetch();
+
+
+    $req2          =" select min(aqperso_date_debut) as premier_entree ,min( aqperso_date_fin ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
+    $result2 = $stmt->fetch();
+
+    $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td class=\"soustitre2\">" .
+        $nb_quete . "</td><td class=\"soustitre2\">" .
+        ($result2['premier_sortie'] ?? '') . "</td><td class=\"soustitre2\">" .
+        ($result2['premier_sortie'] ?? '') . "</td><td class=\"soustitre2\">" .
+        ($result['nb_perso'] ?? 0) . "</td><td class=\"soustitre2\">" .
+        ($result['nb_fam']  ?? 0) . "</td><td class=\"soustitre2\">"  .
+        ($result['nb_monstre']  ?? 0) . "</td></tr>";
 }
-$contenu_page .= ("</table>");
-$contenu_page .= ("<hr />");
+$contenu_page .= ("</table><br>");
+
+
+
+
+$contenu_page .= '<div class="titre">Statistiques des personnages</div>';
+
 
 // classement par joueur et par sexe
 $req          =
@@ -133,9 +164,28 @@ while ($result = $stmt->fetch())
 				<td>" . $result['familier'] . "</td></tr>";
 }
 
-
 $contenu_page .= ("</table>");
-$contenu_page .= "<p style=\"text-align:center;\"><a href=\"rech_class.php\">Faire une recherche !</a>";
+$contenu_page .= ("<hr />");
+
+// classement par niveau
+$req_niveau   = "select perso_niveau,count(perso_cod) as nb from perso 
+    where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_dlt >= now() - '30 days'::INTERVAL 
+    group by perso_niveau 
+    order by perso_niveau desc ";
+$stmt         = $pdo->query($req_niveau);
+$contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
+$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"2\"><p style=\"text-align:center;\">Répartition par niveau</td></tr>");
+$contenu_page .= ("<tr><td class=\"soustitre2\">Niveau :</td><td class=\"soustitre2\">Nombre de personnages :</td></tr>");
+while ($result = $stmt->fetch())
+{
+    $contenu_page .= "<tr><td class=\"soustitre2\">" . $result['perso_niveau'] . "</td><td class=\"soustitre2\">" .
+        $result['nb'] . "</td></tr>";
+}
+$contenu_page .= ("</table>");
+$contenu_page .= ("<hr />");
+
+
+//$contenu_page .= "<p style=\"text-align:center;\"><a href=\"rech_class.php\">Faire une recherche !</a>";
 
 
 $template     = $twig->load('page_generique.twig');
