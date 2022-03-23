@@ -57,7 +57,7 @@ $escape_list=[
 
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
 $contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"8\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
-$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes terminés</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
+$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes terminées</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
 foreach ($escape_list as $etage => $escape){
 
     $req          =
