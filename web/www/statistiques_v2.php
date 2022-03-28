@@ -51,8 +51,9 @@ $contenu_page .= '<div class="titre">Statistiques Escape-Game</div>';
 
 $escape_list=[
   "Catacombe I" => ["etage_cod"=>157, "aquete_cod"=>158 ],
-  "Catacombe II" => ["etage_cod"=>172, "aquete_cod"=>438  ],
-  "Catacombe III" => ["etage_cod"=>173, "aquete_cod"=>439  ],
+  "Catacombe II" => ["etage_cod"=>172, "aquete_cod"=>438 ],
+  "Catacombe III" => ["etage_cod"=>173, "aquete_cod"=>439 ],
+  "Catacombe IV" => ["etage_cod"=>174, "aquete_cod"=>531 ],
 ];
 
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
