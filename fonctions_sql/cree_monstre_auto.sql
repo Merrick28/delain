@@ -28,7 +28,7 @@ begin
 	code_retour := '';
 	for l_etage in select * from rep_mon_joueur order by rjmon_etage loop
 		nb_manque := 0;
-		select into nb_monstre, nb_monture sum(case when gmon_monture='N' THEN 1 ELSE 0 END),sum(case when gmon_monture!='N' THEN 1 ELSE 0 END)
+		select into nb_monstre, nb_monture coalesce(sum(case when gmon_monture='N' THEN 1 ELSE 0 END),0), coalesce(sum(case when gmon_monture!='N' THEN 1 ELSE 0 END),0)
 			from perso,positions,perso_position,monstre_generique
 			where perso_type_perso = 2
 			and perso_actif = 'O'
