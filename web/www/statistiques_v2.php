@@ -56,6 +56,7 @@ $escape_list=[
   "Catacombe IV" => ["etage_cod"=>174, "aquete_cod"=>531, "checkpoints" =>[528, 462, 459, 470, 471, 461, 457, 460] ],
 ];
 
+$count_etage = [] ;
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
 $contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"8\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
 $contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes terminées</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
@@ -79,6 +80,8 @@ foreach ($escape_list as $etage => $escape){
     $stmt2         = $pdo->query($req2);
     $result2       = $stmt2->fetch();
 
+    $count_etage[$etage] =  ($result['nb_perso']  ?? 0) ;
+
     $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td class=\"soustitre2\">" .
         ($result2['nb_encours'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['nb_fini'] ?? '') . "</td><td class=\"soustitre2\">" .
@@ -91,8 +94,8 @@ foreach ($escape_list as $etage => $escape){
 $contenu_page .= ("</table><br>");
 
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
-$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"9\"><p style=\"text-align:center;\">Répartition par Checkpoint :</td></tr>");
-$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Oriental</td><td class=\"soustitre2\">Saut de la foi</td><td class=\"soustitre2\">Labyrinthe</td><td class=\"soustitre2\">Démineur</td><td class=\"soustitre2\">Skull</td><td class=\"soustitre2\">Rock</td><td class=\"soustitre2\">Désert</td><td class=\"soustitre2\">Nom de dieu</td></tr>");
+$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"10\"><p style=\"text-align:center;\">Répartition par Checkpoint :</td></tr>");
+$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Le pénitent</td><td class=\"soustitre2\">Oriental</td><td class=\"soustitre2\">Saut de la foi</td><td class=\"soustitre2\">Labyrinthe</td><td class=\"soustitre2\">Démineur</td><td class=\"soustitre2\">Skull</td><td class=\"soustitre2\">Rock</td><td class=\"soustitre2\">Désert</td><td class=\"soustitre2\">Nom de dieu</td></tr>");
 
 $req = "select aqelem_aquete_cod, count(*) as count from quetes.aquete_element where aqelem_aquete_cod in (73, 74, 90, 76, 78, 91, 92, 93, 349, 281, 278, 289, 290, 280, 276, 279, 437, 369, 377, 378, 366, 368, 364, 367, 528, 462, 459, 470, 471, 461, 457, 460) and aqelem_type='perso_condition' and aqelem_aqperso_cod is null group by aqelem_aquete_cod ";
 $stmt   = $pdo->query($req);
@@ -104,7 +107,7 @@ while ($result = $stmt->fetch()) {
 foreach ($escape_list as $etage => $escape){
 
 
-    $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td>" ;
+    $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td width=\"90px;\" class=\"soustitre2\">". ($count_etage[$etage]>0 ? $count_etage[$etage] : '') . "</td>" ;
     foreach ($escape["checkpoints"] as $q) {
         $contenu_page .= "<td width=\"90px;\" class=\"soustitre2\">". ($count_checkpoint[$q]>1 ? (int)$count_checkpoint[$q]-1 : '') . "</td>" ;
     }
