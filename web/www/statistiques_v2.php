@@ -94,7 +94,7 @@ $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
 $contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"9\"><p style=\"text-align:center;\">Répartition par Checkpoint :</td></tr>");
 $contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Oriental</td><td class=\"soustitre2\">Saut de la foi</td><td class=\"soustitre2\">Labyrinthe</td><td class=\"soustitre2\">Démineur</td><td class=\"soustitre2\">Skull</td><td class=\"soustitre2\">Rock</td><td class=\"soustitre2\">Désert</td><td class=\"soustitre2\">Nom de dieu</td></tr>");
 
-$req = "select aqelem_aquete_cod, count(*) as count from quetes.aquete_element where aqelem_aquete_cod in (73, 74, 90, 76, 78, 91, 92, 93) and aqelem_type='perso_condition' and aqelem_aqperso_cod is null group by aqelem_aquete_cod ";
+$req = "select aqelem_aquete_cod, count(*) as count from quetes.aquete_element where aqelem_aquete_cod in (73, 74, 90, 76, 78, 91, 92, 93, 349, 281, 278, 289, 290, 280, 276, 279, 437, 369, 377, 378, 366, 368, 364, 367, 528, 462, 459, 470, 471, 461, 457, 460) and aqelem_type='perso_condition' and aqelem_aqperso_cod is null group by aqelem_aquete_cod ";
 $stmt   = $pdo->query($req);
 $count_checkpoint = [] ;
 while ($result = $stmt->fetch()) {
