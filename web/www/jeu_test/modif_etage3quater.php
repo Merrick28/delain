@@ -787,7 +787,7 @@ if ($erreur == 0)
                         }
                     }
                     //===== quete
-                    else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))
+                    else if  ( $element->aqelem_type == 'quete' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))
                     {
                         $element->aqelem_misc_cod = $aquete_map[$element->aqelem_misc_cod] ;
                     }
