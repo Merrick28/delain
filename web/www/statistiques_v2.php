@@ -58,8 +58,8 @@ $escape_list=[
 
 $count_etage = [] ;
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
-$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"8\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
-$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes terminées</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
+$contenu_page .= ("<tr><td class=\"soustitre2\" colspan=\"9\"><p style=\"text-align:center;\">Répartition par Etage :</td></tr>");
+$contenu_page .= ("<tr><td></td><td class=\"soustitre2\">Quêtes en cours</td><td class=\"soustitre2\">Quêtes abandonnées</td><td class=\"soustitre2\">Quêtes terminées</td><td class=\"soustitre2\">1ere Entrée</td><td class=\"soustitre2\">1ere Sortie</td><td class=\"soustitre2\">Nb de Persos</td><td class=\"soustitre2\">Nb de Familiers</td><td class=\"soustitre2\">Nb de Monstres</td></tr>");
 foreach ($escape_list as $etage => $escape){
 
     $req          =
@@ -76,7 +76,7 @@ foreach ($escape_list as $etage => $escape){
     $result = $stmt->fetch();
 
 
-    $req2          =" select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, sum(case when aqperso_actif='O' then 0 else 1 end) nb_fini, min(aqperso_date_debut) as premier_entree ,min( aqperso_date_fin ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
+    $req2          =" select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, sum(case when aqperso_actif<>'O' and aqperso_nb_termine=0 then 1 else 0 end) nb_abandon, sum(aqperso_nb_termine) nb_fini, min(aqperso_date_debut) as premier_entree ,min( case when aqperso_nb_termine !=0 then  aqperso_date_fin else null end ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
     $stmt2         = $pdo->query($req2);
     $result2       = $stmt2->fetch();
 
@@ -84,6 +84,7 @@ foreach ($escape_list as $etage => $escape){
 
     $contenu_page .= "<tr><td class=\"soustitre2\">" . $etage . "</td><td class=\"soustitre2\">" .
         ($result2['nb_encours'] ?? '') . "</td><td class=\"soustitre2\">" .
+        ($result2['nb_abandon'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['nb_fini'] ?? '') . "</td><td class=\"soustitre2\">" .
         ($result2['premier_entree'] ? substr($result2['premier_entree'], 0,19) : '') . "</td><td class=\"soustitre2\">" .
         ($result2['premier_sortie'] ? substr($result2['premier_sortie'], 0,19) : '') . "</td><td class=\"soustitre2\">" .

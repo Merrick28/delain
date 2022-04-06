@@ -748,7 +748,7 @@ if ($erreur == 0)
 
                 // recalibrer les éléments du type "position", "etape", "quete", "meca", etc...
                 $req  = "SELECT aqelem_cod from quetes.aquete join quetes.aquete_element on aqelem_aquete_cod=aquete_cod 
-                                  WHERE aquete_pos_etage = :aquete_pos_etage and aqelem_type in ('quete','choix','choix_etape','position','etape','quete_etape','meca'); ";
+                                  WHERE aquete_pos_etage = :aquete_pos_etage and aqelem_type in ('quete','choix','choix_etape','position','etape','quete_etape','meca', 'meca_etat'); ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array(":aquete_pos_etage" =>  $etage_cod), $stmt);
                 while ($result = $stmt->fetch())
@@ -769,8 +769,8 @@ if ($erreur == 0)
                             $element->aqelem_misc_cod = $result2["pos_cod"] ;
                         }
                     }
-                    //===== meca
-                    else if  ( $element->aqelem_type == 'meca' && $element->aqelem_misc_cod>0 && isset($meca_map[$element->aqelem_misc_cod]))
+                    //===== meca ou meca_etat
+                    else if  ( ($element->aqelem_type == 'meca' || $element->aqelem_type == 'meca_etat') && $element->aqelem_misc_cod>0 && isset($meca_map[$element->aqelem_misc_cod]))
                     {
                         $element->aqelem_misc_cod = $meca_map[$element->aqelem_misc_cod] ;
                         if ($element->aqelem_param_num_3 > 0 )
