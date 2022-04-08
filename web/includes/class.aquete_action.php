@@ -281,12 +281,14 @@ class aquete_action
         if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p6->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
 
         // recupe de la carac en focntion du selecteur
-        if ($p1->aqelem_misc_cod = 1)  {$coeff=3; $carac = $perso->perso_for ; }
-        else if ($p1->aqelem_misc_cod = 2)  {$coeff=3; $carac = $perso->perso_dex ;}
-        else if ($p1->aqelem_misc_cod = 3)  {$coeff=3; $carac = $perso->perso_int ;}
-        else if ($p1->aqelem_misc_cod = 4)  {$coeff=3; $carac = $perso->perso_con ;}
-        else if ($p1->aqelem_misc_cod = 5)  {$coeff=5; $carac = $perso->distance_vue() ;}
+        if ($p1->aqelem_misc_cod == 1)  {$coeff=3; $carac = $perso->perso_for ; }
+        else if ($p1->aqelem_misc_cod == 2)  {$coeff=3; $carac = $perso->perso_dex ;}
+        else if ($p1->aqelem_misc_cod == 3)  {$coeff=3; $carac = $perso->perso_int ;}
+        else if ($p1->aqelem_misc_cod == 4)  {$coeff=3; $carac = $perso->perso_con ;}
+        else if ($p1->aqelem_misc_cod == 5)  {$coeff=5; $carac = $perso->distance_vue() ;}
         else return $p6->aqelem_misc_cod ;
+
+        //echo "<pre>"; print_r([$p1, $perso, $coeff,$carac ]); die();
 
         // Si le perso n'a pas le niveau requis dans la carac
         if ( $carac < $p2->aqelem_param_num_1)                              // etape suivante: pas le niveau
