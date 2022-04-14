@@ -388,13 +388,14 @@ if ($erreur == 0)
                     - où il y en a actuellement et où avec le mécanisme actif le mur est encore la
                     - où il n'y a pas de mur parcequ'un mecanisme actif l'a supprimé*/
             echo "Duplication des murs...<br>";
-            $req  = "INSERT INTO murs( mur_pos_cod, mur_type, mur_tangible, mur_creusable, mur_usure,  mur_richesse)
+            $req  = "INSERT INTO murs( mur_pos_cod, mur_type, mur_tangible, mur_creusable, mur_usure,  mur_richesse, mur_illusion)
                       SELECT p2.pos_cod as mur_pos_cod, 
                           coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN pmeca_base_mur_type ELSE mur_type END, 0) as mur_type, 
                           coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN pmeca_base_mur_tangible ELSE mur_tangible END, 'O') as mur_tangible, 
                           coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN null ELSE mur_creusable END, 'N') as mur_creusable, 
                           coalesce(mur_usure, 1000) as mur_usure, 
-                          coalesce(mur_richesse, 100) as mur_richesse
+                          coalesce(mur_richesse, 100) as mur_richesse,
+                          coalesce(CASE WHEN pmeca_pos_cod IS NOT NULL THEN pmeca_base_mur_illusion ELSE mur_illusion END, 'N') as mur_illusion
                       FROM positions p1
                       join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
                       left outer join murs on mur_pos_cod=p1.pos_cod 
