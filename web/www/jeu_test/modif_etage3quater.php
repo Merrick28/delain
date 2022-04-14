@@ -365,7 +365,9 @@ if ($erreur == 0)
                         pos_decor, pos_decor_dessus, pos_fonction_arrivee, pos_passage_autorise,
                         pos_modif_pa_dep, pos_ter_cod, pos_fonction_dessus, pos_entree_arene, pos_anticipation,
                         pos_pvp)
-                      SELECT pos_x, pos_y, :pos_etage, pos_key, pos_type_aff, pos_magie, 
+                      SELECT pos_x, pos_y, :pos_etage, pos_key, 
+                        coalesce(pmeca_base_pos_type_aff, pos_type_aff) as pos_type_aff, 
+                        pos_magie, 
                         coalesce(pmeca_base_pos_decor, pos_decor) as pos_decor, 
                         coalesce(pmeca_base_pos_decor_dessus, pos_decor_dessus) as pos_decor_dessus, 
                         pos_fonction_arrivee, 
