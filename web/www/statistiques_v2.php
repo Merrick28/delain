@@ -52,7 +52,7 @@ $contenu_page .= '<div class="titre">Statistiques Escape-Game</div>';
 $escape_list=[
   "Catacombe I" => ["etage_cod"=>157, "aquete_cod"=>158, "checkpoints" =>[73, 74, 90, 76, 78, 91, 92, 93]],
   "Catacombe II" => ["etage_cod"=>172, "aquete_cod"=>438, "checkpoints" =>[349, 281, 278, 289, 290, 280, 276, 279] ],
-  "Catacombe III" => ["etage_cod"=>173, "aquete_cod"=>439, "checkpoints" =>[437, 369, 377, 378, 366, 368, 364, 367]  ],
+  "Catacombe III" => ["etage_cod"=>173, "aquete_cod"=>439, "checkpoints" =>[437, 369, 366, 377, 378,  368, 364, 367]  ],
   "Catacombe IV" => ["etage_cod"=>174, "aquete_cod"=>531, "checkpoints" =>[528, 462, 459, 470, 471, 461, 457, 460] ],
 ];
 
