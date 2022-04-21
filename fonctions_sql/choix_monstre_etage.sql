@@ -22,9 +22,11 @@ declare
 begin
   code_retour := 0;
   poids_actu := 0;
+
   select into poids_total sum(rmon_poids)
-  from repart_monstre
-  where rmon_etage_cod = v_etage;
+  from repart_monstre join monstre_generique on gmon_cod = rmon_gmon_cod
+  where rmon_etage_cod = v_etage and  gmon_monture = CASE WHEN v_type_monstre=0 THEN 'N' ELSE 'O' END;
+
   res_des := lancer_des(1,poids_total);
   for l_monstre in select repart_monstre.* from repart_monstre join monstre_generique on gmon_cod = rmon_gmon_cod
   where rmon_etage_cod = v_etage and gmon_monture = CASE WHEN v_type_monstre=0 THEN 'N' ELSE 'O' END
