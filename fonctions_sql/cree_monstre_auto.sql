@@ -82,6 +82,12 @@ begin
 			end if;
 		end if;
 
+    code_retour := code_retour||'Etage (monstres) : '||trim(to_char(l_etage.rjmon_etage,'9999'))||' - ';
+		code_retour := code_retour||trim(to_char(repart_actu,'99999990D99'))||' - '||trim(to_char(repart_normale,'999990D99'));
+		code_retour := code_retour||' - '||trim(to_char(nb_manque,'9999'))||'
+';
+
+
     /* Traitement des montures (or monstre) */
 		repart_actu := nb_monture / nb_joueur;
 		repart_normale := l_etage.rjmon_monture;
@@ -104,7 +110,7 @@ begin
 		end if;
 
 
-		code_retour := code_retour||'Etage : '||trim(to_char(l_etage.rjmon_etage,'9999'))||' - ';
+		code_retour := code_retour||'Etage (montures): '||trim(to_char(l_etage.rjmon_etage,'9999'))||' - ';
 		code_retour := code_retour||trim(to_char(repart_actu,'99999990D99'))||' - '||trim(to_char(repart_normale,'999990D99'));
 		code_retour := code_retour||' - '||trim(to_char(nb_manque,'9999'))||'
 ';
