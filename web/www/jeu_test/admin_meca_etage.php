@@ -281,7 +281,7 @@ if ($erreur == 0)
             </div><br/><br>
             <table>
             <tr><td>Passage autorisé:</td><td><input $chkp0 type='radio' name='passage_autorise' value='-1'>Base</td><td>&nbsp;|&nbsp;<input $chkp1 type='radio' name='passage_autorise' value='0'>Autorisé</td><td>&nbsp;|&nbsp;<input $chkp2 type='radio' name='passage_autorise' value='1'>Interdit<td><tr></tr>
-            <tr><td>Mur tangible:</td><td><input $chkmt0 type='radio' name='mur_tangible' value='-1'>Base</td><td>&nbsp;|&nbsp;<input $chkmt1 type='radio' name='mur_tangible' value='0'>Tangible</td><td>&nbsp;|&nbsp;<input $chkmt2 type='radio' name='mur_tangible' value='1'>Intangible<td><tr></tr>
+            <tr><td>Mur tangible:</td><td><input $chkmt0 type='radio' name='mur_tangible' value='-1'>Base</td><td>&nbsp;|&nbsp;<input $chkmt1 type='radio' name='mur_tangible' value='0'>Intangible</td><td>&nbsp;|&nbsp;<input $chkmt2 type='radio' name='mur_tangible' value='1'>Tangible<td><tr></tr>
             <tr><td>Mur illusion:</td><td><input $chkmi0 type='radio' name='mur_illusion' value='-1'>Base</td><td>&nbsp;|&nbsp;<input $chkmi1 type='radio' name='mur_illusion' value='0'>Infranchissable</td><td>&nbsp;|&nbsp;<input $chkmi2 type='radio' name='mur_illusion' value='1'>Illusion<td><tr>
             </table>
             Terrain: ";
@@ -498,7 +498,7 @@ if ($erreur == 0)
                 </td>
                 <td>".($result['meca_type']=="G" ? "Grappe" : "Individuel")."</td>
                 <td>".($result['meca_pos_passage_autorise']=="" ? "base" : ($result['meca_pos_passage_autorise']=="1" ? "autorisé": "interdit"))."</td>
-                <td>".($result['meca_mur_tangible']=="" ? "base" : ($result['meca_mur_tangible']=="O" ? "intangible": "tangible"))."</td>
+                <td>".($result['meca_mur_tangible']=="" ? "base" : ($result['meca_mur_tangible']=="N" ? "intangible": "tangible"))."</td>
                 <td>".($result['meca_mur_illusion']=="" ? "base" : ($result['meca_mur_illusion']=="O" ? "illusion": "infranchissable"))."</td>
                 <td>".($result['meca_pos_ter_cod']=="" ? "base" : ($result['meca_pos_ter_cod']=="0" ? "sans terrain": $result['ter_nom']))."</td>
                 <td>".($result['meca_pos_modif_pa_dep']=="" ? "base" : (int)$result['meca_pos_modif_pa_dep'] )."</td>
