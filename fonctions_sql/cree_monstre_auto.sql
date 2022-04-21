@@ -87,7 +87,7 @@ begin
 		repart_normale := l_etage.rjmon_monture;
 		if repart_actu < repart_normale then
 			nb_ideal := round(nb_joueur * repart_normale);
-			nb_manque := nb_ideal - nb_monstre;
+			nb_manque := nb_ideal - nb_monture;
 			if nb_manque > getparm_n(85) then
 				nb_manque := getparm_n(85);
 			end if;
