@@ -84,8 +84,8 @@ begin
     select into v_pv perso_pv  from perso  where perso_cod = v_perso;
     if v_pv <= 0 then
       temp_tue := 'Un malus de constitution a occasionné une perte de PV temporaires qui vous a été fatale.';
-      perform insere_evenement(ligne.corig_perso_cod, ligne.corig_perso_cod, 10, temp_tue, 'N', NULL);
-      temp_tue := tue_perso_final(ligne.corig_perso_cod, ligne.corig_perso_cod);
+      perform insere_evenement(v_perso, v_perso, 10, temp_tue, 'N', NULL);
+      temp_tue := tue_perso_final(v_perso, v_perso);
     end if;
 
   end if;
