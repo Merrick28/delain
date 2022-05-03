@@ -140,6 +140,7 @@ declare
   v_modif_pa_dep integer;   -- cout du depacement hors BM
   v_ter_cod integer;      -- cod du terrain
   v_pos_cod integer;      -- cod du monstre genrique si c'est le cas!
+  v_perso_cod integer;      --  perso_cod familier/maitre
 
 begin
   v_limite_quatriemes := 1;
@@ -491,9 +492,15 @@ begin
 
 
     /* gestion des perso sur un terrain normalement innacessible: le perso doit sortir en 3 tours avec des mouvements à 12PA */
+    if v_type_perso = 3 then
+        select pfam_perso_cod into v_perso_cod from perso_familier where pfam_familier_cod=personnage limit 1 ;
+    else
+        v_perso_cod = personnage ;
+    end if;
+
     v_modif_pa_dep := 0 ;
     select  getparm_n(9) + pos_modif_pa_dep, coalesce(pos_ter_cod,0) into v_modif_pa_dep, v_ter_cod
-      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=personnage and perso_monture is null and perso_type_perso in (1,3) limit 1;
+      from perso join perso_position on ppos_perso_cod=perso_cod join positions on pos_cod=ppos_pos_cod where perso_cod=v_perso_cod and perso_monture is null and perso_type_perso in (1,3) limit 1;
     if v_modif_pa_dep>12 then
 
         -- checher le text d'ambiance spécifique au terrain
