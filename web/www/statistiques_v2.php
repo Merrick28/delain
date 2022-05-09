@@ -76,7 +76,7 @@ foreach ($escape_list as $etage => $escape){
     $result = $stmt->fetch();
 
 
-    $req2          =" select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, sum(case when aqperso_actif<>'O' and aqperso_nb_termine=0 then 1 else 0 end) nb_abandon, sum(aqperso_nb_termine) nb_fini, min(aqperso_date_debut) as premier_entree ,min( case when aqperso_nb_termine !=0 then  aqperso_date_fin else null end ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
+    $req2          =" select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, sum(case when aqperso_actif<>'O' and aqperso_etape_cod!=0 then 1 else 0 end) nb_abandon, sum(aqperso_nb_termine) nb_fini, min(aqperso_date_debut) as premier_entree ,min( case when aqperso_etape_cod =0 then  aqperso_date_fin else null end ) as premier_sortie from quetes.aquete_perso where aqperso_aquete_cod in (".$escape["aquete_cod"].")  ";
     $stmt2         = $pdo->query($req2);
     $result2       = $stmt2->fetch();
 
