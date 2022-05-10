@@ -31,12 +31,23 @@ if ($perso->perso_type_perso == 3){
 } else {
     //$directions = [ "N"=>"N (nord)", "NE"=>"NE (nord-est)", "E"=>"E (est)", "SE"=>"SE (sud-est)", "S"=>"S (sud)", "SO"=>"SO (sud-ouest)", "O"=>"O (ouest)","NO"=>"NO (nord-ouest)"  ];
 
+    // AUTOMAP: Get content ====
+    ob_start();
+    include("ong_automap.php");
+    $automap = ob_get_contents(); // data is now in here
+    // supression de la form de changement d'étage
+    $automap = substr($automap, strpos($automap, "</form>")+7) ;
+    $automap = substr($automap, 0, strpos($automap, "<a")) . substr($automap, strpos($automap, "</a>")+4) ;
+    ob_end_clean();
+
+    //====== En of AUTOMAP content
+
     $monture = new perso();
     $monture->charge( $perso->perso_monture );
     $dist_max = min(8,  max(2, $monture->distance_vue()) ); // ordre entre mini 2 et maxi 8
     $contenu_page .= "<br><p>Vous chevaucher actuellement: <a href=\"visu_desc_perso.php?visu=".$monture->perso_cod."\">".$monture->perso_nom."</a></p>";
     $contenu_page .= "<hr>";
-    
+
     // traitment des nouveaux ordres: ==================================================================================
     if (isset($_REQUEST["ORDRE_ADD"]))
     {
@@ -184,7 +195,9 @@ if ($perso->perso_type_perso == 3){
     $contenu_page .= "<b><u>La carte</u></b>: <br> <br><table style=\"border: 1px solid black;\"><tr><td>";
     include('vue_gauche.php');
     $contenu_page .= $vue_gauche ;
-    $contenu_page .= '<div style="font-size: 10px;">&nbsp;&nbsp;<div style="display:inline-block;" class="horseBlink"><div class="pasvu caseVue" title=""><img src="/images/del.gif" width="18" height="18" alt=""></div></div>= Terrain inaccessible avec votre monture.</div>';
+    $contenu_page .= "</td><td>{$automap}</td></tr>";
+
+    $contenu_page .= '<tr><td colspan="2"><div style="font-size: 10px;">&nbsp;&nbsp;<div style="display:inline-block;" class="horseBlink"><div class="pasvu caseVue" title=""><img src="/images/del.gif" width="18" height="18" alt=""></div></div>= Terrain inaccessible avec votre monture.</div>';
     $contenu_page .= "</td></tr></table>";
 }
 
@@ -192,9 +205,11 @@ if ($perso->perso_type_perso == 3){
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
+
 $template     = $twig->load('template_jeu.twig');
 $options_twig = array(
 
     'CONTENU_PAGE'             => $contenu_page
 );
 echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
+
