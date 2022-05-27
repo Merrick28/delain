@@ -56,7 +56,7 @@ if ($erreur == 0)
             // Caractéristiques
             $req         = 'select obj_nom,obj_nom_generique,tobj_libelle,tobj_cod,gobj_pa_normal,gobj_pa_eclair,obj_nom_porte,
 				obj_description,obj_valeur,obj_etat,obj_des_degats,obj_val_des_degats,obj_bonus_degats,obj_armure,
-				obj_distance,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,obj_bonus_vue,obj_critique,
+				obj_distance,obj_portee,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,obj_bonus_vue,obj_critique,
 				obj_critique,obj_seuil_force,obj_seuil_dex,obj_chance_drop,obj_enchantable,obj_desequipable, trouve_objet(obj_cod) as obj_position,
 				obj_niveau_min, gobj_cod
 				from objets,objet_generique,type_objet
@@ -151,8 +151,13 @@ if ($erreur == 0)
                     <td><input type="text" size="5" name="obj_armure" value="<?php echo $result['obj_armure']; ?>"></td>
                 </tr>
                 <tr>
-                    <td class="soustitre2">Distance max : <br><em>(armes de distance uniquement)</em></td>
+                    <td class="soustitre2">Arme à distance ? <br><em>(armes uniquement))</em></td>
                     <td><input type="text" size="5" name="obj_distance" value="<?php echo $result['obj_distance']; ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="soustitre2">Distance max : <br><em>(armes de distance uniquement)</em></td>
+                    <td><input type="text" size="5" name="obj_portee" value="<?php echo $result['obj_portee']; ?>">
                     </td>
                 </tr>
                 <tr>
@@ -365,6 +370,7 @@ if ($erreur == 0)
                 'obj_bonus_degats',
                 'obj_armure',
                 'obj_distance',
+                'obj_portee',
                 'obj_chute',
                 'obj_usure',
                 'obj_regen',
@@ -403,6 +409,7 @@ if ($erreur == 0)
                     'obj_val_des_degats',
                     'obj_bonus_degats',
                     'obj_armure',
+                    'obj_portee',
                     'obj_chute',
                     'obj_usure',
                     'obj_regen',
