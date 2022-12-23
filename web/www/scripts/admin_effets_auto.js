@@ -521,7 +521,7 @@ EffetAuto.Types = [
 		description: 'Laisse tomber des objets au sol.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
-			{ nom: 'trig_pos', type: 'POSDrop', label: 'Position', description: 'Indique si l’objet normalement tombe au sol, au pied ou dans l’invenaire de la cible.' },
+			{ nom: 'trig_pos', type: 'POSDrop', label: 'Position', description: 'Indique si l’objet normalement tombe au sol, aux pieds ou dans l’invenaire de la cible.' },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
 			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
@@ -923,7 +923,7 @@ EffetAuto.ChampChoixDrop = function (parametre, numero, valeur) {
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Au sol (ignore la cible)</option>';
-	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Au pied de la cible</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Aux pieds de la cible</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Dans l’inventaire de la cible</option></select></label>';
 	html += "<br />";
 	return html;
