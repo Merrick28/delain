@@ -44,6 +44,7 @@ if ($perso->perso_type_perso == 3){
 
     $monture = new perso();
     $monture->charge( $perso->perso_monture );
+    $dist_vue =  max(2, $monture->distance_vue());
     $dist_max = min(8,  max(2, $monture->distance_vue()) ); // ordre entre mini 2 et maxi 8
     $contenu_page .= "<br><p>Vous chevaucher actuellement: <a href=\"visu_desc_perso.php?visu=".$monture->perso_cod."\">".$monture->perso_nom."</a></p>";
     $contenu_page .= "<hr>";
@@ -59,11 +60,26 @@ if ($perso->perso_type_perso == 3){
         $dist = (int)$_REQUEST["distance"];
         $type_ordre = ($_REQUEST["ORDRE_NUM"] == "" || substr($_REQUEST["ORDRE_NUM"], 0, 1) == "A") ? "ADD" : "UPD" ;
         $num = ($_REQUEST["ORDRE_NUM"] == "") ? 0 : (int)substr($_REQUEST["ORDRE_NUM"], 1) ;
+
+        // calcul de la distance total d'ordre
+        $ordres = json_decode($monture->perso_misc_param) ;
+        $distance_ordre = 0;
+        $distance_ancien = 0;
+        if (sizeof($ordres->ia_monture_ordre) >0) {
+            //$contenu_page .= print_r($ordres, true);
+            foreach ($ordres->ia_monture_ordre as $k => $o) {
+                $distance_ordre += $o->dist;
+                if ($o->ordre == $num) $distance_ancien = $o->dist ;
+            }
+        }
+        $distance_total = $distance_ordre - $distance_ancien + $dist ;
+
         if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
         if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>la vue</b> de votre monture (limité à 8)! ";
+        if ( $distance_total >  $dist_vue ) $msg .= "<br>La distance totale des ordres ne doit pas dépasser <b>la vue</b> de votre monture ! ";
         if ($msg != "")
         {
-            $contenu_page .= $msg."<br>L'ordre n'est <b>pas valide</b>, les PA n'ont pas été depensés!<br>";
+            $contenu_page .= $msg."<br><u>L'ordre n'est <b style=\"color:red;\">pas valide</u></b>, les PA n'ont pas été depensés!<br>";
         }
         else
         {
@@ -115,6 +131,7 @@ if ($perso->perso_type_perso == 3){
     $perso->charge($perso_cod); // recharger au cas ou le nombre de PA a changé
     $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br> <br>";
     $ordres = json_decode($monture->perso_misc_param) ;
+    $distance_ordre = 0;
     if (sizeof($ordres->ia_monture_ordre) >0)
     {
         $contenu_page .= '<form name="monture_dep" id="monture_dep" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
@@ -128,6 +145,7 @@ if ($perso->perso_type_perso == 3){
         foreach ($a_ordres as $k)
         {
             $o = $ordres->ia_monture_ordre[$k] ;
+            $distance_ordre += $o->dist;
             $img = "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img[$o->dir_y.":".$o->dir_x]."'>";
             if ($perso->perso_pa<2)
             {
@@ -138,7 +156,7 @@ if ($perso->perso_type_perso == 3){
             for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
             $contenu_page .= "&nbsp;&nbsp;</span></td></tr>" ;
         }
-        $contenu_page .= '</table></form>';
+        $contenu_page .= '</table><span style="font-size: 10px;">Distance total des ordres: '.$distance_ordre.' case(s).<span></form>';
     }
     $contenu_page .= "<hr>";
 
@@ -180,7 +198,7 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= '</tr>';
     }
 
-    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance doit être inférieure ou égale à la vue de la monture ('.$dist_max.' cases).<span></form>';
+    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance total d’ordre doit être inférieure ou égale à la vue de la monture ('.$dist_max.' cases reste '.max(0, $dist_vue-$distance_ordre).').<span></form>';
     $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
