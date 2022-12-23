@@ -521,6 +521,9 @@ EffetAuto.Types = [
 		description: 'Laisse tomber des objets au sol.',
 		parametres: [
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre d’objet', description: 'Le nombre maximal d’objet. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'trig_pos', type: 'POSDrop', label: 'Position', description: 'Indique si l’objet normalement tombe au sol, aux pieds ou dans l’invenaire de la cible.' },
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
 			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
@@ -912,6 +915,17 @@ EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Bascule (case)</option>';
 	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Bascule (grappe)</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Jamais</option></select></label>';
+	html += "<br />";
+	return html;
+}
+
+EffetAuto.ChampChoixDrop = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Au sol (ignore la cible)</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Aux pieds de la cible</option>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Dans l’inventaire de la cible</option></select></label>';
 	html += "<br />";
 	return html;
 }
@@ -1485,6 +1499,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'POSrearme':
 			html = pd + EffetAuto.ChampChoixRearmement (parametre, numero, valeur) + pf;
+			break;
+		case 'POSDrop':
+			html = pd + EffetAuto.ChampChoixDrop (parametre, numero, valeur) + pf;
 			break;
 		case 'meca':
 			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
