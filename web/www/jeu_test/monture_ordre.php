@@ -75,7 +75,7 @@ if ($perso->perso_type_perso == 3){
         $distance_total = $distance_ordre - $distance_ancien + $dist ;
 
         if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0)) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
-        if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance de plus <b>la vue</b> de votre monture (limité à 8)! ";
+        if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance supérieur <b>la vue</b> de votre monture (limité à 8)! ";
         if ( $distance_total >  $dist_vue ) $msg .= "<br>La distance totale des ordres ne doit pas dépasser <b>la vue</b> de votre monture ! ";
         if ($msg != "")
         {
@@ -198,7 +198,7 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= '</tr>';
     }
 
-    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance total d’ordre doit être inférieure ou égale à la vue de la monture ('.$dist_max.' cases reste '.max(0, $dist_vue-$distance_ordre).').<span></form>';
+    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance total d’ordre doit être inférieure ou égale à la vue de la monture ('.$dist_max.'). Il reste une distance de '.max(0, $dist_vue-$distance_ordre).' case(s).<span></form>';
     $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
