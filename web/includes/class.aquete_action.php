@@ -804,7 +804,7 @@ class aquete_action
             }
 
         }
-        
+
 
         // Il a validé!!!! On vérifie d'abord que le perso à de quoi payer
         $perso = new perso();
@@ -853,7 +853,7 @@ class aquete_action
                     else if ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0)
                     {
                         $trocs_en_stock[$e->aqelem_param_num_2] = $trocs_en_stock[$e->aqelem_param_num_2] - $nb * (int)$e->aqelem_param_num_3;
-                    }                    
+                    }
                 }
             }
         }
@@ -889,7 +889,7 @@ class aquete_action
                 $nb = (int)$_REQUEST["echange-{$k}"] ;      //nombre de fois où la transaction doit être faites
 
                 // Ici on boucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                foreach ($p6_couts[$k] as $kk => $e) 
+                foreach ($p6_couts[$k] as $kk => $e)
                 {
                     if ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0) {
                         // selectionner les objets a supprimer de l'inventaire du joueur
@@ -2576,6 +2576,7 @@ class aquete_action
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'selecteur')) return false ;
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur')) return false ;
+        $p5 = $element->get_aqperso_element( $aqperso, 5, 'texte') ;
 
         // Recherche de la zone centrale de départ
         $perso = new perso();
@@ -2623,6 +2624,24 @@ class aquete_action
                 $req = "delete from lock_combat where lock_cible = :perso_cod or lock_attaquant = :perso_cod ; ";
                 $stmt2   = $pdo->prepare($req);
                 $pdo->execute(array(":perso_cod" => $result["perso_cod"]), $stmt2);
+
+
+
+                // texte de l'evenement (si defini)
+                if ($p5 && $p5->aqelem_param_txt_1 != '') {
+
+                    $texte_evt = $p5->aqelem_param_txt_1;
+                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                      values(54, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+
+                    //echo "<pre"; print_r([$p5,$result, $req]); die();
+
+                    $stmt2 = $pdo->prepare($req);
+                    $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $result["perso_cod"],
+                        ":texte_evt" => $texte_evt,
+                        ":levt_attaquant" => $aqperso->aqperso_perso_cod,
+                        ":levt_cible" => $result["perso_cod"]), $stmt2);
+                }
             }
         }
         return true;
