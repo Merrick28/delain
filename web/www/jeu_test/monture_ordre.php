@@ -69,7 +69,7 @@ if ($perso->perso_type_perso == 3){
             //$contenu_page .= print_r($ordres, true);
             foreach ($ordres->ia_monture_ordre as $k => $o) {
                 $distance_ordre += $o->dist;
-                if ($o->ordre == $num) $distance_ancien = $o->dist ;
+                if (($o->ordre == $num) && ($type_ordre == "UPD")) $distance_ancien = $o->dist ;
             }
         }
         $distance_total = $distance_ordre - $distance_ancien + $dist ;
@@ -198,7 +198,7 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= '</tr>';
     }
 
-    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance total d’ordre doit être inférieure ou égale à la vue de la monture ('.$dist_max.'). Il reste une distance de '.max(0, $dist_vue-$distance_ordre).' case(s).<span></form>';
+    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance de chaque ordre est limité à 8 et à la vue de la monture, distance d’ordre max est: <b>'.$dist_max.'</b> cases(s)<br>* la distance total d’ordre doit être inférieure ou égale à la vue de la monture. Il reste une distance de <b>'.max(0, $dist_vue-$distance_ordre).'</b> case(s).<span></form>';
     $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
