@@ -144,7 +144,7 @@ switch($_REQUEST["request"])
         {
             $req  = "SELECT tonbus_libelle nom,  $list_function_cout_pa[$type] as cout_pa FROM bonus_type WHERE tbonus_cod=:sort_cod ";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":sort_cod" => $misc_cod), $stmt);
+            $stmt = $pdo->execute(array(":sort_cod" => $sort_cod), $stmt);
             if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
             //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
             $cout_pa = $result["cout_pa"] ;
