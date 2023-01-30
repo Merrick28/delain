@@ -31,6 +31,10 @@ if ($perso->perso_type_perso == 3){
 } else {
     //$directions = [ "N"=>"N (nord)", "NE"=>"NE (nord-est)", "E"=>"E (est)", "SE"=>"SE (sud-est)", "S"=>"S (sud)", "SO"=>"SO (sud-ouest)", "O"=>"O (ouest)","NO"=>"NO (nord-ouest)"  ];
 
+    // on cherche la position du cavalier
+    $perso_pos_desc = $perso->get_position();
+    $cout_ordre = isset( $perso_pos_desc["etage"]->etage_monture_ordre ) ? $perso_pos_desc["etage"]->etage_monture_ordre : 4 ;
+
     // AUTOMAP: Get content ====
     ob_start();
     include("ong_automap.php");
@@ -189,10 +193,10 @@ if ($perso->perso_type_perso == 3){
             $contenu_page .= '</td>';
         }
         if ($l==1 && $c>3) {
-            if ($perso->perso_pa<4) {
-                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner (4 PA requis)</td>';
+            if ($perso->perso_pa<$cout_ordre) {
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: center;">&nbsp;&nbsp;Ordonner ('.$cout_ordre.' PA requis)</td>';
             } else {
-                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: left;">&nbsp;&nbsp;'.$selector.'<br><br>&nbsp;&nbsp;<input '.($perso->perso_pa<4 ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner/Modifier l\'ordre(4 PA)"  class="test">&nbsp;&nbsp;</td>';
+                $contenu_page .= '<td rowspan="3" class="soustitre2" style="text-align: left;">&nbsp;&nbsp;'.$selector.'<br><br>&nbsp;&nbsp;<input '.($perso->perso_pa<$cout_ordre ? "disabled" : "").' name="ORDRE_ADD" type="submit" value="Donner/Modifier l\'ordre('.$cout_ordre.' PA)"  class="test">&nbsp;&nbsp;</td>';
             }
         }
         $contenu_page .= '</tr>';

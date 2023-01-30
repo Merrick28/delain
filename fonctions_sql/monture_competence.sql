@@ -79,7 +79,12 @@ begin
       cout_pa := 4 ;
   elsif v_action = 3 then
       -- 'donner un ordre à la monture';
-      cout_pa := 4 ;
+      select COALESCE(etage_monture_ordre,4) into cout_pa from perso
+        join perso_position on ppos_perso_cod=perso_cod
+        join positions on pos_cod=ppos_pos_cod
+        join etage on etage_numero=pos_etage
+        where perso_cod=v_perso_cod ;
+
   elsif v_action = 4 then
       -- 'désarçonner';
       cout_pa := 6 ;
@@ -98,7 +103,7 @@ begin
   end if;
 
   if v_perso_pa<cout_pa then
-    return '0;0;<p>Erreur ! Vous n’avez pas assez de PA pour effectuer cette action.</p>';
+    return '0;0;<p>Erreur ! Vous n’avez pas assez de PA pour effectuer cette action. (' || cout_pa::text || ' requis)</p>';
   end if;
 
  if v_action = 1 and  v_perso_cible is null then

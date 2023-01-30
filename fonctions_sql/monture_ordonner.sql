@@ -25,6 +25,7 @@ AS $_$declare
   v_num_prems integer ;     --  N° du 1er ordre
   v_difficulte integer ;     -- difficulté de l'ordre
   v_nb_action integer;   -- nombre d'echec d'ordre
+  v_cout_ordre integer;   -- cout des ordres de monture
 
 begin
 	code_retour := '';
@@ -34,7 +35,14 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < 4 and v_ordre != 'DEL') then
+  select COALESCE(etage_monture_ordre,4) into v_cout_ordre from perso
+    join perso_position on ppos_perso_cod=perso_cod
+    join positions on pos_cod=ppos_pos_cod
+    join etage on etage_numero=pos_etage
+    where perso_cod=v_perso ;
+
+
+  if (v_perso_pa < 2 and v_ordre = 'DEL') or (v_perso_pa < v_cout_ordre and v_ordre != 'DEL') then
     return '<p>Erreur ! Vous n''avez pas suffisament de PA !';
   end if;
 
