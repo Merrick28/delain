@@ -32,6 +32,7 @@ class etage
     var $etage_autor_glyphe = 0;
     var $etage_perte_xp = 100;
     var $etage_mort_speciale = 0;
+    var $etage_monture_ordre = 4;
 
     function __construct()
     {
@@ -68,7 +69,8 @@ class etage
             etage_autor_rappel_cot,
             etage_autor_glyphe,
             etage_perte_xp,
-            etage_mort_speciale                        )
+            etage_mort_speciale,
+            etage_monture_ordre                        )
                     values
                     (
                         :etage_numero,
@@ -91,7 +93,8 @@ class etage
                         :etage_autor_rappel_cot,
                         :etage_autor_glyphe,
                         :etage_perte_xp ,
-                        :etage_mort_speciale                        )
+                        :etage_mort_speciale,
+                        :etage_monture_ordre                        )
     returning etage_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -116,6 +119,7 @@ class etage
                 ":etage_autor_glyphe" => $this->etage_autor_glyphe,
                 ":etage_perte_xp" => $this->etage_perte_xp,
                 ":etage_mort_speciale" => $this->etage_mort_speciale,
+                ":etage_monture_ordre" => $this->etage_monture_ordre,
             ), $stmt);
 
 
@@ -146,7 +150,8 @@ class etage
             etage_autor_rappel_cot = :etage_autor_rappel_cot,
             etage_autor_glyphe = :etage_autor_glyphe,
             etage_perte_xp = :etage_perte_xp,
-            etage_mort_speciale = :etage_mort_speciale                        where etage_cod = :etage_cod ";
+            etage_mort_speciale = :etage_mort_speciale,
+            etage_monture_ordre = :etage_monture_ordre                        where etage_cod = :etage_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":etage_cod" => $this->etage_cod,
@@ -171,6 +176,7 @@ class etage
                 ":etage_autor_glyphe" => $this->etage_autor_glyphe,
                 ":etage_perte_xp" => $this->etage_perte_xp,
                 ":etage_mort_speciale" => $this->etage_mort_speciale,
+                ":etage_monture_ordre" => $this->etage_monture_ordre,
             ), $stmt);
         }
     }
@@ -213,6 +219,7 @@ class etage
         $this->etage_autor_glyphe        = $result['etage_autor_glyphe'];
         $this->etage_perte_xp            = $result['etage_perte_xp'];
         $this->etage_mort_speciale       = $result['etage_mort_speciale'];
+        $this->etage_monture_ordre       = $result['etage_monture_ordre'];
         return true;
     }
 
