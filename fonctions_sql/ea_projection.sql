@@ -256,6 +256,12 @@ begin
           end if;
       end if;
 
+      ---------------------------
+      -- les EA liés au déplacement (la projection est considéré comme un déplacement si la cible a été projeté ailleurs que sur sa case d'origine)
+      ---------------------------
+      if v_dist_proj > 0 then
+        code_retour := code_retour || execute_fonctions(ligne.perso_cod, v_source, 'DEP', json_build_object('ancien_pos_cod',ligne.pos_cod,'ancien_etage',v_et_source, 'nouveau_pos_cod',v_pos_projection,'nouveau_etage',v_et_source)) ;
+      end if;
 
   end loop;
 
