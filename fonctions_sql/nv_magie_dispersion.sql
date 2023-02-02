@@ -346,6 +346,12 @@ end loop;
     -- cas particulier: on ne déclenche que si le sort n'a pas ciblé un familier, les dommages collatéraux ne compte pas comme cible du sort
     code_retour := code_retour || execute_fonctions(lanceur, cible, 'MAL', json_build_object('num_sort', num_sort)) || execute_fonctions(cible, lanceur, 'MAC', json_build_object('num_sort', num_sort)) ;
 
+    ---------------------------
+    -- les EA liés au déplacement (la projection est considéré comme un déplacement)
+    ---------------------------
+    code_retour := code_retour || execute_fonctions(cible, lanceur, 'DEP', json_build_object('ancien_pos_cod',pos_attaquant,'ancien_etage',e_attaquant, 'nouveau_pos_cod',position_arrivee2,'nouveau_etage',e_attaquant)) ;
+
+
 end if;
 
 return code_retour;

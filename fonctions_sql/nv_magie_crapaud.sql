@@ -31,7 +31,9 @@ declare
 	-- variables concernant le lanceur et la cible
 	-------------------------------------------------------------
 	lanceur alias for $1;  -- perso_cod du lanceur
+	v_pos_cible integer; -- position de la cible
 	v_pos_lanceur integer; -- position du lanceur
+	v_etage_lanceur integer; -- etage du lanceur (requis pour l'EA)
 	cible alias for $2;    -- perso_cod de la cible
 	nom_cible text;        -- nom de la cible
 	type_cible integer;    -- type de la cible
@@ -61,7 +63,7 @@ begin
 	-------------------------------------------------------------
 	-- Etape 2 : contrôles
 	-------------------------------------------------------------
-	select into nom_cible, type_cible perso_nom, perso_type_perso from perso where perso_cod = cible;
+	select into nom_cible, type_cible, v_pos_cible perso_nom, perso_type_perso, ppos_pos_cod  from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod = cible;
 	select into nom_sort sort_nom from sorts where sort_cod = num_sort;
 
   -- 2018/09/19 - Marlyza - Si le sort cible un familiers, cibler le maitre à la place.
@@ -84,7 +86,7 @@ begin
 
 
 	-- Résolution du sort : on téléporte la cible sur la case du lanceur.
-	select into v_pos_lanceur ppos_pos_cod from perso_position where ppos_perso_cod = lanceur;
+	select into v_pos_lanceur, v_etage_lanceur ppos_pos_cod, pos_etage from perso_position join positions on pos_cod=ppos_pos_cod where ppos_perso_cod = lanceur;
 	update perso_position set ppos_pos_cod = v_pos_lanceur where ppos_perso_cod = cible;
 
 	-- on enlève les locks et les transactions de la cible
@@ -103,6 +105,12 @@ begin
   -- les EA liés au lancement d'un sort et ciblé par un sort (avec protagoniste) #EA#
   ---------------------------
   code_retour := code_retour || execute_fonctions(lanceur, cible, 'MAL', json_build_object('num_sort', num_sort)) || execute_fonctions(cible, lanceur, 'MAC', json_build_object('num_sort', num_sort)) ;
+
+  ---------------------------
+  -- les EA liés au déplacement (l'appel du crapaud est considéré comme un déplacement)
+  ---------------------------
+  code_retour := code_retour || execute_fonctions(cible, lanceur, 'DEP', json_build_object('ancien_pos_cod',v_pos_cible,'ancien_etage',v_etage_lanceur, 'nouveau_pos_cod',v_pos_lanceur,'nouveau_etage',v_etage_lanceur)) ;
+
 
 	return code_retour;
 end;
