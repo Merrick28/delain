@@ -304,7 +304,7 @@ if ($erreur == 0)
 					(compt_nom, compt_password, compt_mail, compt_monstre, compt_admin, compt_validation, compt_actif, compt_dcreat, compt_acc_charte, compt_type_quatrieme)
 					values ('$nom', '$mdp', '', '$compt_monstre', '$compt_admin', 0, 'O', now(), 'O', 2)
 					RETURNING compt_cod";
-            $stmt      = $pdo->query($req);
+            $stmt      = $pdo->query($insertion);
             $result    = $stmt->fetch();
             $vcompte   = $result['compt_cod'];
 
