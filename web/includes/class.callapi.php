@@ -94,7 +94,8 @@ class callapi
             die('Token non transmis');
         }
 
-        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        //$UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i';
         if(!preg_match($UUIDv4, $headers['X-delain-auth']))
         {
             {
@@ -120,8 +121,8 @@ class callapi
 
         return array("compte" =>$compte,"token" =>$auth_token);
     }
-    
-        
+
+
 
     function verifyCallIsAuth()
     {
