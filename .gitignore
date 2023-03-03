@@ -5,3 +5,5 @@ doc
 .c9
 .codetasty
 .diff_to_apply
+#created for dev environement without memecached
+web/includes/class.Memcached.php
