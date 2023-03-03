@@ -56,23 +56,41 @@ if ($erreur == 0)
     //$request_select_etage_ref = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
     $request_select_etage_ref = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
     $request_select_etage = "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
-			
+
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
     if(!isset($_REQUEST['methode']) || ($_REQUEST['methode']=='edite_quete')) {
 
+        $type_quete = isset($_REQUEST["type_quete"]) ? $_REQUEST["type_quete"] : 0 ;
+
+        if ($pos_etage>0) {
+            echo '   <span style="color: white; background-color: #800000; font-weight:bold">&nbsp;&nbsp;&nbsp;GESTION DES QUËTES D’INTERACTIONS SUR L’ETAGE&nbsp;&nbsp;&nbsp;</span>';
+        }
         // Liste des quetes existantes
         echo '  <TABLE width="80%" align="center">
                 <TR>
                 <TD>
                 <form method="post">
+                Filter les quêtes sur :<select onchange="this.parentNode.submit();" name="type_quete">
+                                <option '.($type_quete==0 ? " selected " : "").'value="0">Les quêtes ouvertes</option>
+                                <option '.($type_quete==1 ? " selected " : "").'value="1">Les quêtes fermées</option>
+                                <option '.($type_quete==2 ? " selected " : "").'value="2">Toutes les quêtes</option>
+                                </select>
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
+        if ($type_quete==0)
+            $filtre_quete = " and aquete_actif = 'O'";
+        else if ($type_quete==1)
+            $filtre_quete = " and aquete_actif = 'N'";
+        else
+            $filtre_quete = "";
+
+
         if ($pos_etage>0) {
-            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.' order by aquete_nom_alias');
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.$filtre_quete.' order by aquete_nom_alias');
         } else {
-            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null order by aquete_nom_alias');
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null '.$filtre_quete.' order by aquete_nom_alias');
         }
         while ($result = $stmt->fetch())
         {
