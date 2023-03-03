@@ -1,5 +1,4 @@
 .idea
-.git-credentials
 shell/ia_shell.sh
 doc
 /.phpunit.result.cache
@@ -8,3 +7,6 @@ doc
 .diff_to_apply
 #created for dev environement without memecached
 web/includes/class.Memcached.php
+web/www/avatars
+web/www/images
+
