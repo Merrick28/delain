@@ -2,7 +2,7 @@
 /* Création d’étages, modification des paramètres de case de l’étage */
 
 include "blocks/_header_page_jeu.php";
-include "tools.php";
+include "../includes/tools.php";
 
 
 
