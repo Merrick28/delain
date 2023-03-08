@@ -126,6 +126,12 @@ if ($erreur == 0)
                     if (!ok) return false;
                     $(\'#quete-methode\').val(\'delete_quete\');
                     return true;                    
+                }                
+                function confirm_dupliquer_quete() {
+                    var ok = confirm(\'Êtes-vous sûr de vouloir dupliquer entièrement la quête?\') ;
+                    if (!ok) return false;
+                    $(\'#quete-methode\').val(\'dupliquer_quete\');
+                    return true;                    
                 }
                 </script>
   
@@ -183,6 +189,7 @@ if ($erreur == 0)
                 $filter = (!$etapes || sizeof($etapes) == 0) ? "where aqetapmodel_tag='#START #INTERACTION'" : "where aqetapmodel_tag<>'#START' AND aqetapmodel_tag<>'#START #INTERACTION'";
             }
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" />';
+            echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_dupliquer_quete();";  type="submit" value="dupliquer la quête" />';
             if ($nb_quete_en_cours==0)
                 echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_delete_quete();"; type="submit" value="Supprimer la quête" />';
             else

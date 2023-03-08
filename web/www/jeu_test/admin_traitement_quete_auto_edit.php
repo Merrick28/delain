@@ -33,6 +33,112 @@ switch ($methode)
         $aquete_cod = 0;
         break;
 
+    case "dupliquer_quete":
+        //duplication
+        if ($_REQUEST["aquete_cod"] * 1 != 0)
+        {
+            $aquete_map = [] ;        // recalibrage des quete de la nouvelle quête
+            $aquete_etape_map = [] ;        // recalibrage des étapes de la nouvelle quête
+
+            $aquete = new aquete();
+            $aquete->charge($_REQUEST["aquete_cod"]);
+            $aquete->aquete_nom_alias .= " (copie)";
+            $aquete->stocke(true);
+            $aquete_map[$_REQUEST["aquete_cod"]] = $aquete->aquete_cod;
+
+            // dupliquer les étapes !
+            $req  = "SELECT aqetape_cod from quetes.aquete_etape WHERE aqetape_aquete_cod = :aqetape_aquete_cod order by aqetape_cod; ";
+            $stmt2 = $pdo->prepare($req);
+            $stmt2 = $pdo->execute(array(":aqetape_aquete_cod" => $_REQUEST["aquete_cod"]), $stmt2);
+            while ($result2 = $stmt2->fetch())
+            {
+                $etape = new aquete_etape();
+                $etape->charge($result2["aqetape_cod"]);
+                $etape->aqetape_aquete_cod =  $aquete->aquete_cod ;
+                $etape->stocke( true );
+                $aquete_etape_map[$result2["aqetape_cod"]] = $etape->aqetape_cod;
+
+                // dupliquer les éléments de l'étape !
+                $req  = "SELECT aqelem_cod from quetes.aquete_element WHERE aqelem_aquete_cod=:aqelem_aquete_cod and  aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null ";
+                $stmt3 = $pdo->prepare($req);
+                $stmt3 = $pdo->execute(array(":aqelem_aquete_cod" =>  $_REQUEST["aquete_cod"], ":aqelem_aqetape_cod" => $result2["aqetape_cod"]), $stmt3);
+                while ($result3 = $stmt3->fetch())
+                {
+                    $element = new aquete_element();
+                    $element->charge($result3["aqelem_cod"]);
+                    $element->aqelem_aquete_cod =  $aquete->aquete_cod ;
+                    $element->aqelem_aqetape_cod =  $etape->aqetape_cod ;
+                    $element->stocke( true );
+                }
+            }
+
+            // recalibrer la première étape de la quete
+            $aquete->aquete_etape_cod = $aquete_etape_map[ $aquete->aquete_etape_cod ];
+            $aquete->stocke();
+
+            // recalibrer aussi tout le workflow d'étapes
+            $req  = "SELECT aqetape_cod from quetes.aquete_etape WHERE aqetape_aquete_cod = :aqetape_aquete_cod; ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":aqetape_aquete_cod" =>  $aquete->aquete_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $etape = new aquete_etape();
+                $etape->charge($result["aqetape_cod"]);
+                $etape->aqetape_etape_cod = $aquete_etape_map[ $etape->aqetape_etape_cod ] ;
+                $etape->stocke();
+            }
+
+
+            // recalibrer les éléments du type "etape", "quete", choix, etc....
+            $req  = "SELECT aqelem_cod from quetes.aquete_element WHERE aqelem_aquete_cod = :aqelem_aquete_cod and aqelem_type in ('quete','choix','choix_etape','etape','quete_etape'); ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":aqelem_aquete_cod" =>  $aquete->aquete_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $element = new aquete_element();
+                $element->charge($result["aqelem_cod"]);
+
+                //===== quete
+                if  ( $element->aqelem_type == 'quete' && $element->aqelem_misc_cod>0 && isset($aquete_map[$element->aqelem_misc_cod]))
+                {
+                    $element->aqelem_misc_cod = $aquete_map[$element->aqelem_misc_cod] ;
+                }
+                //===== quete_etape
+                else if  ( $element->aqelem_type == 'quete_etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                {
+                    $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                }
+                //===== etape
+                else if  ( $element->aqelem_type == 'etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                {
+                    $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                }
+                //===== choix
+                else if  ( $element->aqelem_type == 'choix' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                {
+                    $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                }
+                //===== choix_etape
+                else if  ( $element->aqelem_type == 'choix_etape' && $element->aqelem_misc_cod>0 && isset($aquete_etape_map[$element->aqelem_misc_cod]))
+                {
+                    $element->aqelem_misc_cod = $aquete_etape_map[$element->aqelem_misc_cod] ;
+                }
+                $element->stocke();     // sauver les modifications !
+            }
+
+
+            // Logger les infos pour suivi admin
+            $log .= "La quête auto #" . $aquete->aquete_cod . " a été dupliquée\n" ;
+            writelog($log, 'quete_auto');
+            echo "<div class='bordiv'><pre>$log</pre></div>";
+
+        }
+
+        unset($_REQUEST['methode']);        // => Après supression une nouvelle quete doit être edité
+        unset($_REQUEST['aquete_cod']);
+        $aquete_cod = 0;
+        break;
+
     case "sauve_quete":
         //récupérer les paramètres
         $quete = new aquete;
