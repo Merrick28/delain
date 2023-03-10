@@ -76,6 +76,7 @@ if ($erreur == 0)
 				$result = $stmt->fetch();
 				$etage_cod = $result['etage_cod'];
 				$etage_numero = ($etage_numero = 999) ? $etage_cod : $etage_numero;
+                $etage_monture = json_encode(["pa_action" => $etage_monture_pa_action ]) ;
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
 				$etage_ref = ($etage_ref == '--') ? $etage_numero : $etage_ref;
@@ -83,10 +84,10 @@ if ($erreur == 0)
 				$etage_affichage = ($etage_affichage == '--') ? 2 : $etage_affichage;
 				$etage_retour_rune_monstre = ($etage_retour_rune_monstre == '') ? 50 : $etage_retour_rune_monstre;
 				$req = "insert into etage (etage_cod, etage_numero, etage_libelle, etage_reference, etage_description,
-						etage_affichage, etage_arene, etage_familier_actif, etage_quatrieme_perso,etage_mort_speciale,etage_monture_ordre, etage_duree_imp_f, etage_duree_imp_p, etage_mort, etage_retour_rune_monstre,
+						etage_affichage, etage_arene, etage_familier_actif, etage_quatrieme_perso,etage_mort_speciale,etage_monture, etage_duree_imp_f, etage_duree_imp_p, etage_mort, etage_retour_rune_monstre,
 						etage_mine, etage_mine_type, etage_mine_richesse) "
 					."values ($etage_cod, $etage_numero, e'$nom', $etage_ref, e'$description',
-						'$etage_affichage', '$etage_arene', '$etage_familier_actif', '$etage_quatrieme_perso', '$etage_mort_speciale', '$etage_monture_ordre','$etage_duree_imp_f', '$etage_duree_imp_p', $etage_mort, $etage_retour_rune_monstre,
+						'$etage_affichage', '$etage_arene', '$etage_familier_actif', '$etage_quatrieme_perso', '$etage_mort_speciale', '$etage_monture','$etage_duree_imp_f', '$etage_duree_imp_p', $etage_mort, $etage_retour_rune_monstre,
 						$etage_mine, $etage_mine_type, $etage_mine_richesse)";
 				$stmt = $pdo->query($req);
 
@@ -152,7 +153,7 @@ if ($erreur == 0)
 				$etage_ref = $result['etage_reference'];
 
 				$req_avant = "select etage_libelle, etage_description, etage_affichage, etage_arene, etage_familier_actif, etage_quatrieme_perso, etage_quatrieme_mortel, 
-                        etage_mort_speciale,etage_monture_ordre,etage_duree_imp_f, etage_duree_imp_p, 
+                        etage_mort_speciale,etage_monture,etage_duree_imp_f, etage_duree_imp_p, 
 						etage_mort, etage_retour_rune_monstre, etage_mine, etage_mine_type, etage_mine_richesse,
 						coalesce(carene_level_min, 0) as carene_level_min, coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte
 					from etage
@@ -167,7 +168,7 @@ if ($erreur == 0)
 				$quatrieme_avant = $result['etage_quatrieme_perso'];
 				$quatrieme_mortel_avant = $result['etage_quatrieme_mortel'];
 				$mort_speciale_avant = $result['etage_mort_speciale'];
-				$monture_ordre_avant = $result['etage_monture_ordre'];
+				$monture_ordre_avant = $result['etage_monture'];
 				$mort_avant = $result['etage_mort'];
 				$rune_avant = $result['etage_retour_rune_monstre'];
 				$mine_avant = $result['etage_mine'];
@@ -186,6 +187,7 @@ if ($erreur == 0)
 				$etage_mort = ($etage_mort == '--') ? $etage_ref : $etage_mort;
 				$etage_affichage = ($etage_affichage == '--') ? 2 : $etage_affichage;
 				$etage_retour_rune_monstre = ($etage_retour_rune_monstre == '') ? 50 : $etage_retour_rune_monstre;
+                $etage_monture = json_encode(["pa_action" => $etage_monture_pa_action ]) ;
 				$req = "update etage set
 						etage_libelle = e'$nom',
 						etage_description = e'$description',
@@ -195,7 +197,7 @@ if ($erreur == 0)
 						etage_quatrieme_perso = '$etage_quatrieme_perso',
 						etage_quatrieme_mortel = '$etage_quatrieme_mortel',
 						etage_mort_speciale = '$etage_mort_speciale',
-						etage_monture_ordre = '$etage_monture_ordre',
+						etage_monture = '$etage_monture',
 						etage_duree_imp_f = '$etage_duree_imp_f',
 						etage_duree_imp_p = '$etage_duree_imp_p',
 						etage_reference = $etage_reference,
@@ -231,7 +233,7 @@ if ($erreur == 0)
 				$resultat .= ($etage_quatrieme_perso == $quatrieme_avant) ? '' : "\nAutorisé aux 4èmes persos limités passe de $quatrieme_avant à $etage_quatrieme_perso";
 				$resultat .= ($etage_quatrieme_mortel == $quatrieme_mortel_avant) ? '' : "\nAutorisé aux 4èmes persos mortels passe de $quatrieme_mortel_avant à $etage_quatrieme_mortel";
 				$resultat .= ($etage_mort_speciale == $mort_speciale_avant) ? '' : "\nLa mort spéciale passe de $mort_speciale_avant à $etage_mort_speciale";
-				$resultat .= ($etage_monture_ordre == $monture_ordre_avant) ? '' : "\nLe cout en PA des ordres de monture passe de $monture_ordre_avant à $etage_monture_ordre";
+				$resultat .= ($etage_monture == $monture_ordre_avant) ? '' : "\nLe cout en PA des ordres de monture passe de $monture_ordre_avant à $etage_monture";
 				$resultat .= ($etage_duree_imp_f == $duree_imp_f_avant) ? '' : "\nLe délai d''impalbilité du perso passe de $duree_imp_f_avant à $etage_duree_imp_f";
 				$resultat .= ($etage_duree_imp_p == $duree_imp_p_avant) ? '' : "\nLe délai d''impalbilité du familier passe de $duree_imp_p_avant à $etage_duree_imp_p";
 				$resultat .= ($etage_mort == $mort_avant) ? '' : "\nÉtage de référence à la mort passe de $mort_avant à $etage_mort";
@@ -364,9 +366,11 @@ if ($erreur == 0)
 			La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0'>Normal</option><option value='1'>Course de monture</option></select><br />
             -- Delai d'impalpabilité en cas de mort du perso ? <input type="text" name="etage_duree_imp_p" value="2" size="4"/><br>
             -- Delai d'impalpabilité en cas de mort du familier ? <input type="text" name="etage_duree_imp_f" value="8" size="4"/><br>
-            -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_ordre" value="4" size="4"/><br>
+            <br>
+            Comportement des montures sur cet étage ?<br>
+            -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_pa_action" value="4" size="4"/><br>
             <br />
-			X min : <input type="text" name="x_min"> -
+            X min : <input type="text" name="x_min"> -
 			X max : <input type="text" name="x_max"><br />
 			Y min : <input type="text" name="y_min"> -
 			Y max : <input type="text" name="y_max"><br /><br />
@@ -392,7 +396,7 @@ if ($erreur == 0)
 	if ($methode == 'début_modifier')
 	{
 		$req = "select etage_cod, etage_numero, etage_libelle, etage_reference, etage_description,
-				etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort_speciale, etage_monture_ordre, etage_duree_imp_p, etage_duree_imp_f, etage_mort, etage_retour_rune_monstre,
+				etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort_speciale, etage_monture, etage_duree_imp_p, etage_duree_imp_f, etage_mort, etage_retour_rune_monstre,
 				etage_mine, etage_mine_type, etage_mine_richesse,etage_familier_actif,
 				coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_level_min, 0) as carene_level_min, coalesce(carene_ouverte, 'O') as carene_ouverte,
 				(select count(*) from positions where pos_etage=93 and pos_entree_arene='O') as nb_entree_arene
@@ -409,7 +413,7 @@ if ($erreur == 0)
 		$etage_quatrieme_perso = $result['etage_quatrieme_perso'];
 		$etage_quatrieme_mortel = $result['etage_quatrieme_mortel'];
 		$etage_mort_speciale = $result['etage_mort_speciale'];
-		$etage_monture_ordre = $result['etage_monture_ordre'];
+		$etage_monture = $result['etage_monture']=="" ? ["pa_action"=>4] : (array)json_decode( $result['etage_monture'] );
         $etage_duree_imp_p = $result['etage_duree_imp_p'];
         $etage_duree_imp_f = $result['etage_duree_imp_f'];
 		$etage_mort = $result['etage_mort'];
@@ -423,6 +427,7 @@ if ($erreur == 0)
 		$carene_ouverte = $result['carene_ouverte'];
 		$nb_entree_arene = $result['nb_entree_arene'];
 		$etage_familier_actif = $result['etage_familier_actif'];
+
 ?>
 	<p>Modifier l’étage <?php echo  $etage_libelle; ?></p>
 	<div id="etage" class="tableau2">
@@ -501,7 +506,9 @@ if ($erreur == 0)
             La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0' <?php echo  $sel_mort_spec0; ?>>Normal</option><option value='1' <?php echo  $sel_mort_spec1; ?>>Course de monture</option></select><br />
             -- Delai d'impalpabilité en cas de mort du perso ? <input type="text" name="etage_duree_imp_p" value="<?php echo  $etage_duree_imp_p; ?>" size="4"/><br>
             -- Delai d'impalpabilité en cas de mort du familier ? <input type="text" name="etage_duree_imp_f" value="<?php echo  $etage_duree_imp_f; ?>" size="4"/><br>
-            -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_ordre" value="<?php echo  $etage_monture_ordre; ?>" size="4"/><br>
+            <br>
+            Comportement des montures sur cet étage ?<br>
+            -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_pa_action" value="<?php echo  $etage_monture["pa_action"]; ?>" size="4"/><br>
             <br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
 			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
