@@ -35,7 +35,7 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  select COALESCE(etage_monture_ordre,4) into v_cout_ordre from perso
+  select COALESCE(f_to_numeric(etage_monture->>'pa_action'::text),4) into v_cout_ordre from perso
     join perso_position on ppos_perso_cod=perso_cod
     join positions on pos_cod=ppos_pos_cod
     join etage on etage_numero=pos_etage

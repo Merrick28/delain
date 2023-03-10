@@ -33,7 +33,10 @@ if ($perso->perso_type_perso == 3){
 
     // on cherche la position du cavalier
     $perso_pos_desc = $perso->get_position();
-    $cout_ordre = isset( $perso_pos_desc["etage"]->etage_monture_ordre ) ? $perso_pos_desc["etage"]->etage_monture_ordre : 4 ;
+
+    // calcul des options de montures sur l'atage
+    $etage_monture = isset( $perso_pos_desc["etage"]->etage_monture ) && $perso_pos_desc["etage"]->etage_monture != "" ? json_decode( $perso_pos_desc["etage"]->etage_monture ) : [] ;
+    $cout_ordre = isset( $etage_monture->pa_action ) ? $etage_monture->pa_action : 4 ;
 
     // AUTOMAP: Get content ====
     ob_start();
