@@ -170,15 +170,18 @@ if ($perso->perso_type_perso == 3){
     // PDonner un ordre ================================================================================================
 
     $selector = '<select style="width:90%;" name="ORDRE_NUM">';
-    foreach ($a_ordres as $k)
+    if (is_array($a_ordres) && sizeof($a_ordres)>0)
     {
-        $o = $ordres->ia_monture_ordre[$k] ;
-        $selector.= '<option value="M'.$o->ordre.'">Modifier ordre #'.$o->ordre.'</option>';
-    }
-    foreach ($a_ordres as $k)
-    {
-        $o = $ordres->ia_monture_ordre[$k] ;
-        $selector.= '<option value="A'.$o->ordre.'">Ajouter avant ordre #'.$o->ordre.'</option>';
+        foreach ($a_ordres as $k)
+        {
+            $o = $ordres->ia_monture_ordre[$k] ;
+            $selector.= '<option value="M'.$o->ordre.'">Modifier ordre #'.$o->ordre.'</option>';
+        }
+        foreach ($a_ordres as $k)
+        {
+            $o = $ordres->ia_monture_ordre[$k] ;
+            $selector.= '<option value="A'.$o->ordre.'">Ajouter avant ordre #'.$o->ordre.'</option>';
+        }
     }
     $selector.= '<option selected value="">Ajouter à la fin</option></select>';
 
