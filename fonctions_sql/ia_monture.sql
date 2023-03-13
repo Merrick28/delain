@@ -64,7 +64,8 @@ declare
 -------------------------------------------------------
   v_cavalier integer;   -- perso_cod du cavalier
   v_param_ia json;   -- pour traiter la mise à jour des ordre
-  v_param json;   -- parametre divers du perso (permet de sauvegarder des données pour l'IA)
+  v_param_perso json;   -- parametre du perso
+  v_param_ordre json;   -- parametre divers du perso (permet de sauvegarder des données pour l'IA)
   v_ordre json;   -- 1 ordre a executer extrait de la liste des ordres
   dir_x integer ;     -- ordre: direction en x
   dir_y integer ;     --  ordre: direction en y
@@ -100,7 +101,8 @@ begin
 						v_dlt,
 						v_temps_tour,
 						v_temps_tour_actuel,
-						v_param
+						v_param_ordre,
+						v_param_perso
 					limite_niveau(v_monstre),
 					perso_px,
 					perso_pa,
@@ -118,8 +120,9 @@ begin
 					perso_sta_hors_combat,
 					perso_dlt,
 					perso_temps_tour,
-					f_temps_tour_perso(perso_cod),
-					(perso_misc_param->>'ia_monture_ordre')::json
+					coalesce(f_to_numeric(((perso_misc_param->>'calcul_dlt')::jsonb)->>'temps_tour')::integer, f_temps_tour_perso(perso_cod)),
+					(perso_misc_param->>'ia_monture_ordre')::json,
+					perso_misc_param
 		from perso,perso_position,positions
 		where perso_cod = v_monstre
 		and ppos_perso_cod = v_monstre
@@ -131,6 +134,15 @@ begin
   if v_pa = 0 then
     return code_retour||'Perso non joué (pa de PA).';
   end if;
+
+  -- détection nouvelle DLT pour décrementation des compteurs lié à la monture
+  if coalesce(f_to_numeric(((perso_misc_param->>'calcul_dlt')::jsonb)->>'activation_dlt', 0)::integer = 0 then
+      -- décrementation des compteurs et réarmement pour prochaine détection dlt
+      update perso set
+          perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
+          where perso_cod=v_monstre ;
+  end if;
+
 
 	i_temps_tour := trim(to_char( floor(v_temps_tour_actuel * v_pa / 12) ,'999999999'))||' minutes';
 	if (v_dlt - i_temps_tour) >= now() then
@@ -166,7 +178,7 @@ begin
 
   -- -------------------------------------------------------------------------------------------------------------------
   -- monture à ordre ou mixte, reéalise un ordre, recherche de l'ordre à executer
-  select v into v_ordre from ( select json_array_elements(v_param) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
+  select v into v_ordre from ( select json_array_elements(v_param_ordre) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
   if not found  then
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
       update perso set perso_pa = GREATEST(0, perso_pa - 1) where perso_cod=v_monstre ;
@@ -237,7 +249,7 @@ begin
   else
 
         -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
-      select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param ) as v ) s where v->>'ordre' <> v_num_ordre ;
+      select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre ;
       if dist = 1 then
           -- sauvgarder les nouvelles infos de ia_monture (avec supression du premier ordre)
           code_retour := code_retour||'Suppression de l''ordre.<br>';
