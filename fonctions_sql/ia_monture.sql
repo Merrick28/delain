@@ -67,6 +67,7 @@ declare
   v_param_perso json;   -- parametre du perso
   v_param_ordre json;   -- parametre divers du perso (permet de sauvegarder des données pour l'IA)
   v_ordre json;   -- 1 ordre a executer extrait de la liste des ordres
+  v_type_ordre text ; -- type ordre à traiter
   dir_x integer ;     -- ordre: direction en x
   dir_y integer ;     --  ordre: direction en y
   dist integer ;     --  ordre: distance
@@ -135,19 +136,21 @@ begin
     return code_retour||'Perso non joué (pa de PA).';
   end if;
 
-  -- détection nouvelle DLT pour décrementation des compteurs lié à la monture
-  if coalesce(f_to_numeric(((perso_misc_param->>'calcul_dlt')::jsonb)->>'activation_dlt', 0)::integer = 0 then
+  -- détection nouvelle DLT: décrementation des compteurs liés à la monture
+  if coalesce(f_to_numeric(((v_param_perso->>'calcul_dlt')::jsonb)->>'activation_dlt'), 0)::integer = 0 then
       -- décrementation des compteurs et réarmement pour prochaine détection dlt
       update perso set
           perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
           where perso_cod=v_monstre ;
   end if;
 
-
-	i_temps_tour := trim(to_char( floor(v_temps_tour_actuel * v_pa / 12) ,'999999999'))||' minutes';
-	if (v_dlt - i_temps_tour) >= now() then
-		return code_retour||'Perso non joué (égrainage de PA).';
-	end if;
+  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=5834 ) as s order by (v->>'ordre')::integer limit 1 ;
+  if not found  then
+      v_type_ordre := 'DIRIGER' ;
+  else
+      v_type_ordre := coalesce(v_ordre->>'type_ordre', 'DIRIGER' );
+      v_num_ordre := f_to_numeric(v_ordre->>'ordre') ;
+  end if;
 
 
 /***********************************/
@@ -166,7 +169,34 @@ begin
   end if;
 
 /***********************************/
-/* Etape 3 : action suivant type ia*/
+/* Etape3 :talonnade               */
+/***********************************/
+  -- excepter l'ordre TALONNER, on traite les ordres en fonction de l'avancement de la DLT
+  if v_type_ordre != 'TALONNER' then
+
+      i_temps_tour := trim(to_char( floor(v_temps_tour_actuel * v_pa / 12) ,'999999999'))||' minutes';
+      if (v_dlt - i_temps_tour) >= now() then
+        return code_retour||'Perso non joué (égrainage de PA).';
+      end if;
+
+  else
+
+      -- on supprimer l'ordre talonner de la liste des ordres, ainsi la monture va traiter immédiatement l'ordre suivant !
+      code_retour := code_retour||'Suppression de l''ordre TALONNER, traitement immédiat de l''ordre suivant.<br>';
+      perform insere_evenement(v_cavalier, v_monstre, 107, '[cible] réagi à la talonnade de [attaquant].', 'O', NULL);
+
+      select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre  ;
+      v_param_ordre := v_param_ia ;
+      update perso
+          set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+          where perso_cod=v_monstre ;
+
+  end if;
+
+
+
+/***********************************/
+/* Etape 4 : action suivant type ia*/
 /***********************************/
 
   -- -------------------------------------------------------------------------------------------------------------------
@@ -249,6 +279,7 @@ begin
   else
 
         -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
+      v_param_ia := null ;  -- null si plus d'autre ordres
       select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre ;
       if dist = 1 then
           -- sauvgarder les nouvelles infos de ia_monture (avec supression du premier ordre)

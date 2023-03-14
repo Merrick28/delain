@@ -21,6 +21,7 @@ AS $_$declare
   v_param_ia json ;     --  ordre: distance
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
   v_num integer ;     --  N° d'ordre actuel pour calcul
+  v_type_ordre text ;     --  Type d'ordre: diriger, sauter, tolonner
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_num_prems integer ;     --  N° du 1er ordre
   v_difficulte integer ;     -- difficulté de l'ordre
@@ -91,6 +92,7 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
+          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           v_num := f_to_numeric(v_param->>'num_ordre') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
@@ -106,7 +108,7 @@ begin
 
           -- mise à jour des ordres de la monture
           update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', v_type_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
 
       elseif v_ordre = 'UPD' then
@@ -117,6 +119,7 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;
+          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
@@ -132,7 +135,7 @@ begin
 
           -- Ajout du nouvel ordres de la monture
           update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', v_type_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
 
       else
@@ -152,6 +155,9 @@ begin
               where perso_cod=v_monture ;
 
       end if;
+
+      -- si on a ajouté, modifié ou supprimé un ordre on lance immédiatement l'IA pour traiter une talonnade s'il y en a une en tant que premier ordre
+      perform ia_monture(v_monture, 2) ;
 
   else
       -- si echec du jet de compétence
