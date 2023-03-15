@@ -75,6 +75,12 @@ declare
   v_pos_ordre integer ;     --  pos_cod ciblé par l'ordre
   v_perso_pa integer ;     -- PA après deplacement
   v_hors_map integer ;  -- 1 si essaye d'aller hors map
+  v_etage_monture json ; -- carac de l'étage pour les monture
+  v_count numeric ; -- compteur des actione speciale
+  v_count_talonner numeric ; -- compteur des actione speciale
+  v_count_sauter numeric ; -- compteur des actione speciale
+  v_etage_talonner numeric ; -- compteur des actione speciale
+  v_etage_sauter numeric ; -- compteur des actione speciale
 
 begin
 	code_retour := 'IA monture<br>Monstre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
@@ -103,7 +109,8 @@ begin
 						v_temps_tour,
 						v_temps_tour_actuel,
 						v_param_ordre,
-						v_param_perso
+						v_param_perso,
+						v_etage_monture
 					limite_niveau(v_monstre),
 					perso_px,
 					perso_pa,
@@ -121,13 +128,15 @@ begin
 					perso_sta_hors_combat,
 					perso_dlt,
 					perso_temps_tour,
-					coalesce(f_to_numeric(((perso_misc_param->>'calcul_dlt')::jsonb)->>'temps_tour')::integer, f_temps_tour_perso(perso_cod)),
+					coalesce(nullif(f_to_numeric(((perso_misc_param->>'calcul_dlt')::jsonb)->>'temps_tour')::integer, 0), f_temps_tour_perso(perso_cod)),
 					(perso_misc_param->>'ia_monture_ordre')::json,
-					perso_misc_param
-		from perso,perso_position,positions
+					perso_misc_param,
+					etage_monture
+		from perso,perso_position,positions,etage
 		where perso_cod = v_monstre
 		and ppos_perso_cod = v_monstre
-		and ppos_pos_cod = pos_cod;
+		and ppos_pos_cod = pos_cod
+		and etage_cod = pos_etage;
 	if actif != 'O' then
 		return 'inactif !';
 	end if;
@@ -136,15 +145,35 @@ begin
     return code_retour||'Perso non joué (pa de PA).';
   end if;
 
-  -- détection nouvelle DLT: décrementation des compteurs liés à la monture
-  if coalesce(f_to_numeric(((v_param_perso->>'calcul_dlt')::jsonb)->>'activation_dlt'), 0)::integer = 0 then
+  -- détection nouvelle DLT: décrementation des compteurs liés aux actions speciales de la monture
+  if coalesce(f_to_numeric(((v_param_perso->>'calcul_dlt')::jsonb)->>'activation_dlt')::integer, 0) = 0 then
       -- décrementation des compteurs et réarmement pour prochaine détection dlt
+
+      v_etage_talonner := coalesce( f_to_numeric(v_etage_monture->>'ordre_talonner') , 0) ;
+      v_count_talonner := GREATEST(0, coalesce(f_to_numeric( ((v_param_perso->>'ia_monture')::jsonb)->>'nb_talonner')  , 0) - v_etage_talonner ) ;
+      select count(*) into v_count from (  select json_array_elements( (perso_misc_param->>'ia_monture_ordre')::json ) as v from perso where perso_cod=v_monstre  ) as s where (v->>'type_ordre')='TALONNER'  ;
+      v_count_talonner := v_count_talonner + v_count ;
+      if v_etage_talonner < 1 and v_count > 0 then
+          v_count_talonner := 1 ;
+      end if;
+
+      v_etage_sauter := coalesce( f_to_numeric(v_etage_monture->>'ordre_sauter') , 0) ;
+      select count(*) into v_count from (  select json_array_elements( (perso_misc_param->>'ia_monture_ordre')::json ) as v from perso where perso_cod=v_monstre  ) as s where (v->>'type_ordre')='SAUTER'  ;
+      v_count_sauter := GREATEST(0, coalesce(f_to_numeric( ((v_param_perso->>'ia_monture')::jsonb)->>'nb_sauter') , 0) - v_etage_sauter ) ;
+      v_count_sauter := v_count_sauter + v_count ;
+      if v_etage_sauter < 1 and v_count > 0 then
+          v_count_sauter := 1 ;
+      end if;
+
       update perso set
-          perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
+          perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                                || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter )::jsonb))::jsonb)
+                                || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
           where perso_cod=v_monstre ;
   end if;
 
-  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=5834 ) as s order by (v->>'ordre')::integer limit 1 ;
+  -- premier ordre a traiter
+  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
   if not found  then
       v_type_ordre := 'DIRIGER' ;
   else
@@ -188,7 +217,8 @@ begin
       select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre  ;
       v_param_ordre := v_param_ia ;
       update perso
-          set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+          set perso_misc_param =  COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                              || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
           where perso_cod=v_monstre ;
 
   end if;
@@ -274,7 +304,7 @@ begin
 
         -- update perso set perso_pa = GREATEST(0, perso_pa - get_pa_dep(v_monstre) ) where perso_cod = v_monstre ;
         update perso set perso_pa = GREATEST(0, perso_pa - 1 ) where perso_cod = v_monstre ;
-        code_retour := code_retour||'Consommation de PA.<br>';
+        code_retour := code_retour || text_evt ||'Consommation de PA.<br>';
 
   else
 

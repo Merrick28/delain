@@ -1,5 +1,10 @@
 <?php
 
+//=======================================================================================
+function change_event_name($event, $attaquant, $cible) { return str_replace("[cible]", $cible, str_replace("[attaquant]", $attaquant, $event)); }
+
+
+//=======================================================================================
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
@@ -21,10 +26,17 @@ $arr_img = [
 
 
 $arr_frequence = [
-    "0"=>"Interdit",
-    "1"=>"1 fois par DLT",
-    "2"=>"2 fois par DLT",
-    "0.5"=>"1 fois toutes les 2 DLT",
+    "0"   => "Interdit",
+    "1"   => "1 fois par DLT",
+    "2"   => "2 fois par DLT",
+    "0.5" => "1 fois toutes les 2 DLT",
+];
+
+$arr_reste_frequence = [
+    "0"   => ["0" => "Interdit"],
+    "1"   => ["1" => "aucune", "0" => "1 fois"],
+    "2"   => ["2" => "aucune", "1" => "1 fois", "0" => "2 fois"],
+    "0.5" => ["0.5" => "aucune sur 1 DLT", "1" => "aucune sur 2 DLT", "0" => "1 fois"],
 ];
 
 $contenu_page = '';
@@ -72,6 +84,13 @@ if ($perso->perso_type_perso == 3){
     if (isset($_REQUEST["ORDRE_ADD"]))
     {
 
+        // controle des actions speciale
+        $perso_misc_param = json_decode($monture->perso_misc_param );
+        $ia_monture = isset($perso_misc_param->ia_monture) ? $perso_misc_param->ia_monture : json_decode("{}");
+        $nb_sauter = isset($ia_monture->nb_sauter) ? $ia_monture->nb_sauter : 0 ;
+        $nb_talonner = isset($ia_monture->nb_talonner) ? $ia_monture->nb_talonner : 0 ;
+
+
         $contenu_page .= "<hr><b>ACTION</b>: Donner un ordre à la monture<br>";
         $msg = "";
         $type_ordre = (!isset($_REQUEST["ORDRE_TYPE"]) || ($_REQUEST["ORDRE_TYPE"]=="")) ? "DIRIGER" : $_REQUEST["ORDRE_TYPE"] ;
@@ -101,17 +120,33 @@ if ($perso->perso_type_perso == 3){
         if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance supérieur <b>la vue</b> de votre monture (limité à 8)! ";
         if ( $distance_total >  $dist_vue ) $msg .= "<br>La distance totale des ordres ne doit pas dépasser <b>la vue</b> de votre monture ! ";
         if ( $dist <= 0 ) $msg .= "<br>Vous ne pouvez pas donner un ordre avec une distance nulle ! ";
+        if ( $nb_sauter>=$freq_ordre_sauter && $type_ordre=="SAUTER" ) $msg .= "<br>Vous ne pouvez plus SAUTER sur cette DLT ! ";
+        if ( $nb_talonner>=$freq_ordre_talonner && $type_ordre=="TALONNER" ) $msg .= "<br>Vous ne pouvez plus TALONNER sur cette DLT ! ";
         if ($msg != "")
         {
             $contenu_page .= $msg."<br><u>L'ordre n'est <b style=\"color:red;\">pas valide</u></b>, les PA n'ont pas été depensés!<br>";
         }
         else
         {
+            //echo "<pre>"; print_r([ $type_action, [ "type_ordre" => $type_ordre, "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist, "num_ordre" => $num ] ]); die();
+
+            $evt = new ligne_evt(); // charger le dernier evenement afin de montrer les evenements produit lors du donnage d'ordre
+            $listEvt = $evt->getByPerso($perso_cod, 0, 1);
+            $lastEvt = $listEvt[0]->levt_cod ;
+
             $contenu_page .= $perso->monture_ordre( $type_action, [ "type_ordre" => $type_ordre, "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist, "num_ordre" => $num ] );
             $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
+
+            $listEvt = $evt->getByPerso($perso_cod, 0, 10);
+            $contenu_page .= "<br>";
+            for ( $e=sizeof($listEvt)-1; $e>=0; $e--) {
+                $l_evt = $listEvt[$e] ;
+                if (($l_evt->levt_cod > $lastEvt) &&  ($l_evt->levt_texte != "[attaquant] a donné un ordre à [cible].")) {
+                    $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
+                }
+            }
         }
 
-        //print_r($_REQUEST);die();
         $contenu_page .= "<hr>";
     }
 
@@ -209,20 +244,30 @@ if ($perso->perso_type_perso == 3){
     }
     $selector.= '<option selected value="">Ajouter à la fin</option></select>';
 
+    // affichage des actions speciale
+    $perso_misc_param = json_decode($monture->perso_misc_param );
+    $ia_monture = isset($perso_misc_param->ia_monture) ? $perso_misc_param->ia_monture : json_decode("{}");
+    $nb_sauter = isset($ia_monture->nb_sauter) ? $ia_monture->nb_sauter : 0 ;
+    $nb_talonner = isset($ia_monture->nb_talonner) ? $ia_monture->nb_talonner : 0 ;
+
+    //echo "<pre>"; print_r([$ia_monture->nb_talonner, $freq_ordre_talonner, $nb_talonner]); die();
+
     $selector_action = '';
     if (($freq_ordre_talonner>0)||($freq_ordre_sauter>0))
     {
         $selector_action .= '<select onchange="ordonnerMontureChangeAction(this);"; style="width:90%; margin-bottom:5px;" name="ORDRE_TYPE"><option value="DIRIGER">Diriger</option>';
-        if ($freq_ordre_sauter>0) { $selector_action .= '<option value="SAUTER">Sauter</option>'; }
-        if ($freq_ordre_talonner>0) { $selector_action .= '<option value="TALONNER">Talonner</option>'; }
+        if ($freq_ordre_sauter>0 && $freq_ordre_sauter>$nb_sauter) { $selector_action .= '<option '.($freq_ordre_sauter<=$nb_sauter ? "disabled" : "").' value="SAUTER">Sauter</option>'; }
+        if ($freq_ordre_talonner>0 && $freq_ordre_talonner>$nb_talonner) { $selector_action .= '<option '.($freq_ordre_talonner<=$nb_talonner ? "disabled" : "").' value="TALONNER">Talonner</option>'; }
         $selector_action.= '</select><br>&nbsp;&nbsp;';
     }
 
     if ($freq_ordre_sauter>0) {
-        $contenu_page .=  "<b>SAUTER</b>: Vous pouvez sauter avec votre monture : <b>". $arr_frequence[$freq_ordre_talonner]."</b><br>";
+        $reste = isset($arr_reste_frequence["$freq_ordre_sauter"]["$nb_sauter"]) ? $arr_reste_frequence["$freq_ordre_sauter"]["$nb_sauter"] : "";
+        $contenu_page .=  "<b>SAUTER</b>: Vous pouvez sauter <b>". $arr_frequence["$freq_ordre_sauter"]."</b> <span style=\"font-size: 10px;\">(de monture)</span>, reste : <b>{$reste}</b><br>";
     }
     if ($freq_ordre_talonner>0) {
-        $contenu_page .=  "<b>TALONNER</b>: Vous pouvez talonner votre monture : <b>". $arr_frequence[$freq_ordre_talonner]."</b><br>";
+        $reste = isset($arr_reste_frequence["$freq_ordre_talonner"]["$nb_talonner"]) ? $arr_reste_frequence["$freq_ordre_talonner"]["$nb_talonner"] : "";
+        $contenu_page .=  "<b>TALONNER</b>: Vous pouvez talonner <b>". $arr_frequence["$freq_ordre_talonner"]."</b> <span style=\"font-size: 10px;\">(de monture)</span>, reste : <b>{$reste}</b><br>";
     }
 
 
@@ -248,8 +293,9 @@ if ($perso->perso_type_perso == 3){
         }
         $contenu_page .= '</tr>';
     }
-
-    $contenu_page .= '</table><br><span style="font-size: 10px;">* la distance de chaque ordre est limité à 8 et à la vue de la monture, distance d’ordre max est: <b>'.$dist_max.'</b> cases(s)<br>* la distance total d’ordre doit être inférieure ou égale à la vue de la monture. Il reste une distance de <b>'.max(0, $dist_vue-$distance_ordre).'</b> case(s).<span></form>';
+    $contenu_page .= '</table><br>';
+    $contenu_page .= '<span style="font-size: 10px;">* la distance de chaque ordre est limité à 8 et à la vue de la monture, distance d’ordre max est: <b>'.$dist_max.'</b> cases(s)<br>* la distance total d’ordre doit être inférieure ou égale à la vue de la monture. Il reste une distance de <b>'.max(0, $dist_vue-$distance_ordre).'</b> case(s).<span>';
+    $contenu_page .= "</form>";
     $contenu_page .= "<br><br><hr>";
 
     // charger la liste des terrains innacessible à la monture
@@ -281,4 +327,8 @@ $options_twig = array(
     'CONTENU_PAGE'             => $contenu_page
 );
 echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
+
+
+
+
 

@@ -32,7 +32,7 @@ class etage
     var $etage_autor_glyphe = 0;
     var $etage_perte_xp = 100;
     var $etage_mort_speciale = 0;
-    var $etage_monture_ordre ;
+    var $etage_monture ;
 
     function __construct()
     {
