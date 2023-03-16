@@ -1,7 +1,7 @@
 <?php
 
 //=======================================================================================
-function change_event_name($event, $attaquant, $cible) { return str_replace("[cible]", $cible, str_replace("[attaquant]", $attaquant, $event)); }
+function change_event_name($event, $attaquant, $cible) { return str_replace("[cible]", $cible, str_replace("[perso_cod1]", $attaquant, str_replace("[attaquant]", $attaquant, $event))); }
 
 
 //=======================================================================================
@@ -107,7 +107,7 @@ if ($perso->perso_type_perso == 3){
         $ordres = json_decode($monture->perso_misc_param) ;
         $distance_ordre = 0;
         $distance_ancien = 0;
-        if (sizeof($ordres->ia_monture_ordre) >0) {
+        if (isset($ordres->ia_monture_ordre) && is_array($ordres->ia_monture_ordre) && sizeof($ordres->ia_monture_ordre) >0) {
             //$contenu_page .= print_r($ordres, true);
             foreach ($ordres->ia_monture_ordre as $k => $o) {
                 $distance_ordre += $o->dist;
@@ -131,23 +131,25 @@ if ($perso->perso_type_perso == 3){
             //echo "<pre>"; print_r([ $type_action, [ "type_ordre" => $type_ordre, "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist, "num_ordre" => $num ] ]); die();
 
             $evt = new ligne_evt(); // charger le dernier evenement afin de montrer les evenements produit lors du donnage d'ordre
-            $listEvt = $evt->getByPerso($perso_cod, 0, 1);
+            $listEvt = $evt->getByPerso($perso->perso_monture, 0, 1);
             $lastEvt = $listEvt[0]->levt_cod ;
 
             $contenu_page .= $perso->monture_ordre( $type_action, [ "type_ordre" => $type_ordre, "dir_x" => $dir_x, "dir_y" => $dir_y, "dist" => $dist, "num_ordre" => $num ] );
             $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
 
-            $listEvt = $evt->getByPerso($perso_cod, 0, 10);
+            $listEvt = $evt->getByPerso($perso->perso_monture, 0, 10);
             //echo "<pre>"; print_r([ $listEvt ]); die();
             $contenu_page .= "<br>";
             for ( $e=sizeof($listEvt)-1; $e>=0; $e--) {
                 $l_evt = $listEvt[$e] ;
                 // afficher les evenements avec notre monture !
                 if (($l_evt->levt_cod > $lastEvt)&&  ($l_evt->levt_texte != "[attaquant] a donné un ordre à [cible].")) {
-                    if ($l_evt->levt_cible == $monture->perso_cod) {
-                        $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
-                    } else if ($l_evt->levt_attaquant == $monture->perso_cod) {
+                    if ($l_evt->levt_cible == $perso_cod) {
                         $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$monture->perso_nom."</b>", "<b>".$perso->perso_nom."</b>")."<br>";
+                    } else if ($l_evt->levt_attaquant == $perso_cod) {
+                        $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
+                    } else if (strpos($l_evt->levt_texte,"[attaquant]")===false && strpos($l_evt->levt_texte,"[cible]")===false) {
+                        $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$monture->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
                     }
                 }
             }

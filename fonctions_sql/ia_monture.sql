@@ -258,7 +258,7 @@ begin
   v_type_ordre := coalesce(v_ordre->>'type_ordre', 'DIRIGER' );
 
   if v_type_ordre = 'TALONNER' then
-        perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] n''a pas réussi à traiter un ordre "TALONNER".', 'O', 'N', null);
+        perform insere_evenement(v_monstre, v_monstre, 114, '[perso_cod1] n''a pas réussi à traiter un ordre "TALONNER".', 'O', 'N', null);
         code_retour := code_retour||'Impossible de traiter un TALONNAGE ici.<br>';
         return code_retour;
   end if;
