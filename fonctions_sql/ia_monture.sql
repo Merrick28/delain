@@ -210,17 +210,22 @@ begin
 
   else
 
-      -- on supprimer l'ordre talonner de la liste des ordres, ainsi la monture va traiter immédiatement l'ordre suivant !
-      code_retour := code_retour||'Suppression de l''ordre TALONNER, traitement immédiat de l''ordre suivant.<br>';
-      perform insere_evenement(v_cavalier, v_monstre, 107, '[cible] réagi à la talonnade de [attaquant].', 'O', NULL);
+      -- on verifie s'il n'y a qu'un ordre dans la pile, on ne va pas traiter le talonnage
+      select count(*) into temp from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s    ;
+      if temp > 1 then
 
-      select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre  ;
-      v_param_ordre := v_param_ia ;
-      update perso
-          set perso_misc_param =  COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
-                              || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
-          where perso_cod=v_monstre ;
+          -- on supprimer l'ordre talonner de la liste des ordres, ainsi la monture va traiter immédiatement l'ordre suivant !
+          code_retour := code_retour||'Suppression de l''ordre TALONNER, traitement immédiat de l''ordre suivant.<br>';
+          perform insere_evenement(v_cavalier, v_monstre, 107, '[cible] réagi à la talonnade de [attaquant].', 'O', NULL);
 
+          select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre  ;
+          v_param_ordre := v_param_ia ;
+          update perso
+              set perso_misc_param =  COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                                  || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+              where perso_cod=v_monstre ;
+
+      end if;
   end if;
 
 
@@ -250,6 +255,13 @@ begin
   dist :=  f_to_numeric(v_ordre->>'dist') ;     --  ordre: distance
   dir_x :=  f_to_numeric(v_ordre->>'dir_x') ;     --  ordre: dir x
   dir_y :=  f_to_numeric(v_ordre->>'dir_y') ;     --  ordre: dir y
+  v_type_ordre := coalesce(v_ordre->>'type_ordre', 'DIRIGER' );
+
+  if v_type_ordre = 'TALONNER' then
+        perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] n''a pas réussi à traiter un ordre "TALONNER".', 'O', 'N', null);
+        code_retour := code_retour||'Impossible de traiter un TALONNAGE ici.<br>';
+        return code_retour;
+  end if;
 
   temp_txt := '';
   if dir_x = 0 and dir_y = 0 then

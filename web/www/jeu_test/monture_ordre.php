@@ -138,11 +138,17 @@ if ($perso->perso_type_perso == 3){
             $monture->charge( $perso->perso_monture ); // recharger le perso montures (avec les nouveaux ordres)
 
             $listEvt = $evt->getByPerso($perso_cod, 0, 10);
+            //echo "<pre>"; print_r([ $listEvt ]); die();
             $contenu_page .= "<br>";
             for ( $e=sizeof($listEvt)-1; $e>=0; $e--) {
                 $l_evt = $listEvt[$e] ;
-                if (($l_evt->levt_cod > $lastEvt) &&  ($l_evt->levt_texte != "[attaquant] a donné un ordre à [cible].")) {
-                    $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
+                // afficher les evenements avec notre monture !
+                if (($l_evt->levt_cod > $lastEvt)&&  ($l_evt->levt_texte != "[attaquant] a donné un ordre à [cible].")) {
+                    if ($l_evt->levt_cible == $monture->perso_cod) {
+                        $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
+                    } else if ($l_evt->levt_attaquant == $monture->perso_cod) {
+                        $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$monture->perso_nom."</b>", "<b>".$perso->perso_nom."</b>")."<br>";
+                    }
                 }
             }
         }
@@ -191,7 +197,7 @@ if ($perso->perso_type_perso == 3){
     $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br> <br>";
     $ordres = json_decode($monture->perso_misc_param) ;
     $distance_ordre = 0;
-    if (sizeof($ordres->ia_monture_ordre) >0)
+    if (isset($ordres->ia_monture_ordre) && is_array($ordres->ia_monture_ordre) && sizeof($ordres->ia_monture_ordre) >0)
     {
         $contenu_page .= '<form name="monture_dep" id="monture_dep" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
         $contenu_page .= '<input type="hidden" name="num_ordre" id="num_ordre" value="">';
