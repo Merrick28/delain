@@ -15,6 +15,8 @@ $arr_img = [
     "-1:1"  => "SE.png",
     "-1:-1" => "SW.png",
     "0:0"   => "Q.png",
+    "TALONNER"   => "kick.png",
+    "SAUTER"     => "jump.png",
 ];
 
 $contenu_page = '';
@@ -39,7 +41,7 @@ if ( $perso->perso_type_perso != 2  ) {
     // affichage des ordres actifs =====================================================================================
     $contenu_page .= "<br><b><u>Liste des ordres actifs</u></b>: <br> <br>";
     $ordres = json_decode($perso->perso_misc_param) ;
-    if (sizeof($ordres->ia_monture_ordre) >0)
+    if (isset($ordres->ia_monture_ordre) && is_array($ordres->ia_monture_ordre) && sizeof($ordres->ia_monture_ordre) >0)
     {
         $contenu_page .= '<form name="monture_dep" id="monture_dep" method="post" action="monture_ordre.php"><table style="border: 1px solid black;">';
         $contenu_page .= '<input type="hidden" name="num_ordre" id="num_ordre" value="">';
@@ -54,7 +56,15 @@ if ( $perso->perso_type_perso != 2  ) {
             $o = $ordres->ia_monture_ordre[$k] ;
             $img = "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img[$o->dir_y.":".$o->dir_x]."'>";
             $contenu_page .=  "<tr><td><span>&nbsp;&nbsp;N° {$o->ordre} : ";
-            for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
+
+            if ($o->type_ordre=="TALONNER") {
+                $contenu_page .= "<img style='margin:3px; vertical-align: middle;' src='/images/interface/".$arr_img["TALONNER"]."'>";;
+            } else {
+                if ($o->type_ordre=="SAUTER") {
+                    $contenu_page .= "<img style='margin:3px; vertical-align: middle;' src='/images/interface/" . $arr_img["SAUTER"] . "'>";;
+                }
+                for($i=0; $i<$o->dist; $i++) $contenu_page .= $img;
+            }
             $contenu_page .= "&nbsp;&nbsp;</span></td></tr>" ;
         }
         $contenu_page .= '</table></form>';

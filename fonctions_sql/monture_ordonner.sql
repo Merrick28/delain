@@ -18,14 +18,19 @@ AS $_$declare
   dir_x integer ;     -- ordre: direction en x
   dir_y integer ;     --  ordre: direction en y
   dist integer ;     --  ordre: distance
-  v_param_ia json ;     --  ordre: distance
+  v_param_ia json ;     --  json avec les ordres: distance, etc..
+  v_param_monture json ;     --  json avec les compteurs
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
   v_num integer ;     --  N° d'ordre actuel pour calcul
+  v_type_ordre text ;     --  Type d'ordre: diriger, sauter, tolonner
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_num_prems integer ;     --  N° du 1er ordre
   v_difficulte integer ;     -- difficulté de l'ordre
   v_nb_action integer;   -- nombre d'echec d'ordre
   v_cout_ordre integer;   -- cout des ordres de monture
+  v_count_talonner numeric ; -- pour mise à jour des compteur de talonnade
+  v_count_sauter numeric ; -- pour mise à jour des compteur de saut
+  v_ordre_old json;   -- 1 ordre pour comptage des actions en cas de supression ou midification
 
 begin
 	code_retour := '';
@@ -46,7 +51,7 @@ begin
     return '<p>Erreur ! Vous n''avez pas suffisament de PA !';
   end if;
 
-  select perso_nom, COALESCE((perso_misc_param->>'ia_monture_ordre')::json, '[]'::json) into v_monture_nom, v_param_ia from perso where perso_cod=v_monture ;
+  select perso_nom, COALESCE((perso_misc_param->>'ia_monture_ordre')::json, '[]'::json), COALESCE((perso_misc_param->>'ia_monture')::json, '[]'::json) into v_monture_nom, v_param_ia, v_param_monture from perso where perso_cod=v_monture ;
   if not found then
     return '<p>Erreur ! la monture n''a pas été trouvée !';
   end if;
@@ -82,6 +87,9 @@ begin
   -- Test sur le jet de compétence
   if split_part(temp_competence,';',1) = '1' then
 
+      v_count_talonner := coalesce(f_to_numeric( (v_param_monture::jsonb)->>'nb_talonner')  , 0) ;
+      v_count_sauter := coalesce(f_to_numeric( (v_param_monture::jsonb)->>'nb_sauter') , 0) ;
+
       -- réaliser l'action !!!
       if v_ordre = 'ADD' then
           code_retour := code_retour || '<p>Vous avez donner un ordre avec succès à ' || v_monture_nom || ' !<br>';
@@ -91,10 +99,18 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
+          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           v_num := f_to_numeric(v_param->>'num_ordre') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
+
+          if v_type_ordre = 'TALONNER' then
+              v_count_talonner := v_count_talonner + 1 ;
+          end if;
+          if v_type_ordre = 'SAUTER' then
+              v_count_sauter := v_count_sauter + 1 ;
+          end if;
 
           if ( v_num != 0) then
               -- ajout de +1 sur chaque ordre supérieur à celui-ci programmé
@@ -106,7 +122,9 @@ begin
 
           -- mise à jour des ordres de la monture
           update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                              || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter )::jsonb))::jsonb)
+                              || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb)  || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', v_type_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
 
       elseif v_ordre = 'UPD' then
@@ -117,22 +135,39 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;
+          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
 
+          -- mise à jour des compteur d'action speciales
+          select v into v_ordre_old from (   select json_array_elements( (perso_misc_param->>'ia_monture_ordre')::json ) as v from perso where perso_cod=v_monture   ) as s where (v->>'ordre')::integer=v_num_ordre limit 1 ;
+          if coalesce(v_ordre_old->>'type_ordre','DIRIGER') = 'TALONNER' then
+              v_count_talonner := GREATEST(0, v_count_talonner - 1 );
+          end if;
+          if coalesce(v_ordre_old->>'type_ordre','DIRIGER') = 'SAUTER' then
+              v_count_sauter := GREATEST(0, v_count_sauter - 1 );
+          end if;
+          if v_type_ordre = 'TALONNER' then
+              v_count_talonner := v_count_talonner + 1 ;
+          end if;
+          if v_type_ordre = 'SAUTER' then
+              v_count_sauter := v_count_sauter + 1 ;
+          end if;
+
           -- dabord supprimer l'ordre existant
           select coalesce(jsonb_agg(v), '[]'::jsonb) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
 
-
           -- mise à jour des ordres de la monture
-          update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+           update perso
+               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
               where perso_cod=v_monture ;
 
           -- Ajout du nouvel ordres de la monture
           update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                              || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter )::jsonb))::jsonb)
+                              || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', v_type_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monture ;
 
       else
@@ -141,17 +176,31 @@ begin
           -- evenement déchevaucher (107)
           perform insere_evenement(v_perso, v_monture, 107, '[attaquant] a supprimé un ordre qui avait été donné à [cible].', 'O', NULL);
 
-          -- supprimer un ordre de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;    -- ordre à supprimer
+          select v into v_ordre_old from (   select json_array_elements( (perso_misc_param->>'ia_monture_ordre')::json ) as v from perso where perso_cod=v_monture   ) as s where (v->>'ordre')::integer=v_num_ordre limit 1 ;
+
+          if coalesce(v_ordre_old->>'type_ordre','DIRIGER') = 'TALONNER' then
+              v_count_talonner := GREATEST(0, v_count_talonner - 1 );
+          end if;
+          if coalesce(v_ordre_old->>'type_ordre','DIRIGER') = 'SAUTER' then
+              v_count_sauter := GREATEST(0, v_count_sauter - 1 );
+          end if;
+
+          -- supprimer un ordre de la liste des ordres
           select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ia ) as v ) s where v->>'ordre' <> v_num_ordre ;
 
 
           -- mise à jour des ordres de la monture
           update perso
-              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
+              set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
+                              || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter )::jsonb))::jsonb)
+                              || (json_build_object( 'ia_monture_ordre' , (v_param_ia::jsonb))::jsonb)
               where perso_cod=v_monture ;
 
       end if;
+
+      -- si on a ajouté, modifié ou supprimé un ordre on lance immédiatement l'IA pour traiter une talonnade s'il y en a maintenant une en tant que premier ordre
+      perform ia_monture(v_monture, 2) ;
 
   else
       -- si echec du jet de compétence
@@ -186,7 +235,7 @@ begin
                 end if;
 
                 update perso
-                    set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
+                    set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', 'DIRIGER', 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
                     where perso_cod=v_monture ;
 
           else
