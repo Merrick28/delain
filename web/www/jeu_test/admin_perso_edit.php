@@ -148,7 +148,7 @@ if ($erreur == 0)
             $req_monstre_generique = "select gmon_nom  from monstre_generique where gmon_cod = {$perso_gmon_cod}" ;
             $stmt2   = $pdo->query($req_monstre_generique);
             $result2 = $stmt2->fetch();
-            $base_generique = "<BR> Basé sur: Générique <a href=\"admin_type_monstre_edit.php?&methode2=edit&sel_method=edit&gmon_cod=$perso_gmon_cod\">#$perso_gmon_cod</a> - ".$result2["gmon_nom"];
+            $base_generique = "<BR> Basé sur: Générique <a href=\"admin_type_monstre_edit.php?&methode2=edit&sel_method=edit&gmon_cod=$perso_gmon_cod\">#$perso_gmon_cod</a> - <b>".$result2["gmon_nom"]."</b>";
         }
 
 
@@ -163,9 +163,9 @@ if ($erreur == 0)
                 <TR>
                     <TD colspan="4">Perso n°<?php echo $mod_perso_cod ?> Nom : <input type="text" name="mod_perso_nom"
                                                                                       value="<?php echo $perso_nom ?>"><BR>
-                        Date de création : <?php echo $result['date_creation']; ?><BR>
-                        Date de dernière connexion : <?php echo $result['date_derniere_connexion']; ?><BR>
-                        DLT : <?php echo $result['dlt'].$base_generique; ?></TD>
+                        Date de création : <b><?php echo $result['date_creation']; ?></b><BR>
+                        Date de dernière connexion : <b><?php echo $result['date_derniere_connexion']; ?></b><BR>
+                        DLT : <b><?php echo $result['dlt']."</b>".$base_generique; ?></TD>
                 </TR>
                 <TR>
                     <TH width="25%">CHAMP</TH>
