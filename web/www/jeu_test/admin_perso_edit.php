@@ -79,7 +79,7 @@ if ($erreur == 0)
             ,perso_tangible,perso_nb_tour_intangible,perso_enc_max,perso_amelioration_nb_sort,perso_capa_repar,coalesce(perso_nb_amel_repar,0) as perso_nb_amel_repar,perso_nb_receptacle,perso_nb_amel_chance_memo
             ,perso_nb_mort,perso_nb_monstre_tue,perso_nb_joueur_tue,perso_renommee_magie,perso_kharma,perso_renommee, perso_taille
             ,perso_nb_des_degats, perso_val_des_degats, perso_nb_amel_comp, perso_actif, coalesce(perso_prestige, 0) as perso_prestige, perso_pnj, perso_effets_auto
-            ,perso_voie_magique
+            ,perso_voie_magique, perso_gmon_cod
             from perso where perso_cod = " . $_REQUEST['mod_perso_cod'];
 
         //echo "QUERY = ".$req_perso;
@@ -141,6 +141,16 @@ if ($erreur == 0)
         $perso_pnj            = $result['perso_pnj'];
         $perso_effets_auto    = $result['perso_effets_auto'];
         $perso_voie_magique   = $result['perso_voie_magique'];
+        $perso_gmon_cod       = $result['perso_gmon_cod'];
+
+        $base_generique = "";
+        if ($perso_gmon_cod > 0) {
+            $req_monstre_generique = "select gmon_nom  from monstre_generique where gmon_cod = {$perso_gmon_cod}" ;
+            $stmt2   = $pdo->query($req_monstre_generique);
+            $result2 = $stmt2->fetch();
+            $base_generique = "<BR> Basé sur: Générique <a href=\"admin_type_monstre_edit.php?&methode2=edit&sel_method=edit&gmon_cod=$perso_gmon_cod\">#$perso_gmon_cod</a> - ".$result2["gmon_nom"];
+        }
+
 
         ?>
 
@@ -155,7 +165,7 @@ if ($erreur == 0)
                                                                                       value="<?php echo $perso_nom ?>"><BR>
                         Date de création : <?php echo $result['date_creation']; ?><BR>
                         Date de dernière connexion : <?php echo $result['date_derniere_connexion']; ?><BR>
-                        DLT : <?php echo $result['dlt']; ?></TD>
+                        DLT : <?php echo $result['dlt'].$base_generique; ?></TD>
                 </TR>
                 <TR>
                     <TH width="25%">CHAMP</TH>

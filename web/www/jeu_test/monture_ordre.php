@@ -148,7 +148,7 @@ if ($perso->perso_type_perso == 3){
                         $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$monture->perso_nom."</b>", "<b>".$perso->perso_nom."</b>")."<br>";
                     } else if ($l_evt->levt_attaquant == $perso_cod) {
                         $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$perso->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
-                    } else if (strpos($l_evt->levt_texte,"[attaquant]")===false && strpos($l_evt->levt_texte,"[cible]")===false) {
+                    } else if (strpos($l_evt->levt_texte,"[perso_cod1]")!==false &&strpos($l_evt->levt_texte,"[attaquant]")===false && strpos($l_evt->levt_texte,"[cible]")===false) {
                         $contenu_page .= change_event_name($l_evt->levt_texte, "<b>".$monture->perso_nom."</b>", "<b>".$monture->perso_nom."</b>")."<br>";
                     }
                 }
