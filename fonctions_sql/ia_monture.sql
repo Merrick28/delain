@@ -172,16 +172,6 @@ begin
           where perso_cod=v_monstre ;
   end if;
 
-  -- premier ordre a traiter
-  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
-  if not found  then
-      v_type_ordre := 'DIRIGER' ;
-  else
-      v_type_ordre := coalesce(v_ordre->>'type_ordre', 'DIRIGER' );
-      v_num_ordre := f_to_numeric(v_ordre->>'ordre') ;
-  end if;
-
-
 /***********************************/
 /* Etape 2 : on regarde si monture */
 /*  est chevauché                  */
@@ -197,9 +187,26 @@ begin
       end if;
   end if;
 
+  -- -------------------------------------------------------------------------------------------------------------------
+  -- monture docile, ne fait rien quand elle est chevauché
+  if v_type_ia = 0 then
+      code_retour := code_retour||'Pas, d''action, le monstre (docile) est chevauché par perso #' ||trim(to_char(temp,'999999999999'))|| '.<br>';
+      return code_retour;
+  end if;
+
+
 /***********************************/
 /* Etape3 :talonnade               */
 /***********************************/
+  -- premier ordre a traiter
+  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
+  if not found  then
+      v_type_ordre := 'DIRIGER' ;
+  else
+      v_type_ordre := coalesce(v_ordre->>'type_ordre', 'DIRIGER' );
+      v_num_ordre := f_to_numeric(v_ordre->>'ordre') ;
+  end if;
+
   -- excepter l'ordre TALONNER, on traite les ordres en fonction de l'avancement de la DLT
   if v_type_ordre != 'TALONNER' then
 
@@ -231,15 +238,8 @@ begin
 
 
 /***********************************/
-/* Etape 4 : action suivant type ia*/
+/* Etape 4 : action les ordres     */
 /***********************************/
-
-  -- -------------------------------------------------------------------------------------------------------------------
-  -- monture docile, ne fait rien quand elle est chevauché
-  if v_type_ia = 0 then
-      code_retour := code_retour||'Pas, d''action, le monstre (docile) est chevauché par perso #' ||trim(to_char(temp,'999999999999'))|| '.<br>';
-      return code_retour;
-  end if;
 
   -- -------------------------------------------------------------------------------------------------------------------
   -- monture à ordre ou mixte, reéalise un ordre, recherche de l'ordre à executer
@@ -248,7 +248,7 @@ begin
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
       update perso set perso_pa = GREATEST(0, perso_pa - 1) where perso_cod=v_monstre ;
       perform insere_evenement(v_monstre, v_monstre, 113, '[perso_cod1] n''a pas d''ordre à traiter et glande un peu.', 'O', 'N', null);
-      return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine(glande)!<br>';
+      return code_retour||'Monture chevauchée mais en attente d''ordre, elle rumine (glande)!<br>';
   end if;
 
   v_num_ordre := f_to_numeric(v_ordre->>'ordre') ;
