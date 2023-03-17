@@ -73,6 +73,7 @@ declare
   dist integer ;     --  ordre: distance
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_pos_ordre integer ;     --  pos_cod ciblé par l'ordre
+  v_pos_saut integer ;     --  pos_cod ciblé par l'ordre 'sauter'
   v_perso_pa integer ;     -- PA après deplacement
   v_hors_map integer ;  -- 1 si essaye d'aller hors map
   v_etage_monture json ; -- carac de l'étage pour les monture
@@ -195,11 +196,11 @@ begin
   end if;
 
 
-/***********************************/
-/* Etape3 :talonnade               */
-/***********************************/
+/******************************************/
+/* Etape3: egrainnage des PA et talonnade */
+/******************************************/
   -- premier ordre a traiter
-  select v into v_ordre  from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
+  select v into v_ordre  from ( select  json_array_elements( v_param_ordre ) as v ) as s order by (v->>'ordre')::integer limit 1 ;
   if not found  then
       v_type_ordre := 'DIRIGER' ;
   else
@@ -218,14 +219,14 @@ begin
   else
 
       -- on verifie s'il n'y a qu'un ordre dans la pile, on ne va pas traiter le talonnage
-      select count(*) into temp from ( select json_array_elements((perso_misc_param->>'ia_monture_ordre')::json) as v from perso where perso_cod=v_monstre ) as s    ;
+      select count(*) into temp from ( select  json_array_elements( v_param_ordre ) as v  ) as s    ;
       if temp > 1 then
 
           -- on supprimer l'ordre talonner de la liste des ordres, ainsi la monture va traiter immédiatement l'ordre suivant !
           code_retour := code_retour||'Suppression de l''ordre TALONNER, traitement immédiat de l''ordre suivant.<br>';
           perform insere_evenement(v_cavalier, v_monstre, 107, '[cible] réagi à la talonnade de [attaquant].', 'O', NULL);
 
-          select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre  ;
+          select jsonb_agg(v) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre ;
           v_param_ordre := v_param_ia ;
           update perso
               set perso_misc_param =  COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
@@ -243,7 +244,7 @@ begin
 
   -- -------------------------------------------------------------------------------------------------------------------
   -- monture à ordre ou mixte, reéalise un ordre, recherche de l'ordre à executer
-  select v into v_ordre from ( select json_array_elements(v_param_ordre) as v from perso where perso_cod=v_monstre ) as s order by (v->>'ordre')::integer limit 1 ;
+  select v into v_ordre from ( select json_array_elements(v_param_ordre) as v ) as s order by (v->>'ordre')::integer limit 1 ;
   if not found  then
       -- on consomme quand même des PA, la monture ne garde pas de PA réserve pour plus tard !
       update perso set perso_pa = GREATEST(0, perso_pa - 1) where perso_cod=v_monstre ;
@@ -271,8 +272,25 @@ begin
   else
       -- recherche de la position où aller
       select pos_cod into v_pos_ordre from positions where (pos_x = v_x + dir_x) and (pos_y = v_y + dir_y) and pos_etage=v_etage ;
+      v_pos_saut := null ;  -- utilisé (not null) en cas de saut !
       if found then
-          temp_txt := deplace_code(v_monstre, v_pos_ordre);
+          if v_type_ordre = 'SAUTER' then
+              -- interdir les sauts par dessus les murs
+               if not exists (select 1 from murs where mur_pos_cod = v_pos_ordre and mur_illusion!='O') then
+                  -- chercher la position du saut
+                  select pos_cod into v_pos_saut from positions where (pos_x = v_x + 2*dir_x) and (pos_y = v_y + 2*dir_y) and pos_etage=v_etage ;
+               end if;
+          end if;
+
+          -- faire le deplacement normal ou saut
+          if v_pos_saut is not null then
+              -- saut à 2 cases!
+              perform insere_evenement(v_monstre, v_monstre, 107, '[perso_cod1] a fait un saut.', 'O', NULL);
+              temp_txt := deplace_code(v_monstre, v_pos_saut, 2);
+          else
+              -- deplacement basic
+              temp_txt := deplace_code(v_monstre, v_pos_ordre);
+          end if;
       else
           code_retour := code_retour||'Positions de l''ordre non trouvé.<br>';
           temp_txt := '0#0#9';
