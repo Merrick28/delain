@@ -295,6 +295,25 @@ if ($autorise == 1)
             }
         }
 
+        if ($objelem_attaches = $obj->get_condition_inventaire())
+        {
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet possède des conditions de ramassage:</strong></td>";
+            echo "</tr>";
+            foreach ($objelem_attaches as $objelem)
+            {
+                $carac = new aquete_type_carac();
+                $carac->charge($objelem->objelem_misc_cod);
+                $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU";
+
+                $aff = $carac->element_language_humain($objelem);
+
+                echo "<tr><td class=\"soustitre2\">{$conj}</td>";
+                echo "<td>{$aff}</td>";
+                echo "<tr>";
+            }
+        }
+
         if ($objelem_attaches = $obj->get_condition_equipement())
         {
             echo "<tr>";

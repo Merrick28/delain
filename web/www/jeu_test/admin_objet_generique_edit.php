@@ -526,7 +526,7 @@ if ($erreur == 0)
                                 <div style="display:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="file" name="image_file" accept="image/*" onchange="preview_image(event);"><br>
                                     <strong>ou</strong><br>
-                                    <input type="button" style="margin-top: 5px;" class="test"  name="nouvel_image"  value="Sélectionner une image existante sur le serveur"  onclick="open_imglist();">                                    
+                                    <input type="button" style="margin-top: 5px;" class="test"  name="nouvel_image"  value="Sélectionner une image existante sur le serveur"  onclick="open_imglist();">
                                 </div>
                             </td>
                         </tr>
@@ -738,23 +738,60 @@ if ($erreur == 0)
             {
                 echo 'Aucun: <a target="_blank" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
+
+            // CONDITION D'EQUIPEMENT
             $objelem = new objet_element();
             echo "<tr><td class=\"soustitre2\">Condition(s) d'équipement</td><td>";
+            $hasCond = false ;
             if ($list = $objelem->getBy_objelem_gobj_cod($gobj_cod))
             {
                 foreach ($list as $objelem) {
-                    $carac = new aquete_type_carac();
-                    $carac->charge($objelem->objelem_misc_cod);
-                    $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
-                    echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    if ($objelem->objelem_param_id == 1)
+                    {
+                        $hasCond = true ;
+                        $carac = new aquete_type_carac();
+                        $carac->charge($objelem->objelem_misc_cod);
+                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    }
                 }
-                echo ': <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                if ($hasCond) {
+                    echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                }
             }
-            else
+            if (! $hasCond )
             {
-                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
+
+            // CONDITION DE RAMASSAGE
+            $objelem = new objet_element();
+            echo "<tr><td class=\"soustitre2\">Condition(s) de ramassage</td><td>";
+            $hasCond = false ;
+            if ($list = $objelem->getBy_objelem_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objelem) {
+                    if ($objelem->objelem_param_id == 2)
+                    {
+                        $hasCond = true ;
+                        $carac = new aquete_type_carac();
+                        $carac->charge($objelem->objelem_misc_cod);
+                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    }
+                }
+                if ($hasCond) {
+                    echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                }
+            }
+            if (! $hasCond )
+            {
+                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
+
+
             ?>
                         <tr>
                             <td colspan="2">
