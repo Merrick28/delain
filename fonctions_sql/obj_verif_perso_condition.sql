@@ -48,7 +48,7 @@ begin
   if v_type_perso = 3 then
     select count(*) into v_nb_element
     from objet_element
-    where objelem_type='perso_condition' and objelem_param_id=1 and objelem_misc_cod=17 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
+    where objelem_type='perso_condition' and objelem_misc_cod=17 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
     if v_nb_element=0 then
       return -1;
     end if;
@@ -60,7 +60,7 @@ begin
 	for ligne in
     select objelem_misc_cod, objelem_param_num_2, objelem_param_num_3, objelem_param_txt_1, objelem_param_txt_2, objelem_param_txt_3
     from objet_element
-    where objelem_type='perso_condition' and objelem_param_id=1 and objelem_misc_cod>0 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
+    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
     order by objelem_param_ordre
 
   loop
@@ -82,7 +82,7 @@ begin
 	for ligne in
     select objelem_misc_cod, objelem_param_num_2, objelem_param_num_3, objelem_param_txt_1, objelem_param_txt_2, objelem_param_txt_3
     from objet_element
-    where objelem_type='perso_condition' and objelem_param_id=1 and objelem_misc_cod>0 and objelem_param_num_1=1 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
+    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=1 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
     order by objelem_param_ordre
 
   loop
