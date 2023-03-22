@@ -10,12 +10,18 @@ include_once '../includes/tools.php';
 $contenu_page = '';
 ob_start();
 ?>
-    <title>AFFECTATION DE CONDITION D'EQUIPEMENT SUR DES OBJETS / OBJETS GENERIQUES</title>
+    <title>CONDITION D'UTILISATION DES OBJETS / OBJETS GENERIQUES</title>
 <?php
 
 $droit_modif = 'dcompt_objet';
 define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
+
+// TYPE DE ONDTION: 1 => Condition pour équiper 2 => Condition pour ramasser
+$type_condition = isset( $_REQUEST['type_condition'] ) ?  $_REQUEST['type_condition'] : 1 ;
+$text_type = $type_condition == 1 ? "d'équipement" : "de ramassage" ;
+$verbe_type = $type_condition == 1 ? "équiper" : "ramasser" ;
+
 
 
 if ($erreur == 0) {
@@ -28,7 +34,7 @@ if ($erreur == 0) {
     {
         //echo "<pre>";  print_r($_REQUEST); echo "</pre>";
 
-        $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ajout/modification de conditions d'équipement sur objets / objets génériques:\n";
+        $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ajout/modification de conditions $text_type sur objets / objets génériques:\n";
 
         // Sauvegarde des elements créés pour l'étape
         $log_elements = ""; // pour loger la différence sur les éléments
@@ -46,7 +52,7 @@ if ($erreur == 0) {
                     {
                         $element = new objet_element();
                         $new = true ;
-                        $objelem_cod = 1*( $_REQUEST["objelem_cod"][$param_id][$e] ) ;
+                        $objelem_cod = isset($_REQUEST["objelem_cod"][$param_id][$e]) && $_REQUEST["objelem_cod"][$param_id][$e]!="" ?  1*( $_REQUEST["objelem_cod"][$param_id][$e] )  : 0 ;
                         if ( $objelem_cod != 0 ) {
                             $new = false ;
                             $element->charge($objelem_cod);
@@ -79,7 +85,7 @@ if ($erreur == 0) {
         }
 
         if ($_REQUEST["objelem_obj_cod"]=="") {
-            if ($result = $element->clean_generique( $_REQUEST["objelem_gobj_cod"], $element_list))        // supprimer tous les elements du generique qui ne sont pas dans la liste.
+            if ($result = $element->clean_generique( $_REQUEST["objelem_gobj_cod"], $type_condition, $element_list))        // supprimer tous les elements du generique qui ne sont pas dans la liste.
             {
                 // Logguer les supressions
                 foreach ($result as $k => $e)
@@ -88,9 +94,9 @@ if ($erreur == 0) {
                 }
             }
             // Logger les infos pour suivi admin
-            $log .= "ajoute/modifie des conditions d'équipement objet générique #" . $_REQUEST["objelem_gobj_cod"] . "\n" . $log_elements;
+            $log .= "ajoute/modifie des conditions $text_type objet générique #" . $_REQUEST["objelem_gobj_cod"] . "\n" . $log_elements;
         } else {
-            if ($result = $element->clean_specifique( $_REQUEST["objelem_obj_cod"], $element_list))        // supprimer tous les elements du specifique qui ne sont pas dans la liste.
+            if ($result = $element->clean_specifique( $_REQUEST["objelem_obj_cod"], $type_condition, $element_list))        // supprimer tous les elements du specifique qui ne sont pas dans la liste.
             {
                 // Logguer les supressions
                 foreach ($result as $k => $e)
@@ -99,7 +105,7 @@ if ($erreur == 0) {
                 }
             }
             // Logger les infos pour suivi admin
-            $log .= "ajoute/modifie des conditions d'équipement objet  #" . $_REQUEST["objelem_obj_cod"] . "\n" . $log_elements;
+            $log .= "ajoute/modifie des conditions $text_type objet  #" . $_REQUEST["objelem_obj_cod"] . "\n" . $log_elements;
         }
 
 
@@ -112,12 +118,12 @@ if ($erreur == 0) {
 
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
     $row_id = "obj-generique-";
-    echo '<form name="selection-objet" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
+    echo '<form name="selection-objet" action="' . $_SERVER['PHP_SELF'] . '" method="post"><input type="hidden" name="type_condition" value="'.$type_condition.'"';
     echo '<br><strong>Sélection d’un objet générique</strong><br>Code de l\'objet générique :
                     <input data-entry="val" name="objelem_gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","objet_generique","Rechercher un objet générique");\'>
-                    &nbsp;<input type="submit" value="Voir/Modifier les conditions d\'équipement de cet objet" class="test"></form>';
+                    &nbsp;<input type="submit" value="Voir/Modifier les conditions '.$text_type.' de cet objet" class="test"></form>';
 
 
     echo "<hr>";
@@ -131,9 +137,9 @@ if ($erreur == 0) {
         {
             $gobj = new objet_generique();
             $gobj->charge($objelem_gobj_cod);
-            echo "Détail des conditions d'équipement sur l'<u>OBJET GENERIQUE</u>: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+            echo "Détail des <span style=\"color: white; font-size: 14px; background-color: #800000; font-weight:bold\">&nbsp;conditions $text_type&nbsp;</span> sur l'<u>OBJET GENERIQUE</u>: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
             $exemplaires = $gobj->getNombreExemplaires();
-            echo "Nombre d'exemplaire basé sur cet objet générique:<br>";
+            echo "<br>Nombre d'exemplaire basé sur cet objet générique:<br>";
             echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
             echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
             echo "<br>";
@@ -142,7 +148,7 @@ if ($erreur == 0) {
         {
             $obj = new objets();
             $obj->charge($objelem_obj_cod);
-            echo "Détail des conditions d'équipement sur l'<u>OBJET SPECIFIQUE</u>: <strong>#{$obj->obj_cod} - {$obj->obj_nom}</strong><br>";
+            echo "Détail des <span style=\"color: white; font-size: 14px; background-color: #800000; font-weight:bold\">&nbsp;conditions $text_type&nbsp;</span>  sur l'<u>OBJET SPECIFIQUE</u>: <strong>#{$obj->obj_cod} - {$obj->obj_nom}</strong><br>";
             echo "L'objet:<br>";
             echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>".$obj->trouve_objet()."</strong><br>";
             echo "<br>";
@@ -152,6 +158,7 @@ if ($erreur == 0) {
         // Mise en forme de l'étape pour la saisie des infos.
         echo '  <br>
                     <form  method="post"><input type="hidden" name="methode" value="sauve" />
+                    <input type="hidden" name="type_condition" value="' . $type_condition  . '" />
                     <input type="hidden" name="objelem_gobj_cod" value="' . ($objelem_gobj_cod>0 ?  $objelem_gobj_cod : "")  . '" />
                     <input type="hidden" name="objelem_obj_cod" value="' . ($objelem_obj_cod>0 ?  $objelem_obj_cod : "") . '" />
                     <table width="80%" align="center">';
@@ -159,7 +166,7 @@ if ($erreur == 0) {
 
         // En cas de type alternatif, il y a un ligne de saisie supplementaire
         $style_tr = "display: block;" ;
-        $param_id = 1 ;
+        $param_id = $type_condition ;         // ATTENTION: param_id = 1 => Condition d'équipement, param_id = 2 => Condition de ramassage
         $param = array();
         $param['type'] = "perso_condition" ;
         $param['n'] = "1" ;
@@ -171,10 +178,17 @@ if ($erreur == 0) {
         } else {
             $elements = $element->getBy_objelem_obj_cod($objelem_obj_cod);
         }
+
+        // filtre sur le type de condition
+        if ($elements || is_array($elements)) {
+            $elements = array_filter($elements, function($e) use ($type_condition) { return ($e->objelem_param_id == $type_condition);} );
+        }
+
+        // Ajouter le nombre mini d'élément
         while ( !$elements || sizeof($elements) < (1*$param['n']) )   $elements[] =  new objet_element;
         $add_buttons = (1*$param['M']==1*$param['n'] && 1*$param['M']>0) ? false : true;
 
-        echo "Liste des condtions que doit verifier le perso pour pouvoir équiper l'objet.";
+        echo "Liste des condtions que doit verifier le perso pour pouvoir <strong><u>$verbe_type</u></strong> l'objet.";
 
         foreach($elements as $row => $element)
         {
@@ -206,6 +220,7 @@ if ($erreur == 0) {
                     break;
             }
             echo "</tr>";
+
         }
 
         if ($add_buttons) echo '<tr id="add-'.$row_id.'" style="'.$style_tr.'"><td> <input type="button" class="test" value="Nouveau" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(), '.$param['M'].');"> </td></tr>';
@@ -219,28 +234,53 @@ if ($erreur == 0) {
         echo '<hr>';
     }
 
-    if ($objelem_gobj_cod>0)
+    if ($objelem_gobj_cod>0 && $type_condition==1)
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
             * N’oubliez pas que TOUS les exemplaires d’un objet générique possèdederont immédiatement ces conditions d’équipement.<br>
             * S’il n’y a aucune condition, les conditions d’usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
-            * Par défaut un familier ne peut jamais vérifier les contions d’équipement d’un objet, <b>SAUF</b>:<br>
+            * Par défaut un familier ne peut jamais vérifier les conditions d’équipement d’un objet, <b>SAUF</b>:<br>
             &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
             * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l’objet:<br>
             &nbsp;&nbsp;-> L’objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
             &nbsp;&nbsp;-> Lorsqu’il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
         <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod='.$_REQUEST["objelem_gobj_cod"].'">Retour aux modificationx d’objets génériques</a>';
-    } else {
+    }
+    else if ($type_condition==1)
+    {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
             * N’oubliez pas les conditions ici seront appliquées <u>en plus</u> des conditions de l’objet générique.<br>
             * S’il n’y a aucune condition, les conditions d’usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
-            * Par défaut un familier ne peut jamais vérifier les contions d’équipement d’un objet, <b>SAUF</b>:<br>
+            * Par défaut un familier ne peut jamais vérifier les conditions d’équipement d’un objet, <b>SAUF</b>:<br>
             &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
             * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l’objet:<br>
             &nbsp;&nbsp;-> L’objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
             &nbsp;&nbsp;-> Lorsqu’il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
             <br><p style="text-align:center;"><a href="admin_objet_edit.php?&methode=objet&num_objet='.$_REQUEST["objelem_obj_cod"].'">Retour aux modifications de l’objets</a>';
-        
+
+    }
+    else if ($objelem_gobj_cod>0)
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * N’oubliez pas que TOUS les exemplaires d’un objet générique possèderont immédiatement ces conditions de ramssage.<br>
+            * Par défaut un un perso peut toujours ramasser un objet, <b>SAUF</b>:<br>
+            &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle, exemple : <u>"ET Type perso != 1"</u><br>            
+            * si les conditions sont modifiées rendant non-ramassable un objet pour un perso qui en possède déjà un exemplaire dans son inventaire:<br>
+            &nbsp;&nbsp;-> L’objet restera dans son inventaire et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
+            &nbsp;&nbsp;-> Lorsqu’il deposera cet objet, le perso ne sera plus en mesure de le re-ramasser.
+        <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod='.$_REQUEST["objelem_gobj_cod"].'">Retour aux modificationx d’objets génériques</a>';
+    }
+    else
+    {
+        echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * N’oubliez pas les conditions ici seront appliquées <u>en plus</u> des conditions de l’objet générique.<br>
+            * Par défaut un un perso peut toujours ramasser un objet, <b>SAUF</b>:<br>
+            &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle, exemple : <u>"ET Type perso != 1"</u><br>                   
+            * si les conditions sont modifiées rendant non-ramassable un objet pour un perso qui en possède déjà un exemplaire dans son inventaire:<br>
+            &nbsp;&nbsp;-> L’objet restera dans son inventaire et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
+            &nbsp;&nbsp;-> Lorsqu’il deposera cet objet, le perso ne sera plus en mesure de le re-ramasser.
+            <br><p style="text-align:center;"><a href="admin_objet_edit.php?&methode=objet&num_objet='.$_REQUEST["objelem_obj_cod"].'">Retour aux modifications de l’objets</a>';
+
     }
 
 

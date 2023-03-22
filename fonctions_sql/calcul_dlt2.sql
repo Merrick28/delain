@@ -734,7 +734,7 @@ begin
 
     /* Marlyza: déséquiper les objets pour lesquels le perso ne respecte plus le conditions nécéssaires */
     for ligne in
-      select perobj_obj_cod, obj_nom, obj_nom_generique from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=personnage and perobj_equipe='O' and obj_desequipable='O' and obj_verif_perso_condition(perobj_perso_cod,perobj_obj_cod)=0
+      select perobj_obj_cod, obj_nom, obj_nom_generique from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=personnage and perobj_equipe='O' and obj_desequipable='O' and obj_verif_perso_condition_equip(perobj_perso_cod,perobj_obj_cod)=0
     loop
       texte_evt := '[perso_cod1] ne respecte plus les conditions pour équiper l''objet « ' || ligne.obj_nom_generique || ' » (n° '||trim(to_char(ligne.perobj_obj_cod,'99999999'))||'), <strong><font color="red">il a été remis dans son invetaire</font></strong>.';
       insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu)

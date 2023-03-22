@@ -6,7 +6,7 @@ if (!defined('APPEL'))
     define('APPEL', 1);
 }
 
-include "fonctions.php";
+include __DIR__."/../includes/fonctions.php";
 include "blocks/_test_lieu.php";
 $perso     = $verif_connexion->perso;
 $perso_cod = $verif_connexion->perso_cod;

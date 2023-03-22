@@ -63,9 +63,9 @@ function is_locked($perso_cod)
 {
     $tmpperso = new perso;
     $tmpperso->charge($perso_cod);
+    $result = $tmpperso->is_locked();
     unset($tmpperso);
-    return $tmpperso->is_locked();
-
+    return $result ;
 }
 
 

@@ -2,7 +2,7 @@
 /**
 * includes/class.objets.php
  */
- 
+
 /**
 * Class objets
 *
@@ -48,17 +48,17 @@ class objets
         var $obj_frune_cod;
         var $obj_niveau_min = 0;
         var $obj_desequipable = 'O';
-    
+
     function __construct()
-{   
+{
     }
-  
+
     /**
      * Charge dans la classe un enregistrement de objets
      * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
-     */   
+     */
     function charge($code)
     {
         $pdo = new bddpdo;
@@ -109,7 +109,7 @@ class objets
             $this->obj_desequipable = $result['obj_desequipable'];
             return true;
     }
- 
+
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo
@@ -238,8 +238,8 @@ class objets
                         ":obj_niveau_min" => $this->obj_niveau_min,
                         ":obj_desequipable" => $this->obj_desequipable,
                         ),$stmt);
-    
-                
+
+
                 $temp = $stmt->fetch();
                 $this->charge($temp['id']);
         }
@@ -406,7 +406,25 @@ class objets
         $retour = array();
 
         $objelem = new objet_element();
-        $retour = $objelem->get_objet_element($this) ;
+        $retour = $objelem->get_objet_element($this, 1) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /***
+     * Retourne la liste des bonus/malus attachés sur l'objet
+     * @return array|bool
+     */
+    function get_condition_inventaire()
+    {
+        $retour = array();
+
+        $objelem = new objet_element();
+        $retour = $objelem->get_objet_element($this, 2) ;
 
         if(count($retour) == 0)
         {
@@ -422,12 +440,29 @@ class objets
     function est_equipable($perso_cod)
     {
         $pdo = new bddpdo;
-        $req = "select obj_verif_perso_condition(:perso_cod, :obj_cod) as est_equipable; ";
+        $req = "select obj_verif_perso_condition_equip(:perso_cod, :obj_cod) as est_equipable; ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod, ":perso_cod" => $perso_cod),$stmt);
         if (!$result = $stmt->fetch()) return false ;
 
         if ($result["est_equipable"]==1) return true;
+
+        return false ;
+    }
+
+    /**
+     * Retourne vrai si le perso passé en paramètre peut ramamser l'objet, et false sinon
+     * @return boolean
+     */
+    function est_ramassable($perso_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select obj_verif_perso_condition_inv(:perso_cod, :obj_cod) as est_ramassable; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod, ":perso_cod" => $perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        if ($result["est_ramassable"]==1) return true;
 
         return false ;
     }
@@ -524,7 +559,7 @@ class objets
         }
         return $retour;
     }
-           
+
     public function __call($name, $arguments){
         switch(substr($name, 0, 6)){
             case 'getBy_':
@@ -542,7 +577,7 @@ class objets
                             $retour[] = $temp;
                             unset($temp);
                     }
-                    if(count($retour) == 0)     
+                    if(count($retour) == 0)
                     {
                         return false;
                     }
@@ -553,7 +588,7 @@ class objets
                     die('Unknown variable ' . substr($name, 6) . ' in table objets');
                 }
             break;
-           
+
             default:
                 ob_start();
                 debug_print_backtrace();

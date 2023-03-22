@@ -10,6 +10,8 @@ ob_start();
 if (isset($_REQUEST['perso']))
 {
     $persoencours = $_REQUEST['perso'];
+    $perso_transac = new perso();
+    $perso_transac->charge($persoencours);
 }
 
 
@@ -133,8 +135,10 @@ switch ($methode)
                     $nom_objet = $result['obj_nom_generique'];
                 }
                 $si_identifie = $result['perobj_identifie'];
+                $est_ramassable = $perso_transac->is_ramasse_objet($result['obj_cod']) ;
+
                 echo "<tr>";
-                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<td><input type=\"checkbox\" ".($est_ramassable ? "" : " disabled ")."class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
                 echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
                 if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
@@ -142,7 +146,7 @@ switch ($methode)
                 }
                 echo "</label></td>";
 
-                echo "<td><input type=\"text\" name=\"prix[" . $result['obj_cod'] . "]\" size=\"6\" value=\"0\" /> brouzoufs</td>";
+                echo "<td><input ".($est_ramassable ? "" : " disabled ")."type=\"text\" name=\"prix[" . $result['obj_cod'] . "]\" size=\"6\" value=\"0\" /> brouzoufs</td>";
                 echo "</tr>";
             }
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
@@ -151,7 +155,7 @@ switch ($methode)
             $nb_objets++;
         }
 
-        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
+        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, max(obj_cod) as obj_cod, count(*) as nombre
 			from perso_objets
 			inner join objets on obj_cod = perobj_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -181,15 +185,25 @@ switch ($methode)
                 $id_chk         = "gobj[$gobj_cod]";
                 $id_qte         = "qtegros[$gobj_cod]";
                 $id_prx         = "prixgros[$gobj_cod]";
+                $est_ramassable = $perso_transac->is_ramasse_objet($result['obj_cod']) ;
                 echo "<tr>";
-                echo "<td class='soustitre2'><input type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+
+                if ($est_ramassable) {
+                    echo "<td class='soustitre2'><input type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
+                } else{
+                    echo "<td class='soustitre2'><input type=\"checkbox\" disabled class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+					<td class='soustitre2'>&nbsp;+1&nbsp;</td>
+					<td class='soustitre2'>&nbsp;-1&nbsp;</td> 
+					<td class='soustitre2'>&nbsp;max&nbsp;</td> ";
+                }
+
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
-                echo "<td><input type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
+                echo "<td><input type=\"text\" ".($est_ramassable ? "" : " disabled ")."name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";
-                echo "<td><input type=\"text\" name=\"$id_prx\" value=\"0\" size=\"6\" /> brouzoufs</td>";
+                echo "<td><input type=\"text\" ".($est_ramassable ? "" : " disabled ")."name=\"$id_prx\" value=\"0\" size=\"6\" /> brouzoufs</td>";
                 echo "</tr>";
             }
 
@@ -293,8 +307,7 @@ switch ($methode)
 
         if (isset($_REQUEST['obj']) && !$erreur_globale)
         {
-            //print_r($_REQUEST);
-            //die('');
+            //echo "<pre>"; print_r([$perso_transac, $_REQUEST]); die('');
             // préparation des requêtes qui vont être lancées dans le while
             $req_ident = "select perobj_identifie from perso_objets where perobj_obj_cod = :key ";
             $stmtobj   = $pdo->prepare($req_ident);
@@ -310,23 +323,30 @@ switch ($methode)
                 $stmtobj      = $pdo->execute(array(":key" => $key), $stmtobj);
                 $result       = $stmtobj->fetch();
                 $si_identifie = $result['perobj_identifie'];
+                $est_ramassable = $perso_transac->is_ramasse_objet($key) ;
+
                 $erreur       = 0;
                 $prix_obj     = $prix[$key];
                 if ($prix_obj < 0)
                 {
-                    echo "Erreur ! Le prix doit être positif !";
+                    echo "Erreur ! Le prix doit être positif !<br>";
                     $erreur = 1;
                 }
                 if ($prix_obj == '')
                 {
-                    echo "Erreur ! Le prix doit être fixé !";
+                    echo "Erreur ! Le prix doit être fixé !<br>";
+                    $erreur = 1;
+                }
+                if (!$est_ramassable)
+                {
+                    echo "Erreur ! L'acheteur ne peut pas récupérer l’objet $key!<br>";
                     $erreur = 1;
                 }
 
                 $stmtexists = $pdo->execute(array(":key" => $key), $stmtexists);
                 if ($stmtexists->rowCount() > 0)
                 {
-                    echo "Erreur ! Une transaction existe déjà sur l’objet $key. Ceci peut arriver en cas de double-clic sur le bouton de validation précédent.";
+                    echo "Erreur ! Une transaction existe déjà sur l’objet $key. Ceci peut arriver en cas de double-clic sur le bouton de validation précédent.<br>";
                     $erreur = 1;
                 }
                 if ($erreur == 0)
@@ -367,7 +387,7 @@ switch ($methode)
         if (isset($_REQUEST['gobj']) && !$erreur_globale)
         {
             // Récupération globale des infos
-            $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
+            $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, max(obj_cod) as obj_cod, count(*) as nombre
 				from perso_objets
 				inner join objets on obj_cod = perobj_obj_cod
 				inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -393,22 +413,28 @@ switch ($methode)
 
                     $prix_obj = $_REQUEST['prixgros'][$gobj_cod];
                     $qte_obj  = $_REQUEST['qtegros'][$gobj_cod];
+                    $est_ramassable = $perso_transac->is_ramasse_objet($result['obj_cod']) ;
                     $erreur   = 0;
 
                     // Vérification des données
                     if ($prix_obj < 0)
                     {
-                        echo "Erreur sur « $gobj_nom » ! Le prix doit être positif !";
+                        echo "Erreur sur « $gobj_nom » ! Le prix doit être positif !<br>";
                         $erreur = 1;
                     }
                     if ($prix_obj == '')
                     {
-                        echo "Erreur sur « $gobj_nom » ! Le prix doit être fixé !";
+                        echo "Erreur sur « $gobj_nom » ! Le prix doit être fixé !<br>";
                         $erreur = 1;
                     }
                     if ($qte_obj > $nombre_max)
                     {
-                        echo "Erreur sur « $gobj_nom » ! Vous ne pouvez pas en vendre plus de $nombre_max !";
+                        echo "Erreur sur « $gobj_nom » ! Vous ne pouvez pas en vendre plus de $nombre_max !<br>";
+                        $erreur = 1;
+                    }
+                    if (!$est_ramassable)
+                    {
+                        echo "Erreur ! L'acheteur ne peut pas récupérer l’objet $gobj_cod!<br>";
                         $erreur = 1;
                     }
 

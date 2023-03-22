@@ -164,16 +164,17 @@ class objet_element
      * Retourne la liste des element (condition d'équipeent) d'un ojbet
      * @return array|bool
      */
-    function get_objet_element(objets $objet)
+    function get_objet_element(objets $objet, $param_id=1)
     {
         $retour = array();
         $pdo = new bddpdo;
         // Les sorts, sont tous les générique de l'objet plus eventuellement des spécifiques
-        $req = "select objelem_cod from objet_element where objelem_gobj_cod=:gobj_cod or objelem_obj_cod=:obj_cod order by objelem_cod";
+        $req = "select objelem_cod from objet_element where (objelem_gobj_cod=:gobj_cod or objelem_obj_cod=:obj_cod) and objelem_param_id=:objelem_param_id order by objelem_cod";
 
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":gobj_cod" => $objet->obj_gobj_cod,
-            ":obj_cod" => $objet->obj_cod
+            ":obj_cod" => $objet->obj_cod,
+            ":objelem_param_id" => $param_id
         ),$stmt);
         while($result = $stmt->fetch())
         {
@@ -190,14 +191,15 @@ class objet_element
      * @return bool|array => false pas réussi a supprimer
      * @global bdd_mysql $pdo
      */
-    function clean_generique($objelem_gobj_cod, $element_list)
+    function clean_generique($objelem_gobj_cod, $objelem_param_id=null, $element_list=[])
     {
-        $where = "";
+        $where = "" ;
         if (sizeof($element_list)>0)
         {
             foreach ($element_list as $k => $e) $where .= (1*$e)."," ;
             $where = " and objelem_cod not in (". substr($where, 0, -1) .") ";
         }
+        $where .= $objelem_param_id == null ? "" : " and objelem_param_id=".(1*$objelem_param_id);
 
         $pdo    = new bddpdo;
         $retour = array();
@@ -224,14 +226,15 @@ class objet_element
      * @return bool|array => false pas réussi a supprimer
      * @global bdd_mysql $pdo
      */
-    function clean_specifique($objelem_obj_cod, $element_list)
+    function clean_specifique($objelem_obj_cod, $objelem_param_id=null, $element_list=[])
     {
-        $where = "";
+        $where = "" ;
         if (sizeof($element_list)>0)
         {
             foreach ($element_list as $k => $e) $where .= (1*$e)."," ;
             $where = " and objelem_cod not in (". substr($where, 0, -1) .") ";
         }
+        $where .= $objelem_param_id == null ? "" : " and objelem_param_id=".(1*$objelem_param_id);
 
         $pdo    = new bddpdo;
         $retour = array();

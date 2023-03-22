@@ -92,9 +92,10 @@ switch ($methode)
                     while ($result = $stmt->fetch())
                     {
                         echo("<tr>");
-                        echo "<td><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\" id=\"" . $result['obj_cod'] . "\" onchange=\"cocheDecoche(this.checked);\"></td>";
                         $objet     = $result['obj_cod'];
                         $identifie = $perso->is_identifie_objet($objet);
+                        $ramassable = $perso->is_ramasse_objet($objet);
+                        echo "<td><input type=\"checkbox\" ".($ramassable ? "" : " disabled " )."class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\" id=\"" . $result['obj_cod'] . "\" onchange=\"cocheDecoche(this.checked);\"></td>";
                         if ($identifie)
                         {
                             echo "<td class=\"soustitre2\"><label for=\"" . $result['obj_cod'] . "\"><strong>" . $result['obj_nom'] . "</strong></label></td>";
@@ -141,11 +142,16 @@ switch ($methode)
         $pa     = $perso->perso_pa;
         $erreur = 0;
         $total  = 0;
+        $non_ramassable  = 0;
         if (isset($_REQUEST['objet']))
         {
+
             foreach ($_REQUEST['objet'] as $key => $val)
             {
                 $total = $total + 1;
+                if (! $perso->is_ramasse_objet($key) ){
+                    $non_ramassable ++ ;
+                }
             }
         }
         if (isset($_REQUEST['br']))
@@ -157,7 +163,12 @@ switch ($methode)
         }
         if ($pa < $total)
         {
-            echo "<p>Vous n’avez pas assez de PA  pour ramasser tous ces objets !</p>";
+            echo "<p>Vous n’avez <b>pas assez de PA</b> pour ramasser tous ces objets !</p>";
+            $erreur = 1;
+        }
+        if ($non_ramassable > 0)
+        {
+            echo "<p>Vous avez sélection des objets <b>non-ramassables!</b></p>";
             $erreur = 1;
         }
         if ($erreur == 0)
