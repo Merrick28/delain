@@ -2526,6 +2526,23 @@ class perso
 
     }
 
+    /**
+     * Retourne vrai si le l'objet passé en paramètre est ramassable par le perso, et false sinon
+     * @return boolean
+     */
+    function is_ramasse_objet($v_objet)
+    {
+        $pdo = new bddpdo;
+        $req = "select obj_verif_perso_condition_inv(:perso_cod, :obj_cod) as est_ramassable; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $v_objet, ":perso_cod" => $this->perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        if ($result["est_ramassable"]==1) return true;
+        
+        return false ;
+    }
+
     public function magasin_identifie($lieu, $objet)
     {
         $pdo    = new bddpdo();

@@ -30,6 +30,7 @@ declare
   v_poids_actu numeric;
   v_poids_objet numeric;
   v_deposable text;
+  v_ramassable integer;
   v_type_objet text;
   v_objet_nom text;
   gobj integer;
@@ -54,7 +55,7 @@ begin
   where tran_cod = v_transaction;
   select into v_po, v_poids_max, v_poids_actu perso_po, perso_enc_max, get_poids(perso_cod) from perso
   where perso_cod = v_acheteur;
-  select into v_poids_objet, v_deposable, v_objet_nom, v_type_objet, gobj obj_poids, obj_deposable, obj_nom, tobj_libelle, gobj_cod
+  select into v_poids_objet, v_deposable, v_objet_nom, v_type_objet, gobj, v_ramassable obj_poids, obj_deposable, obj_nom, tobj_libelle, gobj_cod, obj_verif_perso_condition_inv(v_acheteur,v_objet)
   from objets, objet_generique, type_objet
   where obj_cod = v_objet
         and obj_gobj_cod = gobj_cod
@@ -66,6 +67,10 @@ begin
   end if;
   if v_deposable = 'N' then
     code_retour := '-1;<p>Cet objet est <b>non déposable</b> et ne peut être transféré au moyen d’une transaction.';
+    return code_retour;
+  end if;
+  if v_ramassable <= 0 then
+    code_retour := '-1;<p>L''acheteur <b>ne peut pas transporter</b> cet objet, il ne peut être transféré au moyen d’une transaction.';
     return code_retour;
   end if;
 

@@ -1,8 +1,8 @@
 --
--- Name: obj_verif_perso_condition_equip(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+-- Name: obj_verif_perso_condition_inv(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
 --
 
-CREATE or REPLACE FUNCTION obj_verif_perso_condition_equip(integer,integer) RETURNS integer
+CREATE or REPLACE FUNCTION obj_verif_perso_condition_inv(integer,integer) RETURNS integer
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function obj_verif_perso_condition						   */
@@ -35,36 +35,16 @@ begin
   end if;
 
   -- regarder si le perso possède de l'objet et recupérer son type de perso au passage
-  select perso_type_perso into v_type_perso
-  from perso join perso_objets on perobj_perso_cod=perso_cod
-  where perso_cod=v_perso_cod and perobj_obj_cod=v_obj_cod ;
+  select perso_type_perso into v_type_perso from perso where perso_cod=v_perso_cod ;
   if not found then
     return 0;
   end if;
 
-
-  -- pour les familiers regarder s'il y a une condition spécifique, sinon ils n'ont pas le droit à l'équipement
-  -- il doit y avoir une condition en "ET" sur le code 17 = Type de perso (et il doivent la vérifier)
-  if v_type_perso = 3 then
-    select count(*) into v_nb_element
-    from objet_element
-    where objelem_type='perso_condition' and objelem_misc_cod=17 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
-    if v_nb_element=0 then
-      return -1;
-    end if;
-
-  else
-
-    -- s'il n'y a aucune condition pour un perso alors s'est équipable !
-    select count(*) into v_nb_element
-      from objet_element
-      where objelem_type='perso_condition' and objelem_misc_cod>0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
-      if v_nb_element=0 then
-        return 1;
-      end if;
-
+  -- s'il n'y a aucune condition pour un perso alors s'est ramassable par defaut !
+  select count(*) into v_nb_element from objet_element where objelem_type='perso_condition' and objelem_misc_cod>0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=2 ;
+  if v_nb_element=0 then
+    return 1;
   end if;
-
 
   -- on vérifie d'abord les conditions du type ET ( objelem_param_num_1=0)!
   v_nb_condition := 0;
@@ -72,7 +52,7 @@ begin
 	for ligne in
     select objelem_misc_cod, objelem_param_num_2, objelem_param_num_3, objelem_param_txt_1, objelem_param_txt_2, objelem_param_txt_3
     from objet_element
-    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
+    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=2
     order by objelem_param_ordre
 
   loop
@@ -94,7 +74,7 @@ begin
 	for ligne in
     select objelem_misc_cod, objelem_param_num_2, objelem_param_num_3, objelem_param_txt_1, objelem_param_txt_2, objelem_param_txt_3
     from objet_element
-    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=1 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1
+    where objelem_type='perso_condition' and objelem_misc_cod>0 and objelem_param_num_1=1 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=2
     order by objelem_param_ordre
 
   loop
@@ -114,4 +94,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION obj_verif_perso_condition_equip(integer,integer) OWNER TO delain;
+ALTER FUNCTION obj_verif_perso_condition_inv(integer,integer) OWNER TO delain;

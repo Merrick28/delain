@@ -451,6 +451,23 @@ class objets
     }
 
     /**
+     * Retourne vrai si le perso passé en paramètre peut ramamser l'objet, et false sinon
+     * @return boolean
+     */
+    function est_ramassable($perso_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select obj_verif_perso_condition_inv(:perso_cod, :obj_cod) as est_ramassable; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod, ":perso_cod" => $perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        if ($result["est_ramassable"]==1) return true;
+
+        return false ;
+    }
+
+    /**
      * Retourne vrai si le perso passé en paramètre peu equiper l'objet, et false sinon
      * @return boolean
      */
