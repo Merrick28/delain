@@ -2539,7 +2539,7 @@ class perso
         if (!$result = $stmt->fetch()) return false ;
 
         if ($result["est_ramassable"]==1) return true;
-        
+
         return false ;
     }
 
@@ -3107,10 +3107,10 @@ class perso
         $req_lieu =
             'select lieu_nom,lieu_description,lieu_url,tlieu_libelle,tlieu_cod,ppos_pos_cod,lieu_cod,lpos_pos_cod,lieu_refuge,lieu_prelev,lieu_levo_niveau ';
         $req_lieu = $req_lieu . 'from lieu,lieu_type,lieu_position,perso_position ';
-        $req_lieu = $req_lieu . 'where ppos_perso_cod = ' . $this->perso_cod;
-        $req_lieu = $req_lieu . 'and ppos_pos_cod = lpos_pos_cod ';
-        $req_lieu = $req_lieu . 'and lpos_lieu_cod = lieu_cod ';
-        $req_lieu = $req_lieu . 'and lieu_tlieu_cod = tlieu_cod ';
+        $req_lieu = $req_lieu . ' where ppos_perso_cod = ' . $this->perso_cod;
+        $req_lieu = $req_lieu . ' and ppos_pos_cod = lpos_pos_cod ';
+        $req_lieu = $req_lieu . ' and lpos_lieu_cod = lieu_cod ';
+        $req_lieu = $req_lieu . ' and lieu_tlieu_cod = tlieu_cod ';
         $stmt     = $pdo->query($req_lieu);
         if ($result = $stmt->fetch())
         {
