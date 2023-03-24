@@ -36,6 +36,22 @@ ob_start();
             var file_image = $("#img-serveur-" + img).data("img-filename");
             $("#id-gobj_image").val('objets/'+file_image);
         }
+
+        //                            <td class="soustitre2"><span id="id_gobj_portee_dist">Distance max (armes à distance uniquement)</span><span id="id_gobj_portee_anim" style="display:none">Type objet anim. (objet animation uniquement)</span></td>
+        function change_objType() {
+            var typeObj = $("#id_gobj_tobj_cod").val();
+            if (typeObj == 44){
+                $("#id_gobj_portee_dist").css("display", "none");
+                $("#id_gobj_portee_anim").css("display", "block");
+                $("#id_gobj_portee_text_anim").css("display", "block");
+            } else {
+                $("#id_gobj_portee_dist").css("display", "block");
+                $("#id_gobj_portee_anim").css("display", "none");
+                $("#id_gobj_portee_text_anim").css("display", "none");
+            }
+        }
+
+
     </script>
 
     <p class="titre">Édition d’un objet générique</p>
@@ -127,7 +143,7 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Type d’objet</td>
-                            <td><select name="gobj_tobj_cod">
+                            <td><select onchange="change_objType();" name="gobj_tobj_cod" id="id_gobj_tobj_cod">
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
                                     $stmt = $pdo->query($req);
@@ -160,8 +176,8 @@ if ($erreur == 0)
                                 </select></td>
                         </tr>
                         <tr>
-                            <td class="soustitre2">Distance max (armes à distance uniquement)</td>
-                            <td><input type="text" name="gobj_portee"></td>
+                            <td class="soustitre2"><span id="id_gobj_portee_dist">Distance max (armes à distance uniquement)</span><span id="id_gobj_portee_anim" style="display:none">Type objet anim. (objet animation uniquement)</span></td>
+                            <td><input type="text" name="gobj_portee"><em  id="id_gobj_portee_text_anim" style="display:none; font-size: 9px;">Saisir un chiffre, le joueur ne peux posséder qu'un exemplaire d'objet de chaque chiffre</em></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
@@ -405,9 +421,9 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Type d’objet</td>
-                            <td><select name="gobj_tobj_cod">
+                            <td><select onchange="change_objType();" name="gobj_tobj_cod" id="id_gobj_tobj_cod">
                                     <?php
-                                    $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
+                                    $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_libelle ";
                                     $stmt3 = $pdo->query($req);
                                     while ($result3 = $stmt3->fetch())
                                     {
@@ -463,8 +479,10 @@ if ($erreur == 0)
                                 </select></td>
                         </tr>
                         <tr>
-                            <td class="soustitre2">Distance max (armes à distance uniquement)</td>
-                            <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"></td>
+                            <td class="soustitre2"><span id="id_gobj_portee_dist" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "" ; ?>">Distance max (armes à distance uniquement)</span>
+                                                   <span id="id_gobj_portee_anim" style="<?php echo $result['gobj_tobj_cod'] == 44 ? "display:none;" : "" ; ?>">Type objet anim. (objet animation uniquement)</span>
+                            </td>
+                            <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"><em  id="id_gobj_portee_text_anim" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "display:block;" ; ?> font-size: 9px;">Saisir un chiffre, le joueur ne peux posséder qu'un exemplaire d'objet de chaque chiffre</em></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
