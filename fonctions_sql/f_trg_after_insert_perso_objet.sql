@@ -13,17 +13,18 @@ CREATE OR REPLACE FUNCTION public.f_trg_after_insert_perso_objet() RETURNS trigg
 declare
   v_gobj_cod integer;
   v_tobj_cod integer;
+  v_gobj_portee integer;
   ligne record;
 
 begin
 
   -- recupération du code d'objet générique
-  select into v_gobj_cod, v_tobj_cod obj_gobj_cod, gobj_tobj_cod from objets join objet_generique on gobj_cod=obj_gobj_cod where obj_cod=NEW.perobj_obj_cod;
+  select into v_gobj_cod, v_tobj_cod, v_gobj_portee obj_gobj_cod, gobj_tobj_cod, gobj_portee from objets join objet_generique on gobj_cod=obj_gobj_cod where obj_cod=NEW.perobj_obj_cod;
 
-  -- On ne peut posséder qu'un seul exemplaire des objets du type "Animation' (tobj_cod=44), suppression de ceux que l'on posséde déjà si on en prend un nouveau!
+  -- On ne peut posséder qu'un seul exemplaire des objets du type "Animation' (tobj_cod=44) avec un meme code de portée (1 objet par type gobj_portee), suppression de ceux que l'on posséde déjà si on en prend un nouveau!
   if  v_tobj_cod = 44 then
       for ligne in
-          select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod join objet_generique on gobj_cod=obj_gobj_cod where perobj_perso_cod=NEW.perobj_perso_cod and gobj_tobj_cod=44 and obj_cod!=NEW.perobj_obj_cod
+          select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod join objet_generique on gobj_cod=obj_gobj_cod where perobj_perso_cod=NEW.perobj_perso_cod and gobj_tobj_cod=44 and gobj_portee=v_gobj_portee and obj_cod!=NEW.perobj_obj_cod
       loop
           -- supprimer l'objet définitivement
           perform f_del_objet(ligne.obj_cod);
