@@ -479,8 +479,8 @@ if ($erreur == 0)
                                 </select></td>
                         </tr>
                         <tr>
-                            <td class="soustitre2"><span id="id_gobj_portee_dist" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "" ; ?>">Distance max (armes à distance uniquement)</span>
-                                                   <span id="id_gobj_portee_anim" style="<?php echo $result['gobj_tobj_cod'] == 44 ? "display:none;" : "" ; ?>">Type objet anim. (objet animation uniquement)</span>
+                            <td class="soustitre2"><span id="id_gobj_portee_dist" style="<?php echo $result['gobj_tobj_cod'] == 44 ? "display:none;" : "" ; ?>">Distance max (armes à distance uniquement)</span>
+                                                   <span id="id_gobj_portee_anim" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "" ; ?>">Type objet anim. (objet animation uniquement)</span>
                             </td>
                             <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"><em  id="id_gobj_portee_text_anim" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "display:block;" ; ?> font-size: 9px;">Saisir un chiffre, le joueur ne peux posséder qu'un exemplaire d'objet de chaque chiffre</em></td>
                         </tr>
