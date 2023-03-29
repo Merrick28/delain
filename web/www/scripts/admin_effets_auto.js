@@ -487,6 +487,27 @@ EffetAuto.Types = [
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
 		],
 	},
+	{	nom: 'ea_glissade',
+		debut: true,
+		tueur: false,
+		mort: false,
+		attaque: false,
+		modifiable: true,
+		bm_compteur: false,
+		ea_etage: true,
+		affichage: 'Glissade',
+		description: 'Déplacement de la cible suivant un modèle particulier (ne fonctionne que sur les EA de déplacement)',
+		parametres: [
+			{ nom: 'cible', type: 'lecture', valeur: 'Le porteur de l’EA uniquement (<a target=_blank href="../images/interface/glissade.xlsx">télécharger le fichier d’aide</a>)', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_glisse', type: 'texte', longueur: 25,  label: 'Modèle de glisse', description: 'Suite de 8 valeurs (de 0% à 100%) séparées par de virgule. C’est valeurs sont les chances de glisser sur la case situé devant dans la direction du mouvement, suivi des 7 cases autour dans le sens horaire.' },
+			{ nom: 'trig_direction', type: 'texte', longueur: 25,  label: 'Modèle directionnel', description: 'Suite de 8 valeurs (de 0% à 100%) séparées par de virgule. C’est valeurs sont des % à appliquer au modèle de glisse en fonction de la direction de déplacement. La première valeur est le % pour un deplacement vers le N, les 7 suivantes pour les 7 points cardinaux suivants dans le sens horaire (NE, E, SE, S, SO, O, NO)' },
+			{ nom: 'trig_cardinal', type: 'point-cardinal',   label: 'Direction de pente', description: 'C’est la direction pricipale de glisse lors d’une glissage sur une pente.' },
+			{ nom: 'trig_pente', type: 'texte', longueur: 5,  label: 'Pente (en %)', description: 'C’est le % de pente lors d’une glissage sur une pente.' },
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' }
+		],
+	},
 	{	nom: 'ea_saut_sur_cible',
 		debut: true,
 		tueur: true,
@@ -866,6 +887,22 @@ EffetAuto.ChampChoixSensProjection = function (parametre, numero, valeur) {
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Repousse sur son passage ou éloigne les cibles</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Attire les cibles à lui</option></select></label>';
 	html += "<br />";
+	return html;
+}
+
+EffetAuto.ChampChoixPointCardinal = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="N" ' + ((valeur == "N") ? 'selected="selected"' : '' ) + '>Nord</option>';
+	html += '<option value="NE" ' + ((valeur == "NE") ? 'selected="selected"' : '' ) + '>Nord-Est</option>';
+	html += '<option value="E" ' + ((valeur == "E") ? 'selected="selected"' : '' ) + '>Est</option>';
+	html += '<option value="SE" ' + ((valeur == "SE") ? 'selected="selected"' : '' ) + '>Sud-Est</option>';
+	html += '<option value="S" ' + ((valeur == "S") ? 'selected="selected"' : '' ) + '>Sud</option>';
+	html += '<option value="SO" ' + ((valeur == "SO") ? 'selected="selected"' : '' ) + '>Sud-Ouest</option>';
+	html += '<option value="O" ' + ((valeur == "O") ? 'selected="selected"' : '' ) + '>Ouest</option>';
+	html += '<option value="NO" ' + ((valeur == "NO") ? 'selected="selected"' : '' ) + '>Nord-Ouest</option>';
+	html += "</select></label><br />";
 	return html;
 }
 
@@ -1472,6 +1509,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'sens-projection':
 			html = pd + EffetAuto.ChampChoixSensProjection(parametre, numero, valeur) + pf;
+			break;
+		case 'point-cardinal':
+			html = pd + EffetAuto.ChampChoixPointCardinal(parametre, numero, valeur) + pf;
 			break;
 		case 'BM':
 			html = pd + EffetAuto.ChampBM(parametre, numero, valeur) + pf;
