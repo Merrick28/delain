@@ -133,6 +133,12 @@ if ($erreur == 0)
                     $(\'#quete-methode\').val(\'dupliquer_quete\');
                     return true;                    
                 }
+                function confirm_terminer_quete(nbq) {
+                    var ok = confirm(\'Êtes-vous sûr de vouloir terminer les \'+ nbq + \' quêtes en cours?\\nATTENTION: La quête ira directement à l’état terminer, pour tous les utilisateurs l’ayant commencé!!\') ;
+                    if (!ok) return false;
+                    $(\'#quete-methode\').val(\'terminer_quete\');
+                    return true;                    
+                }
                 </script>
   
                 <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />';
@@ -160,13 +166,18 @@ if ($erreur == 0)
         }
         echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>Elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>Elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
+
+        $nb_quete_en_cours = $quete->get_nb_en_cours();
+
         if ($pos_etage==0) {
             echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>Nombre maximum de joueurs qui peuvent prendre la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>Nombre max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
             echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>Nombre de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>Délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
-            echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $quete->get_nb_en_cours() . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em></td></tr>';
+            echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $nb_quete_en_cours . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em>';
+            if ($nb_quete_en_cours > 0) echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_terminer_quete('.$nb_quete_en_cours.');";  type="submit" value="Terminer les quêtes en cours" />';
+            echo '</td></tr>';
         }
         if ($aquete_cod==0)
         {
@@ -178,7 +189,6 @@ if ($erreur == 0)
         {
             // Lister les étapes déjà créées
             $etapes = $quete->get_etapes() ;
-            $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $liste_etape = array();

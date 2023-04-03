@@ -12,6 +12,24 @@ $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ";
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
+    case "terminer_quete":
+        //récupérer les paramètres
+        $quete = new aquete;
+        $new   = true;
+        if ($_REQUEST["aquete_cod"] * 1 != 0)
+        {
+            $quete->charge($_REQUEST["aquete_cod"]);
+            $quete->termine();
+
+            // Logger les infos pour suivi admin
+            $log .= "La quête auto #" . $quete->aquete_cod . " a été mise à l'état terminée.\n" ;
+            writelog($log, 'quete_auto');
+            echo "<div class='bordiv'><pre>$log</pre></div>";
+
+        }
+        $_REQUEST['methode'] = 'edite_quete';        // => Après Terminsason retour à l'édition de la quete
+        break;
+
     case "delete_quete":
         //récupérer les paramètres
         $quete = new aquete;

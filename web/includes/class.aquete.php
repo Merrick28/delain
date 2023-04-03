@@ -210,6 +210,49 @@ class aquete
         return true;
     }
 
+    //Termine la quete pour tous les utilisateur l'ayant commencé
+    function termine()
+    {
+        $pdo    = new bddpdo;
+
+        # requperer la liste de queste perso à terminer
+        $req  = "select aqperso_cod  from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->aquete_cod), $stmt);
+
+        // boucler sur la liste
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+
+            $quete_perso = new aquete_perso();
+            if (  $quete_perso->charge($result["aqperso_cod"]) )
+            {
+                $quete_perso->aqperso_quete_step++; // Step suivant pour le journal
+
+                $perso_journal = new aquete_perso_journal();
+                if ($this->aquete_journal_archive != 'O') {
+                    // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
+                    $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod, $quete_perso->aqperso_nb_realisation);
+                } else {
+                    // On conserve l'archive du journal de quete
+                    $perso_journal->aqpersoj_aqperso_cod = $quete_perso->aqperso_cod;
+                    $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation;
+                    $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step;
+                    $perso_journal->aqpersoj_texte = "L'administrateur à mis fin à cette quête!<br> ";
+                    $perso_journal->aqpersoj_lu = "O";
+                    $perso_journal->stocke(true);
+                }
+
+
+                $quete_perso->aqperso_actif = 'N';
+                $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
+                $quete_perso->stocke();
+            }
+        }
+
+        return true;
+    }
+
     //Comptage tous persos confondus
     function get_nb_total()
     {
