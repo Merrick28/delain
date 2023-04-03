@@ -216,7 +216,7 @@ class aquete
         $pdo    = new bddpdo;
 
         # requperer la liste de queste perso à terminer
-        $req  = "select aqperso_cod  from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+        $req  = "select aqperso_cod from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->aquete_cod), $stmt);
 
@@ -238,7 +238,7 @@ class aquete
                     $perso_journal->aqpersoj_aqperso_cod = $quete_perso->aqperso_cod;
                     $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation;
                     $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step;
-                    $perso_journal->aqpersoj_texte = "L'administrateur à mis fin à cette quête!<br> ";
+                    $perso_journal->aqpersoj_texte = "L'administrateur a mis fin à cette quête!<br> ";
                     $perso_journal->aqpersoj_lu = "O";
                     $perso_journal->stocke(true);
                 }
