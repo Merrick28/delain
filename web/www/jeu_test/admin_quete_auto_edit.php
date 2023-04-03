@@ -134,7 +134,7 @@ if ($erreur == 0)
                     return true;                    
                 }
                 function confirm_terminer_quete(nbq) {
-                    var ok = confirm(\'Êtes-vous sûr de vouloir terminer les \'+ nbq + \' quêtes en cours?\\nATTENTION: La quête ira directement à l’état terminer, pour tous les utilisateurs l’ayant commencé!!\') ;
+                    var ok = confirm(\'Êtes-vous sûr de vouloir terminer les \'+ nbq + \' quêtes en cours?\\nATTENTION: La quête ira directement à l’état "terminer", pour tous les utilisateurs l’ayant commencé!!\') ;
                     if (!ok) return false;
                     $(\'#quete-methode\').val(\'terminer_quete\');
                     return true;                    
@@ -144,6 +144,7 @@ if ($erreur == 0)
                 <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />';
 
         echo    '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
+        echo    '<input type="hidden" name="type_quete" value="'.$type_quete.'" />';
         if ($pos_etage>0) {
             echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
             echo '<input type="hidden" name="aquete_nb_max_instance" value="" />';
