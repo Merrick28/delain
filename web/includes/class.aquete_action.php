@@ -777,7 +777,8 @@ class aquete_action
         }                                                                              // pas/plus d'objet on passe à l'étape suivante
         if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue")
         {
-            $perso_journal->aqpersoj_texte .= "   ".count($p6)." objet(s) sont disponible(s) à l'achat, vous décidez de ne rien acheter.<br>";
+            $nbitem = count(array_filter($p6, function($e){ return $e->aqelem_misc_cod != 0 ? true : false ; } ) );
+            $perso_journal->aqpersoj_texte .= "   ".$nbitem." objet(s) sont disponible(s) à l'achat, vous décidez de ne rien acheter.<br>";
             $perso_journal->stocke();
             return true; // aucun achat
         }
