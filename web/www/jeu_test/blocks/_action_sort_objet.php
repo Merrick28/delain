@@ -10,7 +10,3 @@ if ($type_lance == 5)
               ':sort_cod'    => $sort_cod), $stmt
     );
 }
-
-$req  =
-    'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
-$stmt = $pdo->prepare($req);

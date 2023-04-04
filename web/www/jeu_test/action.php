@@ -385,6 +385,8 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
             $sort_cod   = $_POST['sort_cod'];
             $cible      = $_POST['cible'];
             $type_lance = $_POST['type_lance'];
+            $sort_param = isset($_POST['sort_param']) ? $_POST['sort_param'] : "";
+
             if (!isset($sort_cod))
             {
                 $contenu_page .= '<p>Erreur ! Sort non défini !';
@@ -490,12 +492,31 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                 {
                     $prefixe = 'dv_';
                 }
+
                 require "blocks/_action_sort_objet.php";
-                $stmt = $pdo->execute(
-                    array(':perso_cod'  => $perso_cod,
-                          ':cible'      => $perso_cible->perso_cod,
-                          ':type_lance' => $type_lance), $stmt
-                );
+                if ( in_array($sort_cod , [178]) ) {
+                    // cas des sorts avec paramètres
+                    if ($sort_cod == 178 ) {
+                        $sort_param = json_encode( ["direction" => $sort_param] );      // sort "repousser", utiliser avec une direction
+                    }
+                    $req  = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance,:sort_param) as resultat ';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(
+                        array(':perso_cod'  => $perso_cod,
+                            ':cible'      => $perso_cible->perso_cod,
+                            ':type_lance' => $type_lance,
+                            ':sort_param' => $sort_param), $stmt
+                    );
+                } else {
+                    // car normal lancement du sort sans paramètre
+                    $req  = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(
+                        array(':perso_cod'  => $perso_cod,
+                            ':cible'      => $perso_cible->perso_cod,
+                            ':type_lance' => $type_lance), $stmt
+                    );
+                }
                 require "blocks/_action_sort_objet2.php";
             }
             break;
@@ -575,12 +596,15 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
             }
 
             require "blocks/_action_sort_objet.php";
+            $req  = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
                       ':cible'      => $pos->pos_cod,
                       ':type_lance' => $type_lance), $stmt
             );
             require "blocks/_action_sort_objet2.php";
+
             break;
         case 'voie_magique':
             $vm = new voie_magique();
