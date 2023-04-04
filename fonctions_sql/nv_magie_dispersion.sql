@@ -112,9 +112,21 @@ begin
 -- Etape 2 : contrôles
 -------------------------------------------------------------
 select into niveau_sort,nom_sort sort_niveau,sort_nom from sorts where sort_cod = num_sort;
-select into v_nom_cible,v_pv_cible perso_nom,perso_pv_max from perso
-where perso_cod = cible;
+select into v_nom_cible,v_pv_cible,v_type_cible perso_nom,perso_pv_max,perso_type_perso from perso where perso_cod = cible;
 select into v_perso_int,v_voie_magique perso_int,perso_voie_magique from perso where perso_cod = lanceur;
+
+-------------------------------------------------------------
+-- prerequis
+if cible = f_perso_monture(Lanceur)  then
+		return 'Vous ne pouvez pas cibler votre propre monture..';
+end if;
+
+if v_type_cible = 3 then
+		return 'Vous ne pouvez pas cibler un familier..';
+end if;
+
+-------------------------------------------------------------
+-- magie commun
 magie_commun_txt := magie_commun(lanceur,cible,type_lancer,num_sort);
 res_commun := split_part(magie_commun_txt,';',1);
 if res_commun = 0 then
@@ -124,6 +136,7 @@ end if;
 code_retour := split_part(magie_commun_txt,';',3);
 px_gagne := to_number(split_part(magie_commun_txt,';',4),'99999999999999D99');
 v_reussite := to_number(split_part(magie_commun_txt,';',5),'99999999999999D99');
+
 -------------------------------------
 -- init des facteurs
 -------------------------------------
@@ -135,10 +148,6 @@ select into pos_attaquant,v_pv_attaquant,v_pvmax_attaquant,x_attaquant,y_attaqua
 
 -----------    Début du bloc pour le jeu de Troll   -------------------
 
-if v_type_cible = 3 then
-		code_retour := code_retour||'Vous ne pouvez pas cibler un familier.. votre sort échoue, et vos PA sont perdus';
-
-else
 		-- on commence à générer un code retour
 		code_retour := code_retour||'Vous avez projeté le ';
 		if v_type_cible = 1 then
@@ -382,8 +391,6 @@ end loop;
     ---------------------------
     code_retour := code_retour || execute_fonctions(cible, lanceur, 'DEP', json_build_object('ancien_pos_cod',pos_attaquant,'ancien_etage',e_attaquant, 'nouveau_pos_cod',position_arrivee2,'nouveau_etage',e_attaquant)) ;
 
-
-end if;
 
 return code_retour;
 end;$_$;
