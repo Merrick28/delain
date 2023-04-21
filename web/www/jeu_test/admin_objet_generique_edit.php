@@ -907,9 +907,15 @@ if ($erreur == 0)
                    $_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
                    $_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] .
                    "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
-                   "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
+                   "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") RETURNING gobj_cod ";
             $stmt = $pdo->query($req);
-            echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a>";
+            $object = $stmt->fetch();
+
+            echo "<p>L'insertion s'est bien déroulée.<br>";
+
+            echo "<br>Editer l'objet: <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod&gobj_cod={$object['gobj_cod']}\">#{$object['gobj_cod']} - {$gobj_nom}</a><br><br>";
+            echo "<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
+
             break;
         case "mod3":
             // détermination du obcar_cod
@@ -1005,7 +1011,9 @@ if ($erreur == 0)
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
 			where obj_gobj_cod = " . $_REQUEST['objet'] . " and obj_modifie = 0";
             $stmt = $pdo->query($req);
-            echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
+            echo "<p>La mise à jour des anciens objets aussi<br>";
+            echo "<br>Editer l'objet: <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod&gobj_cod={$_REQUEST['objet']}\">#{$_REQUEST['objet']} - {$gobj_nom}</a><br><br>";
+            echo "<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
             break;
 
     }
