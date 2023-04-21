@@ -10,10 +10,19 @@ include_once '../includes/tools.php';
         function setNomByBMCod(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
             //executer le service asynchrone
             $("#" + divname).text("");
+            $("#div_aide_bonus").css("display", "none");
+            $("#div_aide_malus").css("display", "none");
             runAsync({request: "get_table_nom", data: {table: table, cod: cod}}, function (d) {
                 if ((d.resultat == 0) && (d.data) && (d.data.nom)) {
                     $("#" + divname).text(d.data.nom);
                     $("#" + divname.substr(0, divname.length - 8) + 'libc').val((d.data.nom.substr(0, 3)));
+                    if (arr_bonmal[d.data.nom.substr(0, 3)] == 'MAL'){
+                        $("#div_aide_bonus").css("display", "none");
+                        $("#div_aide_malus").css("display", "block");
+                    } else {
+                        $("#div_aide_bonus").css("display", "block");
+                        $("#div_aide_malus").css("display", "none");
+                    }
                 }
                 else {
                     $("#" + divname).text('');
@@ -25,10 +34,19 @@ include_once '../includes/tools.php';
         function setNomByBMLibc(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
             //executer le service asynchrone
             $("#" + divname).text("");
+            $("#div_aide_bonus").css("display", "none");
+            $("#div_aide_malus").css("display", "none");
             runAsync({request: "get_table_nom", data: {table: table, cod: cod}}, function (d) {
                 if ((d.resultat == 0) && (d.data) && (d.data.nom)) {
                     $("#" + divname).text(d.data.nom);
                     $("#" + divname.substr(0, divname.length - 8) + 'misc_cod').val((d.data.cod));
+                    if (arr_bonmal[d.data.nom.substr(0, 3)] == 'MAL'){
+                        $("#div_aide_bonus").css("display", "none");
+                        $("#div_aide_malus").css("display", "block");
+                    } else {
+                        $("#div_aide_bonus").css("display", "block");
+                        $("#div_aide_malus").css("display", "none");
+                    }
                 }
                 else {
                     $("#" + divname).text('');
@@ -81,9 +99,23 @@ include_once '../includes/tools.php';
             });
         }
 
-    </script>
-
 <?php
+
+// LISTE DES Bonus/Malus
+$req_bm = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
+                        from bonus_type
+                        order by tonbus_libelle ";
+
+// Écriture du JS qui dit si on a un bonus ou un malus
+$stmt = $pdo->query($req_bm);
+echo "var arr_bonmal = [];\n";
+while ($result = $stmt->fetch())
+{
+    $clef   = $result['tbonus_libc'];
+    $valeur = ($result['tbonus_gentil_positif'] == 't') ? 'BON' : 'MAL';
+    echo "arr_bonmal['$clef'] = '$valeur';\n";
+}
+echo "</script>";
 
 //
 //Contenu de la div de droite
@@ -249,11 +281,19 @@ if ($erreur == 0)
                 &nbsp;OU&nbsp;<input data-entry="val" name="objsortbm_tbonus_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByBMCod(\'' . $row_id . 'misc_nom\', \'bonus_type\', $(\'#' . $row_id . 'misc_cod\').val());">
                 &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
+                            <div id=\'div_aide_bonus\' style=\'display: none;\'>Une valeur <strong>positive</strong> est
+                                <strong>bénéfique</strong>, et une valeur <strong>négative</strong> est
+                                <strong>délétère</strong>
+                            </div>
+                            <div id=\'div_aide_malus\' style=\'display: none;\'>Une valeur <strong>positive</strong> est
+                                <strong>délétère</strong>, et une valeur <strong>négative</strong> est
+                                <strong>bénéfique</strong>
+                            </div>
                 </td></tr>
                 <tr><td>Nom du sort BM :</td><td><input type="text" id="objsortbm_nom" name="objsortbm_nom" size="50">&nbsp;<em> si vide, le nom réel du BM sera utilisé</em></td></tr>
                 <tr><td>Cout (en PA) :</td><td><input type="text" id="objsortbm_cout" name="objsortbm_cout" size="4">&nbsp;</td></tr>
                 <tr><td>Puissance :</td><td><input type="text" id="objsortbm_bonus_valeur" name="objsortbm_bonus_valeur" size="4">&nbsp;<em> (format Dé rolliste) </em></td></tr>
-                <tr><td>Nombre de tour(s):</td><td><input type="text" id="objsortbm_bonus_nb_tours" name="objsortbm_bonus_nb_tours" size="4">&nbsp;<em> (format Dé rolliste) </em></td></tr>              
+                <tr><td>Nombre de tour(s):</td><td><input type="text" id="objsortbm_bonus_nb_tours" name="objsortbm_bonus_nb_tours" size="4">&nbsp;<em> (format Dé rolliste, mettre <b>0 pour retirer/supprimer</b> un bonus/malus au lieu de le donner) </em></td></tr>              
                 <tr><td>Ciblage:</td><td>
                         Soi-même: '.create_selectbox("objsortbm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soi_meme")).'
                         Monstres: '.create_selectbox("objsortbm_bonus_monstre", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_monstre")).'
