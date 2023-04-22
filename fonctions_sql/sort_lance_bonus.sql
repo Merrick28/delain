@@ -253,9 +253,9 @@ begin
       if v_bonus_valeur = '0' then -- on supprime tous les malus mais aussi tous les bonus
           delete from bonus where bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode!='E';
           if aggressif = 'O' then
-            code_retour := code_retour||'vous lui supprimez un bonus  `'|| nom_bonus || '.<br>';
+            code_retour := code_retour||'vous lui supprimez les bonus/malus  `'|| nom_bonus || '.<br>';
           else
-            code_retour := code_retour||'vous lui supprimez un malus  `'|| nom_bonus || '.<br>';
+            code_retour := code_retour||'vous lui supprimez les bonus/malus  `'|| nom_bonus || '.<br>';
           end if;
       else
           select bonus_valeur, bonus_nb_tours into v_bonmal_actuel, v_nbtour_actuel
@@ -274,11 +274,11 @@ begin
                   end if;
               else
                   -- Il reste un peu de bonus/malus on diminue l'encours
-                  update bonus set bonus_valeur= sign(bonus_valeur) * (abs(v_bonmal_valeur) -  abs(v_bonmal_actuel)) where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                  update bonus set bonus_valeur= sign(bonus_valeur) * (abs(v_bonmal_actuel) - abs(v_bonmal_valeur)) where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
                   if aggressif = 'O' then
-                      code_retour := code_retour||'vous lui reduisez un bonus  `'|| nom_bonus || '` d`une valeur de '|| v_bonmal_valeur::text || '.<br>';
+                      code_retour := code_retour||'vous lui reduisez un bonus  `'|| nom_bonus || '` d’une valeur de '|| (-v_bonmal_valeur)::text || '.<br>';
                   else
-                      code_retour := code_retour||'vous lui reduisez un malus  `'|| nom_bonus || '` d`une valeur de '|| v_bonmal_valeur::text || '.<br>';
+                      code_retour := code_retour||'vous lui reduisez un malus  `'|| nom_bonus || '` d’une valeur de '|| (-v_bonmal_valeur)::text || '.<br>';
                   end if;
               end if;
           end if;

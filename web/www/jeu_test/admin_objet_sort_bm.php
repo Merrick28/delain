@@ -73,11 +73,15 @@ include_once '../includes/tools.php';
                    $("#sort-0-misc_cod").val(data.objsortbm_tbonus_cod ? data.objsortbm_tbonus_cod : "");
                    if ($("#sort-0-misc_cod").val()>0)
                    {
-                        setNomByTableCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                        //setNomByTableCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                       setNomByBMCod('sort-0-misc_cod', 'bonus_type', $("#sort-0-misc_cod").val());
                    }
                    else
                    {
-                       $("#sort-0-misc_nom").val("");
+                       $("#sort-0-misc_cod").val("");
+                       $("#sort-0-libc").val("");
+                       $("#div_aide_bonus").css("display", "none");
+                       $("#div_aide_malus").css("display", "none");
                    }
                    $("#objsortbm_nom").val(data.objsortbm_nom ? data.objsortbm_nom : "");
                    $("#objsortbm_cout").val(data.objsortbm_cout ? data.objsortbm_cout : "");
