@@ -69,7 +69,7 @@ if lancer_des(1,100) < chance then
 		limit 1;
 
 	if obj_cible is null then
-		return 'OK';
+		return '';
 	end if;
 --L'objet cible est impacté
 	obj_cible_etat := obj_cible_etat - impact;
