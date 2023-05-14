@@ -33,13 +33,16 @@ $pdo = new bddpdo();
 		and comp_cod not in (29,69,70,78,80,81,82,84,85,86,94,95,96) order by comp_libelle ";
             $stmt2 = $pdo->prepare($req_c);
 
-            $req = "select pcomp_modificateur, perso_nom from perso_competences, perso
+            $req = "select pcomp_modificateur, perso_nom from perso_competences, perso, perso_compte, compte
 			where pcomp_pcomp_cod = :comp
         		and pcomp_perso_cod = perso_cod
+				and pcompt_perso_cod = perso_cod
+				and compt_cod = pcompt_compt_cod
                 and perso_type_perso = 1
     			and perso_actif = 'O'
     			and perso_pnj != 1
-			and perso_test != 'O'
+			    and coalesce(perso_test,'N') != 'O'
+			    and compt_monstre='N' and compt_admin='N'
             order by pcomp_modificateur desc
 			limit 10";
 
