@@ -103,7 +103,11 @@ $pdo = new bddpdo();
 
     <?php
     $req    =
-        "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso != 2 and perso_pnj != 1 and perso_test != 'O'";
+        "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence 
+                from perso 
+                join perso_compte on pcompt_perso_cod = perso_cod
+                join compte on compt_cod = pcompt_compt_cod
+                where perso_type_perso != 2 and perso_pnj != 1 and coalesce(perso_test,'N') != 'O' and compt_monstre='N' and compt_admin='N' ";
     $stmt   = $pdo->query($req);
     $result = $stmt->fetch();
 
