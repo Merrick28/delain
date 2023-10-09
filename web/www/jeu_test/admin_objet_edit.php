@@ -323,21 +323,58 @@ if ($erreur == 0)
                     echo 'Aucun: <a target="_blank" href="admin_objet_bm.php?objbm_obj_cod='.$num_objet.'">en créer</a>';
                 }
                 */
+
+                // CONDITION D'EQUIPEMENT
                 $objelem = new objet_element();
                 echo "<tr><td class=\"soustitre2\">Spécifique: Condition(s) d'équipement</td><td>";
+                $hasCond = false ;
                 if ($list = $objelem->getBy_objelem_obj_cod($num_objet))
                 {
                     foreach ($list as $objelem) {
-                        $carac = new aquete_type_carac();
-                        $carac->charge($objelem->objelem_misc_cod);
-                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
-                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                        if ($objelem->objelem_param_id == 1)
+                        {
+                            $hasCond = true ;
+                            $carac = new aquete_type_carac();
+                            $carac->charge($objelem->objelem_misc_cod);
+                            $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                            echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                        }
                     }
-                    echo ': <a target="_blank" href="admin_objet_equip.php?objelem_obj_cod='.$num_objet.'">éditer</a>';
+                    if ($hasCond) {
+                        echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_obj_cod=' . $num_objet . '">éditer</a>';
+                    }
                 }
-                else
+
+                if (! $hasCond )
                 {
-                    echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?objelem_obj_cod='.$num_objet.'">en créer</a>';
+                    echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                echo "</td></tr>";
+
+                // CONDITION DE RAMASSAGE
+                $objelem = new objet_element();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Condition(s) de ramassage</td><td>";
+                $hasCond = false ;
+                if ($list = $objelem->getBy_objelem_obj_cod($num_objet))
+                {
+                    foreach ($list as $objelem) {
+                        if ($objelem->objelem_param_id == 2)
+                        {
+                            $hasCond = true ;
+                            $carac = new aquete_type_carac();
+                            $carac->charge($objelem->objelem_misc_cod);
+                            $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                            echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                        }
+                    }
+                    if ($hasCond) {
+                        echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_obj_cod='.$num_objet.'">éditer</a>';
+                    }
+                }
+
+                if (! $hasCond )
+                {
+                    echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_obj_cod='.$num_objet.'">en créer</a>';
                 }
                 echo "</td></tr>";
                 echo '<tr><td class="soustitre2">Caractéristiques de l\'objet générique</td><td><a target="_blank" href="admin_objet_generique_edit.php?gobj_cod='.$gobj_cod.'">Mofidier</a></td></tr>';

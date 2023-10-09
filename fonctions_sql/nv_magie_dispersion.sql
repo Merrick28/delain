@@ -1,8 +1,8 @@
 --
--- Name: nv_magie_dispersion(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: nv_magie_dispersion(integer, integer, integer, json); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION nv_magie_dispersion(integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION nv_magie_dispersion(integer, integer, integer, json DEFAULT null) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************************/
 /* function lancement : Dispersion                               */
@@ -79,6 +79,8 @@ declare
 	cout_pa integer;		-- Cout en PA du sort
 	px_gagne numeric;		-- PX gagnes
 	niveau_sort integer;	        -- niveau du sort
+	v_params alias for $4;	-- dans certain cas on peut donner orienter la projection en donnant une direction
+	v_direction varchar(2);     -- direction de la projection si donné par les parametres
 
 -- variables de contrôle
 -------------------------------------------------------------
@@ -97,16 +99,34 @@ begin
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
 -- on renseigne d abord le numéro du sort
-	num_sort := 142;
+  v_direction :=  coalesce(v_params->>'direction'::text, '') ;    -- par defaut pojection dans une direction aléatoire
+  if v_direction != '' then
+    	num_sort := 178;    -- le cod du sort de projection avec une orientation
+  else
+	    num_sort := 142;    -- le code de sort projection simple
+  end if;
+
 -- les px
 	px_gagne := 0;
 -------------------------------------------------------------
 -- Etape 2 : contrôles
 -------------------------------------------------------------
 select into niveau_sort,nom_sort sort_niveau,sort_nom from sorts where sort_cod = num_sort;
-select into v_nom_cible,v_pv_cible perso_nom,perso_pv_max from perso
-where perso_cod = cible;
+select into v_nom_cible,v_pv_cible,v_type_cible perso_nom,perso_pv_max,perso_type_perso from perso where perso_cod = cible;
 select into v_perso_int,v_voie_magique perso_int,perso_voie_magique from perso where perso_cod = lanceur;
+
+-------------------------------------------------------------
+-- prerequis
+if cible = f_perso_monture(Lanceur)  then
+		return 'Vous ne pouvez pas cibler votre propre monture..';
+end if;
+
+if v_type_cible = 3 then
+		return 'Vous ne pouvez pas cibler un familier..';
+end if;
+
+-------------------------------------------------------------
+-- magie commun
 magie_commun_txt := magie_commun(lanceur,cible,type_lancer,num_sort);
 res_commun := split_part(magie_commun_txt,';',1);
 if res_commun = 0 then
@@ -116,6 +136,7 @@ end if;
 code_retour := split_part(magie_commun_txt,';',3);
 px_gagne := to_number(split_part(magie_commun_txt,';',4),'99999999999999D99');
 v_reussite := to_number(split_part(magie_commun_txt,';',5),'99999999999999D99');
+
 -------------------------------------
 -- init des facteurs
 -------------------------------------
@@ -127,10 +148,6 @@ select into pos_attaquant,v_pv_attaquant,v_pvmax_attaquant,x_attaquant,y_attaqua
 
 -----------    Début du bloc pour le jeu de Troll   -------------------
 
-if v_type_cible = 3 then
-		code_retour := code_retour||'Vous ne pouvez pas cibler un familier.. votre sort échoue, et vos PA sont perdus';
-
-else
 		-- on commence à générer un code retour
 		code_retour := code_retour||'Vous avez projeté le ';
 		if v_type_cible = 1 then
@@ -140,26 +157,49 @@ else
 		end if;
 		code_retour := code_retour||' <b>'||v_nom_cible||'</b> grace à votre magie<br>';
 
------------ calcul de la distance de projection
+    ----------- calcul de la distance de projection
 		des := lancer_des(1,100);
-    if des < 50 then
+    if des < 50 or v_direction != '' then
         v_distance := 1;
     else
         v_distance := 2;
     end if;
 
---- impacte de la voie magique sur la distance
-    if v_voie_magique = 4 then
+    --- impacte de la voie magique sur la distance
+    if v_voie_magique = 4 and v_direction = '' then
         v_distance := v_distance + 1;
         code_retour := code_retour||'votre connaissance magique vous permet d''accroitre la distance de projection';
     end if;
 
-/*********************************************/
-/* DEBUT : Lancement projection du perso     */
-/*********************************************/
+    /*********************************************/
+    /* DEBUT : Lancement projection du perso     */
+    /*********************************************/
 		/* on sélectionne aléatoirement la case d arrivée,a v_distance max du lanceur*/
-		select into position_arrivee,v_order lancer_position,lancer_des(1,1000) from lancer_position(pos_attaquant,v_distance)
-							order by v_order limit 1;
+
+		if v_direction = '' then
+		    select into position_arrivee,v_order lancer_position,lancer_des(1,1000) from lancer_position(pos_attaquant,v_distance) order by v_order limit 1;
+    elseif v_direction = 'NE' then -- nord/est
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant + 1 and pos_y = y_attaquant + 1 ;
+    elseif v_direction = 'E' then -- est
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant + 1 and pos_y = y_attaquant ;
+    elseif v_direction = 'SE' then -- sud/est
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant + 1 and pos_y = y_attaquant - 1;
+    elseif v_direction = 'S' then -- sud
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant and pos_y = y_attaquant - 1 ;
+    elseif v_direction = 'SO' then -- sud/ouest
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant -1 and pos_y = y_attaquant - 1 ;
+    elseif v_direction = 'O' then -- ouest
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant -1 and pos_y = y_attaquant ;
+    elseif v_direction = 'NO' then -- nord/ouest
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant -1 and pos_y = y_attaquant + 1 ;
+    elseif v_direction = 'N' then -- nord
+        select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant and pos_y = y_attaquant + 1 ;
+    end if;
+
+    if coalesce(position_arrivee,0) = 0 then
+        position_arrivee :=  pos_attaquant; -- case par défaut si on ne trouve pas de case cible !
+    end if;
+
 		/* On vérifie qu'il n'y a pas un mur entre */
 		if trajectoire_vue(pos_attaquant,position_arrivee) = 0 then /* il y a un mur sur le chemin ... ==> Dégâts supplémentaire et autre message*/
 				presence_mur := 1;
@@ -352,10 +392,8 @@ end loop;
     code_retour := code_retour || execute_fonctions(cible, lanceur, 'DEP', json_build_object('ancien_pos_cod',pos_attaquant,'ancien_etage',e_attaquant, 'nouveau_pos_cod',position_arrivee2,'nouveau_etage',e_attaquant)) ;
 
 
-end if;
-
 return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.nv_magie_dispersion(integer, integer, integer) OWNER TO delain;
+ALTER FUNCTION public.nv_magie_dispersion(integer, integer, integer, json) OWNER TO delain;

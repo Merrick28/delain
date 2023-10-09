@@ -9,6 +9,57 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
                 return $(this).prop('title');
             }});
     });
+
+    // fonction pour assigner le code de la cible et valdier le formulaire
+    function valide_sort_cible(row, cible_cod) {
+        document.valide_sort.cible.value = cible_cod ;
+
+        // Pour les sort à parametres, faire popper la fenetre de selection du parametre !
+        if ( <?php echo $sort_cod; ?> == 178 ) {
+
+            var cible = "#row-" + row ;
+            var select = '<select name="spop-sort-param" id="spop-sort-param" style="margin:4px;">';
+            select+= '<option value="">Aléatoire</option>';
+            select+= '<option value="N">Nord</option>';
+            select+= '<option value="NE">Nord/Est</option>';
+            select+= '<option value="E">Est</option>';
+            select+= '<option value="SE">Sud/Est</option>';
+            select+= '<option value="S">Sud</option>';
+            select+= '<option value="SO">Sud/Ouest</option>';
+            select+= '<option value="O">Ouest</option>';
+            select+= '<option value="NO">Nord/Ouest</option>';
+            select+= '</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+
+
+            $(cible).parent().prepend('<div id="spop-sort" class="spop-overlay"><em>Selectionner la direction:</em>'+select+'<br><center><input id="spop-sort-valid" type="submit" class="test" value="Lancer !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+
+            $(document).click(function (event) {
+                if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
+                {
+                    $(document).unbind("click");
+                    $('#spop-sort').remove();
+                }
+                else if (event.target.id == "spop-sort-valid")
+                {   // recupérer le paramètre saisi!
+                    document.valide_sort.sort_param.value = $("#spop-sort-param").val();
+                    $(document).unbind("click");
+                    $('#spop-sort').remove();
+                    event.stopPropagation()
+                    document.valide_sort.submit();      // fair ele sort !
+                }
+                else
+                {
+                    event.stopPropagation();
+                }
+            });
+
+        } else {
+            // cas du sort normal (sans paramètres)
+            document.valide_sort.submit();
+        }
+    }
+
+
 </script>
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
@@ -16,6 +67,7 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
     <input type="hidden" name="objsort_cod" value="<?php echo $objsort_cod; ?>">
     <input type="hidden" name="cible" value="0">
     <input type="hidden" name="type_lance" value="<?php echo $type_lance ?>">
+    <input type="hidden" name="sort_param" value="">
     <?php
     include "../includes/constantes.php";
     require_once G_CHE . "includes/fonctions.php";
@@ -118,7 +170,7 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
     {
         echo "<tr id='row-{$row}' {$cdata}>
 			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
-			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
+			<a href=\"javascript:valide_sort_cible({$row}, {$perso_cod});\">
 			" . $perso_nom . "</a></strong><em> (vous-même<strong>" . $niveau_blessures . "</strong>)</em></td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
@@ -200,10 +252,10 @@ $objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
             $type_perso = $result['perso_type_perso'];
 
             $script_choix =
-                "javascript:document.valide_sort.cible.value=" . $result['perso_cod'] . ";document.valide_sort.submit();";
+                "javascript:valide_sort_cible({$row},{$result['perso_cod']});";
             if ($aggressif == 'O' && $result['meme_coterie'] == 1)
                 $script_choix =
-                    "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $result['perso_cod'] . ";document.valide_sort.submit();}";
+                    "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { valide_sort_cible({$row},{$result['perso_cod']});}";
             $perso_pa = $result['perso_pa'];
             if (($result['perso_dlt_passee'] == 1) && ($perso_pa != "") && ($perso_pa != "masqué")) $perso_pa =
                 "<strong>{$perso_pa}</strong>";

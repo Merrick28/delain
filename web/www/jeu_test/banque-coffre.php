@@ -11,7 +11,7 @@ $perso_cod = $verif_connexion->perso_cod;
 $type_lieu = 1;
 $nom_lieu  = 'une banque';
 include "blocks/_test_lieu.php";
-include "fonctions.php";
+include __DIR__."/../includes/fonctions.php";
 
 // Test du retour d'erreur de blocks/_test_lieu.php
 if ($erreur != 0){
@@ -464,9 +464,10 @@ else if ($erreur == 0)
                                 and (tobj_cod not in $types_ventes_gros OR obj_nom <> gobj_nom)                                
                                 and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_cod in ({$obj_cod_list})
-                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() ) ";
+                                and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() ) 
+                                and ( obj_verif_perso_condition_inv(:perso_cod,obj_cod) > 0) ";
                 $stmt      = $pdo->prepare($req_objets);
-                $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+                $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":perso_cod" => $perso->perso_cod), $stmt);
                 $obj_cod_list = "" ;
                 while ($result = $stmt->fetch()) {
                     $nb_obj ++ ;
@@ -488,9 +489,10 @@ else if ($erreur == 0)
 								and gobj_tobj_cod<>26 and obj_gobj_cod not in (86,87,88)		
                                 and obj_nom = gobj_nom
                                 and ( coffre_relais_poste='N' OR coffre_date_dispo<=now() )
+                                and ( obj_verif_perso_condition_inv(:perso_cod,obj_cod) > 0 )
 							limit $qte_obj";
                     $stmt      = $pdo->prepare($req_objets);
-                    $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod"  => $gobj_cod), $stmt);
+                    $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":gobj_cod"  => $gobj_cod, ":perso_cod"  => $perso->perso_cod), $stmt);
                     while ($result = $stmt->fetch()) {
                         $nb_obj ++ ;
                         $obj_cod_list .= "," . (int)$result['obj_cod'];
@@ -803,7 +805,7 @@ else if ($erreur == 0)
         echo "<input type=\"hidden\" name=\"methode\" value=\"retrait2\">";
         $en_transit = false;
 
-        $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste
+        $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, obj_poids, coffre_date_dispo, coffre_relais_poste, obj_verif_perso_condition_inv(:perso_cod,obj_cod) as est_ramassable
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -816,7 +818,7 @@ else if ($erreur == 0)
 
         // Affichage des objets en vente à l’unité
         $stmt      = $pdo->prepare($req_objets_unitaires);
-        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+        $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod, ":perso_cod" => $perso->perso_cod), $stmt);
         $nb_objets = 0;
         if ($stmt->rowCount() > 0)
         {
@@ -836,8 +838,9 @@ else if ($erreur == 0)
 
                 $nom_objet = $result['obj_nom'];
                 $si_identifie = $result['perobj_identifie'];
+                $est_ramassable = $result['est_ramassable'];
                 echo "<tr id='row-obj-{$result['obj_cod']}'>";
-                echo "<td><input ".($dispo ? "" : "disabled")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<td><input ".($dispo && $est_ramassable ? "" : "disabled")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
                 echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
                 if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
@@ -857,6 +860,7 @@ else if ($erreur == 0)
 
         $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, obj_poids, SUM(CASE WHEN coffre_relais_poste='N' OR coffre_date_dispo<=now() THEN 1 ELSE 0 END) as nombre
                 ,SUM(CASE WHEN coffre_relais_poste!='N' AND coffre_date_dispo>now() THEN 1 ELSE 0 END) as nombre_relais, min(coffre_date_dispo) as min_date_dispo, max(coffre_date_dispo) as max_date_dispo
+                , max(obj_cod) as obj_cod
 			from coffre_objets
 			inner join objets on obj_cod = coffre_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -890,6 +894,7 @@ else if ($erreur == 0)
                 $min_date_dispo = $result['min_date_dispo'] ;
                 $max_date_dispo = $result['max_date_dispo'] ;
                 $nombre_relais = $result['nombre_relais'];
+                $est_ramassable = $perso->is_ramasse_objet($result['obj_cod']) ;
                 $texte_dispo = "" ;
 
                 if ($nombre_relais>0)
@@ -903,10 +908,18 @@ else if ($erreur == 0)
                 }
 
                 echo "<tr id='row-gobj-{$gobj_cod}'>";
-                echo "<td class='soustitre2'><input ".($quantite_dispo ==0 ? "disabled" : "")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+                if ( $est_ramassable ) {
+                    echo "<td class='soustitre2'><input ".($quantite_dispo ==0 ? "disabled" : "")." onchange='maj_poids_selectionne();'); type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, 1, $quantite_dispo);'>+1</a>&nbsp;</td>
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombreIncrement($gobj_cod, -1, $quantite_dispo);'>-1</a>&nbsp;</td> 
 					<td class='soustitre2'>&nbsp;<a href='javascript:vendreNombre($gobj_cod, $quantite_dispo);'>max</a>&nbsp;</td> ";
+                } else {
+                    echo "<td class='soustitre2'><input disabled type=\"checkbox\" class=\"vide\" name=\"$id_chk\" value=\"0\" id=\"$id_chk\"></td> 
+					<td class='soustitre2'>&nbsp;+1&nbsp;</td>
+					<td class='soustitre2'>&nbsp;-1&nbsp;</td> 
+					<td class='soustitre2'>&nbsp;max&nbsp;</td> ";
+                }
+
                 echo "<td class=\"soustitre2\"><label for=\"$id_chk\">$nom_objet</label></td>";
                 echo "<td><input onchange='maj_poids_selectionne();'); type=\"text\" name=\"$id_qte\" value=\"0\" size=\"6\" id=\"$id_qte\" 
 					onclick='document.getElementById(\"$id_chk\").checked=true;' /> (max. $quantite_dispo)</td>";

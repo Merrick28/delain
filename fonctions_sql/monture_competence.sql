@@ -79,7 +79,7 @@ begin
       cout_pa := 4 ;
   elsif v_action = 3 then
       -- 'donner un ordre à la monture';
-      select COALESCE(etage_monture_ordre,4) into cout_pa from perso
+      select COALESCE(f_to_numeric(etage_monture->>'pa_action'::text),4) into cout_pa from perso
         join perso_position on ppos_perso_cod=perso_cod
         join positions on pos_cod=ppos_pos_cod
         join etage on etage_numero=pos_etage

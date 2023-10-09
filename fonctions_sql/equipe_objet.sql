@@ -60,7 +60,7 @@ begin
 /*****************************************************************/
 /* Etape 1.1 : on vérifie si les pré-requis d'équipement sont là */
 /*****************************************************************/
-  select obj_verif_perso_condition(personnage,num_objet) into v_est_equipable ;
+  select obj_verif_perso_condition_equip(personnage,num_objet) into v_est_equipable ;
   if v_est_equipable!=1 then
     if v_type_personnage = 3 then
       code_retour := '-1;Un familier ne peut pas équiper d’objet !!';

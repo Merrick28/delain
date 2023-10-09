@@ -36,6 +36,22 @@ ob_start();
             var file_image = $("#img-serveur-" + img).data("img-filename");
             $("#id-gobj_image").val('objets/'+file_image);
         }
+
+        //                            <td class="soustitre2"><span id="id_gobj_portee_dist">Distance max (armes à distance uniquement)</span><span id="id_gobj_portee_anim" style="display:none">Type objet anim. (objet animation uniquement)</span></td>
+        function change_objType() {
+            var typeObj = $("#id_gobj_tobj_cod").val();
+            if (typeObj == 44){
+                $("#id_gobj_portee_dist").css("display", "none");
+                $("#id_gobj_portee_anim").css("display", "block");
+                $("#id_gobj_portee_text_anim").css("display", "block");
+            } else {
+                $("#id_gobj_portee_dist").css("display", "block");
+                $("#id_gobj_portee_anim").css("display", "none");
+                $("#id_gobj_portee_text_anim").css("display", "none");
+            }
+        }
+
+
     </script>
 
     <p class="titre">Édition d’un objet générique</p>
@@ -127,7 +143,7 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Type d’objet</td>
-                            <td><select name="gobj_tobj_cod">
+                            <td><select onchange="change_objType();" name="gobj_tobj_cod" id="id_gobj_tobj_cod">
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
                                     $stmt = $pdo->query($req);
@@ -160,8 +176,8 @@ if ($erreur == 0)
                                 </select></td>
                         </tr>
                         <tr>
-                            <td class="soustitre2">Distance max (armes à distance uniquement)</td>
-                            <td><input type="text" name="gobj_portee"></td>
+                            <td class="soustitre2"><span id="id_gobj_portee_dist">Distance max (armes à distance uniquement)</span><span id="id_gobj_portee_anim" style="display:none">Type objet anim. (objet animation uniquement)</span></td>
+                            <td><input type="text" name="gobj_portee"><em  id="id_gobj_portee_text_anim" style="display:none; font-size: 9px;">Saisir un chiffre, le joueur ne peux posséder qu'un exemplaire d'objet de chaque chiffre</em></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
@@ -405,9 +421,9 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Type d’objet</td>
-                            <td><select name="gobj_tobj_cod">
+                            <td><select onchange="change_objType();" name="gobj_tobj_cod" id="id_gobj_tobj_cod">
                                     <?php
-                                    $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
+                                    $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_libelle ";
                                     $stmt3 = $pdo->query($req);
                                     while ($result3 = $stmt3->fetch())
                                     {
@@ -463,8 +479,10 @@ if ($erreur == 0)
                                 </select></td>
                         </tr>
                         <tr>
-                            <td class="soustitre2">Distance max (armes à distance uniquement)</td>
-                            <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"></td>
+                            <td class="soustitre2"><span id="id_gobj_portee_dist" style="<?php echo $result['gobj_tobj_cod'] == 44 ? "display:none;" : "" ; ?>">Distance max (armes à distance uniquement)</span>
+                                                   <span id="id_gobj_portee_anim" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "" ; ?>">Type objet anim. (objet animation uniquement)</span>
+                            </td>
+                            <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"><em  id="id_gobj_portee_text_anim" style="<?php echo $result['gobj_tobj_cod'] != 44 ? "display:none;" : "display:block;" ; ?> font-size: 9px;">Saisir un chiffre, le joueur ne peux posséder qu'un exemplaire d'objet de chaque chiffre</em></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
@@ -526,7 +544,7 @@ if ($erreur == 0)
                                 <div style="display:inline-block">&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="file" name="image_file" accept="image/*" onchange="preview_image(event);"><br>
                                     <strong>ou</strong><br>
-                                    <input type="button" style="margin-top: 5px;" class="test"  name="nouvel_image"  value="Sélectionner une image existante sur le serveur"  onclick="open_imglist();">                                    
+                                    <input type="button" style="margin-top: 5px;" class="test"  name="nouvel_image"  value="Sélectionner une image existante sur le serveur"  onclick="open_imglist();">
                                 </div>
                             </td>
                         </tr>
@@ -738,23 +756,60 @@ if ($erreur == 0)
             {
                 echo 'Aucun: <a target="_blank" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
+
+            // CONDITION D'EQUIPEMENT
             $objelem = new objet_element();
             echo "<tr><td class=\"soustitre2\">Condition(s) d'équipement</td><td>";
+            $hasCond = false ;
             if ($list = $objelem->getBy_objelem_gobj_cod($gobj_cod))
             {
                 foreach ($list as $objelem) {
-                    $carac = new aquete_type_carac();
-                    $carac->charge($objelem->objelem_misc_cod);
-                    $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
-                    echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    if ($objelem->objelem_param_id == 1)
+                    {
+                        $hasCond = true ;
+                        $carac = new aquete_type_carac();
+                        $carac->charge($objelem->objelem_misc_cod);
+                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    }
                 }
-                echo ': <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                if ($hasCond) {
+                    echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                }
             }
-            else
+            if (! $hasCond )
             {
-                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=1&objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
+
+            // CONDITION DE RAMASSAGE
+            $objelem = new objet_element();
+            echo "<tr><td class=\"soustitre2\">Condition(s) de ramassage</td><td>";
+            $hasCond = false ;
+            if ($list = $objelem->getBy_objelem_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objelem) {
+                    if ($objelem->objelem_param_id == 2)
+                    {
+                        $hasCond = true ;
+                        $carac = new aquete_type_carac();
+                        $carac->charge($objelem->objelem_misc_cod);
+                        $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                        echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    }
+                }
+                if ($hasCond) {
+                    echo ': <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+                }
+            }
+            if (! $hasCond )
+            {
+                echo 'Aucune: <a target="_blank" href="admin_objet_equip.php?&type_condition=2&objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
+
+
             ?>
                         <tr>
                             <td colspan="2">
@@ -852,9 +907,15 @@ if ($erreur == 0)
                    $_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
                    $_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] .
                    "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
-                   "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
+                   "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") RETURNING gobj_cod ";
             $stmt = $pdo->query($req);
-            echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a>";
+            $object = $stmt->fetch();
+
+            echo "<p>L'insertion s'est bien déroulée.<br>";
+
+            echo "<br>Editer l'objet: <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod&gobj_cod={$object['gobj_cod']}\">#{$object['gobj_cod']} - {$gobj_nom}</a><br><br>";
+            echo "<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
+
             break;
         case "mod3":
             // détermination du obcar_cod
@@ -950,7 +1011,9 @@ if ($erreur == 0)
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
 			where obj_gobj_cod = " . $_REQUEST['objet'] . " and obj_modifie = 0";
             $stmt = $pdo->query($req);
-            echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
+            echo "<p>La mise à jour des anciens objets aussi<br>";
+            echo "<br>Editer l'objet: <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod&gobj_cod={$_REQUEST['objet']}\">#{$_REQUEST['objet']} - {$gobj_nom}</a><br><br>";
+            echo "<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
             break;
 
     }

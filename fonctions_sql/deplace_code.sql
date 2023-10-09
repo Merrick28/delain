@@ -1,16 +1,17 @@
 
 --
--- Name: deplace_code(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: deplace_code(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION deplace_code(integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION deplace_code(integer, integer, integer default 1) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************************/
 /* function deplace_code : idem que deplace sauf qu’un cod_pos   */
 /*    est passé en paramètre à la place des coordonnées          */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod                                             */
-/*    $3 = pos_cod                                               */
+/*    $2 = pos_cod                                               */
+/*    $3 = jump = limit de distance en cas de saut (default 1)   */
 /* Le code sortie est une chaine html                            */
 /*****************************************************************/
 /* Créé le 05/03/2003                                            */
@@ -51,6 +52,7 @@ declare
 -- variables concernant la nouvelle position
 ------------------------------------------------
 	v_pos alias for $2; 	-- pos_cod de destination
+	v_jump alias for $3; 	-- possibilité de parcourir plus d'un case grace au saut de monture
 	x integer;					-- X
 	y integer;					-- Y
 	e integer;					-- Etage
@@ -169,7 +171,7 @@ begin
 		code_retour := code_retour || E'1#Erreur : position d’arrivée égale à la position de départ.#4';
 		return code_retour;
 	end if;
-	if distance(ancien_code_pos,v_pos) > 1 then
+	if distance(ancien_code_pos,v_pos) > v_jump then
 		code_retour := code_retour || E'1#Erreur : distance trop importante entre la position de départ et d’arrivée.#5';
 		return code_retour;
 	end if;
@@ -394,10 +396,10 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.deplace_code(integer, integer) OWNER TO delain;
+ALTER FUNCTION public.deplace_code(integer, integer, integer) OWNER TO delain;
 
 --
 -- Name: FUNCTION deplace_code(integer, integer); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION deplace_code(integer, integer) IS 'Gère le déplacement d’un perso.';
+COMMENT ON FUNCTION deplace_code(integer, integer, integer) IS 'Gère le déplacement d’un perso.';

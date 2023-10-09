@@ -56,23 +56,41 @@ if ($erreur == 0)
     //$request_select_etage_ref = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
     $request_select_etage_ref = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
     $request_select_etage = "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
-			
+
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
     if(!isset($_REQUEST['methode']) || ($_REQUEST['methode']=='edite_quete')) {
 
+        $type_quete = isset($_REQUEST["type_quete"]) ? $_REQUEST["type_quete"] : 0 ;
+
+        if ($pos_etage>0) {
+            echo '   <span style="color: white; background-color: #800000; font-weight:bold">&nbsp;&nbsp;&nbsp;GESTION DES QUËTES D’INTERACTIONS SUR L’ETAGE&nbsp;&nbsp;&nbsp;</span>';
+        }
         // Liste des quetes existantes
         echo '  <TABLE width="80%" align="center">
                 <TR>
                 <TD>
                 <form method="post">
+                Filter les quêtes sur :<select onchange="this.parentNode.submit();" name="type_quete">
+                                <option '.($type_quete==0 ? " selected " : "").'value="0">Les quêtes ouvertes</option>
+                                <option '.($type_quete==1 ? " selected " : "").'value="1">Les quêtes fermées</option>
+                                <option '.($type_quete==2 ? " selected " : "").'value="2">Toutes les quêtes</option>
+                                </select>
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
+        if ($type_quete==0)
+            $filtre_quete = " and aquete_actif = 'O'";
+        else if ($type_quete==1)
+            $filtre_quete = " and aquete_actif = 'N'";
+        else
+            $filtre_quete = "";
+
+
         if ($pos_etage>0) {
-            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.' order by aquete_nom_alias');
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.$filtre_quete.' order by aquete_nom_alias');
         } else {
-            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null order by aquete_nom_alias');
+            $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null '.$filtre_quete.' order by aquete_nom_alias');
         }
         while ($result = $stmt->fetch())
         {
@@ -108,12 +126,25 @@ if ($erreur == 0)
                     if (!ok) return false;
                     $(\'#quete-methode\').val(\'delete_quete\');
                     return true;                    
+                }                
+                function confirm_dupliquer_quete() {
+                    var ok = confirm(\'Êtes-vous sûr de vouloir dupliquer entièrement la quête?\') ;
+                    if (!ok) return false;
+                    $(\'#quete-methode\').val(\'dupliquer_quete\');
+                    return true;                    
+                }
+                function confirm_terminer_quete(nbq) {
+                    var ok = confirm(\'Êtes-vous sûr de vouloir terminer les \'+ nbq + \' quêtes en cours?\\nATTENTION: La quête ira directement à l’état "terminer", pour tous les utilisateurs l’ayant commencé!!\') ;
+                    if (!ok) return false;
+                    $(\'#quete-methode\').val(\'terminer_quete\');
+                    return true;                    
                 }
                 </script>
   
                 <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />';
 
         echo    '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
+        echo    '<input type="hidden" name="type_quete" value="'.$type_quete.'" />';
         if ($pos_etage>0) {
             echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
             echo '<input type="hidden" name="aquete_nb_max_instance" value="" />';
@@ -136,13 +167,18 @@ if ($erreur == 0)
         }
         echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>Elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>Elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
+
+        $nb_quete_en_cours = $quete->get_nb_en_cours();
+
         if ($pos_etage==0) {
             echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>Nombre maximum de joueurs qui peuvent prendre la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>Nombre max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
             echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>Nombre de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>Délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
-            echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $quete->get_nb_en_cours() . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em></td></tr>';
+            echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $nb_quete_en_cours . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em>';
+            if ($nb_quete_en_cours > 0) echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_terminer_quete('.$nb_quete_en_cours.');";  type="submit" value="Terminer les quêtes en cours" />';
+            echo '</td></tr>';
         }
         if ($aquete_cod==0)
         {
@@ -154,7 +190,6 @@ if ($erreur == 0)
         {
             // Lister les étapes déjà créées
             $etapes = $quete->get_etapes() ;
-            $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $liste_etape = array();
@@ -165,6 +200,7 @@ if ($erreur == 0)
                 $filter = (!$etapes || sizeof($etapes) == 0) ? "where aqetapmodel_tag='#START #INTERACTION'" : "where aqetapmodel_tag<>'#START' AND aqetapmodel_tag<>'#START #INTERACTION'";
             }
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" />';
+            echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_dupliquer_quete();";  type="submit" value="dupliquer la quête" />';
             if ($nb_quete_en_cours==0)
                 echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_delete_quete();"; type="submit" value="Supprimer la quête" />';
             else

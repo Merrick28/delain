@@ -150,9 +150,9 @@ begin
 	-------------------------------------------------------------
 -- Vérification des pre-requis spécifique sur certaine map (comme la course
 -------------------------------------------------------------
-    -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1)
+    -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1, interdire les sorts générateur de monstres)
     select etage_mort_speciale into temp from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=lanceur;
-    if temp = 1 and ( num_sort=45 or num_sort=48) then
+    if temp = 1 and ( num_sort=40 or num_sort=41 or num_sort=42 or num_sort=43 or num_sort=45 or num_sort=46 or num_sort=47 or num_sort=48 or num_sort=52) then
         return  '0;<p>l''usage de ce sort n''est pas autorisé pendant les courses de monture!!</p>';
     end if;
 

@@ -22,7 +22,7 @@ $log      = '';
 $resultat = '';
 
 //---------------------------------------------------------------------------------------------------------------------------
-// Objectif: 
+// Objectif:
 //		1- Saisie d'un etage source
 //		2- Duplication de l'étage (caracs, positions, murs, lieux, etc...)
 //---------------------------------------------------------------------------------------------------------------------------
@@ -346,13 +346,13 @@ if ($erreur == 0)
                         etage_mine_type, etage_mine_richesse, etage_quatrieme_perso,
                         etage_quatrieme_mortel, etage_type_arene, etage_familier_actif,
                         etage_duree_imp_p, etage_duree_imp_f, etage_autor_rappel_cot,
-                        etage_autor_glyphe, etage_perte_xp) 
+                        etage_autor_glyphe, etage_perte_xp, etage_monture) 
                     SELECT :etage_cod, :etage_numero, :etage_libelle::text as etage_libelle, etage_reference, etage_description, 
                         etage_affichage, etage_mort, etage_arene, etage_mine, etage_retour_rune_monstre, 
                         etage_mine_type, etage_mine_richesse, etage_quatrieme_perso, 
                         etage_quatrieme_mortel, etage_type_arene, etage_familier_actif, 
                         etage_duree_imp_p, etage_duree_imp_f, etage_autor_rappel_cot, 
-                        etage_autor_glyphe, etage_perte_xp
+                        etage_autor_glyphe, etage_perte_xp, etage_monture
                         FROM etage where etage_cod = :ref_etage_cod ; ";
             $stmt = $pdo->prepare($req);
             $stmt =

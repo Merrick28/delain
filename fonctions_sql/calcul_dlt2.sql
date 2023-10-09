@@ -442,6 +442,7 @@ begin
       -- temps_blessures:= GREATEST(1, valeur_bonus(personnage, 'JDC') + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2) ;
       code_retour := code_retour || 'Vous êtes sous l''effet d''un Jus de Chronomètre, votre DLT est raccourcie à <b>' || to_char(valeur_bonus(personnage, 'JDC'),'999999') || '</b> minute(s)<br>';
       nouvelle_dlt := NOW()::timestamp + (to_char(valeur_bonus(personnage, 'JDC'),'999999') || ' minutes')::interval;
+
     else
       -- 2020-06-11 - marlyza - certain arrive a avoir des raccourcis de temps supérieur à leur temps tour,  si c'est négatif la boucle en-dessous ne sort jamais, on va mettre un mini à 10 minutes
       temps_blessures:= GREATEST(10, temps_tour + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2) ;
@@ -450,6 +451,9 @@ begin
       while nouvelle_dlt < now() loop
         nouvelle_dlt := ((nouvelle_dlt)::timestamp + (ajout_temps)::interval);
       end loop;
+
+      -- on va mémoriser ce délai de DLT il pourra être utilisé par ailleurs (comme pour le calcul de l'égrainnage des PA pour les montures)
+      update perso set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'calcul_dlt' ,  (json_build_object( 'temps_tour', temps_blessures )::jsonb))::jsonb) where perso_cod=personnage ;
     end if;
 
     /* intangibilité */
@@ -730,7 +734,7 @@ begin
 
     /* Marlyza: déséquiper les objets pour lesquels le perso ne respecte plus le conditions nécéssaires */
     for ligne in
-      select perobj_obj_cod, obj_nom, obj_nom_generique from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=personnage and perobj_equipe='O' and obj_desequipable='O' and obj_verif_perso_condition(perobj_perso_cod,perobj_obj_cod)=0
+      select perobj_obj_cod, obj_nom, obj_nom_generique from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=personnage and perobj_equipe='O' and obj_desequipable='O' and obj_verif_perso_condition_equip(perobj_perso_cod,perobj_obj_cod)=0
     loop
       texte_evt := '[perso_cod1] ne respecte plus les conditions pour équiper l''objet « ' || ligne.obj_nom_generique || ' » (n° '||trim(to_char(ligne.perobj_obj_cod,'99999999'))||'), <strong><font color="red">il a été remis dans son invetaire</font></strong>.';
       insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu)

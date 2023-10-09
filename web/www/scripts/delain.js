@@ -61,6 +61,25 @@ function reduireCadre() {
     document.cookie = "etendrevue=0; expires=" + echeance.toGMTString();
 }
 
+function ordonnerMontureChangeAction(s) {
+    if (s.value == "TALONNER") {
+        $("#monture_order input[name='distance']").val("1");
+        $("#monture_order input[name='distance']").prop("disabled", true);
+        $("#monture_order input[name='distance']").css("background-color", "darkgrey");
+        $("#monture_order input[name='direction']").each(function() { this.checked = false;  });
+        $("#monture_order input[name='direction']").prop("disabled", true);
+    } else if (s.value == "SAUTER") {
+        $("#monture_order input[name='distance']").val("1");
+        $("#monture_order input[name='distance']").prop("disabled", true);
+        $("#monture_order input[name='distance']").css("background-color", "darkgrey");
+        $("#monture_order input[name='direction']").prop("disabled", false);
+    } else {
+        $("#monture_order input[name='distance']").prop("disabled", false);
+        $("#monture_order input[name='distance']").css("background-color", "white");
+        $("#monture_order input[name='direction']").prop("disabled", false);
+    }
+}
+
 /* Change styles, en utilisant javascript */
 /* Pour que cela fonctionne, il faut que l'objet cliquable
  ait la class change_class_on_click, et les attributs remplus

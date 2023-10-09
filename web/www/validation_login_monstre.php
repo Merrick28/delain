@@ -1,10 +1,10 @@
 <?php
-include_once 'classes.php';
+include_once "includes/classes.php";
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
 $compt_cod  = $verif_connexion->compt_cod;
-include_once 'fonctions.php';
+include_once "includes/fonctions.php";
 
 $pdo = new bddpdo;
 

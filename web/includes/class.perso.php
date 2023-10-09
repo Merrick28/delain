@@ -2526,6 +2526,23 @@ class perso
 
     }
 
+    /**
+     * Retourne vrai si le l'objet passé en paramètre est ramassable par le perso, et false sinon
+     * @return boolean
+     */
+    function is_ramasse_objet($v_objet)
+    {
+        $pdo = new bddpdo;
+        $req = "select obj_verif_perso_condition_inv(:perso_cod, :obj_cod) as est_ramassable; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $v_objet, ":perso_cod" => $this->perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        if ($result["est_ramassable"]==1) return true;
+
+        return false ;
+    }
+
     public function magasin_identifie($lieu, $objet)
     {
         $pdo    = new bddpdo();
@@ -3090,10 +3107,10 @@ class perso
         $req_lieu =
             'select lieu_nom,lieu_description,lieu_url,tlieu_libelle,tlieu_cod,ppos_pos_cod,lieu_cod,lpos_pos_cod,lieu_refuge,lieu_prelev,lieu_levo_niveau ';
         $req_lieu = $req_lieu . 'from lieu,lieu_type,lieu_position,perso_position ';
-        $req_lieu = $req_lieu . 'where ppos_perso_cod = ' . $this->perso_cod;
-        $req_lieu = $req_lieu . 'and ppos_pos_cod = lpos_pos_cod ';
-        $req_lieu = $req_lieu . 'and lpos_lieu_cod = lieu_cod ';
-        $req_lieu = $req_lieu . 'and lieu_tlieu_cod = tlieu_cod ';
+        $req_lieu = $req_lieu . ' where ppos_perso_cod = ' . $this->perso_cod;
+        $req_lieu = $req_lieu . ' and ppos_pos_cod = lpos_pos_cod ';
+        $req_lieu = $req_lieu . ' and lpos_lieu_cod = lieu_cod ';
+        $req_lieu = $req_lieu . ' and lieu_tlieu_cod = tlieu_cod ';
         $stmt     = $pdo->query($req_lieu);
         if ($result = $stmt->fetch())
         {
@@ -3337,7 +3354,7 @@ class perso
         if ( !$this->perso_monture) return false ;
 
         $pdo  = new bddpdo;
-        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19,20,21) THEN 'O' ELSE 'N' END as ordonable
                          from perso 
                          join monstre_generique on gmon_cod=perso_gmon_cod
                          left join perso_ia on pia_perso_cod=perso_cod

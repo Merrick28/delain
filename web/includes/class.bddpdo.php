@@ -130,8 +130,8 @@ class bddpdo
      */
 
     public function query($sql)
-    {
-
+    {   // AJOUT pour DEBUG
+        //$ret = $this->pdo->query($sql);   if ($ret) return $ret;  echo "<pre>"; print_r([$sql,$this->pdo->errorInfo()]); die();
         return $this->pdo->query($sql);
     }
 

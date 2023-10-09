@@ -51,6 +51,8 @@ declare
   v_bonmal_duree integer;  -- durer du BM
   v_nb_utilisation_dlt integer;  -- durer du BM
   v_ojsortbm_cod_reel integer;  -- sortbm du générique si le sort n'est pas lancé spécifiquement par l'objet
+  v_bonmal_actuel numeric ;   -- valeur du BM actuel
+  v_nbtour_actuel integer ;   -- valeur du BM actuel
 
 	aggressif varchar(2);		-- sort aggressif ?
 	soutien varchar(2);		-- sort soutien ?
@@ -246,8 +248,52 @@ begin
   v_bonmal_valeur :=  f_lit_des_roliste(v_bonus_valeur);
   v_bonmal_duree :=  f_lit_des_roliste(v_bonus_nb_tours);
 
-    -- appliquer le bonus réel
-  if v_bonmal_duree!=0 and v_bonmal_valeur!=0 then
+  -- si ne nombre de tour = 0 => on decompte du bonus/malus au lieu d'en donner
+  if v_bonus_nb_tours = '0' and v_tbonus_libc not in ('DEX', 'INT', 'FOR', 'CON')   then
+      if v_bonus_valeur = '0' then -- on supprime tous les malus mais aussi tous les bonus
+          delete from bonus where bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode!='E';
+          if aggressif = 'O' then
+            code_retour := code_retour||'vous lui supprimez les bonus/malus  `'|| nom_bonus || '.<br>';
+          else
+            code_retour := code_retour||'vous lui supprimez les bonus/malus  `'|| nom_bonus || '.<br>';
+          end if;
+      else
+          select bonus_valeur, bonus_nb_tours into v_bonmal_actuel, v_nbtour_actuel
+              from bonus
+              where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S'
+              order by abs(bonus_valeur) desc
+              limit 1;
+          if found then -- nota: si pas trouvé, il n'y a rien a supprimer
+              if abs(v_bonmal_actuel) < abs(v_bonmal_valeur) then
+                  -- on supprime plus qu'il n'en faut, on retire tout
+                  delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                  if aggressif = 'O' then
+                      code_retour := code_retour||'vous lui supprimez un bonus  `'|| nom_bonus || '.<br>';
+                  else
+                      code_retour := code_retour||'vous lui supprimez un malus  `'|| nom_bonus || '.<br>';
+                  end if;
+              else
+                  -- Il reste un peu de bonus/malus on diminue l'encours
+                  update bonus set bonus_valeur= sign(bonus_valeur) * (abs(v_bonmal_actuel) - abs(v_bonmal_valeur)) where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                  if aggressif = 'O' then
+                      code_retour := code_retour||'vous lui reduisez un bonus  `'|| nom_bonus || '` d’une valeur de '|| (-v_bonmal_valeur)::text || '.<br>';
+                  else
+                      code_retour := code_retour||'vous lui reduisez un malus  `'|| nom_bonus || '` d’une valeur de '|| (-v_bonmal_valeur)::text || '.<br>';
+                  end if;
+              end if;
+          end if;
+      end if;
+
+      texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible].';
+      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+          values (nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur, cible);
+      if (lanceur != cible) then
+          insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+              values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
+      end if;
+
+  -- appliquer le bonus réel
+  elsif v_bonmal_duree!=0 and v_bonmal_valeur!=0 then
       perform ajoute_bonus(cible, v_tbonus_libc::text, v_bonmal_duree, v_bonmal_valeur);
 
       -- Le texte résultat à afficher
@@ -258,13 +304,11 @@ begin
       end if;
 
       texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible].';
-      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
-                            levt_visible, levt_attaquant, levt_cible)
-      values (nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur, cible);
+      insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+        values (nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur, cible);
       if (lanceur != cible) then
-          insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
-                                levt_visible, levt_attaquant, levt_cible)
-          values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
+          insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+            values (nextval('seq_levt_cod'), 14, now(), 1, cible, texte_evt, 'N', 'O', lanceur, cible);
       end if;
 
   end if;

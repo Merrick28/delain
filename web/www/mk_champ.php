@@ -33,13 +33,16 @@ $pdo = new bddpdo();
 		and comp_cod not in (29,69,70,78,80,81,82,84,85,86,94,95,96) order by comp_libelle ";
             $stmt2 = $pdo->prepare($req_c);
 
-            $req = "select pcomp_modificateur, perso_nom from perso_competences, perso
+            $req = "select pcomp_modificateur, perso_nom from perso_competences, perso, perso_compte, compte
 			where pcomp_pcomp_cod = :comp
         		and pcomp_perso_cod = perso_cod
+				and pcompt_perso_cod = perso_cod
+				and compt_cod = pcompt_compt_cod
                 and perso_type_perso = 1
     			and perso_actif = 'O'
     			and perso_pnj != 1
-			and perso_test != 'O'
+			    and coalesce(perso_test,'N') != 'O'
+			    and compt_monstre='N' and compt_admin='N'
             order by pcomp_modificateur desc
 			limit 10";
 
@@ -100,7 +103,11 @@ $pdo = new bddpdo();
 
     <?php
     $req    =
-        "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso != 2 and perso_pnj != 1 and perso_test != 'O'";
+        "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence 
+                from perso 
+                join perso_compte on pcompt_perso_cod = perso_cod
+                join compte on compt_cod = pcompt_compt_cod
+                where perso_type_perso != 2 and perso_pnj != 1 and coalesce(perso_test,'N') != 'O' and compt_monstre='N' and compt_admin='N' ";
     $stmt   = $pdo->query($req);
     $result = $stmt->fetch();
 
