@@ -373,7 +373,7 @@ begin
 						    join race on race_cod=p2.perso_race_cod
 						    where p1.perso_cod=v_monstre and p2.perso_type_perso=2 and race_nom='Monture delicius' ;
 
-          -- si la superaction n'a pas été réamisé et que la supermonture est le Bip² ou le Coyote sur une proie, alors on fait la super action !
+          -- si la superaction n'a pas déjà été réalisé cette DLT et que la supermonture est le Bip² ou le Coyote sur une proie, alors on fait la super action !
           if v_action_super = 0 and (v_type_ia = 3  or v_count > 0) then
               update perso set perso_pa = v_pa, perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)  || (json_build_object( 'ia_monture', (
                                           '{"nb_super":1}'::jsonb
