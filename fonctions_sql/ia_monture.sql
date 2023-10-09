@@ -4,21 +4,23 @@
 
 CREATE or REPLACE FUNCTION ia_monture(integer, integer) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/*****************************************************/
-/* fonction ia_monture                             */
-/*    reçoit en arguments :                          */
-/* $1 = perso_cod du monstre                         */
-/* $2 = type d'IA                                    */
-/*    =>  0 : docile n'utilise pas les PA            */
-/*    =>  1 : à ordre                                */
-/*    =>  2 : mixte (comme le 1 pour l'IA)           */
-/*    retourne en sortie en entier non lu            */
-/*    les évènements importants seront mis dans la   */
-/*    table des evenemts admins                      */
-/* Cette fonction effectue les actions automatiques  */
-/*  des monstres pour éviter que le MJ qui a autre   */
-/*  à faire jouer tout à la mimine....               */
-/*****************************************************/
+    AS $_$/**************************************************************/
+/* fonction ia_monture                                         */
+/*    reçoit en arguments :                                    */
+/* $1 = perso_cod du monstre                                   */
+/* $2 = type d'IA                                              */
+/*    =>  0 : docile n'utilise pas les PA                      */
+/*    =>  1 : à ordre                                          */
+/*    =>  2 : mixte (comme le 1 pour l'IA)                     */
+/*    =>  3 : supermonture1 (comme le 1 + 1er Move gratuit)    */
+/*    =>  4 : supermonture2 (comme le 1 + Move aléat. gratuit) */
+/*    retourne en sortie en entier non lu                      */
+/*    les évènements importants seront mis dans la             */
+/*    table des evenemts admins                                */
+/* Cette fonction effectue les actions automatiques            */
+/*  des monstres pour éviter que le MJ qui a autre             */
+/*  à faire jouer tout à la mimine....                         */
+/**************************************************************/
 declare
 -------------------------------------------------------
 -- variables E/S
@@ -82,6 +84,7 @@ declare
   v_count_sauter numeric ; -- compteur des actione speciale
   v_etage_talonner numeric ; -- compteur des actione speciale
   v_etage_sauter numeric ; -- compteur des actione speciale
+  v_action_super numeric ; -- compteur des actione supermontures
 
 begin
 	code_retour := 'IA monture<br>Monstre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
@@ -168,7 +171,7 @@ begin
 
       update perso set
           perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)
-                                || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter )::jsonb))::jsonb)
+                                || (json_build_object( 'ia_monture' , (json_build_object( 'nb_talonner' , v_count_talonner, 'nb_sauter', v_count_sauter, 'nb_super', 0 )::jsonb))::jsonb)
                                 || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
           where perso_cod=v_monstre ;
   end if;
@@ -285,7 +288,7 @@ begin
           -- faire le deplacement normal ou saut
           if v_pos_saut is not null then
               -- saut à 2 cases!
-              perform insere_evenement(v_monstre, v_monstre, 107, '[perso_cod1] a fait un saut.', 'O', NULL);
+              perform insere_evenement(v_monstre, v_monstre, 114, '[perso_cod1] a fait un saut.', 'O', NULL);
               temp_txt := deplace_code(v_monstre, v_pos_saut, 2);
           else
               -- deplacement basic
@@ -338,7 +341,7 @@ begin
 
   else
 
-        -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
+      -- maintenant on lui supprime/modifie l'ordre de sa liste (calcul des ordres restants): v_param_ia
       v_param_ia := null ;  -- null si plus d'autre ordres
       select coalesce(jsonb_agg(v)::json, '[]'::json) into v_param_ia from (  select  json_array_elements( v_param_ordre ) as v ) s where v->>'ordre' <> v_num_ordre ;
       if dist = 1 then
@@ -354,6 +357,32 @@ begin
           update perso
               set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'dir_x' , dir_x, 'dir_y' , dir_y , 'dist' , dist )::jsonb)))::jsonb)
               where perso_cod=v_monstre ;
+      end if;
+
+
+      -- cas des supermontures 1er deplacement gratuit pour le bip² ou un deplacement aléatoire gratuit  pour le Coyote
+      -- on recrédite les PA depensés en lui redonnant ces PA initiaux
+      if v_type_ia = 3 or v_type_ia = 4 then
+          select coalesce(f_to_numeric( ((perso_misc_param->>'ia_monture')::jsonb)->>'nb_super') ,0) into v_action_super from perso where perso_cod = v_monstre ;
+
+          -- comptage des proies sur la case d'arrivée! (race='Monture delicius' versus 'Monture vulgaris'
+          SELECT count(*) into v_count from perso p1
+						  	join perso_position ppos1 on ppos1.ppos_perso_cod=p1.perso_cod
+							  join perso_position ppos2 on ppos2.ppos_pos_cod=ppos1.ppos_pos_cod and ppos2.ppos_perso_cod<>ppos1.ppos_perso_cod
+						    join perso p2 on p2.perso_cod=ppos2.ppos_perso_cod
+						    join race on race_cod=p2.perso_race_cod
+						    where p1.perso_cod=v_monstre and p2.perso_type_perso=2 and race_nom='Monture delicius' ;
+
+          -- si la superaction n'a pas déjà été réalisé cette DLT et que la supermonture est le Bip² ou le Coyote sur une proie, alors on fait la super action !
+          if v_action_super = 0 and (v_type_ia = 3 or v_count > 0) then
+              update perso set perso_pa = v_pa, perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb)  || (json_build_object( 'ia_monture', (
+                                          '{"nb_super":1}'::jsonb
+                                       || json_build_object('nb_sauter' , coalesce(f_to_numeric( ((perso_misc_param->>'ia_monture')::jsonb)->>'nb_sauter') , 0))::jsonb
+                                       || json_build_object('nb_talonner' , coalesce(f_to_numeric( ((perso_misc_param->>'ia_monture')::jsonb)->>'nb_talonner') , 0))::jsonb
+                        ))::jsonb) where perso_cod = v_monstre ;
+
+              perform insere_evenement(v_monstre, v_monstre, 114, '[perso_cod1] a fait une super action!', 'O', NULL);                        
+          end if;
       end if;
 
 	end if;

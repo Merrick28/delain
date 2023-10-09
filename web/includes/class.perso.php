@@ -3354,7 +3354,7 @@ class perso
         if ( !$this->perso_monture) return false ;
 
         $pdo  = new bddpdo;
-        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19) THEN 'O' ELSE 'N' END as ordonable
+        $req  = " select CASE WHEN perso_dirige_admin='N' and coalesce(pia_ia_type, gmon_type_ia) in (18,19,20,21) THEN 'O' ELSE 'N' END as ordonable
                          from perso 
                          join monstre_generique on gmon_cod=perso_gmon_cod
                          left join perso_ia on pia_perso_cod=perso_cod
