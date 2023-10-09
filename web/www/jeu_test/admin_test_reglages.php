@@ -65,7 +65,7 @@ if ($erreur == 0)
         <table>
 
     </form>
-
+    <HR>
     <br><p><u>DEFINIR DES NOMS DE MONSTRES</u></p><br>
     Sélectionner une race:
     <form method="post">
@@ -76,13 +76,13 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                ?>
-                <option value="<?php echo $result['race_cod']; ?>"><?php echo $result['race_nom']; ?></option>
-            <?php } ?>
+                echo '<option '.((isset($_POST['race_cod']) && $_POST['race_cod']==$result['race_cod']) ? 'selected ': '').'value="'.$result['race_cod'].'">'.$result['race_nom'].'</option>';
+            }
+            ?>
         </select>
         <input type="submit" value="voir">
     </form>
-    <HR>
+
     <?php if (isset($_POST['race_cod'])) { ?>
 
     <p>
@@ -98,8 +98,10 @@ if ($erreur == 0)
         {
             $req = "select choisir_monstre_nom($g_mon_ex,'M') as nom";
             $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
+            if ($stmt) {
+                $result = $stmt->fetch();
+                echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
+            }
         }
         ?>
         -Feminins<br>
@@ -108,8 +110,11 @@ if ($erreur == 0)
         {
             $req = "select choisir_monstre_nom($g_mon_ex,'F') as nom";
             $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
+            if ($stmt)
+            {
+                $result = $stmt->fetch();
+                echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
+            }
         }
         ?>
     </p>
