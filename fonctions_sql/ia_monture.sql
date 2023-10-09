@@ -370,7 +370,8 @@ begin
 						  	join perso_position ppos1 on ppos1.ppos_perso_cod=p1.perso_cod
 							  join perso_position ppos2 on ppos2.ppos_pos_cod=ppos1.ppos_pos_cod and ppos2.ppos_perso_cod<>ppos1.ppos_perso_cod
 						    join perso p2 on p2.perso_cod=ppos2.ppos_perso_cod
-						    where p1.perso_cod=v_monstre and p2.perso_type_perso=2
+						    join race on race_cod=p2.perso_race_cod
+						    where p1.perso_cod=v_monstre and p2.perso_type_perso=2 and race_nom='Monture delicius' ;
 
           -- si la superaction n'a pas été réamisé et que la supermonture est le Bip² ou le Coyote sur une proie, alors on fait la super action !
           if v_action_super = 0 and (v_type_ia = 3  or v_count > 0) then
