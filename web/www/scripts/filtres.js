@@ -12,6 +12,8 @@ function filtre_table_search(table)
     var col = $("#"+table+"-col").val();
     var type = $("input[name="+table+"-filtre-type]:checked").val() ;
 
+    d_setCookie("combat-"+table, type, 100);
+
     $("#"+table+" tr").each(function( index ) {
         if ($('#row-'+index).length>0)
         {
@@ -53,3 +55,5 @@ function toggle_details(event, elem)
     else
         $("#"+elem).css("display","none");
 }
+
+
