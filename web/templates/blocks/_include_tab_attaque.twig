@@ -1,6 +1,6 @@
 {% if TAB_VUE|length > 0 %}
 
-    <script src="/scripts/filtres.js?v20190318" type="text/javascript"></script>
+    <script src="/scripts/filtres.js?v20231016" type="text/javascript"></script>
 
     <table id="choix-cible" width="100%" cellspacing="2" cellapdding="2">
         <tr>
@@ -10,11 +10,11 @@
                 <input id="choix-cible-col" type="hidden" value="2">
                 <input id="choix-cible-filtre-perso" type="text" size="40" onkeyup="filtre_table_search('choix-cible');">
                 &nbsp;&nbsp;<br><strong>Limiter aux:&nbsp;&nbsp;</strong>
-                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="3" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Familiers <span id="ft-familier"></span></em>
-                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="2" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Monstres <span id="ft-monstre"></span></em>
-                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="1" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Aventuriers <span id="ft-aventurier"></span></em>
-                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="0" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
-                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="-1" type="radio" checked onChange="filtre_table_search('choix-cible');">&nbsp;<em>Sans limites</span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" id="choix-cible-filtre-type-3" value="3" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Familiers <span id="ft-familier"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" id="choix-cible-filtre-type-2" value="2" type="radio" checked onChange="filtre_table_search('choix-cible');">&nbsp;<em>Monstres <span id="ft-monstre"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" id="choix-cible-filtre-type-1" value="1" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Aventuriers <span id="ft-aventurier"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" id="choix-cible-filtre-type-0" value="0" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" id="choix-cible-filtre-type--1" value="-1" type="radio" checked onChange="filtre_table_search('choix-cible');">&nbsp;<em>Sans limites <span id="ft-tout"></span></em>
             </td>
         </tr>
         <tr>
@@ -82,6 +82,10 @@
                 textetableau += '</tr>';
             }
             document.write(textetableau);
+
+            var dtype = d_getCookie("combat-choix-cible") == null ? -1 : d_getCookie("combat-choix-cible");
+            $("#choix-cible-filtre-type-"+dtype).prop("checked", true);
+            filtre_table_search('choix-cible');
         </script>
     </table>
 
