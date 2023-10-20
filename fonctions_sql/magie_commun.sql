@@ -79,7 +79,10 @@ declare
 	v_pos_pvp character;		-- Si la cible est en zone de droit
 	v_gmon_cod integer;		-- Type de monstre ciblé
 	v_immunise character;		-- Si la cible est immunisé à ce sort
+	v_resistance character;		-- Si la cible a une resitance a ce sort à ce sort
+	v_resiste character;		-- resultat sur la resitance du monstre generique
 	v_immunise_valeur numeric;	-- Le taux d’immunité de la cible
+	v_immunise_resitance numeric;	-- Le taux de resitance de la cible
 	v_immunise_rune character;	-- Si l’immunité vient du fait que le sort soit lancé sans runes
 	v_immunise_texte varchar(500);	-- Texte relatif à l’immunité
 -------------------------------------------------------------
@@ -518,48 +521,54 @@ begin
   end if;   -- fin traitement des non-EA
 
 	-- immunité des monstres à certains sorts
+	v_resiste := 'N' ;  -- par default pas de resitance
 	if type_cible = 2 then
-		select into v_immunise, v_immunise_valeur, v_immunise_rune
+		select into v_immunise, v_resistance, v_immunise_valeur, v_immunise_resitance, v_immunise_rune
 			case when random() < immun_valeur then 'O' else 'N' end,
-			immun_valeur, immun_runes
+			case when random() < immun_resistance then 'O' else 'N' end,
+			immun_valeur, immun_resistance, immun_runes
 		from monstre_generique_immunite
 		where immun_gmon_cod = v_gmon_cod
 			and immun_sort_cod = num_sort;
 
-		if found then
-			-- Le monstre est immunisé.
-			if v_immunise = 'O' and  (v_immunise_rune = 'O' or type_lancer <> 0) then
-				if v_immunise_rune = 'O' and v_immunise_valeur = 1 then
-					v_immunise_texte := 'Votre adversaire <b>est totalement immunisé</b> à ce sort.<br><br>';
-				end if;
-				if v_immunise_rune = 'O' and v_immunise_valeur < 1 then
-					v_immunise_texte := 'L’<b>immunité partielle</b> de votre adversaire à ce sort lui permet de s’en tirer sans dommage.<br><br>';
-				end if;
-				if v_immunise_rune = 'N' and v_immunise_valeur = 1 and type_lancer <> 0 then
-					v_immunise_texte := 'Votre adversaire <b>est totalement immunisé</b> à ce sort. Peut-être devriez-vous essayer de composer ce sort avec des runes ?<br><br>';
-				end if;
-				if v_immunise_rune = 'N' and v_immunise_valeur < 1 and type_lancer <> 0 then
-					v_immunise_texte := 'L’<b>immunité partielle</b> de votre adversaire à ce sort lui permet de s’en tirer sans dommage. Peut-être devriez-vous essayer de composer ce sort avec des runes ?<br><br>';
-				end if;
-				code_retour := code_retour || v_immunise_texte;
-				code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'999'))||' PX pour cette action.<br>';
-				texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] qui y est immunisé.';
+      if found then
+          -- Vérifier si Le monstre est immunisé.
+          if v_immunise = 'O' and  (v_immunise_rune = 'O' or type_lancer <> 0) then
+              if v_immunise_rune = 'O' and v_immunise_valeur = 1 then
+                v_immunise_texte := 'Votre adversaire <b>est totalement immunisé</b> à ce sort.<br><br>';
+              end if;
+              if v_immunise_rune = 'O' and v_immunise_valeur < 1 then
+                v_immunise_texte := 'L’<b>immunité partielle</b> de votre adversaire à ce sort lui permet de s’en tirer sans dommage.<br><br>';
+              end if;
+              if v_immunise_rune = 'N' and v_immunise_valeur = 1 and type_lancer <> 0 then
+                v_immunise_texte := 'Votre adversaire <b>est totalement immunisé</b> à ce sort. Peut-être devriez-vous essayer de composer ce sort avec des runes ?<br><br>';
+              end if;
+              if v_immunise_rune = 'N' and v_immunise_valeur < 1 and type_lancer <> 0 then
+                v_immunise_texte := 'L’<b>immunité partielle</b> de votre adversaire à ce sort lui permet de s’en tirer sans dommage. Peut-être devriez-vous essayer de composer ce sort avec des runes ?<br><br>';
+              end if;
+              code_retour := code_retour || v_immunise_texte;
+              code_retour := code_retour||'Vous gagnez '||trim(to_char(px_gagne,'999'))||' PX pour cette action.<br>';
+              texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] qui y est immunisé.';
 
-				insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-				values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
+              insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+              values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
 
-				if (lanceur != cible) then
-					insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-					values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
-				end if;
-				code_retour := '0;'||code_retour;
+              if (lanceur != cible) then
+                insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
+                values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
+              end if;
+              code_retour := '0;'||code_retour;
 
-	      if type_lancer != -1 then   -- sauf EA
-				    update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
-        end if;
-				return code_retour;
-			end if;
-		end if;
+              if type_lancer != -1 then   -- sauf EA
+                  update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+              end if;
+              return code_retour;
+
+          -- Sinon vérifier si Le monstre est resistant.
+          elsif v_resistance = 'O' and  (v_immunise_rune = 'O' or type_lancer <> 0) then
+     	        v_resiste := 'O' ;  -- resistance !
+          end if;
+      end if;
 	end if;
 
 	-- La cible est sous défense magique ?
@@ -614,7 +623,8 @@ begin
 		end if;
 		v_bloque_magie := 0;
 	end if;
-	if v_bloque_magie = 0 then
+
+	if v_bloque_magie = 0 and v_resiste = 'N' then
 ------------------------
 -- magie non résistée --
 ------------------------

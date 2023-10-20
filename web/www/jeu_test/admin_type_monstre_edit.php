@@ -794,12 +794,13 @@ if ($erreur == 0)
                 IMMUNITÉS
                 <TABLE width="80%" align="center">
                     <tr>
-                        <th>Sort</th>
-                        <th>Y compris<br>lancers runiques</th>
-                        <th>Valeur (entre 0 et 1)</th>
-                        <th>--</th>
+                        <th align="left">Sort</th>
+                        <th align="left">Y compris<br>lancers runiques</th>
+                        <th align="left">Valeur (entre 0 et 1)</th>
+                        <th align="left">Resistance (entre 0 et 1)</th>
+                        <th  align="left">--</th>
                     </tr>
-                    <?php $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur
+                    <?php $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur, immun_resistance
 						from monstre_generique_immunite
 						inner join sorts on sort_cod = immun_sort_cod
 						where immun_gmon_cod  = $gmon_cod";
@@ -809,12 +810,14 @@ if ($erreur == 0)
                     {
                         $sort_nom     = $result_m_sorts['sort_nom'];
                         $immun_valeur = $result_m_sorts['immun_valeur'];
+                        $immun_resistance = $result_m_sorts['immun_resistance'];
                         $immun_runes  = $result_m_sorts['immun_runes'];
                         ?>
                         <TR>
                             <TD><?php echo $sort_nom; ?></TD>
                             <TD><?php echo $immun_runes; ?></TD>
                             <TD><?php echo $immun_valeur; ?></TD>
+                            <TD><?php echo $immun_resistance; ?></TD>
                             <TD>
                                 <form method="post">
                                     <input type="hidden" name="methode2" value="edit"/>
@@ -854,6 +857,7 @@ if ($erreur == 0)
                             </TD>
                             <TD><input type="checkbox" name="immun_rune" value="O"/></TD>
                             <TD><input type="text" value="" name="immun_valeur"/></TD>
+                            <TD><input type="text" value="" name="immun_resistance"/></TD>
                             <TD><input type="submit" value="Ajouter"/></TD>
                         </form>
                     </TR>
