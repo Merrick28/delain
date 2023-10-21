@@ -796,8 +796,8 @@ if ($erreur == 0)
                     <tr>
                         <th align="left">Sort</th>
                         <th align="left">Y compris<br>lancers runiques</th>
-                        <th align="left">Valeur (entre 0 et 1)</th>
-                        <th align="left">Resistance (entre 0 et 1)</th>
+                        <th align="left">Valeur<br>(entre 0 et 1)</th>
+                        <th align="left"><span title="0 => test de resistance standard, -1 => toujours raté, 1 => toujours reussi, 0 à 1 => test de resitance, 0 à -1 => test de faiblesse">Resistance / Faiblesse<br>(entre -1 et 1, 0 pour ignorer)</span></th>
                         <th  align="left">--</th>
                     </tr>
                     <?php $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur, immun_resistance
