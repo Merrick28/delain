@@ -82,7 +82,6 @@ declare
 	v_resistance character;		-- Si la cible a une resitance a ce sort à ce sort
 	v_resiste character;		-- resultat sur la resitance du monstre generique
 	v_immunise_valeur numeric;	-- Le taux d’immunité de la cible
-	v_immunise_resitance numeric;	-- Le taux de resitance de la cible
 	v_immunise_rune character;	-- Si l’immunité vient du fait que le sort soit lancé sans runes
 	v_immunise_texte varchar(500);	-- Texte relatif à l’immunité
 -------------------------------------------------------------
@@ -523,10 +522,10 @@ begin
 	-- immunité des monstres à certains sorts
 	v_resiste := 'I' ;  -- par default pas de resitance I=ignore test de ressitance, N=raté le teste de resistance O=reussi le test de resistance
 	if type_cible = 2 then
-		select into v_immunise, v_resistance, v_immunise_valeur, v_immunise_resitance, v_immunise_rune
+		select into v_immunise, v_resistance, v_immunise_valeur, v_immunise_rune
 			case when random() < immun_valeur then 'O' else 'N' end,
 			case when immun_resistance = 0 then 'I' when random() < abs(immun_resistance) then (case when immun_resistance>0 then 'O' else 'N' end) else (case when immun_resistance>0 then 'N' else 'O' end) end,
-			immun_valeur, immun_resistance, immun_runes
+			immun_valeur, immun_runes
 		from monstre_generique_immunite
 		where immun_gmon_cod = v_gmon_cod
 			and immun_sort_cod = num_sort;
@@ -566,7 +565,7 @@ begin
 
           -- Sinon vérifier si Le monstre est resistant.
           elsif v_resistance <> 'I' and  (v_immunise_rune = 'O' or type_lancer <> 0) then
-     	        v_resiste := immun_resistance ;  -- on force le jet de resistance réussi ou raté !
+     	        v_resiste := v_resistance ;  -- on force le jet de resistance réussi ou raté !
           end if;
       end if;
 	end if;
