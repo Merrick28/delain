@@ -11,8 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Slack notification
-        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Debut de livraison" ${{ secrets.WEBHOOK_ROCKETCHAT }}
+# skip Slack Notification (rocket chat chat.sdewitte.net host unknown)
+#      - name: Slack notification
+#        run: ${GITHUB_WORKSPACE}/shell/notif_slack.sh "Debut de livraison" ${{ secrets.WEBHOOK_ROCKETCHAT }}
 
 
 
