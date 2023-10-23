@@ -433,7 +433,7 @@ begin
         else
           if des <= v_special then
             code_retour := code_retour||'il s’agit donc d’une <b>réussite spéciale</b>.<br><br>';
-            cout_pa := cout_pa - 1;
+            cout_pa := GREATEST(0, cout_pa - 1);
           else
             code_retour := code_retour||'Vous avez donc <b>réussi</b>.<br><br>';
           end if;
