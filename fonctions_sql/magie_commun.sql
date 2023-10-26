@@ -152,7 +152,9 @@ begin
     -- on va refuser de faire se sort sur une course de monture (etage avec etage_mort_speciale=1)
     select etage_mort_speciale into temp from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=cible;
     if temp = 1 and num_sort=39 then
-        return  '0;<p>l''usage de la défense magique n''est pas autorisé pendant les courses de monture!!</p>';
+        return  '0;<p>l''usage de la Défense magique n''est pas autorisé pendant les courses de monture!!</p>';
+    elsif temp = 1 and num_sort=146 then
+        return  '0;<p>l''usage de la Distorsion temporelle n''est plus autorisée pendant les courses de monture!!</p>';
     end if;
 
 	-- sort distortion temporelle
