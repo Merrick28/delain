@@ -53,10 +53,11 @@ declare
   v_niveau_attaquant integer;  -- Resistance magique
   code_retour text;
 
-  v_compagnon integer;         -- cod perso du familier si aventurier et de l'aventurier si familier
-  v_distance_min integer;      -- distance minimum requis pour la cible
-  v_exclure_porteur text;      -- le porteur et les compagnons sont inclus dans le ciblage
-  v_equipage integer;          -- le partenaire d'équipage: cavalier/monture
+  v_compagnon integer;          -- cod perso du familier si aventurier et de l'aventurier si familier
+  v_monture_race_cod integer;   -- race de la monture d'un perso (0 s'il n'en a pas)
+  v_distance_min integer;       -- distance minimum requis pour la cible
+  v_exclure_porteur text;       -- le porteur et les compagnons sont inclus dans le ciblage
+  v_equipage integer;           -- le partenaire d'équipage: cavalier/monture
 
 begin
 
@@ -108,6 +109,13 @@ begin
       v_compagnon:=v_equipage ;
   end if;
 
+  -- race de la monture (pour aventurier qui en ont une)
+  v_monture_race_cod := 0 ;
+  if  v_type_source=1 and v_equipage != 0 then
+      select perso_race_cod into v_monture_race_cod from perso where perso_cod = v_equipage ;
+  end if;
+
+
   -- Et finalement on parcourt les cibles.
   for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod
                 from perso
@@ -136,6 +144,7 @@ begin
                        (v_cibles_type = 'E' and perso_type_perso=2  and v_type_source!=2) or
                        (v_cibles_type = 'R' and perso_race_cod = v_race_source) or
                        (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
+                       (v_cibles_type = 'V' and f_est_dans_la_liste(v_monture_race_cod, (v_params->>'fonc_trig_races')::json)) or
                        (v_cibles_type = 'J' and perso_type_perso = 1) or
                        (v_cibles_type = 'L' and perso_cod = v_compagnon) or
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or
