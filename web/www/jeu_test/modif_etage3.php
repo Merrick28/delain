@@ -76,7 +76,17 @@ if ($erreur == 0)
 				$result = $stmt->fetch();
 				$etage_cod = $result['etage_cod'];
 				$etage_numero = ($etage_numero = 999) ? $etage_cod : $etage_numero;
-                $etage_monture = json_encode(["pa_action" => $etage_monture_pa_action, "ordre_talonner" => $etage_monture_ordre_talonner, "ordre_sauter" => $etage_monture_ordre_sauter ]) ;
+                $etage_monture = json_encode(   ["pa_action" => $etage_monture_pa_action,
+                                                "ordre_echec" => $etage_monture_ordre_echec,
+                                                "ordre_incident" => $etage_monture_ordre_inc,
+                                                "ordre_talonner" => $etage_monture_ordre_talonner,
+                                                "ordre_sauter" => $etage_monture_ordre_sauter,
+                                                "ordre_talonner_echec"=>$etage_monture_ordre_talonner_echec,
+                                                "ordre_sauter_echec"=>$etage_monture_ordre_sauter_echec,
+                                                "ordre_talonner_incident"=>$etage_monture_ordre_talonner_inc,
+                                                "ordre_sauter_incident"=>$etage_monture_ordre_sauter_inc,
+                                                "ordre_talonner_bm"=>$etage_monture_ordre_talonner_bm,
+                                                "ordre_sauter_bm"=>$etage_monture_ordre_sauter_bm]) ;
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
 				$etage_ref = ($etage_ref == '--') ? $etage_numero : $etage_ref;
@@ -187,7 +197,19 @@ if ($erreur == 0)
 				$etage_mort = ($etage_mort == '--') ? $etage_ref : $etage_mort;
 				$etage_affichage = ($etage_affichage == '--') ? 2 : $etage_affichage;
 				$etage_retour_rune_monstre = ($etage_retour_rune_monstre == '') ? 50 : $etage_retour_rune_monstre;
-                $etage_monture = json_encode(["pa_action" => $etage_monture_pa_action, "ordre_talonner" => $etage_monture_ordre_talonner, "ordre_sauter" => $etage_monture_ordre_sauter ]) ;
+                $etage_monture = json_encode(
+                        ["pa_action" => $etage_monture_pa_action,
+                        "ordre_echec" => $etage_monture_ordre_echec,
+                        "ordre_incident" => $etage_monture_ordre_inc,
+                        "ordre_talonner" => $etage_monture_ordre_talonner,
+                        "ordre_sauter" => $etage_monture_ordre_sauter,
+                        "ordre_talonner_echec"=>$etage_monture_ordre_talonner_echec,
+                        "ordre_sauter_echec"=>$etage_monture_ordre_sauter_echec,
+                        "ordre_talonner_incident"=>$etage_monture_ordre_talonner_inc,
+                        "ordre_sauter_incident"=>$etage_monture_ordre_sauter_inc,
+                        "ordre_talonner_bm"=>$etage_monture_ordre_talonner_bm,
+                        "ordre_sauter_bm"=>$etage_monture_ordre_sauter_bm]) ;
+
 				$req = "update etage set
 						etage_libelle = e'$nom',
 						etage_description = e'$description',
@@ -355,6 +377,14 @@ if ($erreur == 0)
 		echo $html->etage_select('', ' where etage_reference = etage_numero');
         $sel_monture_ordre_talonner = create_selectbox("etage_monture_ordre_talonner", ["0"=>"Interdit", "1"=>"1x par DLT", "2"=>"2x par DLT", "0.5"=>"1x toutes les 2 DLT"], 0);
         $sel_monture_ordre_sauter = create_selectbox("etage_monture_ordre_sauter", ["0"=>"Interdit", "1"=>"1x par DLT", "2"=>"2x par DLT", "0.5"=>"1x toutes les 2 DLT"], 0);
+        $sel_monture_ordre_talonner_echec = create_selectbox("etage_monture_ordre_talonner_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], 0);
+        $sel_monture_ordre_sauter_echec = create_selectbox("etage_monture_ordre_sauter_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], 0);
+        $sel_monture_ordre_talonner_inc = create_selectbox("etage_monture_ordre_talonner_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], 0);
+        $sel_monture_ordre_sauter_inc = create_selectbox("etage_monture_ordre_sauter_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], 0);
+        $sel_monture_ordre_talonner_bm = '<input name ="etage_monture_ordre_talonner_bm" value="0" type="text" size="4">';
+        $sel_monture_ordre_sauter_bm = '<input name ="etage_monture_ordre_sauter_bm" value="0" type="text" size="4">';
+        $sel_monture_ordre_echec = create_selectbox("etage_monture_ordre_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], 0);
+        $sel_monture_ordre_inc = create_selectbox("etage_monture_ordre_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], 0);
 
     ?>
 			</select><br />
@@ -372,8 +402,9 @@ if ($erreur == 0)
             <br>
             Comportement des montures sur cet étage ?<br>
             -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_pa_action" value="4" size="4"/><br>
-            -- Utilisation de l'ordre talonner ? <?php echo  $sel_monture_ordre_talonner ?><br>
-            -- Utilisation de l'ordre sauter ? <?php echo  $sel_monture_ordre_sauter ?><br>
+            -- Incident d'ordre sur cet étage ? <?php echo $sel_monture_ordre_echec."&nbsp=>&nbsp".$sel_monture_ordre_inc; ?><br>
+            -- Utilisation de l'ordre talonner ? <?php echo  $sel_monture_ordre_talonner." / ".$sel_monture_ordre_talonner_echec."&nbsp=>&nbsp".$sel_monture_ordre_talonner_inc." / difficulté:&nbsp;". $sel_monture_ordre_talonner_bm ." <i style='font-size:10px;'>(format dé rolliste)</i>"; ?><br>
+            -- Utilisation de l'ordre sauter ? <?php echo  $sel_monture_ordre_sauter." / ".$sel_monture_ordre_sauter_echec."&nbsp=>&nbsp".$sel_monture_ordre_sauter_inc." / difficulté:&nbsp;". $sel_monture_ordre_sauter_bm ." <i style='font-size:10px;'>(format dé rolliste)</i>"; ?><br>
             <br />
             X min : <input type="text" name="x_min"> -
 			X max : <input type="text" name="x_max"><br />
@@ -418,7 +449,18 @@ if ($erreur == 0)
 		$etage_quatrieme_perso = $result['etage_quatrieme_perso'];
 		$etage_quatrieme_mortel = $result['etage_quatrieme_mortel'];
 		$etage_mort_speciale = $result['etage_mort_speciale'];
-		$etage_monture = $result['etage_monture']=="" ? ["pa_action"=>4, "ordre_talonner"=>0, "ordre_sauter"=>0] : (array)json_decode( $result['etage_monture'] );
+		$etage_monture = $result['etage_monture']=="" ? [   "pa_action"=>4,
+                                                            "ordre_echec"=>0,
+                                                            "ordre_incident"=>0,
+                                                            "ordre_talonner"=>0,
+                                                            "ordre_sauter"=>0,
+                                                            "ordre_talonner_echec"=>0,
+                                                            "ordre_sauter_echec"=>0,
+                                                            "ordre_talonner_incident"=>0,
+                                                            "ordre_sauter_incident"=>0,
+                                                            "ordre_talonner_bm"=>0,
+                                                            "ordre_sauter_bm"=>0
+                                                        ] : (array)json_decode( $result['etage_monture'] );
         $etage_duree_imp_p = $result['etage_duree_imp_p'];
         $etage_duree_imp_f = $result['etage_duree_imp_f'];
 		$etage_mort = $result['etage_mort'];
@@ -485,8 +527,16 @@ if ($erreur == 0)
         $sel_mort_spec0 = (1*$etage_mort_speciale == 0) ? 'selected="selected"' : '';
         $sel_mort_spec1 = (1*$etage_mort_speciale == 1) ? 'selected="selected"' : '';
 
+        $sel_monture_ordre_echec = create_selectbox("etage_monture_ordre_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], $etage_monture["ordre_echec"] ? $etage_monture["ordre_echec"] : 0);
+        $sel_monture_ordre_inc = create_selectbox("etage_monture_ordre_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], $etage_monture["ordre_incident"] ? $etage_monture["ordre_incident"] : 0);
         $sel_monture_ordre_talonner = create_selectbox("etage_monture_ordre_talonner", ["0"=>"Interdit", "1"=>"1x par DLT", "2"=>"2x par DLT", "0.5"=>"1x toutes les 2 DLT"], $etage_monture["ordre_talonner"] ? $etage_monture["ordre_talonner"] : 0);
         $sel_monture_ordre_sauter = create_selectbox("etage_monture_ordre_sauter", ["0"=>"Interdit", "1"=>"1x par DLT", "2"=>"2x par DLT", "0.5"=>"1x toutes les 2 DLT"], $etage_monture["ordre_sauter"] ? $etage_monture["ordre_sauter"] : 0);
+        $sel_monture_ordre_talonner_echec = create_selectbox("etage_monture_ordre_talonner_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], $etage_monture["ordre_talonner_echec"] ? $etage_monture["ordre_talonner_echec"] : 0);
+        $sel_monture_ordre_sauter_echec = create_selectbox("etage_monture_ordre_sauter_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], $etage_monture["ordre_sauter_echec"] ? $etage_monture["ordre_sauter_echec"] : 0);
+        $sel_monture_ordre_talonner_inc = create_selectbox("etage_monture_ordre_talonner_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], $etage_monture["ordre_talonner_incident"] ? $etage_monture["ordre_talonner_incident"] : 0);
+        $sel_monture_ordre_sauter_inc = create_selectbox("etage_monture_ordre_sauter_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], $etage_monture["ordre_sauter_incident"] ? $etage_monture["ordre_sauter_incident"] : 0);
+        $sel_monture_ordre_talonner_bm = '<input name ="etage_monture_ordre_talonner_bm" value="'.($etage_monture["ordre_talonner_bm"] ? $etage_monture["ordre_talonner_bm"] : 0).'" type="text" size="4">';
+        $sel_monture_ordre_sauter_bm = '<input name ="etage_monture_ordre_sauter_bm" value="'.($etage_monture["ordre_sauter_bm"] ? $etage_monture["ordre_sauter_bm"] : 0).'" type="text" size="4">';
 
         $arene_info = "" ;
         if ($carene_ouverte == 'O')
@@ -517,8 +567,9 @@ if ($erreur == 0)
             <br>
             Comportement des montures sur cet étage ?<br>
             -- Cout (en PA) des ordres des montures sur cet étage ? <input type="text" name="etage_monture_pa_action" value="<?php echo  $etage_monture["pa_action"]; ?>" size="4"/><br>
-            -- Utilisation de l'ordre talonner ? <?php echo  $sel_monture_ordre_talonner ?><br>
-            -- Utilisation de l'ordre sauter ? <?php echo  $sel_monture_ordre_sauter ?><br>
+            -- Incident d'ordre sur cet étage ? <?php echo $sel_monture_ordre_echec."&nbsp=>&nbsp".$sel_monture_ordre_inc; ?><br>
+            -- Utilisation de l'ordre talonner ? <?php echo  $sel_monture_ordre_talonner." / ".$sel_monture_ordre_talonner_echec."&nbsp=>&nbsp".$sel_monture_ordre_talonner_inc." / difficulté:&nbsp;". $sel_monture_ordre_talonner_bm ." <i style='font-size:10px;'>(format dé rolliste)</i>"; ?><br>
+            -- Utilisation de l'ordre sauter ? <?php echo  $sel_monture_ordre_sauter." / ".$sel_monture_ordre_sauter_echec."&nbsp=>&nbsp".$sel_monture_ordre_sauter_inc." / difficulté:&nbsp;". $sel_monture_ordre_sauter_bm ." <i style='font-size:10px;'>(format dé rolliste)</i>"; ?><br>
             <br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
 			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />

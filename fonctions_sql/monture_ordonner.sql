@@ -23,6 +23,15 @@ AS $_$declare
   v_nb_ordre integer ;     --  nombre d'ordre déjà donné
   v_num integer ;     --  N° d'ordre actuel pour calcul
   v_type_ordre text ;     --  Type d'ordre: diriger, sauter, tolonner
+  v_talonner_bm text ;     --  dificulté a ajouter lors de l'ajout d'une talonnade
+  v_sauter_bm text ;     --  dificulté a ajouter lors de l'ajout d'un saut
+  v_etage_echec numeric ; -- seuil de déclencheent d'un incident d'ordre
+  v_etage_incident numeric ; -- comportement facheux d'un incident d'ordre
+  v_talonner_echec numeric ; -- seuil de déclencheent d'un incident d'ordre talonner
+  v_talonner_incident numeric ; -- comportement facheux d'un incident d'ordre talonner
+  v_sauter_echec numeric ; --- seuil de déclencheent d'un incident d'ordre sauter
+  v_sauter_incident numeric ; -- comportement facheux d'un incident d'ordre sauter
+  v_incident_facheux numeric ; -- type d'evenement facheux a faire en cas d'echec
   v_num_ordre integer ;     --  N° d'ordre actuel
   v_num_prems integer ;     --  N° du 1er ordre
   v_difficulte integer ;     -- difficulté de l'ordre
@@ -40,7 +49,18 @@ begin
     return '<p>Erreur ! Le perso n''a pas été trouvé !';
   end if;
 
-  select COALESCE(f_to_numeric(etage_monture->>'pa_action'::text),4) into v_cout_ordre from perso
+  -- comportement des montures sur l'étage du perso
+  select COALESCE(f_to_numeric(etage_monture->>'pa_action'::text),4) ,
+         COALESCE(etage_monture->>'ordre_talonner_bm'::text,'0')  ,
+         COALESCE(etage_monture->>'ordre_sauter_bm'::text,'0')  ,
+         f_to_numeric(COALESCE(etage_monture->>'ordre_echec'::text,'0')),
+         f_to_numeric(COALESCE(etage_monture->>'ordre_incident'::text,'0')),
+         f_to_numeric(COALESCE(etage_monture->>'ordre_talonner_echec'::text,'0')),
+         f_to_numeric(COALESCE(etage_monture->>'ordre_talonner_incident'::text,'0')),
+         f_to_numeric(COALESCE(etage_monture->>'ordre_sauter_echec'::text,'0')),
+         f_to_numeric(COALESCE(etage_monture->>'ordre_sauter_incident'::text,'0'))
+    into v_cout_ordre, v_talonner_bm, v_sauter_bm, v_etage_echec, v_etage_incident, v_talonner_echec, v_talonner_incident, v_sauter_echec, v_sauter_incident
+    from perso
     join perso_position on ppos_perso_cod=perso_cod
     join positions on pos_cod=ppos_pos_cod
     join etage on etage_numero=pos_etage
@@ -62,14 +82,22 @@ begin
   select pnbact_nombre into v_nb_action from perso_nb_action where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
   if not found then
       insert into perso_nb_action(pnbact_perso_cod, pnbact_action, pnbact_nombre, pnbact_date_derniere_action) values(v_perso, 'EQI-ordonner', 0, now());
-  elsif v_nb_action > 1 AND  ( f_to_numeric(v_param->>'num_ordre') > v_num_prems OR (f_to_numeric(v_param->>'num_ordre') = 0 AND v_nb_ordre > 0) ) then
-      return '<p>Votre monture est <b>devenue incontrolable</b>, excepté le premier ordre, vous ne pouvez plus modifier ou donner de nouveaux ordres pendant cette DLT !';
+  -- on retire l'effet des montures incotrollable, mise en commentaire si besoin de reactiver
+  --elsif v_nb_action > 1 AND  ( f_to_numeric(v_param->>'num_ordre') > v_num_prems OR (f_to_numeric(v_param->>'num_ordre') = 0 AND v_nb_ordre > 0) ) then
+  --    return '<p>Votre monture est <b>devenue incontrolable</b>, excepté le premier ordre, vous ne pouvez plus modifier ou donner de nouveaux ordres pendant cette DLT !';
   end if;
 
+  -- recuparation du type d'ordre
+  v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
 
   -- traitement de la difficulté de l'ordre
   if v_ordre = 'ADD' or v_ordre = 'UPD' then
       v_difficulte := 5 * v_nb_ordre ;    -- 5% de difficulté par ordre au dessus du premier
+      if v_type_ordre = 'TALONNER' then
+          v_difficulte := v_difficulte + f_lit_des_roliste( v_talonner_bm ) ;
+       elseif v_type_ordre = 'SAUTER' then
+          v_difficulte := v_difficulte + f_lit_des_roliste( v_sauter_bm );
+      end if;
 
       -- Test de compétence équitation => gère le la consommation de PA
       temp_competence := monture_competence(v_perso, 3, v_monture, v_difficulte);
@@ -99,7 +127,7 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := v_num_ordre + 1 ;
-          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
+          -- v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           v_num := f_to_numeric(v_param->>'num_ordre') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
@@ -135,7 +163,7 @@ begin
 
           -- ajouter un ordre à la fin de la liste des ordres
           v_num_ordre := f_to_numeric(v_param->>'num_ordre') ;
-          v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
+          -- v_type_ordre := coalesce(v_param->>'type_ordre', 'DIRIGER') ;
           dist :=  f_to_numeric(v_param->>'dist') ;     --  ordre: distance
           dir_x :=  f_to_numeric(v_param->>'dir_x') ;     --  ordre: dir x
           dir_y :=  f_to_numeric(v_param->>'dir_y') ;     --  ordre: dir y
@@ -210,8 +238,24 @@ begin
               update perso_nb_action set pnbact_nombre=pnbact_nombre+1, pnbact_date_derniere_action=now() where pnbact_perso_cod=v_perso and pnbact_action = 'EQI-ordonner' ;
           end if;
 
-          -- en cas d'echc critique on donne un ordre aléatoire
-          if split_part(temp_competence,';',2) = '0' then
+          -- traitement du comportement d'échec de l'action ehec=0 pas d'inciden, echec=1 sur critique seuelemnt, echec=2 sur tous les echecs
+          v_incident_facheux := -1 ;   -- pas d'incident facheux par defaut (0=> generer un ordre de direction de monture aléatoire, 1=> désarsonnage)
+          if v_type_ordre = 'TALONNER' then
+              if v_talonner_echec = 2 or ( v_talonner_echec = 1 and split_part(temp_competence,';',2) = '0') then
+                  v_incident_facheux := v_talonner_incident ;
+              end if;
+          elsif v_type_ordre = 'SAUTER' then
+              if v_sauter_echec = 2 or ( v_sauter_echec = 1 and split_part(temp_competence,';',2) = '0') then
+                  v_incident_facheux := v_sauter_incident ;
+              end if;
+          else
+              if v_etage_echec = 2 or ( v_etage_echec = 1 and split_part(temp_competence,';',2) = '0') then
+                  v_incident_facheux := v_etage_incident ;
+              end if;
+          end if;
+
+          -- sur incident facheux de type 1, on donne un ordre aléatoire
+          if v_incident_facheux = 0 then
                 code_retour := code_retour||'<br><p>Vous avez donné un ordre à ' || v_monture_nom || ', mais <b>votre monture ne l''a pas compris!</b><br>';
 
                 -- evenement déchevaucher (107)
@@ -238,6 +282,18 @@ begin
                     set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'ia_monture_ordre' , ((v_param_ia::jsonb) || (json_build_object( 'ordre' , v_num_ordre, 'type_ordre', 'DIRIGER', 'dir_x' , 0, 'dir_y' , 0 , 'dist' , dist )::jsonb)))::jsonb)
                     where perso_cod=v_monture ;
 
+          -- sur incident facheux de type 2, on désarçonne
+          elsif v_incident_facheux = 1 then
+                code_retour := code_retour||'<br><p>Vous avez raté votre action et vous perdez le contrôle de ' || v_monture_nom || ', <b>votre monture vous a désarçonné!</b><br>';
+
+                -- evenement desarçonner (109)
+                perform insere_evenement(v_perso, v_monture, 109, '[attaquant] a raté son contrôle sur sa monture [cible] et a été désarçonné.', 'O', NULL);
+
+                -- Réaliser l'action du désarçonnage !!!
+                update perso set perso_monture=null where perso_cod=v_perso ;
+
+
+          -- cette action ne génére pas d'incident facheux
           else
                 code_retour := code_retour||'<br><p>Vous n’avez pas réussi à donner un ordre à ' || v_monture_nom || '!<br>';
           end if;
