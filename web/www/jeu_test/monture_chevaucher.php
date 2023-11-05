@@ -36,8 +36,8 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= "<br><strong>NOTA</strong>: Cette action nécessite 4 PA.<br><br>";
     }
     if ($contenu_siffler!="") {
-        $contenu_page .= "Il y a une de vos anciennes monture est à proximité, elle vous reconnait!<br>";
-        $contenu_page .= "Vous pouvez la <b>siffler</b> pour la fire venir, puis la <b>chevaucher</b> au passage:<br><br>";
+        $contenu_page .= "Il y a une de vos anciennes montures qui est à proximité, elle vous reconnait!<br>";
+        $contenu_page .= "Vous pouvez la <b>siffler</b> pour la faire venir, puis la <b>chevaucher</b> au passage:<br><br>";
         $contenu_page .= $contenu_siffler;
         $contenu_page .= "<br><strong>NOTA</strong>: Cette action nécessite <b>6 PA</b>.<br>";
     }
