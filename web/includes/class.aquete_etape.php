@@ -884,7 +884,7 @@ class aquete_etape
         $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
         if (!$p6 = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
-            return "Je ne vois rien que vous pouvez réparer ici!" ;
+            return "Je ne vois rien que vous pouvez réparer ici!!!" ;
         }
 
         if ( count($p6) == 0 )

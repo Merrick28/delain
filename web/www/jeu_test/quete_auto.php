@@ -270,8 +270,8 @@ if ($methode == "interagir") {
     }
     $contenu_page .= "<span id='perso-journal'>$notes</span>";      // Texte avec l'historique de la quete jusqu'a l'étape en cours
 
-    if ($notes != "")
-    {
+    if (($notes != "") && (($perso->perso_type_perso == 1)))
+    {   // Bouton ajouter dans les notes (pour le sperso seuelement)
         $contenu_page .= '<input style="float:right; margin-right:50px; margin-top:3px;" onclick="addQANotes(\'perso-journal\');" type="submit" class="test" value="  Ajouter dans mes Notes ">';
     }
 
