@@ -569,6 +569,22 @@ if ($erreur == 0)
                                     </td>';
                     break;
 
+                    case 'type_objet':
+                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                            {
+                                $tobj = new type_objet() ;
+                                $tobj->charge( $element->aqelem_misc_cod );
+                                $aqelem_misc_nom = $tobj->tobj_libelle ;
+                            }
+                            echo   '<td>Type d\'objet :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'type_objet\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","type_objet","Rechercher un type d’objet");\'> 
+                                    </td>';
+                    break;
+
                     case 'lieu_type':
                             if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {

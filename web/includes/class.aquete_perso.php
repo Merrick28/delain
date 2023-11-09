@@ -971,6 +971,16 @@ class aquete_perso
                     }
                     break;
 
+                case "#REPARER #OBJET":
+                    // Pour échanger des objets
+                    if ( $this->action->reparer_objet($this) )
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
                 case "#END #OK":
                 case "#END #KO":
                     // cette etape sert à mettre fin à la quête avec ou sans succès.
@@ -1269,6 +1279,10 @@ class aquete_perso
 
             case "#ECHANGE #OBJET":
                 $texte_etape = $etape->get_echange_objet_form($this);
+                break;
+
+            case "#REPARER #OBJET":
+                $texte_etape = $etape->get_reparer_objet_form($this);
                 break;
         }
 
