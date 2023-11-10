@@ -1008,9 +1008,6 @@ class aquete_action
         }
 
 
-        // On attend que le jueur valide son choix
-        if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" || isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
-
         // préparer p6 avec la liste des objet réparable
         $req = "select obj_cod, obj_nom, tobj_libelle, obj_etat 
                       from perso_objets 
@@ -1052,17 +1049,20 @@ class aquete_action
         $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
         if (!$p6 = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
-            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici!<br>";
+            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici...!<br>";
             $perso_journal->stocke();
-            return true; // aucun achat
+            return true; // aucune réparation
         }
 
         if ( count($p6) == 0 )
         {
-            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici.<br>";
+            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici..!!<br>";
             $perso_journal->stocke();
-            return true; // aucun achat
+            return true; // aucun réparation
         }
+
+        // On attend que le joueur valide son choix
+        if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" || isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
 
 
         // Il a validé!!!! On vérifie d'abord que le perso à de quoi payer
