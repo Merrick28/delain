@@ -221,25 +221,25 @@ begin
  if v_type_comparaison = 'NUM' then    -- Comparaison entre valeur NUMeric
 
     -- on a récupérr la carac du perso, on la compare à la consigne demandé
-    if (v_param_txt_1 = '=') and (TO_NUMBER(v_perso_carac, '9999999999.99') = TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    if (v_param_txt_1 = '=') and (TO_NUMBER(v_perso_carac, '9999999999.99') = TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = '!=') and (TO_NUMBER(v_perso_carac, '9999999999.99') != TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    elsif (v_param_txt_1 = '!=') and (TO_NUMBER(v_perso_carac, '9999999999.99') != TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = '<') and (TO_NUMBER(v_perso_carac, '9999999999.99') < TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    elsif (v_param_txt_1 = '<') and (TO_NUMBER(v_perso_carac, '9999999999.99') < TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = '<=') and (TO_NUMBER(v_perso_carac, '9999999999.99') <= TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    elsif (v_param_txt_1 = '<=') and (TO_NUMBER(v_perso_carac, '9999999999.99') <= TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = '>') and (TO_NUMBER(v_perso_carac, '9999999999.99') > TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    elsif (v_param_txt_1 = '>') and (TO_NUMBER(v_perso_carac, '9999999999.99') > TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = '>=') and (TO_NUMBER(v_perso_carac, '9999999999.99') >= TO_NUMBER(v_param_txt_2, '9999999999.99')) then
+    elsif (v_param_txt_1 = '>=') and (TO_NUMBER(v_perso_carac, '9999999999.99') >= TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) then
       return 1;
 
-    elsif (v_param_txt_1 = 'entre') and (TO_NUMBER(v_perso_carac, '9999999999.99') >= TO_NUMBER(v_param_txt_2, '9999999999.99')) and (TO_NUMBER(v_perso_carac, '9999999999.99') <= TO_NUMBER(v_param_txt_3, '9999999999.99')) then
+    elsif (v_param_txt_1 = 'entre') and (TO_NUMBER(v_perso_carac, '9999999999.99') >= TO_NUMBER(f_to_numeric(v_param_txt_2)::text, '9999999999.99')) and (TO_NUMBER(v_perso_carac, '9999999999.99') <= TO_NUMBER(f_to_numeric(v_param_txt_3)::text, '9999999999.99')) then
       return 1;
 
     end if;
