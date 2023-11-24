@@ -459,6 +459,33 @@ class aquete_etape
     }
 
     /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un texte)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_equipe_form(aquete_perso $aqperso)
+    {
+        $etape_modele = $aqperso->get_etape_modele();
+
+
+        //echo "<pre>"; print_r($aqperso); die();
+
+        $form = "";
+        $form .= '<form method="post" action="quete_auto.php">
+            <input type="hidden" name="methode" value="dialogue">
+            <input type="hidden" name="dialogue-echanger" value="dialogue">
+            <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
+            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Equipe 1</td><td style="min-width:400px; font-weight: bold">Equipe 2</td></tr>';
+
+        // footer
+        $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+
+
+        return $form;
+    }
+
+    /**
      * Fonction pour mettre en forme le texte d'une étape du type choix_etape (validation d'une dépense de PA)
      * @param aquete_perso $aqperso
      * @return mixed|string

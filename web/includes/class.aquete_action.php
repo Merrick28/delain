@@ -484,6 +484,51 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * On recherche le n° d'étape suivant en fonction de la saisie du joeuru dans le panneau de gestion des équipes!
+     * La mécanique est différente des QA habituelle, l'étapes est globale à tous les joueurs (l'instance du joueur sera ignorée)
+     *       + les joueurs ferront evoluer les parametres de la QA de base:
+     *       + la validation du dernier joueur validera les quetes de tous.
+     * => P5 txt1=nom equipe / num1=nb de joueur attendu dnas l'équipe
+     * => P7 => liste de perso / num1 = index d'équipe (0 = 1ere equipe, 1=2eme equipe, etc...)
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_equipe(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "selecteur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 0)) return $retour ;    // Problème lecture (blocage)
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape")) return $retour ;    // Problème lecture (blocage)
+
+
+        if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" && !isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
+
+
+        if (isset($_REQUEST["cancel"])) {
+            $retour->status = true ;  // => Le joueur souhaite ne pas intégrer d'équipe sortie etape d'erreur
+            $retour->etape = $p6->aqelem_misc_cod ;
+            return $retour ;
+        }
+
+        echo "<pre>"; print_r($aqperso); die();
+
+
+
+        // Sortie par défaut!! demander une autre saisie du joueur
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
      * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%0],[2:etape|1%1],[3:etape|1%1]'
      * @param aquete_perso $aqperso
      * @return bool
