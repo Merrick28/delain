@@ -501,13 +501,13 @@ class aquete_action
         $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
         $retour->etape = 0 ;
 
-
-        $element = new aquete_element();
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur" )) return $retour ;                      // Problème lecture (blocage)
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur" )) return $retour ;                       // Problème lecture (blocage)
-        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "selecteur" )) return $retour ;                       // Problème lecture (blocage)
-        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 0)) return $retour ;    // Problème lecture (blocage)
-        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape")) return $retour ;    // Problème lecture (blocage)
+        // on va travailler avec les éléments de l'étape globale (pas ceux du perso)
+         $element = new aquete_element();
+        if (!$p2 = $element->get_etape_element( $aqperso->etape, 2, "craft" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_etape_element( $aqperso->etape, 3, "selecteur" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_etape_element( $aqperso->etape, 4, "valeur", 0 )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_etape_element( $aqperso->etape, 5, "etape", 0)) return $retour ;    // Problème lecture (blocage)
+        if (!$p6 = $element->get_etape_element( $aqperso->etape, 6, "etape")) return $retour ;    // Problème lecture (blocage)
 
 
         if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" && !isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
@@ -519,7 +519,13 @@ class aquete_action
             return $retour ;
         }
 
-        echo "<pre>"; print_r($aqperso); die();
+        // recupe des parametres
+        $nb_equipe = $p2->aqelem_param_num_1;                 // nombre d'équipe
+        $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
+        $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
+        $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
+
+        //echo "<pre>"; print_r($aqperso); die();
 
 
 

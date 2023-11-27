@@ -467,21 +467,129 @@ class aquete_etape
     {
         $etape_modele = $aqperso->get_etape_modele();
 
+        $element = new aquete_element();
+        if (!$p2 = $element->get_etape_element( $aqperso->etape, 2, "craft" )) return false ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_etape_element( $aqperso->etape, 3, "selecteur" )) return false ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_etape_element( $aqperso->etape, 4, "valeur", 0 )) return false ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_etape_element( $aqperso->etape, 5, "etape", 0)) return false ;    // Problème lecture (blocage)
+        if (!$p6 = $element->get_etape_element( $aqperso->etape, 6, "etape")) return false ;    // Problème lecture (blocage)
+        if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return false ;    // Problème lecture (blocage)
 
-        //echo "<pre>"; print_r($aqperso); die();
+
+        $nb_equipe = $p2->aqelem_param_num_1;                 // nombre d'équipe
+        $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
+        $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
+        $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
+        $condition_equipe = "Non remplie";
+
+        // vérifier si le perso est dejà dans la liste et préparer la liste des équipe
+        $perso_cod = $aqperso->aqperso_perso_cod ;
+        $p_idx = -1 ;
+        $p_equipe = 0 ;
+        $p_etat = 0 ;
+        $equipe_perso = [] ;        // vide au debut $equipe_perso[row][equipe] => [perso,etat]
+        $equipe_row = -1 ;
+        foreach ($p7 as $k => $p)
+        {
+            if ($p->aqelem_misc_cod == $perso_cod)
+            {
+                $p_idx = $k ;
+                $p_equipe = $p->aqelem_param_num_1 ;
+                $p_etat = $p->aqelem_param_num_2 ;
+                break;
+            }
+        }
+
+        if ($_REQUEST["dialogue-echanger"] == "dialogue" && $_REQUEST["valider"] == "Valider les modifications")
+        {
+            $element = new aquete_element();
+            if ($p_idx >= 0) { // ajouter le perso dans la liste
+                $element->charge($p7[$p_idx]->aqelem_cod);
+            } else {
+                $element->aqelem_aquete_cod = $aqperso->etape->aqetape_aquete_cod;
+                $element->aqelem_aqetape_cod = $aqperso->etape->aqetape_cod;
+                $element->aqelem_param_id = 7;
+                $element->aqelem_param_ordre = count($p7) + 1;
+                $element->aqelem_type = "perso";
+                $element->aqelem_misc_cod = $perso_cod;
+            }
+            $element->aqelem_param_num_1 = (int)$_REQUEST["aqf_equipe"];
+            $element->aqelem_param_num_2 = (int)$_REQUEST["aqf_etat"];
+            $p_equipe = $element->aqelem_param_num_1 ;
+            $p_etat = $element->aqelem_param_num_2 ;
+
+            $element->stocke(($p_idx == -1) ? true : false );
+            //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+            // recharger p7 avec les valeurs modifiées
+            if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return false ;    // Problème lecture (blocage)
+        }
+
+
+        foreach ($p7 as $k => $p)
+        {
+            if ($p->aqelem_misc_cod > 0 ){
+
+                if ((count($equipe_perso) == 0) || (isset($equipe_perso[$equipe_row][$p->aqelem_param_num_1])))  {
+                    $equipe_row ++ ;
+                    for ($e=0; $e<$nb_equipe; $e++) {
+                        $equipe_perso[$equipe_row] = [] ;
+                    }
+                }
+                $equipe_perso[$equipe_row][$p->aqelem_param_num_1] = ["perso_cod"=> $perso_cod, "etat"=> $p->aqelem_param_num_2] ;
+            }
+        }
+
 
         $form = "";
         $form .= '<form method="post" action="quete_auto.php">
             <input type="hidden" name="methode" value="dialogue">
             <input type="hidden" name="dialogue-echanger" value="dialogue">
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
-            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
-            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Equipe 1</td><td style="min-width:400px; font-weight: bold">Equipe 2</td></tr>';
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">        ';
 
-        // footer
-        $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+        $form .= '<table style="border: solid 1px #800000;"><tr>';
+        // barre des titres du tableau, et préparation du selecteur d'équipe
+        $equipes = [] ;
+        for ($e=0; $e<$nb_equipe; $e++){
+            $equipes[$e] = "Equipe #".($e+1);
+            $form .=  '<td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Equipe #'.($e+1).'</td>';
+        }
+        $form .= '</tr>';
+
+        // Afficher le contenu des equipes
+        $p = new perso();
+        for ($r=0; $r < count($equipe_perso); $r++ ){
+            $form .= "<tr>" ;
+            for ($e=0; $e<$nb_equipe; $e++){
+                if (isset($equipe_perso[$r][$e])) {
+                    $p->charge($equipe_perso[$r][$e]["perso_cod"]);
+                    $form .=  '<td><img src="/images/smilies/'.( $equipe_perso[$r][$e]["etat"] == 1 ? "bien.gif" : "reflexion.gif").'"></td><td>'.$p->perso_nom.' (<a href="visu_desc_perso.php?visu='.$p->perso_cod.'"#>'.$p->perso_cod.'</a>)</td>';
+                } else {
+                    $form .=  '<td></td><td></td>';
+                }
+            }
+            $form .= "</tr>" ;
+        }
 
 
+        $form .= '</table><br>';
+
+        // selecteur d'équipe
+        $form .= "Choisissez votre équipe : ".create_selectbox("aqf_equipe", $equipes, $p_equipe)." ";
+        $form .= "Etat : ".create_selectbox("aqf_etat", [ "0"=>"Attendre", "1"=>"Prêt" ], $p_etat)."<br><br>";
+
+        // footer (boutton annulaton, validation)
+        $form.= '<input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+
+        $form .= '<br><u><strong>CONDITION EQUIPE</strong></u>: '.$condition_equipe.'<br>';
+
+        $form .= '<br><u><strong>ATTENTION</strong></u>:<br>';
+        $form .= ' * Dès que les conditions d’équipes ci-dessous seront valides avec tous les joueurs prêts, il ne sera plus possible de modifier les équipes.<br>';
+        $form .= ' * Aussi il est conseillé de <b>laisser 1 joueur « en attente »</b>, le temps que tous les autres joueurs choissisent leur équipe.<br>';
+        $form .= '<br> Conditions pour chaque équipe:<br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + Minimum <b> '.$equip_mini.' joueur(s)</b><br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + ' .( $equip_maxi != 0  ? 'Pas de limite maximum de joueur.<br>' : 'Maximum <b>'.$equip_maxi.' joueur</b><br>' );
         return $form;
     }
 

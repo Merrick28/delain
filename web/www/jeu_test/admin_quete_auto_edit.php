@@ -830,9 +830,6 @@ if ($erreur == 0)
 
                     case 'valeur':
 
-                        $aquete_etape = new aquete_etape() ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
-
                         echo   '<td>Valeur :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
@@ -842,13 +839,25 @@ if ($erreur == 0)
 
                     case 'texte':
 
-                        $aquete_etape = new aquete_etape() ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
-
                         echo   '<td>Texte :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                 <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_1).'">
+                                </td>';
+                        break;
+
+                    case 'craft':
+
+                        echo   '<td>Num#1 :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="8" value="'.$element->aqelem_param_num_1.'">&nbsp;
+                                Num#2&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="8" value="'.$element->aqelem_param_num_2.'">&nbsp;
+                                Num#3&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="8" value="'.$element->aqelem_param_num_3.'">&nbsp;
+                                Int#1&nbsp;:&nbsp;<input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="8" value="'.$element->aqelem_misc_cod.'"><br>
+                                Txt#1&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_1).'"><br>
+                                Txt#2&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_2).'"><br>
+                                Txt#3&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_3).'">
                                 </td>';
                         break;
 
