@@ -482,7 +482,24 @@ class aquete_etape
         $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
         $condition_equipe = "Non remplie";
 
-        // vérifier si le perso est dejà dans la liste et préparer la liste des équipe
+
+        // On commnece par un peu de nettoyage, suppression des persos qui ont quitter la quete (ou sont passé a une autre etape) mais ils sont restés dans $p7!
+        $pdo = new bddpdo;
+        $req  = "select aqperso_perso_cod from quetes.aquete_perso where aqperso_aquete_cod=:aqperso_aquete_cod and aqperso_etape_cod = :aqperso_etape_cod and aqperso_actif='O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":aqperso_aquete_cod" => $aqperso->aqperso_aquete_cod,":aqperso_etape_cod" => $aqperso->aqperso_etape_cod ), $stmt);
+        $perso_etape = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $p7 = array_filter($p7, function($e) use ($perso_etape) {  return in_array($e->aqelem_misc_cod, $perso_etape) ; });
+
+        $where = "";
+        foreach ($p7 as $k => $e) $where .= (1*$e->aqelem_cod)."," ;
+        $where = " and aqelem_misc_cod != 0 and  aqelem_cod not in (". substr($where, 0, -1) .") ";
+
+        $req    = "delete from quetes.aquete_element where aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null and aqelem_param_id = 7 $where ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":aqelem_aqetape_cod" => $aqperso->aqperso_etape_cod), $stmt);
+
+        // vérifier si le perso est dejà dans la liste => trouve son index et son couple equipe/etat
         $perso_cod = $aqperso->aqperso_perso_cod ;
         $p_idx = -1 ;
         $p_equipe = 0 ;
@@ -500,6 +517,7 @@ class aquete_etape
             }
         }
 
+        // En cas de validation d'un couple equipe/etat
         if ($_REQUEST["dialogue-echanger"] == "dialogue" && $_REQUEST["valider"] == "Valider les modifications")
         {
             $element = new aquete_element();
@@ -526,6 +544,7 @@ class aquete_etape
         }
 
 
+        // Préparer le tableau des équipe pour un afichage ligne par ligne
         foreach ($p7 as $k => $p)
         {
             if ($p->aqelem_misc_cod > 0 ){
@@ -536,17 +555,19 @@ class aquete_etape
                         $equipe_perso[$equipe_row] = [] ;
                     }
                 }
-                $equipe_perso[$equipe_row][$p->aqelem_param_num_1] = ["perso_cod"=> $perso_cod, "etat"=> $p->aqelem_param_num_2] ;
+                $equipe_perso[$equipe_row][$p->aqelem_param_num_1] = ["perso_cod"=> $p->aqelem_misc_cod, "etat"=> $p->aqelem_param_num_2] ;
             }
         }
 
 
+        // Affichage de la forme
         $form = "";
         $form .= '<form method="post" action="quete_auto.php">
             <input type="hidden" name="methode" value="dialogue">
             <input type="hidden" name="dialogue-echanger" value="dialogue">
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
             <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">        ';
+
 
         $form .= '<table style="border: solid 1px #800000;"><tr>';
         // barre des titres du tableau, et préparation du selecteur d'équipe
