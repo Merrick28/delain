@@ -500,7 +500,13 @@ if ($erreur == 0)
                             echo   '<td>Perso :
                                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'perso\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'perso\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">                                    
+                                    <input name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" value="'.($element->aqelem_param_num_1).'" type="hidden">
+                                    <input name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" value="'.($element->aqelem_param_num_2).'" type="hidden">
+                                    <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" value="'.($element->aqelem_param_num_3).'" type="hidden">
+                                    <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" value="'.($element->aqelem_param_txt_1).'" type="hidden">
+                                    <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" value="'.($element->aqelem_param_txt_2).'" type="hidden">
+                                    <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" value="'.($element->aqelem_param_txt_3).'" type="hidden">
                                     &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso");\'> 
                                     </td>';

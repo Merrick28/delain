@@ -510,9 +510,11 @@ class aquete_action
         if (!$p6 = $element->get_etape_element( $aqperso->etape, 6, "etape")) return $retour ;    // Problème lecture (blocage)
 
 
-        if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" && !isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
+        // Time is over??
+        $TeamsReady = ($p2->aqelem_param_txt_1 != "" && date( "Y-d-m H:i:s", strtotime($p2->aqelem_param_txt_1)) < date( "Y-d-m H:i:s") ) ? true : false ;
+        if ( !$TeamsReady && !isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
 
-
+        // Le joueurs sort l'équipe !
         if (isset($_REQUEST["cancel"])) {
             $retour->status = true ;  // => Le joueur souhaite ne pas intégrer d'équipe sortie etape d'erreur
             $retour->etape = $p6->aqelem_misc_cod ;
@@ -525,9 +527,7 @@ class aquete_action
         $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
         $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
 
-        //echo "<pre>"; print_r($aqperso); die();
-
-
+        // dispatch du joueur en fonction les étapes!
 
         // Sortie par défaut!! demander une autre saisie du joueur
         return $retour;

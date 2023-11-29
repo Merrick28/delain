@@ -600,8 +600,8 @@ switch($_REQUEST["request"])
                 $filter.= "(aqetape_cod::text||' '||aqetape_nom||' ['||aquete_nom||']' ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
-            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
-            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"]);
+            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"])." ";
+            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"])." ";
 
             // requete de comptage
             $req = "select count(*) from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter}";

@@ -480,10 +480,10 @@ class aquete_etape
         $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
         $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
         $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
-        $condition_equipe = "Non remplie";
+        //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
 
 
-        // On commnece par un peu de nettoyage, suppression des persos qui ont quitter la quete (ou sont passé a une autre etape) mais ils sont restés dans $p7!
+        // On commnece par un peu de nettoyage, suppression des persos qui ont quitté la quete (où sont passé a une autre etape) mais ils ne deoivent pas rester dans $p7!
         $pdo = new bddpdo;
         $req  = "select aqperso_perso_cod from quetes.aquete_perso where aqperso_aquete_cod=:aqperso_aquete_cod and aqperso_etape_cod = :aqperso_etape_cod and aqperso_actif='O' ";
         $stmt = $pdo->prepare($req);
@@ -493,7 +493,7 @@ class aquete_etape
 
         $where = "";
         foreach ($p7 as $k => $e) $where .= (1*$e->aqelem_cod)."," ;
-        $where = " and aqelem_misc_cod != 0 and  aqelem_cod not in (". substr($where, 0, -1) .") ";
+        $where = " and aqelem_misc_cod != 0 " . ( $where == "" ? "" :"and  aqelem_cod not in (". substr($where, 0, -1) .")" );
 
         $req    = "delete from quetes.aquete_element where aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null and aqelem_param_id = 7 $where ";
         $stmt   = $pdo->prepare($req);
@@ -505,7 +505,7 @@ class aquete_etape
         $p_equipe = 0 ;
         $p_etat = 0 ;
         $equipe_perso = [] ;        // vide au debut $equipe_perso[row][equipe] => [perso,etat]
-        $equipe_row = -1 ;
+        $teams_lock = false ;
         foreach ($p7 as $k => $p)
         {
             if ($p->aqelem_misc_cod == $perso_cod)
@@ -513,6 +513,7 @@ class aquete_etape
                 $p_idx = $k ;
                 $p_equipe = $p->aqelem_param_num_1 ;
                 $p_etat = $p->aqelem_param_num_2 ;
+                if ($p->aqelem_param_num_3 == 1) $teams_lock = true;   // les équipes sont verrouillées, elles ne peuvent plus être modifiées!
                 break;
             }
         }
@@ -527,7 +528,7 @@ class aquete_etape
                 $element->aqelem_aquete_cod = $aqperso->etape->aqetape_aquete_cod;
                 $element->aqelem_aqetape_cod = $aqperso->etape->aqetape_cod;
                 $element->aqelem_param_id = 7;
-                $element->aqelem_param_ordre = count($p7) + 1;
+                $element->aqelem_param_ordre = count($p7) + 2;
                 $element->aqelem_type = "perso";
                 $element->aqelem_misc_cod = $perso_cod;
             }
@@ -537,28 +538,77 @@ class aquete_etape
             $p_etat = $element->aqelem_param_num_2 ;
 
             $element->stocke(($p_idx == -1) ? true : false );
-            //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
 
             // recharger p7 avec les valeurs modifiées
             if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return false ;    // Problème lecture (blocage)
         }
 
+        //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
 
-        // Préparer le tableau des équipe pour un afichage ligne par ligne
+        // Préparer le tableau des équipe pour un afichage ligne par ligne et au passage vérifier si les equipe sont prête
+        $team_member = [] ; //comptage des membre de chaque equipe
+        $teams_ready = true ; // il reste encore des joueurs en attente ?
         foreach ($p7 as $k => $p)
         {
+            if ($p->aqelem_param_num_1 == null) $p->aqelem_param_num_1 = 0 ;
+            if ($p->aqelem_param_num_2 == null) $p->aqelem_param_num_2 = 0 ;
+            if ($p->aqelem_param_num_3 == null) $p->aqelem_param_num_3 = 0 ;
             if ($p->aqelem_misc_cod > 0 ){
+                // en cas d'une nouvelle ligne, remplir de vide
+                $equipe_row = 0 ;
+                while ( isset( $equipe_perso[$equipe_row][$p->aqelem_param_num_1]) ) $equipe_row ++ ;
+                //if (count($equipe_perso) <= $equipe_row)  {
 
-                if ((count($equipe_perso) == 0) || (isset($equipe_perso[$equipe_row][$p->aqelem_param_num_1])))  {
-                    $equipe_row ++ ;
-                    for ($e=0; $e<$nb_equipe; $e++) {
-                        $equipe_perso[$equipe_row] = [] ;
-                    }
-                }
                 $equipe_perso[$equipe_row][$p->aqelem_param_num_1] = ["perso_cod"=> $p->aqelem_misc_cod, "etat"=> $p->aqelem_param_num_2] ;
+                $team_member[$equipe_row] = isset( $team_member[$equipe_row] ) ?  $team_member[$equipe_row] + 1 : 1 ;
+                if ($p->aqelem_param_num_2 == 0 ) $teams_ready = false ; // encore au moins un joueur en attente
             }
         }
 
+        //echo "<pre>"; print_r([$equipe_perso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+        $teams_count = true ; // les equipes verifie les pré-requis ?
+        foreach ($team_member as $k => $m) {
+            if (($m<$equip_mini) || ($m>$equip_maxi && $equip_maxi!=0)) {
+                $teams_count = false ; // au moins une équipe n'a pas assez ou possède trop de joueur
+                break;
+            }
+        }
+
+
+        // verouiller les joueurs et lancé le chrono dès qu'on a les tous joueurs
+        if (!$teams_lock && $teams_count && $teams_ready) {
+            // on vient d'atteindre le quorum des équipes, locker les joueurs!
+            $element = new aquete_element();
+            foreach ($p7 as $k => $p)
+            {
+                $element->charge($p->aqelem_cod);
+                $element->aqelem_param_num_3 = 1 ;
+                $element->stocke();
+            }
+            $teams_lock = true;
+            $element->charge($p2->aqelem_cod);
+            $element->aqelem_param_txt_1 = date("Y-m-d h:i:s", strtotime('+12 hours'));
+            $p2->aqelem_param_txt_1 = $element->aqelem_param_txt_1 ;
+            $element->stocke();
+        }
+
+        if (!$teams_count || !$teams_ready) {
+            // on vient d'atteindre le quorum des équipes, locker les joueurs!
+            $element = new aquete_element();
+            $element->charge($p2->aqelem_cod);
+            $element->aqelem_param_txt_1 = "";
+            $p2->aqelem_param_txt_1 = $element->aqelem_param_txt_1 ;
+            $element->stocke();
+        }
+
+        if ($teams_count && !$teams_ready) {
+            $condition_equipe = "Remplie, en attente! <img src=\"/images/smilies/reflexion.gif\">"; // par defaut
+        } else if ($teams_count && $teams_ready) {
+            $condition_equipe = "Remplie, verrouillée! <img src=\"/images/smilies/bien.gif\">";
+        } else {
+            $condition_equipe = "Non-remplie <img src=\"/images/smilies/nanana.gif\">";
+        }
 
         // Affichage de la forme
         $form = "";
@@ -570,6 +620,11 @@ class aquete_etape
 
 
         $form .= '<table style="border: solid 1px #800000;"><tr>';
+        $form .= '<br> Conditions pour chaque équipe:<br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + Minimum <b> '.$equip_mini.' joueur(s)</b><br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + ' .( $equip_maxi != 0  ? 'Pas de limite maximum de joueur.<br>' : 'Maximum <b>'.$equip_maxi.' joueur</b><br' );
+        $form .= '<br>';
+
         // barre des titres du tableau, et préparation du selecteur d'équipe
         $equipes = [] ;
         for ($e=0; $e<$nb_equipe; $e++){
@@ -596,21 +651,23 @@ class aquete_etape
 
         $form .= '</table><br>';
 
-        // selecteur d'équipe
-        $form .= "Choisissez votre équipe : ".create_selectbox("aqf_equipe", $equipes, $p_equipe)." ";
-        $form .= "Etat : ".create_selectbox("aqf_etat", [ "0"=>"Attendre", "1"=>"Prêt" ], $p_etat)."<br><br>";
+        // selecteur d'équipe et bouton de validation !
+        if (!$teams_lock || !$teams_count || !$teams_ready) {
+            $form .= "Choisissez votre équipe : ".create_selectbox("aqf_equipe", $equipes, $p_equipe)." ";
+            $form .= "Etat : ".create_selectbox("aqf_etat", [ "0"=>"Attendre", "1"=>"Prêt" ], $p_etat)."<br><br>";
 
-        // footer (boutton annulaton, validation)
-        $form.= '<input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+            // footer (boutton annulaton, validation)
+            $form.= '<input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+        } else {
+            $form .= "Lancement des joueurs le: <b style='color:#FFFFFF; background-color: #800000'>&nbsp;&nbsp;".date( "d/m/Y à H:i:s",  strtotime($p2->aqelem_param_txt_1))."&nbsp;&nbsp;</b><br>";
+        }
 
         $form .= '<br><u><strong>CONDITION EQUIPE</strong></u>: '.$condition_equipe.'<br>';
 
         $form .= '<br><u><strong>ATTENTION</strong></u>:<br>';
-        $form .= ' * Dès que les conditions d’équipes ci-dessous seront valides avec tous les joueurs prêts, il ne sera plus possible de modifier les équipes.<br>';
+        $form .= ' * Dès que les conditions d’équipes seront valides avec tous les joueurs prêts, il ne sera plus possible de modifier les équipes.<br>';
         $form .= ' * Aussi il est conseillé de <b>laisser 1 joueur « en attente »</b>, le temps que tous les autres joueurs choissisent leur équipe.<br>';
-        $form .= '<br> Conditions pour chaque équipe:<br>';
-        $form .= '&nbsp;&nbsp;&nbsp; + Minimum <b> '.$equip_mini.' joueur(s)</b><br>';
-        $form .= '&nbsp;&nbsp;&nbsp; + ' .( $equip_maxi != 0  ? 'Pas de limite maximum de joueur.<br>' : 'Maximum <b>'.$equip_maxi.' joueur</b><br>' );
+
         return $form;
     }
 
