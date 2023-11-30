@@ -500,34 +500,168 @@ class aquete_action
         $retour = new stdClass();
         $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
         $retour->etape = 0 ;
+        $perso_cod = $aqperso->aqperso_perso_cod ;
 
         // on va travailler avec les éléments de l'étape globale (pas ceux du perso)
-         $element = new aquete_element();
+        $element = new aquete_element();
         if (!$p2 = $element->get_etape_element( $aqperso->etape, 2, "craft" )) return $retour ;                      // Problème lecture (blocage)
         if (!$p3 = $element->get_etape_element( $aqperso->etape, 3, "selecteur" )) return $retour ;                       // Problème lecture (blocage)
         if (!$p4 = $element->get_etape_element( $aqperso->etape, 4, "valeur", 0 )) return $retour ;                       // Problème lecture (blocage)
         if (!$p5 = $element->get_etape_element( $aqperso->etape, 5, "etape", 0)) return $retour ;    // Problème lecture (blocage)
         if (!$p6 = $element->get_etape_element( $aqperso->etape, 6, "etape")) return $retour ;    // Problème lecture (blocage)
+        if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return $retour ;    // Problème lecture (blocage)
+
+        $nb_equipe = $p2->aqelem_param_num_1;       // nombre d'équipe
+        $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
+        $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
+        $triplette = $p3->aqelem_misc_cod ;         // 0 = tout autorisé, 1 = 1 joueur par triplette
+
+        // final countdown!!!!
+        $TeamsReady = ($p2->aqelem_param_txt_1 != "" && date( "Y-m-d H:i:s", strtotime($p2->aqelem_param_txt_1)) < date( "Y-m-d H:i:s") ) ? true : false ;
+
+        //Si le compte a rebour est dépassé, on ne touche plus à rien on attent que tout le monde sorte de cette étape!
+        if (!$TeamsReady) {
+
+            // On commnece par un peu de nettoyage, suppression des persos qui ont quitté la quete (où sont passé a une autre etape) mais ils ne deoivent pas rester dans $p7!
+            $pdo = new bddpdo;
+            $req  = "select aqperso_perso_cod from quetes.aquete_perso where aqperso_aquete_cod=:aqperso_aquete_cod and aqperso_etape_cod = :aqperso_etape_cod and aqperso_actif='O' ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":aqperso_aquete_cod" => $aqperso->aqperso_aquete_cod,":aqperso_etape_cod" => $aqperso->aqperso_etape_cod ), $stmt);
+            $perso_etape = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $p7 = array_filter($p7, function($e) use ($perso_etape) {  return in_array($e->aqelem_misc_cod, $perso_etape) ; });
 
 
-        // Time is over??
-        $TeamsReady = ($p2->aqelem_param_txt_1 != "" && date( "Y-d-m H:i:s", strtotime($p2->aqelem_param_txt_1)) < date( "Y-d-m H:i:s") ) ? true : false ;
-        if ( !$TeamsReady && !isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
+            $where = "";
+            foreach ($p7 as $k => $e) $where .= (1*$e->aqelem_cod)."," ;
+            $where = " and aqelem_misc_cod != 0 " . ( $where == "" ? "" :"and  aqelem_cod not in (". substr($where, 0, -1) .")" );
 
-        // Le joueurs sort l'équipe !
+            $req    = "delete from quetes.aquete_element where aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null and aqelem_param_id = 7 $where ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":aqelem_aqetape_cod" => $aqperso->aqperso_etape_cod), $stmt);
+        } else {
+
+            // on vérifie si tout le monde est sortie de l'étape !
+            $isLauched = true ;
+            $nb_perso = 0 ;
+            foreach ($p7 as $k => $p) {
+                if ($p->aqelem_misc_cod > 0) {
+                    $nb_perso ++;
+                    if ($p->aqelem_param_num_3 < 2) {
+                        $isLauched = false ;
+                    }
+                }
+            }
+
+            // Si le départ a été lancé alors on prepart pour un nouveau depat => netoyage
+            if ($isLauched && ($nb_perso>0) ){
+                $req    = "delete from quetes.aquete_element where aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null and aqelem_param_id = 7 and aqelem_misc_cod != 0 ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":aqelem_aqetape_cod" => $aqperso->aqperso_etape_cod), $stmt);
+
+                // Sortie pour saisie d'une nouvelle équipe !
+                return $retour;
+            }
+
+        }
+
+
+        // Chargement de la dernière parge du journal du perso
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage($aqperso->aqperso_cod, $aqperso->aqperso_nb_realisation);
+
+        // Le joueurs sort l'équipe, les equipes sont complètes ou il a deja un membre de sa triplette!
         if (isset($_REQUEST["cancel"])) {
+            //Compléter la dernière parge avec le dialogue:
+            $perso_journal->aqpersoj_texte .= "   Vous avez décidé de ne pas intégrer d'équipe!<br> ";
+            $perso_journal->stocke();
+
             $retour->status = true ;  // => Le joueur souhaite ne pas intégrer d'équipe sortie etape d'erreur
             $retour->etape = $p6->aqelem_misc_cod ;
             return $retour ;
         }
 
-        // recupe des parametres
-        $nb_equipe = $p2->aqelem_param_num_1;                 // nombre d'équipe
-        $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
-        $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
-        $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
+        // vérifier  équipe dejà complète ou triplette non-autorisée ==========!
+        $perso = new perso();
+        $perso->charge($perso_cod);
+        $perso_team = false ;
+        $perso_team_idx = -1 ;
+        $perso_idx = -1 ;
+        $perso_triplette = false ;
+        $equipe_perso = [] ; //comptage des membres de chaque equipe
+        foreach ($p7 as $k => $p) {
+            if ($p->aqelem_misc_cod > 0) {
 
-        // dispatch du joueur en fonction les étapes!
+                // repartition des équipe
+                $team = $p->aqelem_param_num_1;
+                $equipe_row = 0;
+                while (isset($equipe_perso[$equipe_row][$p->aqelem_param_num_1])) $equipe_row++;
+                $equipe_perso[$equipe_row][$team] = ["perso_cod" => $p->aqelem_misc_cod, "etat" => $p->aqelem_param_num_2];
+
+                if ($p->aqelem_misc_cod == $perso_cod) {
+                    // on a trouvé le perso, mais il a peut-êtrre dejà été dispacthé, et reivent pour la seconde fois, on va le rejetter
+                    if ($p->aqelem_param_num_3 == 2) {
+                        $perso_journal->aqpersoj_texte .= "   C'est trop top pour revenir dans une équipe!<br> ";
+                        $perso_journal->stocke();
+
+                        $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
+                        $retour->etape = $p6->aqelem_misc_cod ;
+                        return $retour;     //
+                    }
+                    // Si les perso ne boucle pas, on memo son id et équipe
+                    $perso_idx = $k ;
+                    $perso_team_idx = $equipe_row ;
+                    $perso_team = true;
+                }
+                if (($p->aqelem_misc_cod != $perso_cod) && $perso->membreTriplette($p->aqelem_misc_cod)) {
+                    $perso_triplette = true;
+                }
+
+            }
+        }
+
+        // Rejeter les anomalies: triplette non-autorisée ==========!
+        if ($perso_triplette && $triplette) {
+            //Compléter la dernière parge avec le dialogue:
+            $perso_journal->aqpersoj_texte .= "   Des membres d'une même triplette ne sont pas autorisés dans les équipes!<br> ";
+            $perso_journal->stocke();
+
+            $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
+            $retour->etape = $p6->aqelem_misc_cod ;
+            return $retour;     //
+        }
+
+        // Rejeter les anomalies: équipe dejà complète ==========!
+        if ( (!$perso_team || ($perso_team_idx == -1) || ($perso_idx == -1)) && $TeamsReady) {
+            //Compléter la dernière parge avec le dialogue:
+            $perso_journal->aqpersoj_texte .= "   Les équipes sont maintenant complètes!<br> ";
+            $perso_journal->stocke();
+
+            $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
+            $retour->etape = $p6->aqelem_misc_cod ;
+            return $retour;     //
+        }
+
+        // Countdown is over??
+        if ( !$TeamsReady ) return $retour ; // le joueur est toujours en cours de selection de sa trnasaction
+
+        // dispatch en fonction des parametre 4 et 5
+        $dispatch = $perso_team_idx ;
+        //echo "<pre>"; print_r([$perso_team_idx, $equipe_perso]); die();
+        foreach($p4 as $k => $p){
+            if (($dispatch < $p->aqelem_param_num_1) || ($p->aqelem_param_num_1 == 0)) {
+
+                // Marqué le perso comme déjà déjà passé!
+                $element = new aquete_element();
+                $element->charge( $p7[$perso_idx]->aqelem_cod );
+                $element->aqelem_param_num_3 = 2 ;
+                $element->stocke();
+
+                $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
+                $retour->etape = $p5[$k]->aqelem_misc_cod ;
+                return $retour;     //
+            }
+            $dispatch = $dispatch - $p->aqelem_param_num_1 ;
+        }
 
         // Sortie par défaut!! demander une autre saisie du joueur
         return $retour;
