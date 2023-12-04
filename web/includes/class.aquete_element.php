@@ -368,20 +368,6 @@ class aquete_element
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
 
-        //* La recherche n'est plus étendue aux éléments du modele le perso DOIT posseder les éléments
-        //if(count($result) == 0)                 // si trouve rien on prend le modèle !
-        //{
-        //    // Si on a rien pour le perso on prend le modele
-        //    $req = "select aqelem_cod from quetes.aquete_etape
-        //        join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
-        //        where aqetape_cod = ? and aqelem_param_id = ?
-        //        order by aqelem_param_id,aqelem_cod ";
-        //    $stmt = $pdo->prepare($req);
-        //    $stmt = $pdo->execute(array($aqperso->etape->aqetape_cod, $param_id),$stmt);
-//
-        //    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
-        //}
-
         if(count($result) == 0)
         {
             return false;
