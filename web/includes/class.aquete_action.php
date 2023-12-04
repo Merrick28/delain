@@ -1757,6 +1757,13 @@ class aquete_action
                         $objet = new objets();
                         $objet->charge(1*$result["obj_cod"]);
 
+                        if ($p3 && $p3->aqelem_misc_cod==2)
+                        {   // objet directement équipé (=> avec déséquipement d'un objet si limite max d'objet equipable atteinte)
+                            $req = "select equipe_objet(:obj_cod, :perso_cod ,0 ,1)"; // équiper en forçant le remplacement pour 0 PA
+                            $stmt   = $pdo->prepare($req);
+                            $stmt   = $pdo->execute(array(":obj_cod" => $objet->obj_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+                        }
+
                         $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                         $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                               values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
