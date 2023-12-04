@@ -58,6 +58,11 @@ $race->charge($visu_perso->perso_race_cod);
 $perobj        = new perso_objets();
 $objets_portes = $perobj->getByPersoEquipe($visu_perso->perso_cod);
 
+
+// détection des symbole d'équipe (chasuble) dans les objets portés : 1573 - Chasuble rouge / 1574 - Chasuble bleu
+$jeu_equipe = array_values (array_filter($objets_portes, function($obj) { return in_array($obj->objet->obj_gobj_cod, [1573, 1574]); }));
+$jeu_equipe = count( $jeu_equipe ) >0  ? G_IMAGES . $jeu_equipe[0]->objet_generique->gobj_image : "" ;
+
 //  GUILDE
 $pguilde     = new guilde_perso();
 $guilde      = '';
@@ -127,7 +132,8 @@ $options_twig = array(
     'MONTURE'       => $visu_monture,
     'MONTURE_IMG'   => $monture_avatar,
     'CAVALIER'      => $visu_cavalier,
-    'CAVALIER_IMG'  => $cavalier_avatar
+    'CAVALIER_IMG'  => $cavalier_avatar,
+    'JEU_EQUIPE'    => $jeu_equipe
 
 
 );
