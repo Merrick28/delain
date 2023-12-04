@@ -174,7 +174,7 @@ select into v_perso_nb_mains coalesce(sum(gobj_nb_mains),0)
 			and gobj_cod= obj_gobj_cod
 			and perobj_equipe='O' ;
 
-if (v_perso_nb_mains + v_objet_nb_mains) > 2 then
+if (v_perso_nb_mains + v_objet_nb_mains) > 2 and v_perobj_cod is null then
   code_retour := '-1;Vous n''avez pas de main libre pour équiper cet objet !' ;
   return code_retour;
 end if;

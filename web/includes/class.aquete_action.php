@@ -1759,7 +1759,7 @@ class aquete_action
 
                         if ($p3 && $p3->aqelem_misc_cod==2)
                         {   // objet directement équipé (=> avec déséquipement d'un objet si limite max d'objet equipable atteinte)
-                            $req = "select equipe_objet(:obj_cod, :perso_cod ,0 ,1)"; // équiper en forçant le remplacement pour 0 PA
+                            $req = "select equipe_objet(:perso_cod, :obj_cod, 0 ,1)"; // équiper en forçant le remplacement pour 0 PA
                             $stmt   = $pdo->prepare($req);
                             $stmt   = $pdo->execute(array(":obj_cod" => $objet->obj_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
                         }
