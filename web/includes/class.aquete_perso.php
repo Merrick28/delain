@@ -878,6 +878,27 @@ class aquete_perso
                     }
                     break;
 
+                case "#SAUT #CONDITION #EQUIPE":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionné par une saisie du joueur (mais aussi d'autre meneur).
+                    $result =  $this->action->saut_condition_equipe($this);
+                    if ($result->status)
+                    {
+                        //L'étape est terminée, mais elle peu echouer
+                        if ($result->etape == 0)
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                        } else if ($result->etape < 0)
+                        {
+                            $status_etape = $result->etape == -1 ? -2 : $result->etape;          // fin de la quete sur succes ou echec
+                        } else
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                            $next_etape_cod = $result->etape;        // vers une etape specifique !
+                        }
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
                 case "#SAUT #CONDITION #PA":
                     // cette etape sert à faire un saut vers une autre, le saut est conditionné par une consommation de PA du joueur.
                     $result =  $this->action->saut_condition_pa($this);
@@ -1263,6 +1284,10 @@ class aquete_perso
 
             case "#SAUT #CONDITION #DIALOGUE":
                 $texte_etape = $etape->get_texte_form($this, "perso");
+                break;
+
+            case "#SAUT #CONDITION #EQUIPE":
+                $texte_etape = $etape->get_equipe_form($this);
                 break;
 
             case "#SAUT #CONDITION #PA":

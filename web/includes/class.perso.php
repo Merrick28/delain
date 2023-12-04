@@ -3533,4 +3533,43 @@ class perso
                 die('Unknown method.');
         }
     }
+
+
+
+    public function membreTriplette($perso_cod)
+    {
+        $pdo    = new bddpdo();
+
+        // récupération du compte joueur
+        if ($this->perso_type_perso == 1) {
+            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod=:perso_cod";
+        } else {
+            $req = "select pcompt_compt_cod from perso_compte inner join perso_familier on pfam_perso_cod = pcompt_perso_cod where pfam_familier_cod = :perso_cod ";
+        }
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        $compte_cod = $result["pcompt_compt_cod"];
+
+        $req = "select count(*) as count from (
+                    select pcompt_perso_cod as perso_cod
+                        from perso_compte 
+                        where pcompt_compt_cod = :compt_cod
+                    union all
+                    select perso_cod  as perso_cod from perso_compte
+                        inner join perso_familier on pfam_perso_cod = pcompt_perso_cod
+                        inner join perso on perso_cod=pfam_familier_cod
+                        where pcompt_compt_cod = :compt_cod and perso_actif='O'
+            ) persos_du_compte where perso_cod = :perso_cod ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod, ":compt_cod" => $compte_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        return $result['count'] ==  0 ? false : true ;
+    }
+
 }
