@@ -584,7 +584,8 @@ class aquete_action
         $perso = new perso();
         $perso->charge($perso_cod);
         $perso_team = false ;
-        $perso_team_idx = -1 ;
+        $perso_team_row = -1 ;
+        $perso_team_col = -1 ;
         $perso_idx = -1 ;
         $perso_triplette = false ;
         $equipe_perso = [] ; //comptage des membres de chaque equipe
@@ -600,7 +601,7 @@ class aquete_action
                 if ($p->aqelem_misc_cod == $perso_cod) {
                     // on a trouvé le perso, mais il a peut-êtrre dejà été dispacthé, et reivent pour la seconde fois, on va le rejetter
                     if ($p->aqelem_param_num_3 == 2) {
-                        $perso_journal->aqpersoj_texte .= "   C'est trop top pour revenir dans une équipe!<br> ";
+                        $perso_journal->aqpersoj_texte .= "   C'est trop tôt pour revenir dans une équipe!<br> ";
                         $perso_journal->stocke();
 
                         $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
@@ -609,7 +610,8 @@ class aquete_action
                     }
                     // Si les perso ne boucle pas, on memo son id et équipe
                     $perso_idx = $k ;
-                    $perso_team_idx = $equipe_row ;
+                    $perso_team_row = $equipe_row ;
+                    $perso_team_col = $p->aqelem_param_num_1 ;
                     $perso_team = true;
                 }
                 if (($p->aqelem_misc_cod != $perso_cod) && $perso->membreTriplette($p->aqelem_misc_cod)) {
@@ -631,7 +633,7 @@ class aquete_action
         }
 
         // Rejeter les anomalies: équipe dejà complète ==========!
-        if ( (!$perso_team || ($perso_team_idx == -1) || ($perso_idx == -1)) && $TeamsReady) {
+        if ( (!$perso_team || ($perso_team_row == -1) || ($perso_idx == -1)) && $TeamsReady) {
             //Compléter la dernière parge avec le dialogue:
             $perso_journal->aqpersoj_texte .= "   Les équipes sont maintenant complètes!<br> ";
             $perso_journal->stocke();
@@ -644,9 +646,8 @@ class aquete_action
         // Countdown is over??
         if ( !$TeamsReady ) return $retour ; // le joueur est toujours en cours de selection de sa trnasaction
 
-        // dispatch en fonction des parametre 4 et 5
-        $dispatch = $perso_team_idx ;
-        //echo "<pre>"; print_r([$perso_team_idx, $equipe_perso]); die();
+        // dispatch en fonction des parametres 4 et 5
+        $dispatch = $perso_team_row ;
         foreach($p4 as $k => $p){
             if (($dispatch < $p->aqelem_param_num_1) || ($p->aqelem_param_num_1 == 0)) {
 
@@ -657,13 +658,15 @@ class aquete_action
                 $element->stocke();
 
                 $retour->status = true ;  // => Plus de place pour ce joueur direction la sortie
-                $retour->etape = $p5[$k]->aqelem_misc_cod ;
-                return $retour;     //
+                $retour->etape = $p5[$perso_team_col*count($p4)+$k]->aqelem_misc_cod ;
+                //echo "<pre>"; print_r([$retour, $perso_team_row, $perso_team_col, $equipe_perso, $p4, $p5]); die();
+                return $retour;
             }
             $dispatch = $dispatch - $p->aqelem_param_num_1 ;
         }
 
         // Sortie par défaut!! demander une autre saisie du joueur
+        //echo "<pre>===>not found"; print_r([$retour, $perso_team_row, $equipe_perso, $p4]); die();
         return $retour;
     }
 

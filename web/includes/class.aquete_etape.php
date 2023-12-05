@@ -479,8 +479,12 @@ class aquete_etape
         $nb_equipe = $p2->aqelem_param_num_1;                 // nombre d'équipe
         $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
         $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
+        $countdown = $p2->aqelem_misc_cod ;      // en heure
         $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
         //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+        // 1 he minimum pour le decompte
+        $countdown = $countdown <=0 ? 1 : $countdown ;
 
         // vérifier si le perso est dejà dans la liste => trouve son index et son couple equipe/etat
         $perso_cod = $aqperso->aqperso_perso_cod ;
@@ -583,7 +587,7 @@ class aquete_etape
             }
             $teams_lock = true;
             $element->charge($p2->aqelem_cod);
-            $element->aqelem_param_txt_1 = date("Y-m-d h:i:s", strtotime('+12 hours'));
+            $element->aqelem_param_txt_1 = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$countdown} hours"));
             $p2->aqelem_param_txt_1 = $element->aqelem_param_txt_1 ;
             $element->stocke();
         }
