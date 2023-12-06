@@ -155,6 +155,8 @@ begin
         return  '0;<p>l''usage de la Défense magique n''est pas autorisé pendant les courses de monture!!</p>';
     elsif temp = 1 and num_sort=146 then
         return  '0;<p>l''usage de la Distorsion temporelle n''est plus autorisée pendant les courses de monture!!</p>';
+    elsif temp = 1 and num_sort=146 then
+        return  '0;<p>l''usage de la Distorsion temporelle n''est plus autorisée pendant les courses de monture!!</p>';
     end if;
 
 	-- sort distortion temporelle

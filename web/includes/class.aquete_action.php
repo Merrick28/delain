@@ -3185,6 +3185,25 @@ class aquete_action
     }
 
     //==================================================================================================================
+    /**
+     * declenchement d'un mécanisme =>  '[1:texte|1%1]',
+     * p1=quete
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function quete_pause(aquete_perso $aqperso)
+    {
+        global $__aquete_action_quete_pause;
+        if (!isset($__aquete_action_quete_pause) || $__aquete_action_quete_pause == 0) {
+            $__aquete_action_quete_pause = 1 ;
+            return true;        // on passe pour la première fois, passage auto
+        }
+        //echo "<pre>"; print_r($nb_etape_run); die();
+        // on est déjà passé ici durant le run de cette quete, on fait une pause
+        return false;
+    }
+
+    //==================================================================================================================
 /*
 echo "<pre>"; print_r($p1); echo "</pre>";
 die();
