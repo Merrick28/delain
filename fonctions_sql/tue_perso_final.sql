@@ -205,8 +205,8 @@ end if;
 
   -- ===================================================================================================================
   --   marlyza - 2021-12-07 :
-  --   Traitement de la mort particulière pour la course de léno (map delain-kart)
-  if  v_etage_mort_speciale = 1 then
+  --   Traitement de la mort particulière pour la course de léno (map delain-kart) ou mout'ball
+  if  v_etage_mort_speciale = 1 or v_etage_mort_speciale = 2 then
 
   	if type_cible = 1 then
         -- en course, le perso respawn au même endroit, mais sans sa monture
@@ -390,7 +390,7 @@ end if;
 		end if;
 	-- 2.2 : la cible est un joueur
 	elsif type_cible = 1 then
-	
+
 	  -- avant toute chose on détache le perso de sa monture (s'il en avait une), le perso respawnera sans elle
 	  update perso set perso_monture=null where perso_cod = v_cible ;
 

@@ -1212,6 +1212,14 @@ class aquete_perso
                     $this->action->quete_activation($this);
                     $status_etape = 1;      // 1 => ok etape suivante
                     break;
+
+                case "#QUETE #PAUSE":
+                    // Faire une pause, permet les boucles d'étape sans risque de boucle infini
+                    if ($this->action->quete_pause($this))
+                    {
+                        $status_etape = 1;      // 1 => ok etape suivante
+                    }
+                    break;
             }
 
             //------- comptage du nombre d'étape réalisées----------------------
@@ -1398,25 +1406,30 @@ class aquete_perso
 
         foreach ($perso_journaux as $k => $journal)
         {
-            // Mise en forme en fonction de l'état de lecture
-            if ($step)
+            // affichage du journal seulement s'il y a des trucs à lire,on va compacter les lignes vides (ou ne contenant que des caractères non-imprimables)!
+            if ( str_replace("<br/>", "", str_replace("</p>", "", str_replace("<p>", "", str_replace(" ", "", strtolower(preg_replace('/[\x00-\x1F\x7F\xA0]/u', '', $journal->aqpersoj_texte)))))) != "")
             {
-                // Mise en forme avec les informations d'étape (pour debuggage admin)
-                $nom_etape = "";
-                if ($journal->aqpersoj_etape_cod > 0)
+                // Mise en forme en fonction de l'état de lecture
+                if ($step)
                 {
-                    $etape->charge($journal->aqpersoj_etape_cod);
-                    $nom_etape = '<em style="font-size: 9px;">(' . $etape->aqetape_nom . ')</em>';
+                    // Mise en forme avec les informations d'étape (pour debuggage admin)
+                    $nom_etape = "";
+                    if ($journal->aqpersoj_etape_cod > 0)
+                    {
+                        $etape->charge($journal->aqpersoj_etape_cod);
+                        $nom_etape = '<em style="font-size: 9px;">(' . $etape->aqetape_nom . ')</em>';
+                    }
+                    $journal_quete .= "<div style=\"color:#800000\">" . date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)) . ": Step <strong>#" . $journal->aqpersoj_quete_step . "</strong> - Etape <strong>#" . $journal->aqpersoj_etape_cod . "</strong> - " . $nom_etape . "</div>";
                 }
-                $journal_quete .= "<div style=\"color:#800000\">" . date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)) . ": Step <strong>#" . $journal->aqpersoj_quete_step . "</strong> - Etape <strong>#" . $journal->aqpersoj_etape_cod . "</strong> - " . $nom_etape . "</div>";
-            }
 
-            if (($journal->aqpersoj_lu == 'N') || ($k >= (count($perso_journaux) - $residu)))
-            {
-                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
-            } else
-            {
-                $journal_quete .= $journal->aqpersoj_texte . "<br>";
+
+                if (($journal->aqpersoj_lu == 'N') || ($k >= (count($perso_journaux) - $residu)))
+                {
+                    $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
+                } else
+                {
+                    $journal_quete .= $journal->aqpersoj_texte . "<br>";
+                }
             }
 
             if ($lire == 'O' && $journal->aqpersoj_lu == 'N')

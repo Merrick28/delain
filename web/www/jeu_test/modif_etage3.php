@@ -133,8 +133,10 @@ if ($erreur == 0)
 
 				if ($etage_mort_speciale == '0')
 					$resultat .= "Etage avec mort au comportement Normal\n";
-				else
+				else if ($etage_mort_speciale == '1')
 					$resultat .= "Etage avec mort au comportement Course de monture\n";
+				else
+					$resultat .= "Etage avec mort au comportement Mout'ball\n";
 			}
 		break;
 
@@ -396,7 +398,7 @@ if ($erreur == 0)
 			<br />
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N'>Non</option><option value='O'>Oui</option></select><br />
 			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N'>Non</option><option value='O'>Oui</option></select><br /><br />
-			La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0'>Normal</option><option value='1'>Course de monture</option></select><br />
+			La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0'>Normal</option><option value='1'>Course de monture</option><option value='2'>Mout'ball</option></select><br />
             -- Delai d'impalpabilité en cas de mort du perso ? <input type="text" name="etage_duree_imp_p" value="2" size="4"/><br>
             -- Delai d'impalpabilité en cas de mort du familier ? <input type="text" name="etage_duree_imp_f" value="8" size="4"/><br>
             <br>
@@ -526,6 +528,7 @@ if ($erreur == 0)
 
         $sel_mort_spec0 = (1*$etage_mort_speciale == 0) ? 'selected="selected"' : '';
         $sel_mort_spec1 = (1*$etage_mort_speciale == 1) ? 'selected="selected"' : '';
+        $sel_mort_spec2 = (1*$etage_mort_speciale == 2) ? 'selected="selected"' : '';
 
         $sel_monture_ordre_echec = create_selectbox("etage_monture_ordre_echec", ["0"=>"Sans incident", "1"=>"Sur échec critique", "2"=>"Sur échec"], $etage_monture["ordre_echec"] ? $etage_monture["ordre_echec"] : 0);
         $sel_monture_ordre_inc = create_selectbox("etage_monture_ordre_inc", ["0"=>"Donner des ordres aléatoires", "1"=>"Désarçonner"], $etage_monture["ordre_incident"] ? $etage_monture["ordre_incident"] : 0);
@@ -561,7 +564,7 @@ if ($erreur == 0)
 			<?php echo $arene_info; ?>
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N' <?php echo  $sel_4_N; ?>>Non</option><option value='O' <?php echo  $sel_4_O; ?>>Oui</option></select><br />
 			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N' <?php echo  $sel_famactif_N; ?>>Non</option><option value='O' <?php echo  $sel_4M_O; ?>>Oui</option></select><br /><br />
-            La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0' <?php echo  $sel_mort_spec0; ?>>Normal</option><option value='1' <?php echo  $sel_mort_spec1; ?>>Course de monture</option></select><br />
+            La mort a cet étage a-t-elle un comportement spécial ? <select name="etage_mort_speciale"><option value='0' <?php echo  $sel_mort_spec0; ?>>Normal</option><option value='1' <?php echo  $sel_mort_spec1; ?>>Course de monture</option><option value='2' <?php echo  $sel_mort_spec2; ?>>Mout'ball</option></select><br />
             -- Delai d'impalpabilité en cas de mort du perso ? <input type="text" name="etage_duree_imp_p" value="<?php echo  $etage_duree_imp_p; ?>" size="4"/><br>
             -- Delai d'impalpabilité en cas de mort du familier ? <input type="text" name="etage_duree_imp_f" value="<?php echo  $etage_duree_imp_f; ?>" size="4"/><br>
             <br>
