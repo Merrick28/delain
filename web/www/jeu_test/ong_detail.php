@@ -45,11 +45,22 @@
         die("Position non visible !");
     }
 
-    $req = "select pos_x,pos_y,etage_libelle from positions,etage
+    $req = "select pos_x,pos_y,etage_libelle,etage_mort_speciale from positions,etage
 	where pos_cod = $position
 	and pos_etage = etage_numero ";
     $stmt = $pdo->query($req);
     $result = $stmt->fetch();
+    $etage_mort_speciale = $result['etage_mort_speciale'];
+
+    // tableau des couleurs de maillot
+    $chasubles = [
+        "1573" => "<b style='color:#B60000'>Rouge</b>",
+        "1574" => "<b style='color:#007BFF'>Bleu</b>",
+        "1576" => "<b style='color:#FFFF00'>Jaune</b>",
+        "1577" => "<b style='color:#00FF55'>Vert</b>",
+        "1578" => "<b style='color:#8D00F0'>Violet</b>",
+        "1579" => "<b style='color:#FFFFFF'>Blanc</b>",
+        "1580" => "<b style='color:#000000'>Noir</b>"] ;
     ?>
     <div class="centrer"><?php echo $result['pos_x']; ?>, <?php echo $result['pos_y']; ?>
         , <?php echo $result['etage_libelle']; ?><br>
@@ -70,8 +81,8 @@
         }
 
         //#LAG: rechercher la liste de perso sur la case
-        $req = "select lower(p.perso_nom) as minusc,etat_perso(p.perso_cod) as bless, p.perso_nom, m.perso_nom as monture, m.perso_cod as monture_cod, etat_perso(m.perso_cod) as bless_monture
-                  from perso p 
+        $req = "select p.perso_cod, lower(p.perso_nom) as minusc,etat_perso(p.perso_cod) as bless, p.perso_nom, m.perso_nom as monture, m.perso_cod as monture_cod, etat_perso(m.perso_cod) as bless_monture
+                  from perso p
                   join perso_position on ppos_perso_cod = p.perso_cod
                   left join perso m on m.perso_cod=p.perso_monture and m.perso_actif = 'O' and m.perso_type_perso=2
                   where ppos_pos_cod = $position and p.perso_actif = 'O' and p.perso_type_perso = 1 order by minusc";
@@ -99,6 +110,24 @@
                                 if (($result['bless_monture'] != "indemne") && ($result['bless_monture'] != "égratigné"))
                                     echo "<em> - " . $result['bless_monture'], "</em>";
                                 echo "</span><br>";
+                            }
+                            if ($etage_mort_speciale == 2)
+                            {
+                                //#LAG: rechercher la couleur du maillot
+                                $pcod = 1*(int)$result['perso_cod'];
+                                $req = "select gobj_cod from perso_objets
+                                          join objets on obj_cod = perobj_obj_cod
+                                          join objet_generique on gobj_cod=obj_gobj_cod
+                                          where perobj_perso_cod = {$pcod} and perobj_equipe='O' and gobj_cod in (1573, 1574, 1576, 1577, 1578, 1579, 1580) limit 1";
+                                $stmt2 = $pdo->query($req);
+                                if ($result2 = $stmt2->fetch())
+                                {
+                                    if (isset($chasubles[$result2['gobj_cod']]) &&  $chasubles[$result2['gobj_cod']] != "")
+                                    {
+                                        echo "<span style='font-size: 11px; color:darkblue'>porte un chasuble ". $chasubles[$result2['gobj_cod']];
+                                        echo "</span><br>";
+                                    }
+                                }
                             }
                         }
                     }
