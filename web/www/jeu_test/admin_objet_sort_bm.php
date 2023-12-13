@@ -296,7 +296,7 @@ if ($erreur == 0)
                 </td></tr>
                 <tr><td>Nom du sort BM :</td><td><input type="text" id="objsortbm_nom" name="objsortbm_nom" size="50">&nbsp;<em> si vide, le nom réel du BM sera utilisé</em></td></tr>
                 <tr><td>Cout (en PA) :</td><td><input type="text" id="objsortbm_cout" name="objsortbm_cout" size="4">&nbsp;</td></tr>
-                <tr><td>Puissance :</td><td><input type="text" id="objsortbm_bonus_valeur" name="objsortbm_bonus_valeur" size="4">&nbsp;<em> (format Dé rolliste, dans le cas ou le nombre de tour est 0, mettre 0 pour supprimer bonus et malus )</em></td></tr>
+                <tr><td>Puissance :</td><td><input type="text" id="objsortbm_bonus_valeur" name="objsortbm_bonus_valeur" size="4">&nbsp;<em> (format Dé rolliste, dans le cas ou le nombre de tour est 0, 0 pour supprimer bonus+malus ou -X/+X pour reduire le bonus/malus de X)</em></td></tr>
                 <tr><td>Nombre de tour(s):</td><td><input type="text" id="objsortbm_bonus_nb_tours" name="objsortbm_bonus_nb_tours" size="4">&nbsp;<em> (format Dé rolliste, mettre <b>0 pour retirer/supprimer</b> un bonus/malus au lieu de le donner) </em></td></tr>              
                 <tr><td>Ciblage:</td><td>
                         Soi-même: '.create_selectbox("objsortbm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objsortbm_bonus_soi_meme")).'
