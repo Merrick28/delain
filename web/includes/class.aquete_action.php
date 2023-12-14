@@ -129,13 +129,18 @@ class aquete_action
         {
             $pos = new positions();
             $pos->charge($elem->aqelem_misc_cod);
-            $where_positions = " pos_etage=:pos_etage " .($dist == 0 ? "" :  " and pos_x >=:posx_min and pos_x <=:posx_max and pos_y >=:posy_min and pos_y <=:posy_max " ) ;
-            $arrPos = [ ":pos_etage" => $pos->pos_etage,
-                        ":posx_min" => $pos->pos_x - $dist,
-                        ":posx_max" => $pos->pos_x + $dist,
-                        ":posy_min" => $pos->pos_y - $dist,
-                        ":posy_max" => $pos->pos_y + $dist ];
 
+            if ($dist == 0) {
+                $where_positions = " pos_etage=:pos_etage " ;
+                $arrPos = [ ":pos_etage" => $pos->pos_etage];
+            } else {
+                $where_positions = " pos_etage=:pos_etage " .($dist == 0 ? "" :  " and pos_x >=:posx_min and pos_x <=:posx_max and pos_y >=:posy_min and pos_y <=:posy_max " ) ;
+                $arrPos = [ ":pos_etage" => $pos->pos_etage,
+                    ":posx_min" => $pos->pos_x - $dist,
+                    ":posx_max" => $pos->pos_x + $dist,
+                    ":posy_min" => $pos->pos_y - $dist,
+                    ":posy_max" => $pos->pos_y + $dist ];
+            }
 
             // nettoyer l'or?
             if ($p3->aqelem_misc_cod == 1)
