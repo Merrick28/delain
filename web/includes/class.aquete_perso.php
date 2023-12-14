@@ -1019,6 +1019,12 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+                case "#NETTOYAGE #ZONE":
+                    // cette etape sert à faire du menage dans la base en supprimants les objets qui ne serviront plus, l'ètape est autovalidé .
+                    $this->action->nettoyage_zone($this);
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
                 case "#CHANGE #IMPALPABILITE":
                     // mettre palpable/impalpable
                     $this->action->change_impalpabilite($this);

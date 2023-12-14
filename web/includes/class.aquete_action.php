@@ -108,6 +108,108 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * On supprime tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[[1:position|0%0],[2:valeur|1%1],[3:selecteur|1%1|{0~Non},{1~Oui}],[4:type_objet|0%0],[5:selecteur|1%1|{0~Non},{1~Oui}],[6:selecteur|1%1|{0~Non},{1~Oui}]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function nettoyage_zone(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "position", 0)) return 0 ;      // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur")) return 0 ;      // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "selecteur", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "type_objet", 0)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "selecteur", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "selecteur", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+
+        $dist = $p2->aqelem_param_num_1 ;
+        foreach ($p1 as $k => $elem)
+        {
+            $pos = new positions();
+            $pos->charge($elem->aqelem_misc_cod);
+            $where_positions = " pos_etage=:pos_etage " .($dist == 0 ? "" :  " and pos_x >=:posx_min and pos_x <=:posx_max and pos_y >=:posy_min and pos_y <=:posy_max " ) ;
+            $arrPos = [ ":pos_etage" => $pos->pos_etage,
+                        ":posx_min" => $pos->pos_x - $dist,
+                        ":posx_max" => $pos->pos_x + $dist,
+                        ":posy_min" => $pos->pos_y - $dist,
+                        ":posy_max" => $pos->pos_y + $dist ];
+
+
+            // nettoyer l'or?
+            if ($p3->aqelem_misc_cod == 1)
+            {
+                $req    = "delete from or_position where por_cod in ( select por_cod from or_position join positions on pos_cod=por_pos_cod where {$where_positions} );";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute($arrPos, $stmt);
+            }
+
+            // nettoyer des objets
+            foreach ($p4 as $t => $tobj)
+            {
+                $req    = "select f_del_objet(f.obj_cod) from (
+                                select obj_cod from objets 
+                                join objet_generique on gobj_cod=obj_gobj_cod 
+                                join objet_position on pobj_obj_cod=obj_cod
+                                join positions on pos_cod=pobj_pos_cod
+                                where  {$where_positions} and gobj_tobj_cod=:tobj_cod
+                            ) f ;";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array_merge([":tobj_cod" => $tobj->aqelem_misc_cod], $arrPos), $stmt);
+            }
+
+            // nettoyer les passages ?
+            if ($p5->aqelem_misc_cod == 1)
+            {
+                $req    = "select lieu_cod, pos_cod from lieu
+                                join lieu_position on lpos_lieu_cod=lieu_cod
+                                join positions on pos_cod=lpos_pos_cod
+                                where lieu_tlieu_cod=10 and {$where_positions}  ;";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute($arrPos, $stmt);
+                $result   = $stmt->fetchAll();
+                if ($result)
+                {
+                    foreach ($result as $l => $lieu)
+                    {
+                        $req  = "delete from lieu_position where lpos_lieu_cod = {$lieu["lieu_cod"]} ";
+                        $stmt = $pdo->query($req);
+                        $req  = "delete from lieu where lieu_cod= {$lieu["lieu_cod"]} ";
+                        $stmt = $pdo->query($req);
+                        $req  = "select init_automap_pos( {$lieu["pos_cod"]}) ";
+                        echo "$req <br>";
+                        $stmt = $pdo->query($req);
+                    }
+                }
+
+            }
+
+            // nettoyer les monstres ?
+            if ($p5->aqelem_misc_cod == 1)
+            {
+                $req    = "select perso_cod from perso
+                                join perso_position on ppos_perso_cod=perso_cod
+                                join positions on pos_cod=ppos_pos_cod
+                                where perso_type_perso=2 and perso_actif='O' and {$where_positions}  ;";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute($arrPos, $stmt);
+                $result   = $stmt->fetchAll();
+                if ($result)
+                {
+                    foreach ($result as $m => $monstre)
+                    {
+                        $req  = "update perso set perso_actif='O' where perso_cod = {$monstre["perso_cod"]} ";
+                        $stmt = $pdo->query($req);
+                    }
+                }
+            }
+        }
+
+    }
+
+    //==================================================================================================================
+    /**
      * On recherche le n° d'étape suivant en fonction d'un tirage aléatoir =>  '[1:valeur|0%0],[2:etape|0%0]'
      * @param aquete_perso $aqperso
      * @return integer (n° d'étape)
