@@ -74,7 +74,7 @@ begin
 	for row in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
-			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND
+			and (fonc_type = v_evenement OR fonc_type = 'CES' OR ( fonc_type = 'POS' AND fonc_trigger_param->>'fonc_trig_rearme' != -1 AND (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, '')) AND
 			              (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
@@ -85,7 +85,7 @@ begin
 
     -- par défaut on execute la fonction d'EA trouvée
     v_do_it := true;
-    
+
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
 	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' != -2 then -- -------------------------------------------------------------------------------------
 
@@ -349,7 +349,7 @@ begin
         end if;
 
     end if;
-    
+
 	end loop;
 
 
