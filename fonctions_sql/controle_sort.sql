@@ -168,7 +168,8 @@ begin
         select into v_voie_magique perso_voie_magique from perso
         where perso_cod = lanceur;
     -- les maitres du savoir pouvant lancer tous les sorts, on les exclues du test sauf pour le sort de familier sorcier qui reste uniquement pour les sorciers
-  if v_voie_magique != 7 then
+    -- avec un objet on est considéré comme un maitre du savoir !!!
+  if v_voie_magique != 7 and type_lancer != 5 then
         -- guerisseur
         if num_sort in (150, 177) then
             if v_voie_magique != (1) then
