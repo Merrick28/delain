@@ -7,5 +7,5 @@ Dans Méca d'étage, Declenchement d'EA, le décenchement n'est pas conditionné
 
 => Etape de QA nettoyage etage (rune/or/monstre)
 => Gestion des Score du mout'ball
-
+=> utilisation d'un objet qui donne un sort non accessible à cause de la voie magique
 
