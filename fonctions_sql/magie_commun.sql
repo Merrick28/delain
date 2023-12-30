@@ -575,7 +575,9 @@ begin
 	-- La cible est sous défense magique ?
 	if valeur_bonus(cible, 'DFM') != 0 then
 		code_retour := '0;'||code_retour||'Votre sort est rejeté car la cible est sous le coup d’une protection magique.<br />';
-		update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+    if type_lancer != -1 then   -- sauf EA
+		    update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+    end if;
 		texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] qui est protégé par un Défense magique.';
 		insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
 				values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
