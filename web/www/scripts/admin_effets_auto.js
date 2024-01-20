@@ -659,6 +659,23 @@ EffetAuto.Types = [
 			{ nom: 'trig_pos_cod', type: 'positions', label: 'Position de Téléportion', description: 'L’endroit où seront téléporté la ou les cibles.' },
 		],
 	},
+	{	nom: 'ea_modification_ea',
+		debut: false,
+		tueur: false,
+		mort: false,
+		attaque: false,
+		modifiable: true,
+		bm_compteur: false,
+		ea_etage: true,
+		affichage: 'Active/Desactive un EA d’étage',
+		description: 'Activation/Desactivation d’EA d’étage.',
+		parametres: [
+			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des mécanismes).', validation: Validation.Types.Numerique },
+			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+			{ nom: 'trig_ea_etage', type: 'ea_etage', label: 'Liste des EA', description: 'Liste des EA à activer/désactiver avec chances individuels.' }
+		],
+	},
 ];
 /*=============================== fin de défintion des EA ===============================*/
 
@@ -1257,6 +1274,44 @@ EffetAuto.ChampMeca = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampEAEtage = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+	var nomEACod = "obj_fonc_" + parametre.nom + numero.toString()+"_ea_cod";
+	var nomRearm = "obj_fonc_" + parametre.nom + numero.toString()+"_rearme";
+	var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+		html += '<select style="max-width: 200px;" name="' + nomEACod + '[]">';
+		html += EffetAuto.CopieListe ('liste_ea_modele',  valeur.length ? valeur[i].ea_cod : "");
+		html += '</select>';
+
+		html += '&nbsp;ré-arm.:<select style="max-width: 80px;" name="' + nomRearm + '[]">';
+		var selectionne = ((valeur.length && valeur[i].rearme == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Toujours</option>';
+		var selectionne = ((valeur.length && valeur[i].rearme == "1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="1">Une seule fois</option>';
+		var selectionne = ((valeur.length && valeur[i].rearme == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Bascule (case)</option>';
+		var selectionne = ((valeur.length && valeur[i].rearme == "3") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="3">Bascule (grappe)</option>';
+		var selectionne = ((valeur.length && valeur[i].rearme == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Jamais</option>';
+		html += '</select>' ;
+
+
+		html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
+
 
 EffetAuto.ChampPositions = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
@@ -1545,6 +1600,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'meca':
 			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
+			break;
+		case 'ea_etage':
+			html = pd + EffetAuto.ChampEAEtage (parametre, numero, valeur) + pf;
 			break;
 		case 'positions':
 			html = pd + EffetAuto.ChampPositions (parametre, numero, valeur) + pf;

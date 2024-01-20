@@ -230,7 +230,7 @@ class aquete_element
             foreach ($element_list as $k => $e) $where .= (1*$e)."," ;
             $where = " and aqelem_cod not in (". substr($where, 0, -1) .") ";
         }
-        
+
         $pdo    = new bddpdo;
         $retour = array();
         $req    = "SELECT * from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";
@@ -351,6 +351,41 @@ class aquete_element
 
     /**
      * recherche les éléments d'un perso pour une étapes pour un id de paramètre
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas trouvé
+     */
+    function getBy_aqetape_param_id(aquete_etape $aqetape, $param_id)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+
+        // D'abord on cherche pour le perso!
+        $req = "select aqelem_cod from quetes.aquete_element 
+                where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null and aqelem_param_id = ?
+                order by aqelem_param_id,aqelem_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqetape->aqetape_cod, $param_id),$stmt);
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+
+        if(count($result) == 0)
+        {
+            return false;
+        }
+
+        foreach ($result as $k=> $v)
+        {
+            $temp = new aquete_element;
+            $temp->charge($v["aqelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+
+    }
+
+    /**
+     * recherche les éléments d'un perso pour une étapes pour un id de paramètre
      * La recherche s'appui sur getBy_aqperso_param_id mais réalise des controles sur les valeurs attendues
      * @global bdd_mysql $pdo
      * @return boolean => false pas trouvé, l'élément ou un tableau d'élément
@@ -358,6 +393,54 @@ class aquete_element
     function get_aqperso_element(aquete_perso $aqperso, $param_id, $type="", $nb_element=1)
     {
         if (!$result = $this-> getBy_aqperso_param_id( $aqperso, $param_id))
+        {
+            return false;       // Paramètre non trouvé
+        }
+
+        if ((count($result) != $nb_element) && ($nb_element>0))
+        {
+            return false;       // Nombre d'élement incompatible avec ce qui est attendu
+        }
+
+        // il est possible de passer un tableau contenant les types
+        if (is_array($type))
+        {
+            foreach ($result as $k => $element)
+            {
+                if (!in_array($element->aqelem_type , $type))
+                {
+                    return false;       // Type d'élement incompatible avec ce qui est attendu
+                }
+            }
+        }
+        else if ($type!="")
+        {
+            foreach ($result as $k => $element)
+            {
+                if ($element->aqelem_type != $type)
+                {
+                    return false;       // Type d'élement incompatible avec ce qui est attendu
+                }
+            }
+        }
+
+        if ($nb_element==1)
+        {
+            return $result[0];      // Si un seul élément, on revoi directement l'objet!
+        }
+
+        return $result ;
+    }
+
+    /**
+     * recherche les éléments d'un perso pour une étapes pour un id de paramètre
+     * La recherche s'appui sur getBy_aqperso_param_id mais réalise des controles sur les valeurs attendues
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas trouvé, l'élément ou un tableau d'élément
+     */
+    function get_etape_element(aquete_etape $aqetape, $param_id, $type="", $nb_element=1)
+    {
+        if (!$result = $this-> getBy_aqetape_param_id( $aqetape, $param_id))
         {
             return false;       // Paramètre non trouvé
         }

@@ -136,6 +136,7 @@ begin
                        (v_cibles_type = 'E' and perso_type_perso=2  and v_type_source!=2) or
                        (v_cibles_type = 'R' and perso_race_cod = v_race_source) or
                        (v_cibles_type = 'V' and f_est_dans_la_liste(perso_race_cod, (v_params->>'fonc_trig_races')::json)) or
+                       (v_cibles_type = 'V' and f_est_dans_la_liste(COALESCE(f_perso_monture_race(perso_cod), 0), (v_params->>'fonc_trig_races')::json)) or
                        (v_cibles_type = 'J' and perso_type_perso = 1) or
                        (v_cibles_type = 'L' and perso_cod = v_compagnon) or
                        (v_cibles_type = 'P' and perso_type_perso in (1, 3)) or

@@ -23,7 +23,7 @@ declare
     texte_evt                text; -- texte pour évènements
     nom_sort                 text; -- nom du sort
 -------------------------------------------------------------
--- variables concernant le lanceur	
+-- variables concernant le lanceur
 -------------------------------------------------------------
     lanceur alias for $1; -- perso_cod du lanceur
     v_perso_int              integer; -- int du lanceur
@@ -71,13 +71,13 @@ begin
     -------------------------------------------------------------
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
--- on renseigne d abord le numéro du sort 
+-- on renseigne d abord le numéro du sort
     num_sort := 130;
 -- les px
     px_gagne := 0;
     -------------------------------------------------------------
 -- Etape 2 : contrôles
--------------------------------------------------------------	
+-------------------------------------------------------------
     select into niveau_sort,nom_sort sort_niveau, sort_nom from sorts where sort_cod = num_sort;
     select into nom_cible,v_pv_cible perso_nom, perso_pv_max
     from perso
@@ -186,7 +186,7 @@ begin
     else
 -- on appelle la fonction qui gère la mort
         texte_mort := tue_perso_final(lanceur, cible);
--- 
+--
         px_gagne := px_gagne + to_number(split_part(texte_mort, ';', 1), '999999999');
         code_retour := code_retour || '<p>Vous avez tué votre adversaire.<br>';
         code_retour := code_retour || split_part(texte_mort, ';', 2);

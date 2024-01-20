@@ -878,6 +878,27 @@ class aquete_perso
                     }
                     break;
 
+                case "#SAUT #CONDITION #EQUIPE":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionné par une saisie du joueur (mais aussi d'autre meneur).
+                    $result =  $this->action->saut_condition_equipe($this);
+                    if ($result->status)
+                    {
+                        //L'étape est terminée, mais elle peu echouer
+                        if ($result->etape == 0)
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                        } else if ($result->etape < 0)
+                        {
+                            $status_etape = $result->etape == -1 ? -2 : $result->etape;          // fin de la quete sur succes ou echec
+                        } else
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                            $next_etape_cod = $result->etape;        // vers une etape specifique !
+                        }
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
                 case "#SAUT #CONDITION #PA":
                     // cette etape sert à faire un saut vers une autre, le saut est conditionné par une consommation de PA du joueur.
                     $result =  $this->action->saut_condition_pa($this);
@@ -971,6 +992,16 @@ class aquete_perso
                     }
                     break;
 
+                case "#REPARER #OBJET":
+                    // Pour échanger des objets
+                    if ( $this->action->reparer_objet($this) )
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
                 case "#END #OK":
                 case "#END #KO":
                     // cette etape sert à mettre fin à la quête avec ou sans succès.
@@ -985,6 +1016,12 @@ class aquete_perso
                 case "#NETTOYAGE":
                     // cette etape sert à faire du menage dans la base en supprimants les objets qui ne serviront plus, l'ètape est autovalidé .
                     $this->action->nettoyage($this);
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
+                case "#NETTOYAGE #ZONE":
+                    // cette etape sert à faire du menage dans la base en supprimants les objets qui ne serviront plus, l'ètape est autovalidé .
+                    $this->action->nettoyage_zone($this);
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
@@ -1181,6 +1218,14 @@ class aquete_perso
                     $this->action->quete_activation($this);
                     $status_etape = 1;      // 1 => ok etape suivante
                     break;
+
+                case "#QUETE #PAUSE":
+                    // Faire une pause, permet les boucles d'étape sans risque de boucle infini
+                    if ($this->action->quete_pause($this))
+                    {
+                        $status_etape = 1;      // 1 => ok etape suivante
+                    }
+                    break;
             }
 
             //------- comptage du nombre d'étape réalisées----------------------
@@ -1255,6 +1300,10 @@ class aquete_perso
                 $texte_etape = $etape->get_texte_form($this, "perso");
                 break;
 
+            case "#SAUT #CONDITION #EQUIPE":
+                $texte_etape = $etape->get_equipe_form($this);
+                break;
+
             case "#SAUT #CONDITION #PA":
                 $texte_etape = $etape->get_texte_choix_pa($this);
                 break;
@@ -1269,6 +1318,10 @@ class aquete_perso
 
             case "#ECHANGE #OBJET":
                 $texte_etape = $etape->get_echange_objet_form($this);
+                break;
+
+            case "#REPARER #OBJET":
+                $texte_etape = $etape->get_reparer_objet_form($this);
                 break;
         }
 
@@ -1359,25 +1412,30 @@ class aquete_perso
 
         foreach ($perso_journaux as $k => $journal)
         {
-            // Mise en forme en fonction de l'état de lecture
-            if ($step)
+            // affichage du journal seulement s'il y a des trucs à lire,on va compacter les lignes vides (ou ne contenant que des caractères non-imprimables)!
+            if ( str_replace("<br/>", "", str_replace("</p>", "", str_replace("<p>", "", str_replace(" ", "", strtolower(preg_replace('/[\x00-\x1F\x7F\xA0]/u', '', $journal->aqpersoj_texte)))))) != "")
             {
-                // Mise en forme avec les informations d'étape (pour debuggage admin)
-                $nom_etape = "";
-                if ($journal->aqpersoj_etape_cod > 0)
+                // Mise en forme en fonction de l'état de lecture
+                if ($step)
                 {
-                    $etape->charge($journal->aqpersoj_etape_cod);
-                    $nom_etape = '<em style="font-size: 9px;">(' . $etape->aqetape_nom . ')</em>';
+                    // Mise en forme avec les informations d'étape (pour debuggage admin)
+                    $nom_etape = "";
+                    if ($journal->aqpersoj_etape_cod > 0)
+                    {
+                        $etape->charge($journal->aqpersoj_etape_cod);
+                        $nom_etape = '<em style="font-size: 9px;">(' . $etape->aqetape_nom . ')</em>';
+                    }
+                    $journal_quete .= "<div style=\"color:#800000\">" . date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)) . ": Step <strong>#" . $journal->aqpersoj_quete_step . "</strong> - Etape <strong>#" . $journal->aqpersoj_etape_cod . "</strong> - " . $nom_etape . "</div>";
                 }
-                $journal_quete .= "<div style=\"color:#800000\">" . date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)) . ": Step <strong>#" . $journal->aqpersoj_quete_step . "</strong> - Etape <strong>#" . $journal->aqpersoj_etape_cod . "</strong> - " . $nom_etape . "</div>";
-            }
 
-            if (($journal->aqpersoj_lu == 'N') || ($k >= (count($perso_journaux) - $residu)))
-            {
-                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
-            } else
-            {
-                $journal_quete .= $journal->aqpersoj_texte . "<br>";
+
+                if (($journal->aqpersoj_lu == 'N') || ($k >= (count($perso_journaux) - $residu)))
+                {
+                    $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
+                } else
+                {
+                    $journal_quete .= $journal->aqpersoj_texte . "<br>";
+                }
             }
 
             if ($lire == 'O' && $journal->aqpersoj_lu == 'N')

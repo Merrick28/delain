@@ -173,8 +173,8 @@ if ($erreur == 0)
         if ($pos_etage==0) {
             echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>Nombre maximum de joueurs qui peuvent prendre la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>Nombre max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
-            echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
-            echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>Nombre de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouée par un même perso (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>Nombre de fois où elle peut être rejouée tous persos confondus (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>Délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $nb_quete_en_cours . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em>';
             if ($nb_quete_en_cours > 0) echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_terminer_quete('.$nb_quete_en_cours.');";  type="submit" value="Terminer les quêtes en cours" />';
@@ -269,7 +269,7 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
@@ -296,6 +296,10 @@ if ($erreur == 0)
                         } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #CODE")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 4) ;
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
+                        } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #EQUIPE")))
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 6) ;
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
                         } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #MECA")))
                         {
@@ -500,7 +504,13 @@ if ($erreur == 0)
                             echo   '<td>Perso :
                                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'perso\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'perso\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">                                    
+                                    <input name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" value="'.($element->aqelem_param_num_1).'" type="hidden">
+                                    <input name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" value="'.($element->aqelem_param_num_2).'" type="hidden">
+                                    <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" value="'.($element->aqelem_param_num_3).'" type="hidden">
+                                    <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" value="'.($element->aqelem_param_txt_1).'" type="hidden">
+                                    <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" value="'.($element->aqelem_param_txt_2).'" type="hidden">
+                                    <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" value="'.($element->aqelem_param_txt_3).'" type="hidden">
                                     &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso");\'> 
                                     </td>';
@@ -566,6 +576,22 @@ if ($erreur == 0)
                                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                     &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                                    </td>';
+                    break;
+
+                    case 'type_objet':
+                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                            {
+                                $tobj = new type_objet() ;
+                                $tobj->charge( $element->aqelem_misc_cod );
+                                $aqelem_misc_nom = $tobj->tobj_libelle ;
+                            }
+                            echo   '<td>Type d\'objet :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'type_objet\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","type_objet","Rechercher un type d’objet");\'> 
                                     </td>';
                     break;
 
@@ -814,9 +840,6 @@ if ($erreur == 0)
 
                     case 'valeur':
 
-                        $aquete_etape = new aquete_etape() ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
-
                         echo   '<td>Valeur :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
@@ -826,13 +849,25 @@ if ($erreur == 0)
 
                     case 'texte':
 
-                        $aquete_etape = new aquete_etape() ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
-
                         echo   '<td>Texte :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                 <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_1).'">
+                                </td>';
+                        break;
+
+                    case 'craft':
+
+                        echo   '<td>Num#1 :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="8" value="'.$element->aqelem_param_num_1.'">&nbsp;
+                                Num#2&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="8" value="'.$element->aqelem_param_num_2.'">&nbsp;
+                                Num#3&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="8" value="'.$element->aqelem_param_num_3.'">&nbsp;
+                                Int#1&nbsp;:&nbsp;<input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="8" value="'.$element->aqelem_misc_cod.'"><br>
+                                Txt#1&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_1).'"><br>
+                                Txt#2&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_2).'"><br>
+                                Txt#3&nbsp;:&nbsp;<input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_3).'">
                                 </td>';
                         break;
 

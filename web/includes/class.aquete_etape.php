@@ -459,6 +459,223 @@ class aquete_etape
     }
 
     /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un texte)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_equipe_form(aquete_perso $aqperso)
+    {
+        $etape_modele = $aqperso->get_etape_modele();
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_etape_element( $aqperso->etape, 2, "craft" )) return false ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_etape_element( $aqperso->etape, 3, "selecteur" )) return false ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_etape_element( $aqperso->etape, 4, "valeur", 0 )) return false ;                       // Problème lecture (blocage)
+        if (!$p5 = $element->get_etape_element( $aqperso->etape, 5, "etape", 0)) return false ;    // Problème lecture (blocage)
+        if (!$p6 = $element->get_etape_element( $aqperso->etape, 6, "etape")) return false ;    // Problème lecture (blocage)
+        if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return false ;    // Problème lecture (blocage)
+
+
+        $nb_equipe = $p2->aqelem_param_num_1;                 // nombre d'équipe
+        $equip_mini = $p2->aqelem_param_num_2 ;     // nombre mini par equipe
+        $equip_maxi = $p2->aqelem_param_num_3 ;     // nombre maxi par equipe
+        $countdown = $p2->aqelem_misc_cod ;      // en heure
+        $triplette = $p3->aqelem_misc_cod ;      // 0 = tout autorisé, 1 = 1 joueur par triplette
+        //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+        // 1 he minimum pour le decompte
+        $countdown = $countdown <=0 ? 1 : $countdown ;
+
+        // vérifier si le perso est dejà dans la liste => trouve son index et son couple equipe/etat
+        $perso_cod = $aqperso->aqperso_perso_cod ;
+        $perso = new perso();
+        $perso->charge($perso_cod);
+
+        $p_idx = -1 ;
+        $p_equipe = 0 ;
+        $p_etat = 0 ;
+        $equipe_perso = [] ;        // vide au debut $equipe_perso[row][equipe] => [perso,etat]
+        $teams_lock = false ;
+        $perso_triplette = false ;
+        foreach ($p7 as $k => $p)
+        {
+            if ($p->aqelem_misc_cod == $perso_cod)
+            {
+                $p_idx = $k ;
+                $p_equipe = $p->aqelem_param_num_1 ;
+                $p_etat = $p->aqelem_param_num_2 ;
+                if ($p->aqelem_param_num_3 >= 1) $teams_lock = true;   // les équipes sont verrouillées, elles ne peuvent plus être modifiées!
+            }
+            if ( ($p->aqelem_misc_cod != $perso_cod) && $perso->membreTriplette($p->aqelem_misc_cod ) ) {
+                $perso_triplette = true ;
+            }
+        }
+
+        // En cas de validation d'un couple equipe/etat
+        if ($_REQUEST["dialogue-echanger"] == "dialogue" && $_REQUEST["valider"] == "Valider les modifications")
+        {
+            $element = new aquete_element();
+            if ($p_idx >= 0) { // ajouter le perso dans la liste
+                $element->charge($p7[$p_idx]->aqelem_cod);
+            } else {
+                $element->aqelem_aquete_cod = $aqperso->etape->aqetape_aquete_cod;
+                $element->aqelem_aqetape_cod = $aqperso->etape->aqetape_cod;
+                $element->aqelem_param_id = 7;
+                $element->aqelem_param_ordre = count($p7) + 1;
+                $element->aqelem_type = "perso";
+                $element->aqelem_misc_cod = $perso_cod;
+            }
+            $element->aqelem_param_num_1 = (int)$_REQUEST["aqf_equipe"];
+            $element->aqelem_param_num_2 = (int)$_REQUEST["aqf_etat"];
+            $p_equipe = $element->aqelem_param_num_1 ;
+            $p_etat = $element->aqelem_param_num_2 ;
+
+            $element->stocke(($p_idx == -1) ? true : false );
+
+            // recharger p7 avec les valeurs modifiées
+            if (!$p7 = $element->get_etape_element( $aqperso->etape, 7, "perso", 0)) return false ;    // Problème lecture (blocage)
+            if ($p_idx == -1) $p_idx = count($p7) + 1 ; // on est maintenant dans une équipe
+        }
+
+        //echo "<pre>"; print_r([$_REQUEST, $aqperso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+        // Préparer le tableau des équipe pour un afichage ligne par ligne et au passage vérifier si les equipe sont prête
+        $team_member = [] ; //comptage des membre de chaque equipe
+        $teams_ready = true ; // il reste encore des joueurs en attente ?
+        foreach ($p7 as $k => $p)
+        {
+            if ($p->aqelem_param_num_1 == null) $p->aqelem_param_num_1 = 0 ;
+            if ($p->aqelem_param_num_2 == null) $p->aqelem_param_num_2 = 0 ;
+            if ($p->aqelem_param_num_3 == null) $p->aqelem_param_num_3 = 0 ;
+            if ($p->aqelem_misc_cod > 0 ){
+                // en cas d'une nouvelle ligne, remplir de vide
+                $equipe_row = 0 ;
+                while ( isset( $equipe_perso[$equipe_row][$p->aqelem_param_num_1]) ) $equipe_row ++ ;
+                //if (count($equipe_perso) <= $equipe_row)  {
+
+                $team = $p->aqelem_param_num_1 ;
+                $equipe_perso[$equipe_row][$team] = ["perso_cod"=> $p->aqelem_misc_cod, "etat"=> $p->aqelem_param_num_2] ;
+                $team_member[$team] = isset( $team_member[$team] ) ?  $team_member[$team] + 1 : 1 ;
+                if ($p->aqelem_param_num_2 == 0 ) $teams_ready = false ; // encore au moins un joueur en attente
+            }
+        }
+
+        //echo "<pre>"; print_r([$team_member, $equipe_perso, $nb_equipe,$equip_mini,$equip_maxi,$triplette, $p7]); die();
+
+        $teams_count = true ; // les equipes verifie les pré-requis ?
+        for ($k=0; $k<$nb_equipe; $k++) {
+            if (!isset($team_member[$k])){
+                $teams_count = false ; // au moins une équipe n'a pas assez ou possède trop de joueur
+                break;
+            }
+            $m=$team_member[$k];
+            if (($m<$equip_mini) || ($m>$equip_maxi && $equip_maxi!=0)) {
+                $teams_count = false ; // au moins une équipe n'a pas assez ou possède trop de joueur
+                break;
+            }
+        }
+
+        // verouiller les joueurs et lancé le chrono dès qu'on a les tous joueurs
+        if (!$teams_lock && $teams_count && $teams_ready) {
+            // on vient d'atteindre le quorum des équipes, locker les joueurs!
+            $element = new aquete_element();
+            foreach ($p7 as $k => $p)
+            {
+                $element->charge($p->aqelem_cod);
+                $element->aqelem_param_num_3 = 1 ;
+                $element->stocke();
+            }
+            $teams_lock = true;
+            $element->charge($p2->aqelem_cod);
+            $element->aqelem_param_txt_1 = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +{$countdown} hours"));
+            $p2->aqelem_param_txt_1 = $element->aqelem_param_txt_1 ;
+            $element->stocke();
+        }
+
+        if (!$teams_count || !$teams_ready) {
+            // on vient d'atteindre le quorum des équipes, locker les joueurs!
+            $element = new aquete_element();
+            $element->charge($p2->aqelem_cod);
+            $element->aqelem_param_txt_1 = "";
+            $p2->aqelem_param_txt_1 = $element->aqelem_param_txt_1 ;
+            $element->stocke();
+        }
+
+        if ($teams_count && !$teams_ready) {
+            $condition_equipe = "Remplie, en attente! <img src=\"/images/smilies/reflexion.gif\">"; // par defaut
+        } else if ($teams_count && $teams_ready) {
+            $condition_equipe = "Remplie, verrouillée! <img src=\"/images/smilies/bien.gif\">";
+        } else {
+            $condition_equipe = "Non-remplie <img src=\"/images/smilies/nanana.gif\">";
+        }
+
+        // Affichage de la forme
+        $form = "";
+        $form .= '<form method="post" action="quete_auto.php">
+            <input type="hidden" name="methode" value="dialogue">
+            <input type="hidden" name="dialogue-echanger" value="dialogue">
+            <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">        ';
+
+
+        $form .= '<table style="border: solid 1px #800000;"><tr>';
+        $form .= '<br> Conditions pour chaque équipe:<br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + Minimum <b> '.$equip_mini.' joueur(s)</b><br>';
+        $form .= '&nbsp;&nbsp;&nbsp; + ' .( $equip_maxi == 0  ? 'Pas de limite maximum de joueur.<br>' : 'Maximum <b>'.$equip_maxi.' joueur(s)</b><br' );
+        $form .= '<br>';
+
+        // barre des titres du tableau, et préparation du selecteur d'équipe
+        $equipes = [] ;
+        for ($e=0; $e<$nb_equipe; $e++){
+            $equipes[$e] = "Equipe #".($e+1);
+            $form .=  '<td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Equipe #'.($e+1).'</td>';
+        }
+        $form .= '</tr>';
+
+        // Afficher le contenu des equipes
+        $p = new perso();
+        for ($r=0; $r < count($equipe_perso); $r++ ){
+            $form .= "<tr>" ;
+            for ($e=0; $e<$nb_equipe; $e++){
+                if (isset($equipe_perso[$r][$e])) {
+                    $p->charge($equipe_perso[$r][$e]["perso_cod"]);
+                    $form .=  '<td><img src="/images/smilies/'.( $equipe_perso[$r][$e]["etat"] == 1 ? "bien.gif" : "reflexion.gif").'"></td><td>'.$p->perso_nom.' (<a href="visu_desc_perso.php?visu='.$p->perso_cod.'"#>'.$p->perso_cod.'</a>)</td>';
+                } else {
+                    $form .=  '<td></td><td></td>';
+                }
+            }
+            $form .= "</tr>" ;
+        }
+
+
+        $form .= '</table><br>';
+
+        // selecteur d'équipe et bouton de validation !
+        if ($perso_triplette && $triplette) {
+            $form .= " <b style='color:#FFFFFF; background-color: #800000'>&nbsp;Des membres d'une même triplette ne sont pas autorisés dans les équipes!</b><br>";
+        } else if (($p_idx == -1) && $teams_count) {
+            $form .= " <b style='color:#FFFFFF; background-color: #800000'>&nbsp;Malheureusement les équipes sont faites, Il n'y a plus de place pour vous!</b><br>";
+        } else if (!$teams_lock || !$teams_count || !$teams_ready) {
+            $form .= "Choisissez votre équipe : ".create_selectbox("aqf_equipe", $equipes, $p_equipe)." ";
+            $form .= "Etat : ".create_selectbox("aqf_etat", [ "0"=>"Attendre", "1"=>"Prêt" ], $p_etat)."<br><br>";
+
+            // footer (boutton annulaton, validation)
+            $form.= '<input class="test" type="submit" name="valider" value="Valider les modifications">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Quitter"></form>' ;
+        } else {
+            $form .= "Lancement des joueurs le: <b style='color:#FFFFFF; background-color: #800000'>&nbsp;&nbsp;".date( "d/m/Y à H:i:s",  strtotime($p2->aqelem_param_txt_1))."&nbsp;&nbsp;</b><br>";
+        }
+
+        $form .= '<br><u><strong>CONDITION EQUIPE</strong></u>: '.$condition_equipe.'<br>';
+
+        $form .= '<br><u><strong>ATTENTION</strong></u>:<br>';
+        $form .= ' * Dès que les conditions d’équipes seront valides avec tous les joueurs prêts, il ne sera plus possible de modifier les équipes.<br>';
+        $form .= ' * Aussi il est conseillé de <b>laisser 1 joueur « en attente »</b>, le temps que tous les autres joueurs choissisent leur équipe.<br>';
+        $form .= ' * S’il y a plus de joueur dans une équipe que le maximum autorisé, certain devront se désister et  <b>« quitter»</b>.<br>';
+
+        return $form;
+    }
+
+    /**
      * Fonction pour mettre en forme le texte d'une étape du type choix_etape (validation d'une dépense de PA)
      * @param aquete_perso $aqperso
      * @return mixed|string
@@ -697,7 +914,7 @@ class aquete_etape
                 $first_col = true ;
                 $rowstock = true;
                 // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                foreach ($p6_couts[$k] as $kk => $e) 
+                foreach ($p6_couts[$k] as $kk => $e)
                 {
                     $prix = new objet_generique();
                     $prix->charge($e->aqelem_param_num_2);
@@ -797,6 +1014,185 @@ class aquete_etape
                 $troc_phrase .= $nbobj.' x <strong>'.$objet->gobj_nom.'</strong>';
             }
             $form.= $troc_phrase."<br>" ;
+
+            if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" )
+            {
+                // proposer une validation
+                $form .= '<form method="post" action="quete_auto.php">
+                <input type="hidden" name="methode" value="dialogue">
+                <input type="hidden" name="dialogue-echanger" value="dialogue-validation">
+                <input type="hidden" name="troc-phrase" value="'.htmlentities($troc_phrase).'">
+                <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">                
+                <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">'.$selected_item;
+                $form.= '<input class="test" type="submit" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;<input style="text-align: center;" class="test" type="submit" name="cancel" value="Revoir la liste"></form>' ;
+                $form .= '<br><strong>RAPPEL</strong>: Vous quitterez cette étape en Validant cet échange et ne pourrez y revenir que si la quête le stipule.';
+            }
+
+        }
+
+        return $form ;
+    }
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type reparer_objet: '[[1:delai|1%1],[2:perso|1%0],[3:type_objet|1%0],[4:objet_generique|1%0],[5:valeur|1%1]'
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_reparer_objet_form(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+        $form = "" ;
+
+        $etape_modele = $aqperso->get_etape_modele();
+
+        // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
+        if ( ! $aqperso->action->move_perso($aqperso) )
+        {
+            return "Pour faire réparer un objet, rendez-vous en sur un lieu proposant ce service." ;
+        }
+
+        // si le perso souhaite ne rien faire!
+        if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue") return "Vous avez décidé de ne rien réparer.";
+
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_objet', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'objet_generique', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        $tarif = $p5->aqelem_param_num_1;
+
+        // préparer p6 avec la liste des objet réparable
+        $req = "select obj_cod, obj_nom, tobj_libelle, obj_etat 
+                      from perso_objets 
+                      join objets on obj_cod=perobj_obj_cod 
+                      join objet_generique on gobj_cod=obj_gobj_cod 
+                      join type_objet on tobj_cod=gobj_tobj_cod 
+                      where perobj_perso_cod=:perso_cod and obj_etat<100 ";
+
+        // Filter sur le type de matos pris en charge par le PNJ
+        $liste_p3 = "";
+        foreach ($p3 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p3 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+        if ($liste_p3 != "")
+        {
+            $req .= " and gobj_tobj_cod in (".substr($liste_p3, 1).")";
+        }
+
+        // Filter sur le matos pris en charge par le PNJ
+        $liste_p4 = "";
+        foreach ($p4 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p4 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+        if ($liste_p4 != "")
+        {
+            $req .= " and obj_gobj_cod in (".substr($liste_p4, 1).")";
+        }
+        $req .= "order by obj_nom";
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
+        if (!$p6 = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return "Je ne vois rien que vous pouvez réparer ici!!!" ;
+        }
+
+        if ( count($p6) == 0 )
+        {
+            return "Je ne vois rien que vous pouvez réparer ici." ;
+        }
+
+        // charger le perso du joueru
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+
+        $faire_reparation = false ;
+        $nbtrocs = 0 ;
+        $trocs_bzf = 0 ;
+        $trocs_matos = "" ;
+        $selected_item = "" ;
+        $bourse = $perso->perso_po ;
+        if (isset($_REQUEST["dialogue-echanger"]))
+        {
+            // le joueur a valider, on vérifie qu'il a les objets nécéssaires
+            foreach ($p6 as $k => $objet)
+            {
+                if (isset($_REQUEST["echange-{$objet["obj_cod"]}"]))
+                {
+                    $nbtrocs ++ ;
+                    $trocs_bzf = $trocs_bzf + ((100 - $objet["obj_etat"]) * $tarif);
+                    $trocs_matos .= "<b>" . $objet["obj_nom"] . '</b> ( <i>' .  $objet["tobj_libelle"] . " </i>), ";
+                    $bourse = $bourse - ((100 - $objet["obj_etat"]) * $tarif);
+                    $selected_item.='<input type="hidden" name="echange-'.$objet["obj_cod"].'" value="'.$_REQUEST["echange-{$objet["obj_cod"]}"].'">';
+                }
+            }
+
+            if ($bourse<0)
+            {
+                $form .= "Vous n'avez <strong>les brouzoufs</strong> nécessaires pour ses réparations, veuillez ré-essayer:<br><br>";
+            }
+            else if ($nbtrocs == 0)
+            {
+                $form .= "Vous n'avez rien sélectionné, veuillez ré-essayer:<br><br>";
+            }
+            else
+            {
+                $faire_reparation = true ;
+            }
+        }
+
+        // panneau de transaction
+        if (!$faire_reparation || isset($_REQUEST["cancel"]))
+        {
+            // header de la forme
+            $form .= '<form method="post" action="quete_auto.php">
+            <input type="hidden" name="methode" value="dialogue">
+            <input type="hidden" name="dialogue-echanger" value="dialogue">
+            <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
+            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Objet à réparer</td><td style="min-width:400px; font-weight: bold">Prix de la réparation</td></tr>';
+
+            foreach ($p6 as $k => $objet)
+            {
+                // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
+                $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
+                              <td style="border-top: inherit;"><input name="echange-' . $objet["obj_cod"] . '" type="checkbox" style="text-align: center;"></td>
+                              <td style="border-top: inherit;">&nbsp;' . $objet["obj_nom"] . ' ( <i>' .  $objet["tobj_libelle"] . '</i> )</td>
+                              <td style="border-top: inherit;">&nbsp;' . ((100 - $objet["obj_etat"])* $tarif) . ' Bzf</td>
+                        </tr>';
+            }
+            // footer
+            $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider les réparations">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Ne rien réparer"></form>' ;
+            $form .= '<br><br>Vous disposez de : <strong>'.$perso->perso_po.' Bzf</strong><br>';
+            $form .= '<u><strong>ATTENTION</strong></u>:<br>';
+            $form .= ' * Vous quitterez cette étape en Validant ou Abandonnant cet réparation et ne pourrez y revenir que si la quête le stipule.';
+        }
+        else
+        {
+
+            // Bilan de la transaction
+            $troc_phrase = "" ;
+            if ( $_REQUEST["dialogue-echanger"] == "dialogue-validation" )
+            {
+                $form.= "Vous réparer les objets suivants:<br> " ;
+            }
+            else
+            {
+                $form.= "Vous souhaitez réparer les objets suivants ";
+            }
+
+            $troc_phrase .= $trocs_matos ;
+            if ($trocs_bzf>0) $troc_phrase.= " pour {$trocs_bzf} Bzf";
+
+            $form.=$troc_phrase."<br>" ;
 
             if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" )
             {

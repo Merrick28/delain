@@ -20,12 +20,32 @@ declare
   v_param_id alias for $3;	    --  n° de param
   v_aqperso_cod alias for $4;	  --  quete du perso
   --
-  v_nb_condition integer;				  -- nb de condition
-  v_nb_verif integer;				      -- nb de condition vérifié
+  v_type_perso integer;				  -- type de perso
+  v_nb_element integer;				  -- nb d'élément à vérifier
+  v_nb_condition integer;				-- nb de condition
+  v_nb_verif integer;				    -- nb de condition vérifié
 	ligne record;
   --
 
 begin
+
+  -- recupérer le type de perso au passage
+  select perso_type_perso into v_type_perso from perso where perso_cod=v_perso_cod ;
+  if not found then
+    return 0;
+  end if;
+
+  -- les familliers n'ont pas le droit de démarrer une QA (cas de l'étape 0 et où v_aqperso_cod=0) sauf, s'il y a une condiftion specifique sur le type de perso
+  -- il doit y avoir une condition en "ET" ( aqelem_param_num_1=0) sur le code 17 = Type de perso (et il doivent la vérifier)
+  if v_type_perso = 3 and v_aqperso_cod = 0 and v_param_id = 0 then
+      select count(*) into v_nb_element
+      from quetes.aquete_element
+      where aqelem_type='perso_condition' and aqelem_misc_cod=17 and aqelem_param_num_1=0 and aqelem_aqetape_cod = v_aqetape_cod and aqelem_param_id=0 and aqelem_aqperso_cod IS NULL;
+      if v_nb_element=0 then
+         return 0;
+      end if;
+  end if;
+
 
   -- on vérifie d'abord les conditions du type ET ( aqelem_param_num_1=0)!  aqelem_misc_cod=> pas de conditions!
   v_nb_condition := 0;

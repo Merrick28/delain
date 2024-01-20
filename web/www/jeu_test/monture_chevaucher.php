@@ -22,10 +22,25 @@ if ($perso->perso_type_perso == 3){
         $contenu_page .= "<br><p>Choisissez votre monture:</p><br>";
     else
         $contenu_page .= "<br><p>Voulez-vous chevaucher cette monture:</p><br>";
+    $contenu_chevaucher = "" ;
+    $contenu_siffler = "" ;
     foreach ($liste_monture as $m => $monture) {
-        $contenu_page .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"action.php?methode=chevaucher&monture={$monture["perso_cod"]}\">{$monture["perso_nom"]}</a></p>";
+        if ($monture["dist"]==0){
+            $contenu_chevaucher .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"action.php?methode=chevaucher&monture={$monture["perso_cod"]}\">{$monture["perso_nom"]}</a></p>";
+        } else {
+            $contenu_siffler .= "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"action.php?methode=chevaucher&monture={$monture["perso_cod"]}\">{$monture["perso_nom"]}</a></p>";
+        }
     }
-    $contenu_page .= "<br><strong>NOTA</strong>: Cette action nécessite 4 PA.<br>";
+    if ($contenu_chevaucher!="") {
+        $contenu_page .= $contenu_chevaucher;
+        $contenu_page .= "<br><strong>NOTA</strong>: Cette action nécessite 4 PA.<br><br>";
+    }
+    if ($contenu_siffler!="") {
+        $contenu_page .= "Il y a une de vos anciennes montures qui est à proximité, elle vous reconnait!<br>";
+        $contenu_page .= "Vous pouvez la <b>siffler</b> pour la faire venir, puis la <b>chevaucher</b> au passage:<br><br>";
+        $contenu_page .= $contenu_siffler;
+        $contenu_page .= "<br><strong>NOTA</strong>: Cette action nécessite <b>6 PA</b>.<br>";
+    }
     $contenu_page .= "<br>";
 }
 

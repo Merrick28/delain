@@ -3391,7 +3391,7 @@ class perso
     public function monture_chevauchable()
     {
         $pdo  = new bddpdo;
-        $req  = "select m.perso_cod, m.perso_nom 
+        $req  = "select m.perso_cod, m.perso_nom, 0 as dist 
                     from perso p 
                     join perso_position pp on p.perso_cod=pp.ppos_perso_cod
                     join perso_position pm on pm.ppos_pos_cod = pp.ppos_pos_cod and  pm.ppos_perso_cod<>pp.ppos_perso_cod
@@ -3401,6 +3401,24 @@ class perso
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetchAll();
+
+        # monture à 1 case pouvant être monter
+        $req  = "select m.perso_cod, m.perso_nom, 1 as dist 
+                    from perso p 
+                    join perso_position pp on p.perso_cod=pp.ppos_perso_cod
+					join positions cp on cp.pos_cod=pp.ppos_pos_cod
+					join positions cm on cm.pos_cod<>cp.pos_cod 
+									  and cm.pos_x >= (cp.pos_x - 1) and cm.pos_x <= (cp.pos_x + 1)
+									  and cm.pos_y >= (cp.pos_y - 1) and cm.pos_y <= (cp.pos_y + 1)
+									  and cm.pos_etage = cp.pos_etage
+                    join perso_position pm on pm.ppos_pos_cod = cm.pos_cod 
+                    join perso m on m.perso_cod=pm.ppos_perso_cod and m.perso_type_perso=2 and m.perso_actif='O'
+                    join monstre_generique on gmon_cod = m.perso_gmon_cod
+                    where p.perso_cod=:perso and gmon_monture = 'O' and coalesce(f_to_numeric(((m.perso_misc_param->>'monture_cavalier')::jsonb)->>'perso_cod')::integer, 0)=p.perso_cod and not exists (select * from perso where perso_monture = m.perso_cod )";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = array_merge($result, $stmt->fetchAll());
+
         return $result;
     }
 
@@ -3515,4 +3533,43 @@ class perso
                 die('Unknown method.');
         }
     }
+
+
+
+    public function membreTriplette($perso_cod)
+    {
+        $pdo    = new bddpdo();
+
+        // récupération du compte joueur
+        if ($this->perso_type_perso == 1) {
+            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod=:perso_cod";
+        } else {
+            $req = "select pcompt_compt_cod from perso_compte inner join perso_familier on pfam_perso_cod = pcompt_perso_cod where pfam_familier_cod = :perso_cod ";
+        }
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        $compte_cod = $result["pcompt_compt_cod"];
+
+        $req = "select count(*) as count from (
+                    select pcompt_perso_cod as perso_cod
+                        from perso_compte 
+                        where pcompt_compt_cod = :compt_cod
+                    union all
+                    select perso_cod  as perso_cod from perso_compte
+                        inner join perso_familier on pfam_perso_cod = pcompt_perso_cod
+                        inner join perso on perso_cod=pfam_familier_cod
+                        where pcompt_compt_cod = :compt_cod and perso_actif='O'
+            ) persos_du_compte where perso_cod = :perso_cod ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod, ":compt_cod" => $compte_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        return $result['count'] ==  0 ? false : true ;
+    }
+
 }

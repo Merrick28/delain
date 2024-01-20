@@ -440,6 +440,31 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute($search_string, $stmt);
             break;
 
+        case 'type_objet':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(tobj_libelle ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from type_objet where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select tobj_cod cod, tobj_libelle nom from type_objet where {$filter} ORDER BY tobj_libelle LIMIT {$limit}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
         case 'race':
             $words = explode(" ", $recherche);
             $search_string = array();
@@ -575,8 +600,8 @@ switch($_REQUEST["request"])
                 $filter.= "(aqetape_cod::text||' '||aqetape_nom||' ['||aquete_nom||']' ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
-            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
-            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"]);
+            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"])." ";
+            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"])." ";
 
             // requete de comptage
             $req = "select count(*) from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter}";
@@ -686,6 +711,9 @@ switch($_REQUEST["request"])
                 break;
             case 'objet_generique':
                 $req = "select gobj_nom nom from objet_generique where gobj_cod = ? ";
+                break;
+            case 'type_objet':
+                $req = "select tobj_libelle nom from type_objet where tobj_cod = ? ";
                 break;
             case 'sort':
                 $req = "select sort_nom nom from sorts where sort_cod = ? ";

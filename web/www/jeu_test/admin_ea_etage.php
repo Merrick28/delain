@@ -134,6 +134,10 @@ if ($erreur == 0)
         $req = "select meca_nom, meca_cod from meca where meca_pos_etage=".$pos_etage." order by meca_nom ";
         echo '<select id="liste_meca_modele" style="display:none;">' . $html->select_from_query($req, 'meca_cod', 'meca_nom') . '</select>';
 
+        // Liste des EA de l'étage
+        $req = "select  fonc_trigger_param->>'fonc_trig_nom_ea' ea_nom, fonc_cod as ea_cod from fonction_specifique where fonc_gmon_cod is null and fonc_perso_cod is null  and fonc_type='POS' and fonc_trigger_param->>'fonc_trig_pos_etage'=".((int)$pos_etage)." order by fonc_nom ";
+        echo '<select id="liste_ea_modele" style="display:none;">' . $html->select_from_query($req, 'ea_cod', 'ea_nom') . '</select>';
+
         // Interface de saisie
         echo '<form method="post" onsubmit="return Validation.Valide ();">
             <input type="hidden" name="methode2" value="edit">

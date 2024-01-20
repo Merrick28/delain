@@ -1,0 +1,9 @@
+==================================================
+A faire:
+==================================================
+
+Dans QA activation mécanisme: les mécanismes individuels ne marche pas (s'il y a trop de case ?).
+Dans Méca d'étage, Declenchement d'EA, le décenchement n'est pas conditionné dans l'EA (mais par la valeur dans le meca), voir s'il est possible de prendre en compte le déclenchement conditionné de l'EA
+
+
+=> Gestion des Score du mout'ball

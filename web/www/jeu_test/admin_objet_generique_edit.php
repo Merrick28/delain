@@ -110,6 +110,7 @@ if ($erreur == 0)
         $methode = "mod";
     }
 
+    $gobj_cod = isset($_REQUEST["gobj_cod"]) ? $_REQUEST["gobj_cod"] : 0;
     if ($gobj_cod>0)
     {
          $methode = "mod2";

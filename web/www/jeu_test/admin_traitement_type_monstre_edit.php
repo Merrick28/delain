@@ -241,9 +241,11 @@ switch ($methode)
         $result      = $stmt->fetch();
         writelog($log . "Ajout d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
         $immun_rune = (isset($_POST['immun_rune'])) ? 'O' : 'N';
+        $immun_valeur = (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0;
+        $immun_resistance = (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0;
 
         $req_upd_mon =
-            "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, '$immun_rune')";
+            "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, $immun_resistance, '$immun_rune')";
         $stmt        = $pdo->query($req_upd_mon);
         echo "Ajout d’une immunité";
         break;
