@@ -278,7 +278,7 @@ if ($erreur == 0)
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
                             if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PERSO")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PA")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
                             {
-                                $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3));
+                                $elements = is_array($elements) ? array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3)) : $element->getBy_etape_param_id($etape->aqetape_cod, 3);
                             }
                         } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #COMPETENCE")))
                         {
