@@ -583,7 +583,7 @@ class aquete_perso
         $element = new aquete_element();
         $elements = $element->getBy_aqperso_param_id($this, $param_id);
 
-        if (count($elements) == 0)
+        if (!is_array($elements) || count($elements) == 0)
         {
             return "";                   // si rien trouvé !
         }

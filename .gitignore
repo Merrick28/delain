@@ -9,4 +9,5 @@ doc
 web/includes/class.Memcached.php
 web/www/avatars
 web/www/images
-
+cache
+shell/livraison.log

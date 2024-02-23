@@ -338,7 +338,7 @@ switch ($methode)
                     {
                         $element    = new aquete_element;
                         $new        = true;
-                        $aqelem_cod = 1 * ($_REQUEST["aqelem_cod"][$param_id][$e]);
+                        $aqelem_cod = 1 * (int)($_REQUEST["aqelem_cod"][$param_id][$e]);
                         if ($aqelem_cod != 0)
                         {
                             $new = false;
@@ -351,10 +351,10 @@ switch ($methode)
                         $element->aqelem_param_id    = $param_id;
                         $element->aqelem_param_ordre = $e;
                         $element->aqelem_type        = $type;
-                        $element->aqelem_misc_cod    = 1 * $_REQUEST["aqelem_misc_cod"][$param_id][$e];
-                        $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1 * $_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL;
-                        $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1 * $_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL;
-                        $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1 * $_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL;
+                        $element->aqelem_misc_cod    = 1 * (int) $_REQUEST["aqelem_misc_cod"][$param_id][$e];
+                        $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1 * (int)$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL;
+                        $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1 * (int)$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL;
+                        $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1 * (int)$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL;
                         $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
                         $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
                         $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];

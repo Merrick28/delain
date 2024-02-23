@@ -49,11 +49,11 @@ class bddpdo
                 // il faut gérer les requetes préparées
                 $temp =
                     new PDO('pgsql:host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true, PDO::ATTR_EMULATE_PREPARES => true));
-
+                $temp->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
             } else {
                 $temp =
                     new PDO('pgsql:host=' . $this->host . ';port=' . $this->port . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
-
+                $temp->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
             }
             if ($debug_mode) {
                 $this->pdo = new \Fabfuel\Prophiler\Decorator\PDO\PDO($temp, $profiler);

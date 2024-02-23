@@ -689,7 +689,7 @@ if ($erreur == 0)
                 {
                     echo "Vous avez déjà réalisé ce rituel <strong>".$perso_rituel_caracs->get_nb_rituel($perso_cod, 1)."</strong> fois, la dernière fois c'était le <strong>".date("d/m/Y",strtotime($perso_rituel_caracs->prcarac_date_rituel)) ."</strong><br>";
                 }
-                echo "Vous diposez de <strong>{$perso_nb_obj}</strong> {$objet_generique->gobj_nom} et <strong>{$perso_nb_bz}</strong> Bz<br><br>";
+                echo "Vous disposez de <strong>{$perso_nb_obj}</strong> {$objet_generique->gobj_nom} et <strong>{$perso_nb_bz}</strong> Bz<br><br>";
 
                 echo "<em>Les coûts du rituel de transformation sont les suivants</em>:<br>";
                 if ($cout_bz>0) echo " &#8226; <strong>{$cout_bz} Brouzoufs</strong><br>";
