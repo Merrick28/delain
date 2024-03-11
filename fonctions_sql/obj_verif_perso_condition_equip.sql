@@ -44,11 +44,11 @@ begin
 
 
   -- pour les familiers regarder s'il y a une condition spécifique, sinon ils n'ont pas le droit à l'équipement
-  -- il doit y avoir une condition en "ET" sur le code 17 = Type de perso (et il doivent la vérifier)
+  -- il doit y avoir une condition en "ET/OU" sur le code 17 = Type de perso (et il doivent la vérifier)
   if v_type_perso = 3 then
     select count(*) into v_nb_element
     from objet_element
-    where objelem_type='perso_condition' and objelem_misc_cod=17 and objelem_param_num_1=0 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
+    where objelem_type='perso_condition' and objelem_misc_cod=17 and (objelem_obj_cod = v_obj_cod or objelem_gobj_cod=v_gobj_cod) and objelem_param_id=1 ;
     if v_nb_element=0 then
       return -1;
     end if;
