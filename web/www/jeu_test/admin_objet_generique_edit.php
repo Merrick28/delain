@@ -1010,9 +1010,9 @@ if ($erreur == 0)
 			obj_seuil_dex = " . $_POST['gobj_seuil_dex'] . ",obj_regen = " . $_POST['gobj_regen'] . ",obj_aura_feu = " . $_POST['gobj_aura_feu'] . ",
 			obj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",obj_critique = " . $_POST['gobj_critique'] . ",
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
-			where obj_gobj_cod = " . $_REQUEST['objet'] . " and obj_modifie = 0";
+			where obj_gobj_cod = " . $_REQUEST['objet'] . " and obj_modifie = 0 and obj_enchantable < 2";
             $stmt = $pdo->query($req);
-            echo "<p>La mise à jour des anciens objets aussi<br>";
+            echo "<p>La mise à jour des anciens objets aussi (sauf objets déjà enchantés)<br>";
             echo "<br>Editer l'objet: <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod&gobj_cod={$_REQUEST['objet']}\">#{$_REQUEST['objet']} - {$gobj_nom}</a><br><br>";
             echo "<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
             break;
