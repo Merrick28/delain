@@ -2,7 +2,8 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur  = 0;
-$corps   = htmlspecialchars($_REQUEST['corps']);
+//$corps   = htmlspecialchars($_REQUEST['corps']);
+$corps   = $_REQUEST['corps'];
 $methode = get_request_var('methode', 'desc');
 //
 // phrase à modifier par la suite en fonction des alignements
