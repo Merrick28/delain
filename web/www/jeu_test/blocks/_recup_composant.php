@@ -4,7 +4,7 @@ function CalcPhase()
 {
     $DateRef   =
         mktime(8, 53, 0, 7, 29, 2003); //date de référence : le 29/07/2003 à 6:53:00 GMT il y a eu une pleine lune
-    $Aujourdui = mktime(); //date du jour
+    $Aujourdui = mktime((int)date("H"),(int)date("i"),(int)date("H"), date("m"), (int)date("d"), (int)date("Y")); //date du jour
     $msDiff    = ($Aujourdui - $DateRef) * 1000 + MSPARJOUR; //on calcule la différence en millisecondes
     $phase     = ($msDiff * 100) / (SYNODIC * MSPARJOUR); //on calcule le pourcentage de la phase
 
