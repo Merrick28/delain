@@ -7,6 +7,7 @@ header("Content-type: application/xml");
 $pdo = new bddpdo();
 if (!empty($_REQUEST["foo"]))
 {
+    $_REQUEST["foo"] = utf8_encode(html_entity_decode($_REQUEST["foo"]));
     $req  =
         "select perso_nom,perso_cod from perso where perso_nom ilike :nom and perso_actif = 'O' and perso_type_perso = 1";
     $stmt = $pdo->prepare($req);
@@ -26,5 +27,5 @@ if (!empty($_REQUEST["foo"]))
     $xml = "<resultats nb=\"0\">";
 }
 $xml .= "\n</resultats>";
-echo utf8_encode($xml);
+echo ($xml);
 
