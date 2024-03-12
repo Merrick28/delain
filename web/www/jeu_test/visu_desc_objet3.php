@@ -103,6 +103,20 @@ if ($autorise == 1)
             echo "<td>" . $result['obj_critique'] . " %</td>";
             echo "</tr>";
         }
+        
+        if ($niveau_min > 0)
+        {
+            $cpl_class = '';
+            if ($niveau_perso < $niveau_min)
+                $cpl_class = '_rouge';
+            else
+                $cpl_class = '_vert';
+            echo "<tr>";
+            echo '<td class="soustitre2' . $cpl_class . '">Niveau minimum pour équiper</td>';
+            echo "<td>" . $niveau_min . "</td>";
+            echo "</tr>";
+        }
+
         if ($result['gobj_tobj_cod'] == 1)
         {
             echo "<tr>";
@@ -148,18 +162,6 @@ if ($autorise == 1)
                 echo "<tr>";
                 echo '<td class="soustitre2' . $cpl_class . '">Seuil d’efficacité en force</td>';
                 echo "<td>" . $seuil_for . "</td>";
-                echo "</tr>";
-            }
-            if ($niveau_min > 0)
-            {
-                $cpl_class = '';
-                if ($niveau_perso < $niveau_min)
-                    $cpl_class = '_rouge';
-                else
-                    $cpl_class = '_vert';
-                echo "<tr>";
-                echo '<td class="soustitre2' . $cpl_class . '">Niveau minimum pour équiper</td>';
-                echo "<td>" . $niveau_min . "</td>";
                 echo "</tr>";
             }
 
