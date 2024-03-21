@@ -67,7 +67,7 @@ begin
       update perso set perso_monture=null where perso_cod=v_cavalier ;
 
       -- evenement désarçonnage (108)
-      perform insere_evenement(v_perso, v_cavalier, 109, '[cible] a été désarçonner de sa monture par [attaquant]', 'O', NULL);
+      perform insere_evenement(v_perso, v_cavalier, 109, '[cible] a été désarçonné de sa monture par [attaquant]', 'O', NULL);
 
   else
 
