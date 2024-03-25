@@ -1,4 +1,4 @@
-select count(*) from (
+select perso_cod from (
   select perso_cod, 2 as priorite from perso
   where perso_type_perso = 2
   and perso_actif = 'O'
