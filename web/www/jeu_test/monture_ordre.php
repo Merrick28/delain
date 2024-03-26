@@ -116,7 +116,7 @@ if ($perso->perso_type_perso == 3){
         }
         $distance_total = $distance_ordre - $distance_ancien + $dist ;
 
-        if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0 && $type_ordre!="TALONNER" )) $msg .= "<br>Vous avez donné un <b>mauvaise ordre de direction</b>! ";
+        if ( $dir_x <-1 || $dir_x >1 || $dir_y <-1 || $dir_y >1  || ($dir_y==0 && $dir_x==0 && $type_ordre!="TALONNER" )) $msg .= "<br>Vous avez donné un <b>mauvais ordre de direction</b>! ";
         if ( $dist >  $dist_max ) $msg .= "<br>Vous ne pouvez pas donner une distance supérieur <b>la vue</b> de votre monture (limité à 8)! ";
         if ( $distance_total >  $dist_vue ) $msg .= "<br>La distance totale des ordres ne doit pas dépasser <b>la vue</b> de votre monture ! ";
         if ( $dist <= 0 ) $msg .= "<br>Vous ne pouvez pas donner un ordre avec une distance nulle ! ";
