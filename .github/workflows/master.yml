@@ -35,7 +35,7 @@ jobs:
       #- name: Lancement awx
       #  run: "curl --request POST  --url https://awx.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX }}'  --cookie __cfduid=d0aa6277fb907532056a58eefe13a568e1598185892"
       - name: Lancement awx2
-        run: "curl --request POST  --url https://awxs.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX2 }}'"  
+        run: "curl --request POST  --url https://awx2.sdewitte.net/api/v2/job_templates/14/launch/  --header 'authorization: Basic ${{ secrets.AUTH_AWX2 }}'"  
 
 
 
