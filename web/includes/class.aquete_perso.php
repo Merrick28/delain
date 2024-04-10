@@ -677,6 +677,7 @@ class aquete_perso
         }
 
         $nb_etape_run = 0 ;
+        $etape_ran = [] ;
         do
         {
             $loop = false;   // par défaut on sort, sauf si une etape est validée, alors il faudra continuer
@@ -711,7 +712,7 @@ class aquete_perso
             //---------------------------------------------------------------------------------
             // ---------------- Le gros moteur de traitment des actions -----------------------
             $status_etape = 0;     // 0=> on est bloqué en attente, 1 => ok etape suivante (vers $next_etape_cod), -1=> Etape Fin OK, -2 => Etape KO
-            $next_etape_cod = 1 * $this->etape->aqetape_etape_cod;
+            $next_etape_cod =  (int)$this->etape->aqetape_saut_etape_cod > 0 ? (int)$this->etape->aqetape_saut_etape_cod : (int) $this->etape->aqetape_etape_cod;
             $model_tag = $this->etape_modele->aqetapmodel_tag;
 
             // Vérification du délai d'étape, seuelement pour certaine etape, ce délai s'il existe est TOUJOURS le 1er paramètre--------------
@@ -1257,6 +1258,13 @@ class aquete_perso
 
             $this->stocke();    // Mettre à jours les infos (car celles-ci peuvent être utilisée dans les étapes d'actions)
 
+
+            //------- protection du bouclage infini------------------------------
+            if (in_array($this->aqperso_etape_cod, $etape_ran)){
+                $loop = false;
+            } else {
+                $etape_ran[] = $this->aqperso_etape_cod;
+            }
 
         } while ($loop && $this->aqperso_etape_cod > 0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
