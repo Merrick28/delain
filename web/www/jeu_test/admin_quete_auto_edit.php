@@ -440,7 +440,7 @@ if ($erreur == 0)
         $aqetape_saut_etape_nom = $aquete_etape->getNom(1*$etape->aqetape_saut_etape_cod) ;
         //sauf pour le cas des etapes de fin ECHEC/SUCCESS, on donne une possibilité de saut sur 'étape suivante
         $etape_tags = explode(" ", $etape_modele->aqetapmodel_tag);
-        if ( in_array("#END", $etape_tags) || in_array("#START", $etape_tags) || in_array("#SAUT", $etape_tags) )
+        if ( in_array("#END", $etape_tags) || in_array("#START", $etape_tags) || in_array("#SAUT", $etape_tags) || in_array("#CHOIX", $etape_tags) )
         {
             echo '<input type="hidden" name="aqetape_saut_etape_cod" value="0" />';
         } else {
