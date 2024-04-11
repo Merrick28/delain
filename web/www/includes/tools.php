@@ -12,11 +12,21 @@ function create_selectbox($name, $data, $default='', $param=array())
 
     $out='<select ' .( isset($param["id"]) ? 'id="'.$param["id"].'"' : ''). ' name="' .$name. '" ' . (isset($param["style"]) ? $param["style"] :'') .">\n";
 
+    $optgroup = isset($param["optgroup"]) ? $param["optgroup"] : [] ;
+    $curgroup="";
     foreach($data as $key=>$val) {
+        if (isset($optgroup[$key])) {
+            if ($curgroup != $optgroup[$key]) {
+                $curgroup = $optgroup[$key] ;
+                if ($curgroup != "") $out.='</optgroup>'; // fermeture du precedent avant ouvertur du nouveau groupe
+                $out.='<optgroup label="'.$curgroup.'">';
+            }
+        }
         $out.='<option value="' .$key. '"'. ($default==$key?' selected="selected"':'') .'>';
         $out.=$val;
         $out.="</option>\n";
     }
+    if ($curgroup != "") $out.='</optgroup>'; // fermeture du dernier groupe
     $out.="</select>\n";
 
     return $out;
@@ -32,7 +42,12 @@ function create_selectbox_from_req($name, $req, $default='', $param=array())
     $pdo = new bddpdo;
     $stmt = $pdo->query($req);
     $data = array();
-    while($result = $stmt->fetch(PDO::FETCH_NUM )) $data[$result[0]] = $result[1] ;
+    $optgroup = array();
+    while($result = $stmt->fetch(PDO::FETCH_NUM )) {
+        $data[$result[0]] = $result[1] ;
+        if (isset($result[2])) $optgroup[$result[0]] = $result[2] ;
+    }
+    if (sizeof($optgroup) >0 ) $param["optgroup"]=$optgroup;
     return create_selectbox($name, $data, $default, $param);
 
 }#-# create_selectbox_from_table()
@@ -489,7 +504,7 @@ function insert_eas($fonctions_implantation, $post, $numero, $fonc_gmon_cod, $fo
 function save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)
 {
     $pdo = new bddpdo; // connection à la DB
-    
+
     // Modification des effets automatiques
     $fonctions_supprimees = explode(',', trim(fonctions::format($post['fonctions_supprimees']), ','));
     $fonctions_annulees   = explode(',', trim(fonctions::format($post['fonctions_annulees']), ','));

@@ -835,8 +835,8 @@ if ($erreur == 0)
         echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
 
         // Liste des conditions de perso
-        $req = "select aqtypecarac_cod, aqtypecarac_nom from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod ";
-        echo '<select id="liste_perso_condition_modele" style="display:none;">' . $html->select_from_query($req, 'aqtypecarac_cod', 'aqtypecarac_nom') . '</select>';
+        $req = "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type  from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod ";
+        echo '<select id="liste_perso_condition_modele" style="display:none;">' . $html->select_from_query($req, 'aqtypecarac_cod', 'aqtypecarac_nom', "", 'aqtypecarac_type') . '</select>';
 
         // Liste des sorts
         $req = "select  distinct dsort_dieu_cod, sort_cod, case when dsort_dieu_cod is null then '' else 'Divin - ' end || sort_nom || ' (' || case when sort_case='O' then 'case/' else '' end || case when sort_aggressif='O' then 'agressif)' when sort_soutien='O' then 'soutien)' else 'neutre)' end sort_nom

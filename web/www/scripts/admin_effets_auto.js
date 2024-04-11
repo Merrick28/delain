@@ -767,13 +767,26 @@ EffetAuto.remplirListe = function (type, numero) {
 
 EffetAuto.CopieListe = function (listeid, selection) {
 	var options = '';
+	var curGroup = '' ;
 	var modele = document.getElementById(listeid);
 	for (var i = 0; i < modele.options.length; i++) {
 		var opt_v = modele.options[i].value;
 		var opt_t = modele.options[i].text;
 		var selectionne = ((selection == opt_v) ? 'selected="selected"' : '' );
+
+		// traitement des options de groupe s'i y en a
+		var optGroup =  modele.options[i].parentNode ;
+		if (optGroup.nodeName == "OPTGROUP") {
+			if (curGroup != optGroup.label) {
+				if (curGroup != '')options +='</optgroup>';
+				options += '<optgroup label="' +optGroup.label + '">';
+				curGroup = optGroup.label ;
+			}
+		}
+
 		options += '<option value="' + opt_v + '" ' + selectionne + '>' + opt_t + '</option>';
 	}
+	if (curGroup != '')options +='</optgroup>';
 	return options;
 }
 
