@@ -1065,6 +1065,7 @@ class aquete_etape
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_objet', 0)) return false ;                             // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'objet_generique', 0)) return false ;                             // Problème lecture des paramètres
         if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'valeur')) return false ;                             // Nombre d'objet a reparer au max
         $tarif = $p5->aqelem_param_num_1;
 
         // préparer p6 avec la liste des objet réparable
@@ -1106,12 +1107,12 @@ class aquete_etape
 
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
-        if (!$p6 = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        if (!$p7 = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
             return "Je ne vois rien que vous pouvez réparer ici!!!" ;
         }
 
-        if ( count($p6) == 0 )
+        if ( count($p7) == 0 )
         {
             return "Je ne vois rien que vous pouvez réparer ici." ;
         }
@@ -1130,7 +1131,7 @@ class aquete_etape
         if (isset($_REQUEST["dialogue-echanger"]))
         {
             // le joueur a valider, on vérifie qu'il a les objets nécéssaires
-            foreach ($p6 as $k => $objet)
+            foreach ($p7 as $k => $objet)
             {
                 if (isset($_REQUEST["echange-{$objet["obj_cod"]}"]))
                 {
@@ -1150,6 +1151,10 @@ class aquete_etape
             {
                 $form .= "Vous n'avez rien sélectionné, veuillez ré-essayer:<br><br>";
             }
+            else if ($nbtrocs>$p6->aqelem_param_num_1 && $p6->aqelem_param_num_1>0)
+            {
+                $form .= "Vous n'avez le droit qu'à <strong>{$p6->aqelem_param_num_1} réparation(s)</strong>, vous tenter d'en faire <strong>{$nbtrocs}</strong>, veuillez ré-essayer:<br><br>";
+            }
             else
             {
                 $faire_reparation = true ;
@@ -1165,14 +1170,15 @@ class aquete_etape
             <input type="hidden" name="dialogue-echanger" value="dialogue">
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
             <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
-            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Objet à réparer</td><td style="min-width:400px; font-weight: bold">Prix de la réparation</td></tr>';
+            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Objet à réparer</td><td style="min-width:400px; font-weight: bold">Etat</td><td style="min-width:400px; font-weight: bold">Prix de la réparation</td></tr>';
 
-            foreach ($p6 as $k => $objet)
+            foreach ($p7 as $k => $objet)
             {
                 // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
                 $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
                               <td style="border-top: inherit;"><input name="echange-' . $objet["obj_cod"] . '" type="checkbox" style="text-align: center;"></td>
                               <td style="border-top: inherit;">&nbsp;' . $objet["obj_nom"] . ' ( <i>' .  $objet["tobj_libelle"] . '</i> )</td>
+                              <td style="border-top: inherit;">&nbsp;' .  $this->get_etat($objet["obj_etat"]) . '</td>
                               <td style="border-top: inherit;">&nbsp;' . ((100 - $objet["obj_etat"])* $tarif) . ' Bzf</td>
                         </tr>';
             }
@@ -1180,6 +1186,10 @@ class aquete_etape
             $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider les réparations">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Ne rien réparer"></form>' ;
             $form .= '<br><br>Vous disposez de : <strong>'.$perso->perso_po.' Bzf</strong><br>';
             $form .= '<u><strong>ATTENTION</strong></u>:<br>';
+            if ($p6->aqelem_param_num_1>0)
+            {
+                $form .= ' * Vous ne pouvez choisir que <strong>'.$p6->aqelem_param_num_1.'</strong> ligne(s) de réparation(s) au maximum.<br>';
+            }
             $form .= ' * Vous quitterez cette étape en Validant ou Abandonnant cet réparation et ne pourrez y revenir que si la quête le stipule.';
         }
         else
@@ -1217,6 +1227,36 @@ class aquete_etape
         }
 
         return $form ;
+    }
+
+
+    /**
+     * Retourne en texte de l'état d'un objet par son %
+     */
+    function get_etat($parm)
+    {
+        $retour = 'Comme neuf';
+        if ($parm < 90)
+        {
+            $retour = 'Excellent';
+        }
+        if ($parm < 70)
+        {
+            $retour = 'Bon';
+        }
+        if ($parm < 50)
+        {
+            $retour = 'Mauvais';
+        }
+        if ($parm < 35)
+        {
+            $retour = 'Médiocre';
+        }
+        if ($parm < 10)
+        {
+            $retour = 'Déplorable';
+        }
+        return $retour;
     }
 
     /**
