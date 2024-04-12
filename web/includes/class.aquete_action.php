@@ -1258,7 +1258,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%1],[2:etape|1%1],[3:choix_etape|1%0]'
+     * Réparation d'objet =>  '[1:delai|1%1],[2:perso|1%0],[3:type_objet|1%0],[4:objet_generique|1%0],[5:valeur|1%1],[6:valeur|1%1]'
      * @param aquete_perso $aqperso
      * @return bool
      */
@@ -1271,6 +1271,7 @@ class aquete_action
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_objet', 0)) return false ;                             // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'objet_generique', 0)) return false ;                             // Problème lecture des paramètres
         if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'valeur')) return false ;                             // Nombre d'objet a reparer au max
         $tarif = $p5->aqelem_param_num_1;
 
         // Recherche du PNJ
@@ -1342,14 +1343,14 @@ class aquete_action
 
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
-        if (!$p6 = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        if (!$p7 = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
             $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici...!<br>";
             $perso_journal->stocke();
             return true; // aucune réparation
         }
 
-        if ( count($p6) == 0 )
+        if ( count($p7) == 0 )
         {
             $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez réparer ici..!!<br>";
             $perso_journal->stocke();
@@ -1369,7 +1370,7 @@ class aquete_action
         $bourse = $perso->perso_po ;
 
         // le joueur a valider, on vérifie qu'il a l'argent et les objets nécéssaires (en sa possèsion)
-        foreach ($p6 as $k => $objet)
+        foreach ($p7 as $k => $objet)
         {
             if (isset($_REQUEST["echange-{$objet["obj_cod"]}"]))
             {
@@ -1380,6 +1381,10 @@ class aquete_action
 
         // Erreur la selection du joueur n'est pas valide (manque tune, ou l'objet n'est plus en sa possession)
         if ($bourse<$trocs_bzf || $nbtrocs==0) return false;
+
+        // Erreur le joueur essaye de réparer plus d'objet qu'autorisé
+        if ($nbtrocs>$p6->aqelem_param_num_1 && $p6->aqelem_param_num_1>0) return false;
+
 
         //=============================  On réalise la réparation a proprement dit!!! =======================================
         // On traite d'abord le cas de Bzf
@@ -1400,7 +1405,7 @@ class aquete_action
         }
 
         // Il faut maintenant réparer les objets du joueur
-        foreach ($p6 as $k => $objet)
+        foreach ($p7 as $k => $objet)
         {
             if (isset($_REQUEST["echange-{$objet["obj_cod"]}"]))
             {
