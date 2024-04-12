@@ -334,6 +334,27 @@ if ($erreur == 0)
                         }
                     }
 
+                    // Saut d'étape interne à toutes les étapes
+                    if ( (int)$etape->aqetape_saut_etape_cod != 0 )
+                    {
+                        $e = new aquete_etape;
+                        if (!$e->charge($etape->aqetape_saut_etape_cod))    // on charge l'étape pour récupérer le nom!
+                        {
+                            if ($etape->aqetape_saut_etape_cod < 0)
+                            {
+                                echo "<strong style='color: yellow'>&rArr; Etape suivante #{$etape->aqetape_saut_etape_cod}</strong> <em style='color: yellow'>Fin de la quête</em><br>";
+                            } else {
+                                echo "<strong style='color: red'>&rArr; Etape suivante #{$etape->aqetape_saut_etape_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
+
+                            }
+                        }
+                        else
+                        {
+                            echo "<strong style='color: yellow'>&rArr; Etape suivante #{$etape->aqetape_saut_etape_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
+                        }
+                    }
+
+
 
                     if ($etape_modele->aqetapmodel_tag=="#END #KO")
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';
@@ -415,6 +436,21 @@ if ($erreur == 0)
                    &nbsp;&nbsp;&nbsp;&nbsp;[#perso.genre(le meneur,la meneuse)] : affichera "la meneuse" pour les filles et "le meneur" pour les gars.<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;<br>
                    <br></div></td></tr>';
+        $aquete_etape = new aquete_etape() ;
+        $aqetape_saut_etape_nom = $aquete_etape->getNom(1*$etape->aqetape_saut_etape_cod) ;
+        //sauf pour le cas des etapes de fin ECHEC/SUCCESS, on donne une possibilité de saut sur 'étape suivante
+        $etape_tags = explode(" ", $etape_modele->aqetapmodel_tag);
+        if ( in_array("#END", $etape_tags) || in_array("#START", $etape_tags) || in_array("#SAUT", $etape_tags) || in_array("#CHOIX", $etape_tags) )
+        {
+            echo '<input type="hidden" name="aqetape_saut_etape_cod" value="0" />';
+        } else {
+            echo   '<tr><td><strong>Etape suivante</strong>:</td><td>
+                        <input data-entry="val" name="aqetape_saut_etape_cod" id="aqetape_saut_etape_cod" type="text" size="5" value="'.$etape->aqetape_saut_etape_cod.'" onChange="if($(\'#aqetape_saut_etape_cod\').val() < 0) $(\'#aqetape_saut_etape_cod\').val(0); setNomByTableCod(\'aqetape_saut_etape_nom\', \'etape\', $(\'#aqetape_saut_etape_cod\').val());">
+                        &nbsp;<em></em><span data-entry="text" id="aqetape_saut_etape_nom">'.$aqetape_saut_etape_nom.'</span></em>
+                        &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("aqetape_saut_etape","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                        <em style="font-size: 10px;">(0 ou vide pour poursuivre à l’étape suivante, les étapes spéciales ne sont pas possible)</em></td></tr>';
+
+        }
         echo '</table>';
 
 
@@ -785,7 +821,7 @@ if ($erreur == 0)
                                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                      '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
-                                     '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
+                                     '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
                                      &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="15" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )

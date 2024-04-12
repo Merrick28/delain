@@ -3090,6 +3090,20 @@ class aquete_action
                || ($p3->aqelem_misc_cod==4)                                                                   // 4: Tout le monde
             )
             {
+                // ============================= Traitement des TP depuis/vers arenes/donjon
+                // Capturer la position de départ
+                $req_position = "select pos_etage, pos_cod, etage_arene, coalesce(coalesce(f_perso_monture(ppos_perso_cod), f_perso_cavalier(ppos_perso_cod)), 0) as perso_equipage
+				from perso_position
+				inner join positions on pos_cod = ppos_pos_cod
+				inner join etage on etage_numero = pos_etage
+				where ppos_perso_cod = {$result["perso_cod"]} ";
+                $stmtT         = $pdo->query($req_position);
+                $resultT       = $stmtT->fetch();
+                $anc_pos_etage = $resultT['pos_etage'];
+                $anc_pos_cod  = $resultT['pos_cod'];
+                $anc_arene    = $resultT['etage_arene'];
+                $perso_equipage = $resultT['perso_equipage'];
+
                 // Téléporter !!!
                 $req = "update perso_position set ppos_pos_cod=pos_alentour(:pos_cod, :dispersion) where ppos_perso_cod=:ppos_perso_cod; ";
                 $stmt2   = $pdo->prepare($req);
@@ -3102,6 +3116,56 @@ class aquete_action
                 $stmt2   = $pdo->prepare($req);
                 $pdo->execute(array(":perso_cod" => $result["perso_cod"]), $stmt2);
 
+                // ============================= Traitement des TP depuis/vers arenes/donjon
+                // Capturer la position d'arrivée
+                $req_position = "select pos_etage, pos_cod, etage_arene, coalesce(coalesce(f_perso_monture(ppos_perso_cod), f_perso_cavalier(ppos_perso_cod)), 0) as perso_equipage
+                                    from perso_position
+                                    inner join positions on pos_cod = ppos_pos_cod
+                                    inner join etage on etage_numero = pos_etage
+                                    where ppos_perso_cod = {$result["perso_cod"]} ";
+                $stmtT         = $pdo->query($req_position);
+                $resultT       = $stmtT->fetch();
+                $new_pos_etage = $resultT['pos_etage'];
+                $new_pos_cod  = $resultT['pos_cod'];
+                $new_arene    = $resultT['etage_arene'];
+
+
+                // Activer les EA de déplacement à l'arrivée (cela peut casser des mécanismes de ne pas le faire)
+                $req  = "select execute_fonctions(".$result["perso_cod"].", null, 'DEP', json_build_object('pilote'".$result["perso_cod"].",'ancien_pos_cod',$anc_pos_cod,'ancien_etage',$anc_pos_etage,'nouveau_pos_cod',$new_pos_cod,'nouveau_etage',$new_pos_etage)) ";
+                $stmt2 = $pdo->query($req);
+
+                // EA déclenché par la monture ou le cavalier qui lui est attaché
+                if ($perso_equipage > 0 && $anc_pos_etage==$new_pos_etage)
+                {
+                    $req  = "select execute_fonctions($perso_equipage, null, 'DEP', json_build_object('pilote',".$result["perso_cod"].",'ancien_pos_cod',$anc_pos_cod,'ancien_etage',$anc_pos_etage,'nouveau_pos_cod',$new_pos_cod,'nouveau_etage',$new_pos_etage)) ";
+                    $stmt2 = $pdo->query($req);
+                }
+
+                // ============================= Traitement des TP depuis/vers arenes/donjon
+                switch ($anc_arene . $new_arene)
+                {
+                    case 'NO':    // D’un étage normal vers une arène
+                        $req  = "delete from perso_arene where parene_perso_cod = {$result["perso_cod"]} ";
+                        $stmtT = $pdo->query($req);
+                        $req  = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree) values(".$result["perso_cod"].", $new_pos_etage, $anc_pos_cod, now()) ";
+                        $stmtT = $pdo->query($req);
+                        break;
+
+                    case 'OO':    // D’une arène vers une autre
+                        $req  = "update perso_arene set parene_etage_numero = $new_pos_etage where parene_perso_cod = {$result["perso_cod"]} ";
+                        $stmtT = $pdo->query($req);
+                        break;
+
+                    case 'ON':    // D’une arène vers un étage normal
+                        $req  = "delete from perso_arene where parene_perso_cod = {$result["perso_cod"]} ";
+                        $stmtT = $pdo->query($req);
+                        // Si on ne le supprimait pas, on empêcherait le perso de rentrer à nouveau en arène...
+                        break;
+
+                    case 'NN':    // D’un étage normal vers un étage normal
+                        // Rien à faire
+                        break;
+                }
 
 
                 // texte de l'evenement (si defini)

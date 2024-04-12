@@ -454,6 +454,11 @@ begin
 
       -- on va mémoriser ce délai de DLT il pourra être utilisé par ailleurs (comme pour le calcul de l'égrainnage des PA pour les montures)
       update perso set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'calcul_dlt' ,  (json_build_object( 'temps_tour', temps_blessures )::jsonb))::jsonb) where perso_cod=personnage ;
+
+      -- si c'est une monture chevauchée, on va appeler l'IA pour recalculer les compteurs d'actions speciales
+      if f_perso_cavalier(personnage) > 0 then
+          perform ia_monture(personnage, -1);
+      end if;
     end if;
 
     /* intangibilité */

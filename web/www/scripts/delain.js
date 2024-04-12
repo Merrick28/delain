@@ -68,6 +68,7 @@ function ordonnerMontureChangeAction(s) {
         $("#monture_order input[name='distance']").css("background-color", "darkgrey");
         $("#monture_order input[name='direction']").each(function() { this.checked = false;  });
         $("#monture_order input[name='direction']").prop("disabled", true);
+        $($("#monture_order select[name='ORDRE_NUM'] option[value^=A]")[0]).prop('selected','selected'); // sur talonner, ajouter avant le 1er ordre
     } else if (s.value == "SAUTER") {
         $("#monture_order input[name='distance']").val("1");
         $("#monture_order input[name='distance']").prop("disabled", true);

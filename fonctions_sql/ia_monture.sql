@@ -9,6 +9,7 @@ CREATE or REPLACE FUNCTION ia_monture(integer, integer) RETURNS text
 /*    reçoit en arguments :                                    */
 /* $1 = perso_cod du monstre                                   */
 /* $2 = type d'IA                                              */
+/*    => -1 : action activation DLT seulement                     */
 /*    =>  0 : docile n'utilise pas les PA                      */
 /*    =>  1 : à ordre                                          */
 /*    =>  2 : mixte (comme le 1 pour l'IA)                     */
@@ -93,7 +94,10 @@ begin
 /* Etape 1 : on récupère les infos */
 /* du monstre                      */
 /***********************************/
-	temp_txt := calcul_dlt2(v_monstre);
+  if v_type_ia >= 0 then    -- calcul de DLT sauf si l'IA a até appelé à partir de la mise à jour DLT
+	    temp_txt := calcul_dlt2(v_monstre);
+  end if;
+
 	select into 	v_niveau,
 						v_exp,
 						v_pa,
@@ -145,8 +149,8 @@ begin
 		return 'inactif !';
 	end if;
 
-  if v_pa = 0 then
-    return code_retour||'Perso non joué (pa de PA).';
+  if (v_pa = 0) and (v_type_ia >= 0) then
+    return code_retour||'Perso non joué (pas de PA).';
   end if;
 
   -- détection nouvelle DLT: décrementation des compteurs liés aux actions speciales de la monture
@@ -175,6 +179,14 @@ begin
                                 || (json_build_object( 'calcul_dlt' ,  ((perso_misc_param->>'calcul_dlt')::jsonb || json_build_object('activation_dlt', 1 )::jsonb))::jsonb)
           where perso_cod=v_monstre ;
   end if;
+
+    -- -------------------------------------------------------------------------------------------------------------------
+  -- Si l'IA est actionné par le activation de DLT, ne fait rien faire de plus
+  if v_type_ia = -1 then
+      code_retour := code_retour||'Pas, d''action, le monstre a juste activé sa DLT.<br>';
+      return code_retour;
+  end if;
+
 
 /***********************************/
 /* Etape 2 : on regarde si monture */
@@ -381,7 +393,7 @@ begin
                                        || json_build_object('nb_talonner' , coalesce(f_to_numeric( ((perso_misc_param->>'ia_monture')::jsonb)->>'nb_talonner') , 0))::jsonb
                         ))::jsonb) where perso_cod = v_monstre ;
 
-              perform insere_evenement(v_monstre, v_monstre, 114, '[perso_cod1] a fait une super action!', 'O', NULL);                        
+              perform insere_evenement(v_monstre, v_monstre, 114, '[perso_cod1] a fait une super action!', 'O', NULL);
           end if;
       end if;
 

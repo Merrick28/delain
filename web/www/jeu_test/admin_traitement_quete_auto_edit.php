@@ -251,6 +251,7 @@ switch ($methode)
         $etape->aqetape_aquete_cod      = $_REQUEST["aquete_cod"];
         $etape->aqetape_aqetapmodel_cod = $_REQUEST["aqetapmodel_cod"];
         $etape->aqetape_texte           = $_REQUEST['aqetape_texte'];
+        $etape->aqetape_saut_etape_cod  = (int) $_REQUEST['aqetape_saut_etape_cod'];
 
         // Traitement de cas particulier (et/ou controle spécifique si besoin)
         if (($etape_modele->aqetapmodel_tag == "#CHOIX") && (strpos($etape->aqetape_texte, "[1]") === false))

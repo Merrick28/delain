@@ -17,6 +17,7 @@ class aquete_etape
     var $aqetape_parametres;
     var $aqetape_texte;
     var $aqetape_etape_cod;
+    var $aqetape_saut_etape_cod;
 
     function __construct()
     {
@@ -45,6 +46,7 @@ class aquete_etape
         $this->aqetape_parametres = $result['aqetape_parametres'];
         $this->aqetape_texte = $result['aqetape_texte'];
         $this->aqetape_etape_cod = $result['aqetape_etape_cod'];
+        $this->aqetape_saut_etape_cod = $result['aqetape_saut_etape_cod'];
         return true;
     }
 
@@ -64,7 +66,8 @@ class aquete_etape
             aqetape_aqetapmodel_cod,
             aqetape_parametres,
             aqetape_texte,
-            aqetape_etape_cod                        )
+            aqetape_etape_cod,
+            aqetape_saut_etape_cod                        )
                     values
                     (
                         :aqetape_nom,
@@ -72,7 +75,8 @@ class aquete_etape
                         :aqetape_aqetapmodel_cod,
                         :aqetape_parametres,
                         :aqetape_texte ,
-                        :aqetape_etape_cod                        )
+                        :aqetape_etape_cod ,
+                        :aqetape_saut_etape_cod                        )
     returning aqetape_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -82,6 +86,7 @@ class aquete_etape
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
                 ":aqetape_etape_cod" => $this->aqetape_etape_cod,
+                ":aqetape_saut_etape_cod" => $this->aqetape_saut_etape_cod,
             ),$stmt);
 
 
@@ -97,7 +102,8 @@ class aquete_etape
             aqetape_aqetapmodel_cod = :aqetape_aqetapmodel_cod,
             aqetape_parametres = :aqetape_parametres,
             aqetape_texte = :aqetape_texte,
-            aqetape_etape_cod = :aqetape_etape_cod                        where aqetape_cod = :aqetape_cod ";
+            aqetape_etape_cod = :aqetape_etape_cod,
+            aqetape_saut_etape_cod = :aqetape_saut_etape_cod                        where aqetape_cod = :aqetape_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqetape_nom" => $this->aqetape_nom,
@@ -107,6 +113,7 @@ class aquete_etape
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
                 ":aqetape_etape_cod" => $this->aqetape_etape_cod,
+                ":aqetape_saut_etape_cod" => $this->aqetape_saut_etape_cod,
             ),$stmt);
         }
     }
