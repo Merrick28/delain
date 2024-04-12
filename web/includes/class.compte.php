@@ -597,7 +597,7 @@ class compte
             if ($this->compt_password == $password)
             {
                 // on se met à jour pour utiliser le crypté pour la fois suivante
-                $this->compt_passwd_hash = crypt($this->compt_password);
+                $this->compt_passwd_hash = crypt($this->compt_password, sha1(microtime(true)));
                 $this->compt_password    = '';
                 $this->stocke();
 
