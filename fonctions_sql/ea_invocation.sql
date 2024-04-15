@@ -156,16 +156,17 @@ begin
           end if;
 
           -- si on a pas trouvé de case cible ou si cible "X" alors on cherche une case à portée
+          -- Marlyza - 2024-04-15 : empecher l'invocation dans un mur
           if v_pos_cod is null then
               select into v_pos_cod pos_cod
               from positions
-                left outer join lieu_position on lpos_pos_cod = pos_cod
-                left outer join lieu on lieu_cod = lpos_lieu_cod
+                left outer join murs on  mur_pos_cod=pos_cod
               where     ((pos_x between (v_x_source - v_distance) and (v_x_source + v_distance)) or v_distance=-1)
                     and ((pos_y between (v_y_source - v_distance) and (v_y_source + v_distance)) or v_distance=-1)
                     and ((v_distance_min = 0) or (abs(pos_x-v_x_source) >= v_distance_min) or (abs(pos_y-v_y_source) >= v_distance_min))
                     and pos_etage = v_et_source
                     and ( trajectoire_vue(pos_cod, v_position_source) = '1' or (v_params->>'fonc_trig_vue')::text != 'O')
+                    and mur_pos_cod is null
               order by random()
               limit 1;
           end if;
