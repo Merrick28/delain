@@ -255,7 +255,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:perso_condition|0%0],[2:etape|1%1],[3:etape|1%1]'
+     * On recherche le n° d'étape suivant en fonction des conditions =>  '[1:perso_condition|0%0],[2:etape|1%1],[3:etape|1%1]'
      * @param aquete_perso $aqperso
      * @return bool
      */
@@ -282,6 +282,57 @@ class aquete_action
 
         // Le perso possède les conditions demandées, on valide le saut d'étape à l'étape demandé!
         return $p2->aqelem_misc_cod ;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction des conditions =>  '[1:perso_condition_liste|0%0],[2:etape|0%0],[3:etape|1%1'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_multiple_condition_perso(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape", 0)) return 0 ;              // Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
+
+        // Cette étape est totalement vérifié par la fonction quetes.aq_verif_perso_condition_etape
+
+        $pdo = new bddpdo;
+        $req = "select aqelem_param_ordre from quetes.aquete_element where (aqelem_type='perso_condition' or aqelem_type='perso_condition_liste') and aqelem_misc_cod>0 
+                          and aqelem_aqperso_cod IS NULL and aqelem_param_id=1 
+                          and aqelem_aqetape_cod=:etape_cod 
+                          and (aqelem_param_num_2=1 or aqelem_param_ordre=0)
+                          order by aqelem_param_ordre ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":etape_cod" => $aqperso->aqperso_etape_cod
+        ), $stmt);
+        $cond_list = $stmt->fetchAll( PDO::FETCH_NUM );
+        //echo "<pre>"; print_r([$cond_list, $p2]);
+
+        // erreur dans les paramètre, sortie sur l'étape alternative
+        if ((sizeof($cond_list) == 0) || (sizeof($cond_list) != sizeof($p2)))  return $p3->aqelem_misc_cod ;
+
+        foreach ($cond_list as $k => $order)
+        {
+            $req = "select quetes.aq_verif_perso_condition_etape(:perso_cod, :etape_cod, :param_id, :aqperso_cod, :ordre) as verification";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":perso_cod" => $aqperso->aqperso_perso_cod,
+                ":etape_cod" => $aqperso->aqperso_etape_cod,
+                ":param_id" => 1,
+                ":aqperso_cod" => $aqperso->aqperso_cod,
+                ":ordre" => $order[0]
+            ), $stmt);
+            $result = $stmt->fetch();
+
+            // groupe de conditions remplie, on dirige vers l'étape correspondante
+            //print_r([$result, $k, $order]);
+            if ((int)$result["verification"] > 0) return $p2[$k]->aqelem_misc_cod ;
+        }
+
+        return $p3->aqelem_misc_cod ; // Les conditions ne sont pas remplies, passage à l'étape d'erreur
     }
 
     //==================================================================================================================
