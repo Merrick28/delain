@@ -119,7 +119,8 @@ if ($perso_dlt_passee != 0)
     header("Location: /jeu_test/frame_vue.php");
 } else
 {
-    // retourner sur l'url en cours de consultation avant le quick-switch
+    // retourner sur l'url en cours de consultation avant le quick-switch (cas particulier des QA, on ne repost pas les même paramètre)
+    if ($url == "/jeu_test/quete_auto.php") $_REQUEST["url"] = $_REQUEST["url"] ="/jeu_test/quete_auto.php?onglet=apercu";
     header("Location: " . $_REQUEST["url"]);
 }
 
