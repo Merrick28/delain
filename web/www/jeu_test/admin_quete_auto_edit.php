@@ -269,14 +269,14 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #PERSO", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #PA", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #PERSO", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #PA", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
-                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PERSO")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PA")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
+                            if (($etape_modele->aqetapmodel_tag == "#SAUT #MULTIPLE #CONDITION #PERSO")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PERSO")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #PA")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
                             {
                                 $elements = is_array($elements) ? array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3)) : $element->getBy_etape_param_id($etape->aqetape_cod, 3);
                             }
@@ -821,6 +821,25 @@ if ($erreur == 0)
                                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                      '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
+                                     '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
+                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
+                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="15" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
+                                   </td>';
+                        break;
+
+                    case 'perso_condition_liste':       // pour invocation
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $bon = new bonus_type() ;
+                            $bon->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $bon->tonbus_libelle ;
+                        }
+                        echo   '<td>Groupes de conditions :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                     '.create_selectbox("aqelem_param_num_2[$param_id][]", array(""=>"","1"=>"Nouveau Groupe"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 150px;" data-entry="val"')).'
+                                     '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
