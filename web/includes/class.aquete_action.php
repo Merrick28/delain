@@ -3005,6 +3005,7 @@ class aquete_action
         // le contrat n'est pas encore rempli
         return false;
     }
+
     //==================================================================================================================
     /**
      * Le joueur doit tuer un certains nombre de représentant de type de monstre  =>  '[1:delai|1%1],[2:monstre_generique|0%0],[3:valeur|1%1]',
@@ -3075,6 +3076,50 @@ class aquete_action
 
         // si le compteur de kill atteind le contrat et au moins un de chaque type si compteur supérieur au nombre de type
         if (($nb_kill>=$nb_contrat) && (($nb_contrat<count($p2)) || ($nb_type==count($p2)))) return true;
+
+        // le contrat n'est pas encore rempli
+        return false;
+    }
+
+    //==================================================================================================================
+    /**
+     * Le joueur doit tuer un certains nombre de représentant de type de monstre  =>  '[1:delai|1%1],[2:monstre_generique|0%0],[3:valeur|1%1]',
+     * p2=type cibles p3=nombre de kill
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_tableau_chasse(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'selecteur')) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        $type_contrat = $p2->aqelem_misc_cod ;     // type de contrat: global / solo
+        $nb_contrat = $p4->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
+
+        // Comptage des kills
+        $nb_kill = 0;
+        foreach ($p3 as $k => $elem)
+        {
+            $req = "select ptab_gmon_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                    from perso_tableau_chasse
+                    where ptab_perso_cod = ? and ptab_gmon_cod = ?
+                    group by ptab_gmon_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                // incermenter le nombre de kill de chaque type
+                $nb_kill +=  $type_contrat == 0 ? (int)$result["total"] : (int)$result["solo"] ;
+            }
+        }
+
+        // si le compteur de kill atteind le contrat
+        if ($nb_kill>=$nb_contrat) return true;
 
         // le contrat n'est pas encore rempli
         return false;
