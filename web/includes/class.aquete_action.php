@@ -979,6 +979,128 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * saut en fonction d'un nombre d'objet détruit =>  '[1:valeur|1%1],[2:objet_generique|0%0],[3:etape|0%0],[4:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_detruire_objet(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                            // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'etape', 0)) return false ;      // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'etape')) return false ;      // Problème lecture des paramètres
+
+
+        shuffle($p2);                                       // ordre aléatoire pour les objets
+
+        $nbobj = $p1->aqelem_param_num_1 ;
+        $nbgenerique = count ($p2) ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbobj <= 0) return  $p4->aqelem_misc_cod ;       // etape bizarre !! on n'attend aucun objet
+
+
+        // Préparation de la liste des objets prendre en fonction du nombre de générique
+        $liste_detruire = array() ;
+        $liste_objet ="" ;
+        $liste_generique ="" ;
+
+        // On commence par chercher un exeplaire de chaque.
+        foreach ($p2 as $k => $elem)
+        {
+            if ($elem->aqelem_type == "objet")
+            {
+                $req = "select obj_cod, obj_poids from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_cod = ? order by random()";
+            }
+            else
+            {
+                $req = "select obj_cod, obj_poids from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod = ? order by random() limit 1";
+                $liste_generique .= $elem->aqelem_misc_cod . ",";
+            }
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $liste_objet .= $result["obj_cod"] . "," ;
+                $liste_detruire[] = 1*$result["obj_cod"];
+            }
+            if (count($liste_detruire)==$nbobj) break;   // On en a assez!
+        }
+
+        // S'il y a plus de demande que de générique (et qu'il y a des generique) , il faut en prendre encore un peu
+        if ((count($liste_detruire)<$nbobj) && ($liste_generique!="") && ($liste_objet!=""))
+        {
+            $nb = ($nbobj-count($liste_detruire));                               // nombre restant à prendre parmis les génériques
+            $liste_generique = substr($liste_generique,0,-1);       // On retire les vigules finales
+            $liste_objet = substr($liste_objet,0,-1);               // On retire les vigules finales
+            $req = "select obj_cod, obj_poids 
+                    from perso_objets 
+                    join objets on obj_cod = perobj_obj_cod 
+                    where perobj_perso_cod = ? 
+                    and obj_gobj_cod in ({$liste_generique}) 
+                    and obj_cod not in ({$liste_objet}) 
+                    order by random() limit {$nb}";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
+            while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $liste_detruire[] = 1*$result["obj_cod"];
+            }
+        }
+
+        if (count($liste_detruire) == 0) return  $p4->aqelem_misc_cod ; // on a rien trouvé on sort sur etape speciales
+
+        // préparer l'index de l'étape de sortie
+        $esortie = min (count($liste_detruire), count($p3)) - 1;
+
+        // Il faut maintenant prendre les objets
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array()); // on fait le menage pour le recréer
+        $param_ordre = 0 ;
+        foreach ($liste_detruire as $k => $obj_cod)
+        {
+            // Gestion de la suppression (detruire l'objet et ajouter evenement)
+            $objet = new objets();
+            if ($objet->charge($obj_cod))
+            {
+                $texte_evt = '[cible] s\'est séparé d\'un objet <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                                  values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                    ":texte_evt"=> $texte_evt,
+                    ":levt_attaquant" => $aqperso->aqperso_perso_cod,
+                    ":levt_cible" => $aqperso->aqperso_perso_cod,
+                    ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+
+                // Suprimer l'objet
+                $objet->supprime($obj_cod);        // On supprime l'objet !
+
+                // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
+                $elem = new aquete_element();
+                $elem->aqelem_aquete_cod = $aqperso->aqperso_aquete_cod;
+                $elem->aqelem_aqetape_cod = $aqperso->aqperso_etape_cod;
+                $elem->aqelem_aqperso_cod = $aqperso->aqperso_cod;
+                $elem->aqelem_quete_step = $aqperso->aqperso_quete_step;
+                $elem->aqelem_param_id = 2;
+                $elem->aqelem_type = 'objet';
+                $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                $elem->aqelem_param_ordre =  $param_ordre ;         // On ordonne correctement !
+                $param_ordre ++ ;
+                $elem->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
+            }
+        }
+
+        // sortie en fonction du nombre d'objet détruits
+        return $p3[$esortie]->aqelem_misc_cod ;
+
+    }
+
+
+    //==================================================================================================================
+    /**
      * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:position|1%0],[2:valeur|1%1],[3:etape|1%1],[4:choix_etape|1%0]'
      * @param aquete_perso $aqperso
      * @return bool
