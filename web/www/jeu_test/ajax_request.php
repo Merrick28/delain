@@ -149,6 +149,15 @@ switch($_REQUEST["request"])
             //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
             $cout_pa = $result["cout_pa"] ;
         }
+        else if ($type=="sort5")
+        {
+            $req  = "SELECT sort_nom nom,  $list_function_cout_pa[$type] as cout_pa FROM sorts WHERE sort_cod=:sort_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":sort_cod" => $sort_cod), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
+            //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
+            $cout_pa = $result["cout_pa"] ;
+        }
         else
         {
             $req  = "SELECT sort_nom nom,  $list_function_cout_pa[$type] as cout_pa FROM sorts WHERE sort_cod=:sort_cod ";
