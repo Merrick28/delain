@@ -78,7 +78,6 @@ function rotationPng($img, $angle=0)
 
 /* Ajouté le 6/12/2010 par Maverick (changement de serveur) */
 $dirimg = str_replace( "/jeu_test", "/images/", dirname(__FILE__) );
-$dirimg = str_replace( "\\jeu_test", "\\images\\", dirname(__FILE__) );
 $img = $dirimg.'aiguille1.png';
 /* Fin ajout */
 
