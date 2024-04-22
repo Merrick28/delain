@@ -276,7 +276,8 @@ switch ($methode)
                 {
                     // Couper sans abîmer les corrections de pg_escape_string
                     $titre    = substr($titre, $length);
-                    $lastchar = $titre{$length - 1};
+                    //$lastchar = $titre{$length - 1}; // bugfix:  string offset access syntax with curly braces is no longer supported
+                    $lastchar = substr($titre, - 1);
                     // On supprime les \ et ' de fin de ligne
                     if ($lastchar === '\\' || $lastchar === '\'')
                     {
