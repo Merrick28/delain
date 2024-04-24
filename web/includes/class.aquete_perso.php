@@ -1231,6 +1231,15 @@ class aquete_perso
                     }
                     break;
 
+                case "#TUER #ZONE":
+                    // Le joueur doit tuer un type de monstres.
+                    if ($this->action->tuer_zone($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
                 case "#TELEPORTATION #PORTAIL #PERSO":
                     // Création d'un portail, .
                     $this->action->teleportation_portail_perso($this);

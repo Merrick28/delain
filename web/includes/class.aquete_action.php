@@ -3127,6 +3127,63 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * Le joueur doit tuer un certains nombre de représentant de type de monstre  =>  '[1:delai|1%1],[2:position|1%1],[3:valeur|1%1],[4:type_monstre_generique|0%0],[5:type_monstre_generique|0%0]',
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_zone(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'position')) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                  // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+
+        // compter le nombre de monstres autour de la position
+        $req = "select count(*) as count from positions po
+                    join positions pa on (pa.pos_etage=po.pos_etage) and (pa.pos_x>=po.pos_x-:rayon and pa.pos_x<=po.pos_x+:rayon) and (pa.pos_y>=po.pos_y-:rayon and pa.pos_y<=po.pos_y+:rayon)
+                    join perso_position on ppos_pos_cod=pa.pos_cod
+                    join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=2
+                    where po.pos_cod=:pos_cod ";
+
+        // monstres dans la liste
+        $m_list ="";
+        foreach ($p4 as $k => $elem)
+        {
+            if ((int)$elem->aqelem_misc_cod != 0) $m_list .= $elem->aqelem_misc_cod.",";
+        }
+        if ($m_list != "") $req.= " and perso_gmon_cod in (".(substr($m_list, 0,-1)).")";
+
+
+        // monstres PAS dans la liste
+        $m_list ="";
+        foreach ($p5 as $k => $elem)
+        {
+            if ((int)$elem->aqelem_misc_cod != 0) $m_list .= $elem->aqelem_misc_cod.",";
+        }
+        if ($m_list != "") $req.= " and perso_gmon_cod not in (".(substr($m_list, 0,-1)).")";
+
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":pos_cod" => $p2->aqelem_misc_cod, ":rayon" => (int)$p3->aqelem_param_num_1), $stmt);
+        if ($result = $stmt->fetch())
+        {
+            if ( (int)$result["count"] == 0 )
+            {
+                //echo "<pre>"; print_r([$p4, $p5, $req, array(":pos_cod" => $p2->aqelem_misc_cod, ":rayon" => (int)$p3->aqelem_param_num_1),$result]);die();
+                return true;
+            }
+        }
+
+        //echo "<pre>"; print_r([$p4, $p5, $req, array(":pos_cod" => $p2->aqelem_misc_cod, ":rayon" => (int)$p3->aqelem_param_num_1),$result]);die();
+        return false;
+    }
+
+    //==================================================================================================================
+    /**
      * Création d'un portail sur le perso  =>  '[1:perso|1%1],[2:position|1%1],[3:valeur|1%1],[4:valeur|1%1]',
      * p1=persos p2=position cible du portail p3=dispertion p4=nombre d'heure d'ouverture
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
