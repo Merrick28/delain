@@ -149,6 +149,7 @@ if ($erreur == 0)
             echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
             echo '<input type="hidden" name="aquete_nb_max_instance" value="" />';
             echo '<input type="hidden" name="aquete_nb_max_participant" value="" />';
+            echo '<input type="hidden" name="aquete_limite_triplette" value="N" />';
             echo '<input type="hidden" name="aquete_nb_max_rejouable" value="" />';
             echo '<input type="hidden" name="aquete_nb_max_quete" value="" />';
             echo '<input type="hidden" name="aquete_max_delai" value="" />';
@@ -173,7 +174,8 @@ if ($erreur == 0)
         if ($pos_etage==0) {
             echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>Nombre maximum de joueurs qui peuvent prendre la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>Nombre max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
-            echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouée par un même perso (pas de limite si vide)</em></td></tr>';
+            echo '<tr><td><strong>Limitation à la triplette </strong>:</td><td>'.create_selectbox("aquete_limite_triplette", array("N"=>"Non", "O"=>"Limité"), $quete->aquete_limite_triplette).' <em>Limiter la quête à un seul perso de la tripplette</em></td></tr>';
+            echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>Nombre de fois où elle peut être jouée par un même perso/triplette (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>Nombre de fois où elle peut être rejouée tous persos confondus (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>Délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
             echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $nb_quete_en_cours . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em>';

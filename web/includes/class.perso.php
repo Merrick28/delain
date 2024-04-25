@@ -3321,6 +3321,17 @@ class perso
         return $result["pfam_familier_cod"];
     }
 
+    public function get_triplette($fam_inclus = true)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select array_to_string(f_perso_triplette(:perso, :fam_inclus),',') as triplette";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod, ":fam_inclus" => ($fam_inclus ? 1 : 0) ), $stmt);
+        if (!$result = $stmt->fetch()) return "".$this->perso_cod ;
+
+        return $result["triplette"];
+    }
+
     public function efface()
     {
         $pdo  = new bddpdo;
