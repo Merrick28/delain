@@ -1,6 +1,6 @@
 
 --
--- Name: f_perso_cavalier(integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: f_perso_triplette(integer, boolean); Type: FUNCTION; Schema: public; Owner: delain
 --
 
 CREATE OR REPLACE FUNCTION f_perso_triplette(integer, boolean default true) RETURNS int[]
