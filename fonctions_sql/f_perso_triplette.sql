@@ -24,7 +24,7 @@ begin
 		select perso.perso_cod, perso.perso_type_perso from perso_compte c
 		inner join perso_compte ct on ct.pcompt_compt_cod=c.pcompt_compt_cod
 		inner join perso on perso_cod=ct.pcompt_perso_cod and perso_type_perso=1
-		where c.pcompt_perso_cod=2
+		where c.pcompt_perso_cod=v_perso_cod
 
 		union
 

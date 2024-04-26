@@ -367,10 +367,8 @@ class aquete
                 and not exists(select 1 from quetes.aquete_perso where aquete_interaction!='O' and aqperso_perso_cod=perso_cod and aqperso_aquete_cod=aquete_cod and aqperso_actif='N' and aquete_nb_max_rejouable>0 and aqperso_nb_realisation>=aquete_nb_max_rejouable)
                 and not exists(select count(*) from quetes.aquete_perso where aquete_interaction!='O' and aqperso_aquete_cod=aquete_cod and aqperso_actif<>'N' and aquete_nb_max_instance>0 having count(*)>=aquete_nb_max_instance)
                 and not exists(select count(*) from quetes.aquete_perso where aquete_interaction!='O' and aqperso_aquete_cod=aquete_cod and aquete_nb_max_quete>0 having count(*)>=aquete_nb_max_quete)
-
                 and not exists(select 1 from quetes.aquete_perso where aquete_interaction!='O' and aquete_limite_triplette='O' and aqperso_perso_cod in ($triplette) and aqperso_aquete_cod=aquete_cod and aqperso_actif='O')
                 and not exists(select 1 from quetes.aquete_perso where aquete_interaction!='O' and aquete_limite_triplette='O' and aqperso_perso_cod in ($triplette) and aqperso_aquete_cod=aquete_cod and aqperso_actif='N' and aquete_nb_max_rejouable>0 having sum(aqperso_nb_realisation)>=aquete_nb_max_rejouable)
-
                 ";
 
         $stmt = $pdo->prepare($req);
