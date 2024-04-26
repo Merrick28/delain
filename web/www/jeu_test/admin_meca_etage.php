@@ -460,10 +460,10 @@ if ($erreur == 0)
 
             $action_meca_active = json_decode($result["meca_si_active"]);
             $action_meca_desactive = json_decode($result["meca_si_desactive"]);
-            $nb_meca_si_activation = ($action_meca_active == null) ? 0 : count($action_meca_active->meca);
-            $nb_meca_si_desactivation = ($action_meca_desactive == null) ? 0 : count($action_meca_desactive->meca);
-            $nb_ea_si_activation = ($action_meca_active == null) ? 0 : count($action_meca_active->ea);
-            $nb_ea_si_desactivation = ($action_meca_desactive == null) ? 0 : count($action_meca_desactive->ea);
+            $nb_meca_si_activation = ($action_meca_active == null || !isset($action_meca_active->meca)) ? 0 : count($action_meca_active->meca);
+            $nb_meca_si_desactivation = ($action_meca_desactive == null || !isset($action_meca_desactive->meca)) ? 0 : count($action_meca_desactive->meca);
+            $nb_ea_si_activation = ($action_meca_active == null || !isset($action_meca_active->ea)) ? 0 : count($action_meca_active->ea);
+            $nb_ea_si_desactivation = ($action_meca_desactive == null || !isset($action_meca_desactive->ea)) ? 0 : count($action_meca_desactive->ea);
             $span_si_activation = "";
             foreach ($action_meca_active->meca as $row => $action_meca)
             {
