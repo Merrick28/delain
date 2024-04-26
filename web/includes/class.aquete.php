@@ -324,6 +324,7 @@ class aquete
         $perso = new perso();
         $perso->charge($perso_cod);
         $triplette = $perso->get_triplette(false);
+        if (!$triplette || $triplette == "") $triplette = "{$perso_cod}";   //cas des compte admin
 
         $pdo = new bddpdo;
         $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom, aqelem_cod from perso
