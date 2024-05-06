@@ -3184,6 +3184,82 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * Participer à la mort de monstre d''un type ou d''une race spécifique =>  '[1:delai|1%1],[2:valeur|1%1|],[3:race|0%0],[2:type_monstre_generique|0%0]',
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_participer_mort(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'race', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+
+        $date_debut = $aqperso->aqperso_date_debut_etape;
+
+        $req = "SELECT count(*) as count FROM (SELECT perso_nom, count(*)
+                        FROM public.ligne_evt
+                        join perso on (perso_cod=levt_cible and levt_tevt_cod=10) or (perso_cod=levt_attaquant and levt_tevt_cod=48)
+                        where levt_perso_cod1=:perso_cod and levt_tevt_cod in (48, 10) and levt_date >= :date_debut ";
+
+        // calcul des conditions sur liste de type de monstre
+        $mr_list ="";
+        foreach ($p3 as $k => $elem)
+        {
+            if ((int)$elem->aqelem_misc_cod != 0) $mr_list .= $elem->aqelem_misc_cod.",";
+        }
+        if ($mr_list != "") $mr_list = substr($mr_list, 0,-1);
+
+
+        // calcul des conditions sur liste de type de monstre
+        $mt_list ="";
+        foreach ($p4 as $k => $elem)
+        {
+            if ((int)$elem->aqelem_misc_cod != 0) $mt_list .= $elem->aqelem_misc_cod.",";
+        }
+        if ($mt_list != "") $mt_list = substr($mt_list, 0,-1);
+
+        // Ajout de la condition de recherche
+        if (($mt_list != "" ) && ($mr_list != "" ))
+        {
+            $req.= " and ( perso_gmon_cod in ($mt_list) or perso_race_cod in ($mr_list) )";
+        }
+        else if ($mt_list != "" )
+        {
+            $req.= " and ( perso_gmon_cod in ($mt_list) )";
+        }
+        else if ($mr_list != "" )
+        {
+            $req.= " and ( perso_race_cod in ($mr_list) )";
+        }
+        else
+        {
+            return false;   // ni race ni type, erreur de saisie dans le QA
+        }
+
+        // ajout du regroupement (la mort d'un monstre peut générer plusieurs ligne de gain de px)
+        $req.= " group by levt_tevt_cod, perso_nom) as subquery ";
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":date_debut" => $date_debut, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+
+        //echo "<pre>"; print_r([$req, $result, array(":date_debut" => $date_debut, ":perso_cod" => $aqperso->aqperso_perso_cod)]); die();
+
+        if ( $result["count"] >= (int)$p2->aqelem_param_num_1)
+        {
+            return true;
+        }
+
+
+        return false;
+    }
+
+    //==================================================================================================================
+    /**
      * Création d'un portail sur le perso  =>  '[1:perso|1%1],[2:position|1%1],[3:valeur|1%1],[4:valeur|1%1]',
      * p1=persos p2=position cible du portail p3=dispertion p4=nombre d'heure d'ouverture
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
