@@ -356,7 +356,29 @@ if ($erreur == 0)
                         }
                     }
 
-
+                    // Saut d'étape timeout (sortie par le delai)
+                    $element = new aquete_element;
+                    $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1);
+                    if ($elements && sizeof($elements) >= 1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
+                    {
+                        $e = new aquete_etape;
+                        if ($elements[0]->aqelem_misc_cod == 0)
+                        {
+                            echo "<strong style='color: yellow'>&rArr; Etape Hors-delai #{$elements[0]->aqelem_misc_cod}</strong> <em style='color: yellow'>Etape suivante</em><br>";
+                        }
+                        else if ($elements[0]->aqelem_misc_cod < 0)
+                        {
+                            echo "<strong style='color: yellow'>&rArr; Etape Hors-delai #{$elements[0]->aqelem_misc_cod}</strong> <em style='color: yellow'>Fin de la quête</em><br>";
+                        }
+                        else if (!$e->charge($elements[0]->aqelem_misc_cod))    // on charge l'étape pour récupérer le nom!
+                        {
+                            echo "<strong style='color: red'>&rArr; Etape Hors-delai #{$elements[0]->aqelem_misc_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
+                        }
+                        else
+                        {
+                            echo "<strong style='color: yellow'>&rArr; Etape Hors-delai #{$e->aqetape_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
+                        }
+                    }
 
                     if ($etape_modele->aqetapmodel_tag=="#END #KO")
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';

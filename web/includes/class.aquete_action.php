@@ -524,7 +524,7 @@ class aquete_action
         if ($stmt->rowCount()==0) return $p3->aqelem_misc_cod ;                 // Les conditions ne sont pas remplies, passage à l'étape d'erreur
 
         $result = $stmt->fetch();
-        if (1*$result["count"] != count($p1))  return $p3->aqelem_misc_cod ; // Les conditions ne sont pas remplies, passage à l'étape d'erreur
+        if ((int)$result["count"] != count($p1))  return $p3->aqelem_misc_cod ; // Les conditions ne sont pas remplies, passage à l'étape d'erreur
 
         // Le perso est passé par autant d'étape que demandé, on valide le saut d'étape à l'étape demandé!
         return $p2->aqelem_misc_cod ;
@@ -690,7 +690,7 @@ class aquete_action
 
 
             $where = "";
-            foreach ($p7 as $k => $e) $where .= (1*$e->aqelem_cod)."," ;
+            foreach ($p7 as $k => $e) $where .= ((int)$e->aqelem_cod)."," ;
             $where = " and aqelem_misc_cod != 0 " . ( $where == "" ? "" :"and  aqelem_cod not in (". substr($where, 0, -1) .")" );
 
             $req    = "delete from quetes.aquete_element where aqelem_aqetape_cod = :aqelem_aqetape_cod and aqelem_aqperso_cod is null and aqelem_param_id = 7 $where ";
@@ -1025,7 +1025,7 @@ class aquete_action
             if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
                 $liste_objet .= $result["obj_cod"] . "," ;
-                $liste_detruire[] = 1*$result["obj_cod"];
+                $liste_detruire[] = (int)$result["obj_cod"];
             }
             if (count($liste_detruire)==$nbobj) break;   // On en a assez!
         }
@@ -1047,7 +1047,7 @@ class aquete_action
             $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
             while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
-                $liste_detruire[] = 1*$result["obj_cod"];
+                $liste_detruire[] = (int)$result["obj_cod"];
             }
         }
 
@@ -1893,7 +1893,7 @@ class aquete_action
         $element->charge($result["aqelem_cod"]);    // on charge avant de tout supprimer
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array());
         $element->aqelem_type = 'lieu';
-        $element->aqelem_misc_cod =  1*$result["lieu_cod"] ;   // Transforme l'élément type de lieu en lieu avec le code du lieu
+        $element->aqelem_misc_cod =  (int)$result["lieu_cod"] ;   // Transforme l'élément type de lieu en lieu avec le code du lieu
         $element->stocke(true);                                // sauvegarde d'un nouvel élément
         return true;
     }
@@ -2015,10 +2015,10 @@ class aquete_action
 
                 if ($result = $stmt->fetch())
                 {
-                    if (1*$result["obj_cod"] > 0)
+                    if ((int)$result["obj_cod"] > 0)
                     {
                         $objet = new objets();
-                        $objet->charge(1*$result["obj_cod"]);
+                        $objet->charge((int)$result["obj_cod"]);
 
                         // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
                         $elem->aqelem_type = 'objet';
@@ -2040,10 +2040,10 @@ class aquete_action
 
                 if ($result = $stmt->fetch())
                 {
-                    if (1*$result["obj_cod"]>0)
+                    if ((int)$result["obj_cod"]>0)
                     {
                         $objet = new objets();
-                        $objet->charge(1*$result["obj_cod"]);
+                        $objet->charge((int)$result["obj_cod"]);
 
                         if ($p3 && $p3->aqelem_misc_cod==2)
                         {   // objet directement équipé (=> avec déséquipement d'un objet si limite max d'objet equipable atteinte)
@@ -2156,7 +2156,7 @@ class aquete_action
 
                 $result = $stmt->fetch();
 
-                if (1*$result["count"]>0)
+                if ((int)$result["count"]>0)
                 {
                     // on retire l'objet du donneur
                     $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
@@ -2172,17 +2172,17 @@ class aquete_action
                     // on l'ajoute dans l'inventaire de l'aventurier
                     $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, :perobj_identifie) returning perobj_obj_cod as obj_cod  ";
                     $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => (1*$result["count"] > 0 ? 'O' : 'N') ), $stmt);
+                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => ((int)$result["count"] > 0 ? 'O' : 'N') ), $stmt);
 
                     $isExchanged = true ;
                 }
             }
             if ($isExchanged && $result = $stmt->fetch())
             {
-                if (1*$result["obj_cod"]>0)
+                if ((int)$result["obj_cod"]>0)
                 {
                     $objet = new objets();
-                    $objet->charge(1*$result["obj_cod"]);
+                    $objet->charge((int)$result["obj_cod"]);
 
                     $texte_evt = '[cible] a donné un objet à [attaquant] <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                     $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
@@ -2273,9 +2273,9 @@ class aquete_action
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
             $pnj_cod = $result["tran_acheteur"]  ;      // on récupère le cod d'un pnj qui fait les transactions
-            $tran_quantite = (1*$result["tran_quantite"]) == 0 ? 1 : (1*$result["tran_quantite"])  ;
+            $tran_quantite = ((int)$result["tran_quantite"]) == 0 ? 1 : ((int)$result["tran_quantite"])  ;
             $objet = new objets();
-            $objet->charge(1*$result["tran_obj_cod"]);
+            $objet->charge((int)$result["tran_obj_cod"]);
 
             // vérification un exemplaire de chaque !
             foreach ($exemplaires as $k => $elem)
@@ -2328,11 +2328,11 @@ class aquete_action
         {
             // Gestion de la transaction
             $objet = new objets();
-            $objet->charge(1*$transac["tran_obj_cod"]);
+            $objet->charge((int)$transac["tran_obj_cod"]);
 
             $req = "select accepte_transaction(:tran_cod) as resultat; ";
             $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array( ":tran_cod" => 1*$transac["tran_cod"]), $stmt);
+            $stmt   = $pdo->execute(array( ":tran_cod" => (int)$transac["tran_cod"]), $stmt);
             if (!$result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
                 return false; // un problème lors de l'execution de la requete
@@ -2420,7 +2420,7 @@ class aquete_action
             if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
                 $liste_objet .= $result["obj_cod"] . "," ;
-                $liste_echange[] = 1*$result["obj_cod"];
+                $liste_echange[] = (int)$result["obj_cod"];
                 $poids_transaction += (float)$result["obj_poids"] ;
             }
             if (count($liste_echange)==$nbobj) break;   // On en a assez!
@@ -2443,7 +2443,7 @@ class aquete_action
             $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
             while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
-                $liste_echange[] = 1*$result["obj_cod"];
+                $liste_echange[] = (int)$result["obj_cod"];
                 $poids_transaction += (float)$result["obj_poids"] ;
             }
         }
@@ -2568,7 +2568,7 @@ class aquete_action
             if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
                 $liste_objet .= $result["obj_cod"] . "," ;
-                $liste_echange[] = 1*$result["obj_cod"];
+                $liste_echange[] = (int)$result["obj_cod"];
             }
             if (count($liste_echange)==$nbobj) break;   // On en a assez!
         }
@@ -2590,7 +2590,7 @@ class aquete_action
             $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
             while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
-                $liste_echange[] = 1*$result["obj_cod"];
+                $liste_echange[] = (int)$result["obj_cod"];
             }
         }
 
@@ -2718,10 +2718,10 @@ class aquete_action
 
             if ($result = $stmt->fetch())
             {
-                if (1*$result["perso_cod"]>0)
+                if ((int)$result["perso_cod"]>0)
                 {
                     $perso = new perso();
-                    $perso->charge(1*$result["perso_cod"]);
+                    $perso->charge((int)$result["perso_cod"]);
 
                     // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
                     if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
@@ -2786,10 +2786,10 @@ class aquete_action
 
             if ($result = $stmt->fetch())
             {
-                if (1*$result["perso_cod"]>0)
+                if ((int)$result["perso_cod"]>0)
                 {
                     $perso = new perso();
-                    $perso->charge(1*$result["perso_cod"]);
+                    $perso->charge((int)$result["perso_cod"]);
 
                     // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
                     if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
@@ -2852,10 +2852,10 @@ class aquete_action
 
             if ($result = $stmt->fetch())
             {
-                if (1*$result["perso_cod"]>0)
+                if ((int)$result["perso_cod"]>0)
                 {
                     $perso = new perso();
-                    $perso->charge(1*$result["perso_cod"]);
+                    $perso->charge((int)$result["perso_cod"]);
 
                     // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
                     $element->aqelem_aquete_cod = $aqperso->aqperso_aquete_cod;
@@ -2907,9 +2907,9 @@ class aquete_action
 
 
         $nb_contrat = $p3->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
-        $nb_cible = 1*$result["nb_cible"] ;           // Nombre de cible initial
-        $nb_dead = 1*$result["nb_dead"] ;             // Nombre de cible déjà achevé
-        $nb_kill = 1*$result["nb_kill"] ;             // Nombre de cible achevé par le joueur
+        $nb_cible = (int)$result["nb_cible"] ;           // Nombre de cible initial
+        $nb_dead = (int)$result["nb_dead"] ;             // Nombre de cible déjà achevé
+        $nb_kill = (int)$result["nb_kill"] ;             // Nombre de cible achevé par le joueur
 
         if ( $nb_contrat > $nb_kill + ($nb_cible - $nb_dead) )
         {
@@ -2964,7 +2964,7 @@ class aquete_action
                 }
                 else
                 {
-                    $elem->aqelem_param_num_1 = 1*$result["total"];
+                    $elem->aqelem_param_num_1 = (int)$result["total"];
                 }
                 $elem->stocke();
            }
@@ -2990,7 +2990,7 @@ class aquete_action
             if ($result = $stmt->fetch())
             {
                 // Il y a eu des kill de cette race dans le tableau, vérification par rapport au début du contrat
-                $kill_race = 1*$result["total"];
+                $kill_race = (int)$result["total"];
                 if ($kill_race>$elem->aqelem_param_num_1)
                 {
                     $nb_kill += $kill_race - $elem->aqelem_param_num_1;
@@ -3041,7 +3041,7 @@ class aquete_action
                 }
                 else
                 {
-                    $elem->aqelem_param_num_1 = 1*$result["total"];
+                    $elem->aqelem_param_num_1 = (int)$result["total"];
                 }
                 $elem->stocke();
            }
@@ -3065,7 +3065,7 @@ class aquete_action
             if ($result = $stmt->fetch())
             {
                 // Il y a eu des kill de ce type dans le tableau, vérification par rapport au début du contrat
-                $kill_type = 1*$result["total"];
+                $kill_type = (int)$result["total"];
                 if ($kill_type>$elem->aqelem_param_num_1)
                 {
                     $nb_kill += $kill_type - $elem->aqelem_param_num_1;
@@ -3184,7 +3184,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * Participer à la mort de monstre d''un type ou d''une race spécifique =>  '[1:delai|1%1],[2:valeur|1%1|],[3:race|0%0],[2:type_monstre_generique|0%0]',
+     * Participer à la mort de monstre d''un type ou d''une race spécifique =>  '[1:delai|1%1],[2:valeur|1%1|],[3:selecteur|1%1|{0~Participer à la mort},{1~Tuer}],[4:selecteur|1%1|{0~Peu importe},{1~Au moins 1 monstre de chaque type ou race},{2~Au moins 1 monstre de chaque type et de chaque race}],[5:race|0%0],[6:type_monstre_generique|0%0]',
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
      * @return stdClass
@@ -3195,30 +3195,65 @@ class aquete_action
         $pdo = new bddpdo;
         $element = new aquete_element();
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;                  // Problème lecture des paramètres
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'race', 0)) return false ;                  // Problème lecture des paramètres
-        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'selecteur')) return false ;                  // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'selecteur')) return false ;                  // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'race', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
 
-        $date_debut = $aqperso->aqperso_date_debut_etape;
+        // les logs d'evenements sont purgés regulièrement, on va devoir mémoriser le comptage à chaque passage.
+        // On gardera la date de du dernier controle dans l'element $p2 (aqelem_param_txt_1), et le comptage dans chaque element race/type respectif (aqelem_param_num_1)
+        $total_kill = (int) $p2->aqelem_param_num_1 ;
+        $date_debut = $aqperso->aqperso_date_debut_etape;  // on ne remonte pas avant la date de début de l'étape
+        $date_dernier_controle = ($p2->aqelem_param_txt_1 && $p2->aqelem_param_txt_1 != "") ? $p2->aqelem_param_txt_1 : $date_debut ;
+        $date_now = date("Y-m-d H:i:s");
 
-        $req = "SELECT count(*) as count FROM (SELECT perso_nom, count(*)
+
+        $req = "SELECT perso_race_cod, perso_gmon_cod, count(*) as count FROM (SELECT perso_nom, perso_race_cod, perso_gmon_cod, count(*)
                         FROM public.ligne_evt
                         join perso on (perso_cod=levt_cible and levt_tevt_cod=10) or (perso_cod=levt_attaquant and levt_tevt_cod=48)
-                        where levt_perso_cod1=:perso_cod and levt_tevt_cod in (48, 10) and levt_date >= :date_debut ";
+                        where levt_date >= :date_debut and levt_date >= :date_dernier_controle and levt_date <= :date_now ";
+
+        if ($p3->aqelem_misc_cod == 1)
+        {
+            // le perso doit-être le tueur (evenement type 10)
+            $req.= "and levt_perso_cod1=:perso_cod and levt_tevt_cod in (10) ";
+        }
+        else
+        {
+            // une participation à la mort seulement est requise (evenement tuer (10) mais aussi gain de px (48) )
+            $req.= "and levt_perso_cod1=:perso_cod and levt_tevt_cod in (48, 10) ";
+        }
+
+        // tableau de comptage des kill par race et type
+        $arr_race = [] ;
+        $nb_race = 0 ;
+        $arr_type = [] ;
+        $nb_type = 0 ;
 
         // calcul des conditions sur liste de type de monstre
         $mr_list ="";
-        foreach ($p3 as $k => $elem)
+        foreach ($p5 as $k => $elem)
         {
-            if ((int)$elem->aqelem_misc_cod != 0) $mr_list .= $elem->aqelem_misc_cod.",";
+            if ((int)$elem->aqelem_misc_cod != 0)
+            {
+                $mr_list .= $elem->aqelem_misc_cod.",";
+                $arr_race[$elem->aqelem_misc_cod] = (int)$elem->aqelem_param_num_1;
+                $nb_race ++ ;
+            }
         }
         if ($mr_list != "") $mr_list = substr($mr_list, 0,-1);
 
 
         // calcul des conditions sur liste de type de monstre
         $mt_list ="";
-        foreach ($p4 as $k => $elem)
+        foreach ($p6 as $k => $elem)
         {
-            if ((int)$elem->aqelem_misc_cod != 0) $mt_list .= $elem->aqelem_misc_cod.",";
+            if ((int)$elem->aqelem_misc_cod != 0)
+            {
+                $mt_list .= $elem->aqelem_misc_cod.",";
+                $arr_type[$elem->aqelem_misc_cod] = (int)$elem->aqelem_param_num_1;
+                $nb_type ++ ;
+            }
         }
         if ($mt_list != "") $mt_list = substr($mt_list, 0,-1);
 
@@ -3241,19 +3276,65 @@ class aquete_action
         }
 
         // ajout du regroupement (la mort d'un monstre peut générer plusieurs ligne de gain de px)
-        $req.= " group by levt_tevt_cod, perso_nom) as subquery ";
+        $req.= " group by perso_nom, perso_race_cod, perso_gmon_cod) as subquery group by perso_race_cod, perso_gmon_cod ";
+
+        //echo "<pre>"; print_r([$req,["race"=>[$nb_race,$arr_race], "type"=>[$nb_type,$arr_type]], array(":perso_cod" => $aqperso->aqperso_perso_cod, ":date_debut" => $date_debut, ":date_dernier_controle" => $date_dernier_controle, ":date_now" => $date_now )]);
+
 
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(":date_debut" => $date_debut, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
-        if (!$result = $stmt->fetch()) return false;
+        $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod, ":date_debut" => $date_debut, ":date_dernier_controle" => $date_dernier_controle, ":date_now" => $date_now ), $stmt);
 
-        //echo "<pre>"; print_r([$req, $result, array(":date_debut" => $date_debut, ":perso_cod" => $aqperso->aqperso_perso_cod)]); die();
-
-        if ( $result["count"] >= (int)$p2->aqelem_param_num_1)
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            return true;
+            $arr_race[$result["perso_race_cod"]] += (int)$result["count"];       // count race
+            $arr_type[$result["perso_gmon_cod"]] += (int)$result["count"];        // cunt type
+        }
+        //echo "<pre>"; print_r(["race"=>[$nb_race,$arr_race], "type"=>[$nb_type,$arr_type]]);
+
+        // sauvegarder la mise à jour du comptage: date
+        $e = new aquete_element();
+        $e->charge( $p2->aqelem_cod );
+        $e->aqelem_param_txt_1 = $date_now ;
+        $e->stocke();
+
+        // sauvegarder la mise à jour du comptage: race / relever les compteur au passage
+        $count_race = 0 ;
+        $race_all = ($nb_race == 0) ? false : true ;
+        foreach ($p5 as $k => $elem)
+        {
+            if ((int)$elem->aqelem_misc_cod != 0)
+            {
+                $e = new aquete_element();
+                $e->charge( $elem->aqelem_cod );
+                $e->aqelem_param_num_1 = $arr_race[ (int)$elem->aqelem_misc_cod ] ;
+                $e->stocke();
+                $count_race += $arr_race[ (int)$elem->aqelem_misc_cod ]  ;
+                if ( $arr_race[ (int)$elem->aqelem_misc_cod ] == 0 ) $race_all = false ;
+            }
+        }//
+
+        // sauvegarder la mise à jour du comptage: type / relever les compteur au passage
+        $count_type = 0 ;
+        $type_all = ($nb_type == 0) ? false : true ; ;
+        foreach ($p6 as $k => $elem)
+        {
+            $e = new aquete_element();
+            $e->charge( $elem->aqelem_cod );
+            $e->aqelem_param_num_1 = $arr_type[ (int)$elem->aqelem_misc_cod ] ;
+            $e->stocke();
+            $count_type += $arr_type[ (int)$elem->aqelem_misc_cod ]  ;
+            if ( $arr_type[ (int)$elem->aqelem_misc_cod ] == 0 ) $type_all = false ;
         }
 
+        // verification des conditions 1 de chaque race ou de chaque type
+        if ($p4->aqelem_misc_cod == 2 && (!$race_all || !$type_all)) return false;
+        if ($p4->aqelem_misc_cod == 1 && !$race_all && !$type_all) return false;
+
+        // verification du nombre de kill
+
+        if (($count_race>=$total_kill && $nb_race>0) || ($count_type>=$total_kill && $nb_type>0)) return true ;
+
+        //echo "<pre>"; print_r([$req, $result,array(":perso_cod" => $aqperso->aqperso_perso_cod, ":date_debut" => $date_debut, ":date_dernier_controle" => $date_dernier_controle, ":date_now" => $date_now )]); die();
 
         return false;
     }
