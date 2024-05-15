@@ -60,7 +60,8 @@ begin
   (28, 'Possède un type d’objet générique', 'OBJET')
   (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
   (30, 'Monstre générique', 'MONSTRE'),
-  (31, 'Renommée / Renommée magique', 'CARAC');
+  (31, 'Renommée / Renommée magique', 'CARAC'),
+  (32, 'Visite de l''étage (en %)', 'VARIABLE');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -211,6 +212,9 @@ begin
 
   elsif (v_carac_cod = 31) then                  --  (31, 'Renommée / Renommée magique', 'CARAC', 'Renommée / Renommée magique');
     select into v_perso_carac abs(perso_renommee/perso_renommee_magie)::text from perso where perso_cod = v_perso_cod ;
+
+  elsif (v_carac_cod = 32) then                  --  (32, 'RVisite de l'étage (en %)', 'VARIABLE', 'Visite de l'étage (en %)');
+    select into v_perso_carac f_perso_visite_etage(v_perso_cod)::text ;
 
   else
     return 0 ;    -- erreur dans les paramètres
