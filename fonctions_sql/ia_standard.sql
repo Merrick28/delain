@@ -223,7 +223,7 @@ begin
 				and lpos_lieu_cod = lieu_cod
 				and lieu_refuge = 'O')
 			and is_surcharge(perso_cod,v_monstre) < limite_surcharge
-			and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1; -- Ceux qui attaquent à 0 ou 1 case n’ont pas d’intérêt pour les personnes derrière les murs
+			and trajectoire_vue_murs(pos_actuelle,pos_cod, false) = 1; -- Ceux qui attaquent à 0 ou 1 case n’ont pas d’intérêt pour les personnes derrière les murs
 	end if;
 	code_retour := code_retour||'Nombre de persos en vue : '||trim(to_char(nb_joueur_en_vue,'9999999999'))||E'\n';
 -- si personne, on sort.....
