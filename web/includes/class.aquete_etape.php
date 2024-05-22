@@ -1085,11 +1085,6 @@ class aquete_etape
                 $liste_p3 .= ",".$elem->aqelem_misc_cod ;
             }
         }
-        if ($liste_p3 != "")
-        {
-            $req .= " and gobj_tobj_cod in (".substr($liste_p3, 1).")";
-        }
-
         // Filter sur le matos pris en charge par le PNJ
         $liste_p4 = "";
         foreach ($p4 as $k => $elem)
@@ -1099,10 +1094,25 @@ class aquete_etape
                 $liste_p4 .= ",".$elem->aqelem_misc_cod ;
             }
         }
-        if ($liste_p4 != "")
+
+        // filter en fonction du type d'objet ou du générique
+        if (($liste_p3 != "") && ($liste_p4 == ""))
+        {
+            $req .= " and gobj_tobj_cod in (".substr($liste_p3, 1).")";
+        }
+        else if (($liste_p3 == "") && ($liste_p4 != ""))
         {
             $req .= " and obj_gobj_cod in (".substr($liste_p4, 1).")";
         }
+        else if (($liste_p3 != "") && ($liste_p4 != ""))
+        {
+            $req .= " and ( gobj_tobj_cod in (".substr($liste_p3, 1).") or obj_gobj_cod in (".substr($liste_p4, 1).") )";
+        }
+        else
+        {
+            $req .= " and false";       // ni objet generique ni type d'objet ? erreur QA
+        }
+
         $req .= "order by obj_nom";
 
         $stmt   = $pdo->prepare($req);
