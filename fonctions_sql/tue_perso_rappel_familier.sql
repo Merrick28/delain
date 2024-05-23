@@ -30,7 +30,7 @@ declare
 	nb_tour_intangible integer;  -- durée impalpabilité d'un familier à la mort de son maitre
   px_perdus integer;           --  perte de px d'un familier à la mort de son maitre
 begin
-  code_retour := 'Le familier rejoint sont maitre.';
+  code_retour := 'Le familier rejoint son maitre.';
 
   -- recuperation des caratéristiques du rappel dans les paramètres globaux (paramètre 132 et 133)
  select into nb_tour_intangible, px_perdus
