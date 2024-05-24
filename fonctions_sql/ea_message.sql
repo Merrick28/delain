@@ -111,7 +111,7 @@ begin
         v_msg_expediteur := 1595835 ;
   end if;
 
-  v_msg_titre := (v_params->>'fonc_trig_titre_msg')::text;           -- titre du message
+  v_msg_titre := left((v_params->>'fonc_trig_titre_msg')::text, 60);           -- titre du message
   v_msg_envoye := 0 ;
 
   -- on commence par créer le message (pour récupérer son identifiant
@@ -165,7 +165,7 @@ begin
   end loop;
 
   -- definir l'expediteur si des messages ont été envoyé sinon supprimer le message
-  if v_msg_envoye > 1 then
+  if v_msg_envoye > 0 then
       insert into messages_exp (emsg_msg_cod, emsg_perso_cod, emsg_archive) values (v_msg_cod, v_msg_expediteur, 'N');
   else
       delete from messages where msg_cod = v_msg_cod ;
