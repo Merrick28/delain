@@ -1166,6 +1166,15 @@ class aquete_perso
                     }
                     break;
 
+                case "#MOVE #VISITER #ZONE":
+                    // Le joueur doit rejoindre un type de lieu
+                    if ($this->action->move_visiter_zone($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
                 case "#MONSTRE #POSITION":
                     // Génération de monstre sur une position
                     $this->action->monstre_position($this);

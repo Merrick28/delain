@@ -165,7 +165,7 @@ begin
 		and pobj_obj_cod = obj_cod
 		and obj_gobj_cod = gobj_cod
 		and gobj_tobj_cod in (1,2,4,6,15,21,39,40,41)
-		and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1;      -- and trajectoire_vue(pos_actuelle,pos_cod) = 1; -- Marlysa, c'est mieux sans murs
+		and trajectoire_vue_murs(pos_actuelle,pos_cod, false) = 1;      -- and trajectoire_vue(pos_actuelle,pos_cod) = 1; -- Marlysa, c'est mieux sans murs
 	code_retour := code_retour||'Nombre objets en vue : '||trim(to_char(nb_tas_obj,'9999999999'))||'<br>';
 
 
@@ -211,7 +211,7 @@ begin
             and pobj_obj_cod = obj_cod
             and obj_gobj_cod = gobj_cod
             and gobj_tobj_cod in (1,2,4,6,15,21,39,40,41)
-            and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1 -- and trajectoire_vue(pos_actuelle,pos_cod) = 1
+            and trajectoire_vue_murs(pos_actuelle,pos_cod, false) = 1 -- and trajectoire_vue(pos_actuelle,pos_cod) = 1
             order by distance(pos_actuelle,pos_cod) asc
             limit 1;
         --si sur la case, on le ramasse, on remet les pa dépensés, et on augmente les pxs

@@ -30,9 +30,9 @@ declare
 begin
 
   if v_pos_cod is null then
-      select ppos_pos_cod, pos_etage into v_pos_cod, v_etage from perso_position join positions on pos_cod=ppos_pos_cod where ppos_perso_cod=v_perso_cod ;
+      select ppos_pos_cod, etage_cod into v_pos_cod, v_etage from perso_position join positions on pos_cod=ppos_pos_cod join etage on etage_numero=pos_etage where ppos_perso_cod=v_perso_cod ;
   else
-      select pos_etage into v_etage  from positions where pos_cod=v_pos_cod ;
+      select etage_cod into v_etage  from positions join etage on etage_numero=pos_etage where pos_cod=v_pos_cod ;
   end if;
 
   -- creation du nom de la table de l'automap pour létage conerné

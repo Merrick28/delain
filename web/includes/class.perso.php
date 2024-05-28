@@ -3506,6 +3506,58 @@ class perso
     }
 
 
+    public function membreTriplette($perso_cod)
+    {
+        $pdo    = new bddpdo();
+
+        // récupération du compte joueur
+        if ($this->perso_type_perso == 1) {
+            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod=:perso_cod";
+        } else {
+            $req = "select pcompt_compt_cod from perso_compte inner join perso_familier on pfam_perso_cod = pcompt_perso_cod where pfam_familier_cod = :perso_cod ";
+        }
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        $compte_cod = $result["pcompt_compt_cod"];
+
+        $req = "select count(*) as count from (
+                    select pcompt_perso_cod as perso_cod
+                        from perso_compte 
+                        where pcompt_compt_cod = :compt_cod
+                    union all
+                    select perso_cod  as perso_cod from perso_compte
+                        inner join perso_familier on pfam_perso_cod = pcompt_perso_cod
+                        inner join perso on perso_cod=pfam_familier_cod
+                        where pcompt_compt_cod = :compt_cod and perso_actif='O'
+            ) persos_du_compte where perso_cod = :perso_cod ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod, ":compt_cod" => $compte_cod), $stmt);
+        $result = $stmt->fetch();
+        if (!$result) return false;
+
+        return $result['count'] ==  0 ? false : true ;
+    }
+
+    /**
+     * retourne le % visté par le perso autour de la positions donnée dans le rayon limite donné
+     * Si la position est null, la position du perso est prise en compte
+     * Si la limite est null, tout l'étage est prise en compte
+     */
+    public function visite_etage($position = null, $limite = null)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_perso_visite_etage(:perso, :pos_cod, :limite) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":pos_cod" => $position, ":limite" => $limite), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
@@ -3543,44 +3595,6 @@ class perso
                 error_log($out);
                 die('Unknown method.');
         }
-    }
-
-
-
-    public function membreTriplette($perso_cod)
-    {
-        $pdo    = new bddpdo();
-
-        // récupération du compte joueur
-        if ($this->perso_type_perso == 1) {
-            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod=:perso_cod";
-        } else {
-            $req = "select pcompt_compt_cod from perso_compte inner join perso_familier on pfam_perso_cod = pcompt_perso_cod where pfam_familier_cod = :perso_cod ";
-        }
-
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
-        $result = $stmt->fetch();
-        if (!$result) return false;
-
-        $compte_cod = $result["pcompt_compt_cod"];
-
-        $req = "select count(*) as count from (
-                    select pcompt_perso_cod as perso_cod
-                        from perso_compte 
-                        where pcompt_compt_cod = :compt_cod
-                    union all
-                    select perso_cod  as perso_cod from perso_compte
-                        inner join perso_familier on pfam_perso_cod = pcompt_perso_cod
-                        inner join perso on perso_cod=pfam_familier_cod
-                        where pcompt_compt_cod = :compt_cod and perso_actif='O'
-            ) persos_du_compte where perso_cod = :perso_cod ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod, ":compt_cod" => $compte_cod), $stmt);
-        $result = $stmt->fetch();
-        if (!$result) return false;
-
-        return $result['count'] ==  0 ? false : true ;
     }
 
 }

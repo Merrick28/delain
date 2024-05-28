@@ -1522,7 +1522,7 @@ class aquete_action
         {
             $req .= " and false";       // ni objet generique ni type d'objet ? erreur QA
         }
-        
+
         $req .= " order by obj_nom";
 
         $stmt   = $pdo->prepare($req);
@@ -1908,6 +1908,56 @@ class aquete_action
         $element->stocke(true);                                // sauvegarde d'un nouvel élément
         return true;
     }
+
+    //==================================================================================================================
+    /**
+     * Dans cette étape on demande au joueur d''explorer une ou plusieurs zones spécifiques ou de visiter un certain % d''étages =>  '[1:delai|1%1],[2:position|0%0],[3:valeur|0%0],[4:valeur|0%0]'
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function move_visiter_zone(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'position', 0)) return false ;                    // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur', 0)) return false ;                    // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur', 0)) return false ;                    // Problème lecture des paramètres
+
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        $nb_zone = sizeof($p2);
+
+        // etendre les parametres 3 et 4 s'ils sont inférieur au nombre de position
+        for ($k = sizeof($p3); $k<$nb_zone; $k++ )
+        {
+            $p3[$k] = $p3[$k-1];
+        }
+        for ($k = sizeof($p4); $k<$nb_zone; $k++ )
+        {
+            $p4[$k] = $p4[$k-1];
+        }
+
+        //echo "<pre>"; print_r([$nb_zone, $p2, $p3, $p4]); //die();
+
+        // vérifier toutes les conditions
+        foreach ($p2 as $k => $elem)
+        {
+            $visite = $perso->visite_etage($elem->aqelem_misc_cod, $p3[$k]->aqelem_param_num_1 == 0 ? null : $p3[$k]->aqelem_param_num_1) ;
+            //echo "\n<br> % etage visité {$elem->aqelem_misc_cod} %requis={$p4[$k]->aqelem_param_num_1}  => taille {$p3[$k]->aqelem_param_num_1} :".$visite;
+            if ($visite < $p4[$k]->aqelem_param_num_1)
+            {
+                return false ;      // au moins une des conditions de visite n'est pas vérifiée
+            }
+
+        }
+
+        return true;
+    }
+
 
 
     //==================================================================================================================

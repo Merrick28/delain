@@ -11,7 +11,8 @@ CREATE OR REPLACE FUNCTION tue_perso_perd_objets(integer, integer) RETURNS text
 /*   d’un perso                                              */
 /*   on passe en paramètres :                                */
 /*   $1 = perso_cod du mort                                  */
-/*   $2 = mort définitive (1) ou non (0)                     */
+/*   $2 = mort définitive (1) ou non (0) ou (2)              */
+/*        2 = mort non definitive sans perte du matos équipé */
 /* on a en sortie le code HTML de la liste des objets perdus */
 /*************************************************************/
 /* Créé le 18/01/2013 Reivax Extraction de tue_perso_final   */
@@ -74,30 +75,35 @@ begin
 			update perso set perso_po = 0 where perso_cod = v_cible;
 			code_retour := code_retour || '<br>ainsi que <b>' || trim(to_char(v_or, '99999999999999')) || ' brouzoufs</b>';
 		end if; -- fin or
+
 	else
 	-- Mort temporaire : on ne perd qu’un nombre restreint d’objets.
 		-- on regarde d’abord s’il droppe un sac
-		for ligne_objet in
-			select perobj_cod, perobj_obj_cod, gobj_deposable, obj_nom, obj_poids, obj_chance_drop, tobj_libelle, perobj_equipe, perobj_identifie
-			from perso_objets
-			inner join objets on obj_cod = perobj_obj_cod
-			inner join objet_generique on gobj_cod = obj_gobj_cod
-			inner join type_objet on tobj_cod = gobj_tobj_cod
-			where perobj_perso_cod = v_cible
-				and perobj_equipe = 'O'
-				and gobj_tobj_cod = 25
-		loop
-			if lancer_des(1, 100) <= ligne_objet.obj_chance_drop then
-				insert into objet_position (pobj_cod, pobj_obj_cod, pobj_pos_cod)
-				values (nextval('seq_pobj_cod'), ligne_objet.perobj_obj_cod, pos_cible);
+		if mort_definitive != 2 then  -- sauf si le matos equipé ne drop pas
+        for ligne_objet in
+          select perobj_cod, perobj_obj_cod, gobj_deposable, obj_nom, obj_poids, obj_chance_drop, tobj_libelle, perobj_equipe, perobj_identifie
+          from perso_objets
+          inner join objets on obj_cod = perobj_obj_cod
+          inner join objet_generique on gobj_cod = obj_gobj_cod
+          inner join type_objet on tobj_cod = gobj_tobj_cod
+          where perobj_perso_cod = v_cible
+            and perobj_equipe = 'O'
+            and gobj_tobj_cod = 25
+        loop
+          if lancer_des(1, 100) <= ligne_objet.obj_chance_drop then
+            insert into objet_position (pobj_cod, pobj_obj_cod, pobj_pos_cod)
+            values (nextval('seq_pobj_cod'), ligne_objet.perobj_obj_cod, pos_cible);
 
-				delete from perso_objets where perobj_obj_cod = ligne_objet.perobj_obj_cod;
-				code_retour := code_retour || '<br><b>' || ligne_objet.obj_nom || '</b> <i>(' || ligne_objet.tobj_libelle || ')</i>';
-			end if;
-			v_chance_sac := v_chance_sac + (ligne_objet.obj_poids * -1);
-		end loop;
+            delete from perso_objets where perobj_obj_cod = ligne_objet.perobj_obj_cod;
+            code_retour := code_retour || '<br><b>' || ligne_objet.obj_nom || '</b> <i>(' || ligne_objet.tobj_libelle || ')</i>';
 
-  -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
+            v_chance_sac := v_chance_sac + (ligne_objet.obj_poids * -1); -- chance de drop accru en cas de perte du sac
+
+          end if;
+        end loop;
+    end if;
+
+    -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
 		for ligne_objet in
 			select perobj_cod, perobj_obj_cod, gobj_deposable, obj_nom, obj_poids,
 				case
@@ -109,7 +115,7 @@ begin
 			inner join objets on obj_cod = perobj_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
 			inner join type_objet on tobj_cod = gobj_tobj_cod
-			where perobj_perso_cod = v_cible
+			where perobj_perso_cod = v_cible and (perobj_equipe = 'N' or mort_definitive != 2)
 		loop
 			if ligne_objet.gobj_deposable = 'N' or ligne_objet.obj_gobj_cod = 642 then
 			  -- ajout 02-05-2018 - marlyza - le familier ne perd pas son equipement non déposable s'il est équipé (c'est son equipement de base: griffes, etc...)
@@ -132,6 +138,8 @@ begin
 				end if;
 			end if;
 		end loop;
+
+		-- verification perte de l'or
 		if v_or != 0 then
 			v_or := lancer_des(1, v_or);
 			insert into or_position (por_cod, por_pos_cod, por_qte)
@@ -140,7 +148,9 @@ begin
 			update perso set perso_po = perso_po - v_or where perso_cod = v_cible;
 			code_retour := code_retour || '<br>ainsi que <b>' || trim(to_char(v_or, '99999999999999')) || ' brouzoufs</b>';
 		end if; -- fin or
+
 	end if; -- end type de mort
+
 	return code_retour;
 end;$_$;
 

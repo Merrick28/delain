@@ -30,7 +30,7 @@ declare
 	nb_tour_intangible integer;  -- durée impalpabilité d'un familier à la mort de son maitre
   px_perdus integer;           --  perte de px d'un familier à la mort de son maitre
 begin
-  code_retour := 'Le familier rejoint sont maitre.';
+  code_retour := 'Le familier rejoint son maitre.';
 
   -- recuperation des caratéristiques du rappel dans les paramètres globaux (paramètre 132 et 133)
  select into nb_tour_intangible, px_perdus
@@ -45,7 +45,9 @@ begin
   v_corps := 'Suite a votre décès votre familier vous rejoint, mais dans la précipitation il a laissé tomber au sol : ';
 
   -- Gestion de la perte des objets
-  v_corps := v_corps || tue_perso_perd_objets(v_familier, 0);
+  -- le matos du familier est considéré comme possession du joueur il faut donc vérifier si sa tombe aussi par là
+  -- malgré tout, le matos équipé par le familier est celui du familier et doit être protégé du drop
+  v_corps := v_corps || tue_perso_perd_objets(v_familier, 2); -- on va créer un état 2 pour exlure la perte du matos équipé
 
   v_mes := nextval('seq_msg_cod');
   v_titre := 'Perte d’équipement de votre familier';

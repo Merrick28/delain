@@ -148,7 +148,7 @@ begin
 		and pos_etage = v_etage
 		and por_palpable = 'O'
 		and por_pos_cod = pos_cod
-		and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1;
+		and trajectoire_vue_murs(pos_actuelle,pos_cod, false) = 1;
 	code_retour := code_retour||'Nombre de tas de brouzoufs en vue : '||trim(to_char(nb_tas_brouzoufs,'9999999999'))||E'\n';
 
 
@@ -192,7 +192,7 @@ begin
 			and pos_etage = v_etage
 			and por_palpable = 'O'
 			and por_pos_cod = pos_cod
-			and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1
+			and trajectoire_vue_murs(pos_actuelle,pos_cod,false) = 1
 			order by distance(pos_actuelle,pos_cod) asc
 			limit 1;
 		--si sur la case, on le ramasse, on remet les pa dépensés, et on augmente les pxs
