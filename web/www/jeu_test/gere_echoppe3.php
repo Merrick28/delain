@@ -609,13 +609,8 @@ if ($erreur == 0)
         , <?php echo $etage_libelle ?>, <?php echo $lieu_compte ?> Br en caisse)</p>
     <div class="centrer">
         <div id="intro" class="tableau2">
-            <p>Information aux gérants </p>
-            <p>Ceci est une page en cours de développement, ce qui veut principalement dire qu'elle ne fonctionne pas.
-                Elle
-                va changer, contenir des essais et des idées qui viendront plus ou moins vite (ou pas du tout). Mais
-                vous
-                pouvez faire des essais et des remarques si vous voulez. Pour cela contactez Mirreck ou votre admin
-                commercial préféré.</p>
+            <p><u>Information aux gérants</u>u></p><br>
+            <p>Voici l'interface de gestion de votre échoppe. Vous y trouverez différents menus. Afin de vous y retrouver, voici une documentation utile : https://docs.google.com/document/d/1A4n4r_A-tdeKR8RYV7tZh0kRIw7ir6BD85xrBn_anQ4/edit#heading=h.jlzc3xknzpu7</p><br>
             <p><strong>26/02/2006</strong> Nouveau stock</p>
             <p><strong>09/08/2006</strong> Prêt pour les permiers beta-tests</p>
             <p><strong>31/01/2008</strong> Ajout de la fonctionnalité pour changer la description et le nom du magasin
@@ -623,9 +618,10 @@ if ($erreur == 0)
             <p><strong>28/12/2009</strong> De nombreuses modifications / Corrections ont été apportées. L'une va vous
                 toucher
                 directement, avec la limitation des approvisionnements en fonction de l'échoppe. Certains articles ne
-                pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré ...
+                pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré.
             <p><strong>01/02/2019</strong> Divers modifications pour faire fonctionner les magasins runiques ...</p>
-            Clients présents dans l’échoppe:
+	    <p><strong>13/06/2024</strong> Documentation des menus & Mise en forme de la description</p><br><br>
+            <b>Clients présents dans l’échoppe:</b>
             <?php
             $liste_clients = "";
             $req_vue
@@ -648,10 +644,10 @@ if ($erreur == 0)
                 <input type="hidden" name="m" value="2">
                 <input type="hidden" name="n_dest" value="<?php echo $liste_clients ?>">
                 <input type="hidden" name="dmsg_cod">
-            </form>
+            </form><br>
 
             <a class="centrer" href="javascript:document.message.submit();">Envoyer un message à tous les clients
-                !</a><br>
+                !</a>
 
             <form name="description" method="post" action="gere_echoppe4.php">
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
@@ -703,12 +699,10 @@ if ($erreur == 0)
             <form name="marge" method="post" action="gere_echoppe4.php">
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
                 <input type="hidden" name="methode" value="marge">
-                <p>Votre magasin réalise pour l'instant <?php echo $result['lieu_marge'] ?>% de marge<br>
+                <p>Votre magasin réalise pour l'instant <?php echo $result['lieu_marge'] ?>% de marge. 
                 <p style=text-align:left><strong><a href="javascript:document.marge.submit();">Changer cette donnée
                             ?</a></strong></p>
-
             </form>
-
 
         </div>
         <br>
