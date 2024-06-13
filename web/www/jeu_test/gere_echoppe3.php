@@ -610,7 +610,7 @@ if ($erreur == 0)
     <div class="centrer">
         <div id="intro" class="tableau2">
             <p><u>Information aux gérants</u>u></p><br>
-            <p>Voici l'interface de gestion de votre échoppe. Vous y trouverez différents menus. Afin de vous y retrouver, voici une documentation utile : https://docs.google.com/document/d/1A4n4r_A-tdeKR8RYV7tZh0kRIw7ir6BD85xrBn_anQ4/edit#heading=h.jlzc3xknzpu7</p><br>
+            <p>Voici l'interface de gestion de votre échoppe. Vous y trouverez différents menus. Afin de vous y retrouver, voici une documentation utile : https://docs.google.com/document/d/1OBpzap1AI5gIXOzOIEAXADaXRY8yYJo4MdWEEBIrniM/edit?usp=sharing</p><br>
             <p><strong>26/02/2006</strong> Nouveau stock</p>
             <p><strong>09/08/2006</strong> Prêt pour les permiers beta-tests</p>
             <p><strong>31/01/2008</strong> Ajout de la fonctionnalité pour changer la description et le nom du magasin
