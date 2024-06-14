@@ -609,18 +609,16 @@ if ($erreur == 0)
         , <?php echo $etage_libelle ?>, <?php echo $lieu_compte ?> Br en caisse)</p>
     <div class="centrer">
         <div id="intro" class="tableau2">
-            <p><u>Information aux gérants</u>u></p><br>
-            <p>Voici l'interface de gestion de votre échoppe. Vous y trouverez différents menus. Afin de vous y retrouver, voici une documentation utile : https://docs.google.com/document/d/1OBpzap1AI5gIXOzOIEAXADaXRY8yYJo4MdWEEBIrniM/edit?usp=sharing</p><br>
+            <p><u>Information aux gérants</u></p>
+            <p>Voici l'interface de gestion de votre échoppe. Vous y trouverez différents menus. <br>Voici une documentation de la guilde : https://docs.google.com/document/d/1OBpzap1AI5gIXOzOIEAXADaXRY8yYJo4MdWEEBIrniM/edit?usp=sharing</p><br>
             <p><strong>26/02/2006</strong> Nouveau stock</p>
             <p><strong>09/08/2006</strong> Prêt pour les permiers beta-tests</p>
             <p><strong>31/01/2008</strong> Ajout de la fonctionnalité pour changer la description et le nom du magasin
             </p>
-            <p><strong>28/12/2009</strong> De nombreuses modifications / Corrections ont été apportées. L'une va vous
-                toucher
-                directement, avec la limitation des approvisionnements en fonction de l'échoppe. Certains articles ne
-                pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré.
-            <p><strong>01/02/2019</strong> Divers modifications pour faire fonctionner les magasins runiques ...</p>
-	    <p><strong>13/06/2024</strong> Documentation des menus & Mise en forme de la description</p><br><br>
+            <p><strong>28/12/2009</strong> De nombreux changements ont été apportées. Par exemple, la limitation des approvisionnements en fonction de l'échoppe. Certains articles ne
+                pourront plus être approvisionnés librement. Adressez-vous à votre Maitre Marchand préféré.
+            <p><strong>01/02/2019</strong> Divers modifications pour faire fonctionner les magasins runiques.</p>
+	    <p><strong>13/06/2024</strong> Documentation des menus & mise en forme de la description.</p><br>
             <b>Clients présents dans l’échoppe:</b>
             <?php
             $liste_clients = "";
@@ -654,7 +652,7 @@ if ($erreur == 0)
                 <input type="hidden" name="methode" value="nom">
             </form>
             <strong><a class="centrer" href="javascript:document.description.submit();">Changer le nom et la
-                    description</a></strong>
+                    description de la boutique</a></strong>
 
             <form name="refuge" method="post" action="gere_echoppe4.php">
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
@@ -690,7 +688,7 @@ if ($erreur == 0)
                         l'administration passeront automatiquement à 15%.<br>
                     <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut
                                 de refuge pour
-                                cette échoppe ? <em>(Cette fonctionnalité sera dorénavant controlée)</em></a></strong>
+                                cette échoppe ?</strong> <em>(Fonctionnalité pouvant être controlée)</em></a>
                     </p>
                     <?php
                 }
@@ -700,8 +698,7 @@ if ($erreur == 0)
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
                 <input type="hidden" name="methode" value="marge">
                 <p>Votre magasin réalise pour l'instant <?php echo $result['lieu_marge'] ?>% de marge. 
-                <p style=text-align:left><strong><a href="javascript:document.marge.submit();">Changer cette donnée
-                            ?</a></strong></p>
+                <strong><a href="javascript:document.marge.submit();">Changer cette donnée ?</a></strong>
             </form>
 
         </div>
