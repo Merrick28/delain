@@ -312,7 +312,7 @@ switch($methode)
 		<tr><td border="2" width="20" height="20" ><img alt="Banque" src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Escalier, grands escaliers" src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Dispensaire" src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
-		<tr><td border="2" width="20" height="20" ><img alt="Auberge, Guildes" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge, Guilde</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Auberge, Guilde" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge, Guilde</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Pancartes, indications" src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Portails démoniaques" src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
 	</table>
