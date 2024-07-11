@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "../includes/fonctions.php";
 ?>
 <form name="det_cadre" method="post" action="action.php">
@@ -9,7 +9,7 @@ include "../includes/fonctions.php";
 <div class="centrer">
 
 
-<?php 
+<?php
 $y_encours = 999999999999999999;
 
 $req_etage = "select pos_etage,pos_cod,perso_type_perso from perso_position,positions,perso
@@ -189,7 +189,7 @@ switch($methode)
 					$req_pos = $req_pos . "order by pos_y desc,pos_x asc ";
 				}
 				$stmt = $pdo->query($req_pos);
-			
+
 				$i = 0;
 				while ($result = $stmt->fetch())
 				{
@@ -228,7 +228,7 @@ switch($methode)
 					if (($dessus == 2) || ($dessus == 4) || ($dessus == 5) || ($dessus == 6)|| ($dessus == 7))
 					{
 						$pos_encours = $result['pos_cod'];
-						
+
 						$req_lieu = "select lieu_nom,tlieu_libelle,lieu_tlieu_cod
 							from lieu,lieu_position,lieu_type
 							where lpos_pos_cod = $pos_encours
@@ -263,6 +263,10 @@ switch($methode)
 						if ($type_lieu == 34) // Les grandes portes sont assimilées à des passages
 						{
 							$dessus = 10;
+						}
+						if ($type_lieu == 42) // Les guildes sont assimilés aux auberges
+						{
+							$dessus = 22;
 						}
 					}
 					if ($isvue == 9)
@@ -308,16 +312,16 @@ switch($methode)
 		<tr><td border="2" width="20" height="20" ><img alt="Banque" src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Escalier, grands escaliers" src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Dispensaire" src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
-		<tr><td border="2" width="20" height="20" ><img alt="Auberge" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Auberge, Guilde" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge, Guilde</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Pancartes, indications" src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
 		<tr><td border="2" width="20" height="20" ><img alt="Portails démoniaques" src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
 	</table>
 </td>
-<?php 
+<?php
 		}
 ?>
 </tr></table></div>
-<?php 
+<?php
 		if ($automap_ok)
 			echo "<em class='centrer'>$p % de l’étage visité.</em>";
 
