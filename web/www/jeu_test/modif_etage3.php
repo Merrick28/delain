@@ -412,7 +412,7 @@ if ($erreur == 0)
 			X max : <input type="text" name="x_max"><br />
 			Y min : <input type="text" name="y_min"> -
 			Y max : <input type="text" name="y_max"><br /><br />
-			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="50" /><br />
+			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="0" /><br />
 			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value='999'><br />
 			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
