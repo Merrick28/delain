@@ -589,7 +589,7 @@ begin
 	end if;
 
 	-- on regarde si bloque magie
-	if aggressif = 'O' AND NOT (v_voie_magique = 3 AND num_sort=145) AND NOT (v_voie_magique = 4 AND num_sort=176) AND NOT (lanceur = cible) then
+	if aggressif = 'O' AND NOT (v_voie_magique = 3 AND num_sort=145) AND NOT (v_voie_magique = 4 AND num_sort=176) AND NOT (lanceur = cible) AND NOT (num_sort=30 AND f_perso_affinite(lanceur, cible) IN ('T', 'C'))  then
 		select into v_bloque_magie
 			pcomp_modificateur
 			from perso_competences
