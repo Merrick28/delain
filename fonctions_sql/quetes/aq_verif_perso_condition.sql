@@ -57,16 +57,16 @@ begin
   (25, 'A terminé l''étape de QA', 'QUETE'),
   (26, 'Nombre de lock', 'VARIABLE'),
   (27, 'Code du perso', 'CARAC'),
-  (28, 'Possède un type d’objet générique', 'OBJET')
-  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
+  (28, 'Possède un type d’objet générique', 'OBJET'),
+  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE'),
   (30, 'Monstre générique', 'MONSTRE'),
   (31, 'Renommée / Renommée magique', 'CARAC'),
-  (32, 'Visite de l''étage (en %)', 'VARIABLE')
-  (33, 'Nombre de sorts connus', 'COMPETENCE')
-  (34, 'Nombre de sorts niveau 2 connus', 'COMPETENCE')
-  (35, 'Nombre de sorts niveau 3 connus', 'COMPETENCE')
-  (36, 'Nombre de sorts niveau 4 connus', 'COMPETENCE')
-  (37, 'Nombre de sorts niveau 5 connus', 'COMPETENCE')
+  (32, 'Visite de l''étage (en %)', 'VARIABLE'),
+  (33, 'Nombre de sorts connus', 'COMPETENCE'),
+  (34, 'Nombre de sorts niveau 2 connus', 'COMPETENCE'),
+  (35, 'Nombre de sorts niveau 3 connus', 'COMPETENCE'),
+  (36, 'Nombre de sorts niveau 4 connus', 'COMPETENCE'),
+  (37, 'Nombre de sorts niveau 5 connus', 'COMPETENCE'),
   (38, 'Nombre de sorts niveau 6 connus', 'COMPETENCE');
  */
 
