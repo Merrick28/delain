@@ -57,11 +57,17 @@ begin
   (25, 'A terminé l''étape de QA', 'QUETE'),
   (26, 'Nombre de lock', 'VARIABLE'),
   (27, 'Code du perso', 'CARAC'),
-  (28, 'Possède un type d’objet générique', 'OBJET')
-  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE')
+  (28, 'Possède un type d’objet générique', 'OBJET'),
+  (29, 'Chevauche une monture du type du monstre générique', 'VARIABLE'),
   (30, 'Monstre générique', 'MONSTRE'),
   (31, 'Renommée / Renommée magique', 'CARAC'),
-  (32, 'Visite de l''étage (en %)', 'VARIABLE');
+  (32, 'Visite de l''étage (en %)', 'VARIABLE'),
+  (33, 'Nombre de sorts connus', 'COMPETENCE'),
+  (34, 'Nombre de sorts niveau 2 connus', 'COMPETENCE'),
+  (35, 'Nombre de sorts niveau 3 connus', 'COMPETENCE'),
+  (36, 'Nombre de sorts niveau 4 connus', 'COMPETENCE'),
+  (37, 'Nombre de sorts niveau 5 connus', 'COMPETENCE'),
+  (38, 'Nombre de sorts niveau 6 connus', 'COMPETENCE');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -215,6 +221,24 @@ begin
 
   elsif (v_carac_cod = 32) then                  --  (32, 'RVisite de l'étage (en %)', 'VARIABLE', 'Visite de l'étage (en %)');
     select into v_perso_carac f_perso_visite_etage(v_perso_cod)::text ;
+
+  elsif (v_carac_cod = 33) then                  --  (33, 'Nombre de sort connu', 'COMPETENCE', 'Vérification du nombre de sorts connus (sorts de tous niveaux confondu)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod where  perso_cod = v_perso_cod  ;
+
+  elsif (v_carac_cod = 34) then                  --  (34, 'Nombre de sort niveau 2 connu', 'COMPETENCE', 'Vérification du nombre de sort niveau 2 connu (sorts règne)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod join sorts on sort_cod=psort_sort_cod where  perso_cod = v_perso_cod  and sort_niveau=2 ;
+
+  elsif (v_carac_cod = 35) then                  --  (35, 'Nombre de sort niveau 3 connu', 'COMPETENCE', 'Vérification du nombre de sort niveau 3 connu (sorts élément)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod join sorts on sort_cod=psort_sort_cod where  perso_cod = v_perso_cod  and sort_niveau=3 ;
+
+  elsif (v_carac_cod = 36) then                  --  (36, 'Nombre de sort niveau 4 connu', 'COMPETENCE', 'Vérification du nombre de sort niveau 4 connu (sorts main)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod join sorts on sort_cod=psort_sort_cod where  perso_cod = v_perso_cod  and sort_niveau=4 ;
+
+  elsif (v_carac_cod = 37) then                  --  (37, 'Nombre de sort niveau 5 connu', 'COMPETENCE', 'Vérification du nombre de sort niveau 5 connu (sorts totem)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod join sorts on sort_cod=psort_sort_cod where  perso_cod = v_perso_cod  and sort_niveau=5 ;
+
+  elsif (v_carac_cod = 38) then                  --  (38, 'Nombre de sorts niveau 6 connu', 'COMPETENCE', 'Vérification du nombre de sort niveau 6 connu (sorts énergie)');
+    select into v_perso_carac count(*) from perso join perso_sorts on psort_perso_cod=perso_cod join sorts on sort_cod=psort_sort_cod where  perso_cod = v_perso_cod  and sort_niveau=6 ;
 
   else
     return 0 ;    -- erreur dans les paramètres
