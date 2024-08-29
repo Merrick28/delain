@@ -26,7 +26,7 @@ begin
     code_retour := code_retour + coalesce(ligne.obj_critique,0);
     -- fin boucle
   end loop;
-  return code_retour;
+  return GREATEST(0, code_retour + valeur_bonus(personnage, 'PRO'));  -- ajout des bonus/malus de protection
 end;$_$;
 
 
