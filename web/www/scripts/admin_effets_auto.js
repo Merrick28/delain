@@ -163,6 +163,7 @@ EffetAuto.Types = [
 		parametres: [
 			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
 			{ nom: 'cumulatif', type: 'cumulatif', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n’est pas [cumulable].' },
+			{ nom: 'trig_resistance', type: 'checkboxinv', label: 'Test de résistance', description: 'Faire un test de résistance (si décoché le bonus/malus est donné sans faire de test).' },
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Valeur', description: 'La force du bonus / malus appliqué : valeur fixe ou de la forme 1d6+2', validation: Validation.Types.Roliste },
 			{ nom: 'duree', type: 'entier', label: 'Durée', description: 'La durée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
@@ -199,6 +200,7 @@ EffetAuto.Types = [
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'force', type: 'entier', longueur: 2, label: 'Soins/Dégâts', description: 'Le nombre de PV impactés en plus de l’effet des BM, une valeur positive pour des soins ou négative pour des dégâts. La valeur peut être fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+			{ nom: 'trig_resistance', type: 'checkboxinv', label: 'Test de résistance', description: 'Faire un test de résistance (si décoché les soins/dégâts et tous les bonus/malus sont donnés sans faire de test).' },
 			{ nom: 'trig_effet_bm', type: 'listebm', label: 'Liste des Bonus/Malus', description: 'Liste des Bonus/Malus, ils seront tous appliqués si le jet de proba est réussi.' }
 
 		],
@@ -1521,6 +1523,16 @@ EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampCheckBoxInv = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 'O';
+	var html = 	'<label><strong>' + parametre.label + '</strong>&nbsp;' +
+		       	'<input type="hidden" valeur="'+valeur+'" name="checkbox_fonc_' + parametre.nom + numero.toString() + '">' +
+		       	'<input type="checkbox" '+ (valeur=='O' ? 'checked' : '') +' name="fonc_' + parametre.nom + numero.toString() + '">' +
+				'</label><br />';
+	return html;
+}
+
 EffetAuto.ChampCumulatif = function (parametre, numero, valeur) {
 	if (!valeur) valeur = 'N';
 
@@ -1708,6 +1720,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;
+			break;
+		case 'checkboxinv':
+			html = pd + EffetAuto.ChampCheckBoxInv(parametre, numero, valeur) + pf;
 			break;
 		case 'cumulatif':
 			html = pd + EffetAuto.ChampCumulatif(parametre, numero, valeur) + pf;

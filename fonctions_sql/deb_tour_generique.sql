@@ -69,6 +69,7 @@ declare
   v_distance_min integer;      -- distance minimum requis pour la cible
   v_exclure_porteur text;      -- le porteur et les compagnons sont inclus dans le ciblage
   v_equipage integer;          -- le partenaire d'équipage: cavalier/monture
+  v_resistance text;           -- faire une test de resitance O/N
 
 begin
 
@@ -108,6 +109,9 @@ begin
 
   -- Cibles
   v_cibles_nombre_max := f_lit_des_roliste(v_cibles_nombre);
+
+  -- test de reistance (Oui par defaut)
+  v_resistance := COALESCE((v_params->>'fonc_trig_resistance')::text, 'O');
 
   -- Si le ciblage est limité par la VUE on ajuste la distance max
   if (v_params->>'fonc_trig_vue')::text = 'O' then
@@ -168,7 +172,7 @@ begin
 
     -- Ajout azaghal on teste un simili resiste magie pour chaque personne cible sauf si la cible est le lanceur
     v_bloque_magie := 0;
-    if v_cibles_type != 'S' then
+    if v_cibles_type != 'S' and v_resistance != 'N' then
 
       -- on calcule le seuil de résistance (en fonction de l’int, la con le niv du sort et la marge de réussite
       v_RM1 := (ligne.perso_int * 5) + floor(ligne.perso_con / 10) + floor(ligne.perso_niveau / 2);
