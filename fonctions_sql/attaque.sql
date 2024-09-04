@@ -1285,7 +1285,9 @@ begin
               and coalesce(obj_critique,0) != 0
               -- and gobj_tobj_cod = 4;  /* avant seuls les casques avait ce privilège */
         order by obj_critique*random() desc limit 1;
-        temp_use_casque := use_artefact(v_casque);
+        if found then
+            temp_use_casque := use_artefact(v_casque);
+        end if;
         qualite_attaque := 2;
         nom_qualite_attaque := ' (coup spécial) ';
         armure := floor(f_armure_perso(nv_cible)/2);
@@ -1363,7 +1365,9 @@ begin
               and coalesce(obj_critique,0) != 0
               -- and gobj_tobj_cod = 4;  /* avant seuls les casques avait ce privilège */
         order by obj_critique*random() desc limit 1;
-        temp_use_casque := use_artefact(v_casque);
+        if found then
+            temp_use_casque := use_artefact(v_casque);
+        end if;
         armure := f_armure_perso(nv_cible);
         qualite_attaque := 0;
         nom_qualite_attaque := '';

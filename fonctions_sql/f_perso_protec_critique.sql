@@ -24,7 +24,7 @@ begin
         and perobj_obj_cod = obj_cod
         and coalesce(obj_critique,0) != 0 ;
 
-  code_retour := v_protec_critique;
+  code_retour := LEAST(100, GREATEST(0, v_protec_critique + valeur_bonus(personnage, 'PRO')));  -- ajout des bonus/malus de protection
 
   return code_retour;
 end;$_$;
