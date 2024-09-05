@@ -205,6 +205,7 @@ declare
   v_atq_gmon_cod integer;                       -- Type de monstre attaquant. Pour interdire les attaques aux golems
   v_desorientation integer;                     -- Malus de désorientation
   texte_desorientation text;                    -- message de désorientation
+  v_attaque_critique integer;                   -- bonus/malus d'attaque critique
 
   --------------------------------------------------------------------------------
   -- variables évènements
@@ -1232,7 +1233,10 @@ begin
       perform insere_evenement(v_attaquant, nv_cible, 47, texte_evt, 'O', NULL);
     end if;
   end if;
-  if des <= 5 then
+
+  -- calcul de la limite du critique (prise en comtpe des bonus malus AttCRitique): => garde de fou entre 0 et 100
+  v_attaque_critique := LEAST(100, GREATEST( 0, 5 + valeur_bonus(v_attaquant, 'ATC') ) );
+  if des <= v_attaque_critique then
     if v_armure_physique != 0 then
       if v_type_arme != 0 then
         update objets set obj_etat = obj_etat - (usure_arme * 2) where obj_cod = num_arme
