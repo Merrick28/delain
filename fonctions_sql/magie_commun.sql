@@ -387,15 +387,16 @@ begin
           code_retour := code_retour||'Il s’agit donc d’un échec automatique.<br><br>';
           code_retour := '0;'||code_retour;
 
-          update perso set perso_renommee_magie = perso_renommee_magie - (temp_renommee*2),perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
+          -- 2024-09-10 Marlyza: bugfix: prise en compte des malus au PA et aussi des bonus supérieurs à 4 => perte entre 1 et 4 PA sur echec critique
+          update perso set perso_renommee_magie = perso_renommee_magie - (temp_renommee*2),perso_pa = perso_pa - LEAST(4, GREATEST(1, (4 + bonus_pa))) where perso_cod = lanceur;
           return code_retour;
           -- renomme magique
         end if;
         if des > v_comp_modifie then
           -- sort loupé
 
-          -- renomme magique
-          update perso set perso_renommee_magie = perso_renommee_magie - temp_renommee,perso_pa = perso_pa - (4 + bonus_pa) where perso_cod = lanceur;
+          -- renomme magique / 2024-09-10 Marlyza: bugfix: prise en compte des malus au PA et aussi des bonus supérieurs à 4 => perte entre 1 et 4 PA sur echec)
+          update perso set perso_renommee_magie = perso_renommee_magie - temp_renommee,perso_pa = perso_pa - LEAST(4, GREATEST(1, (4 + bonus_pa))) where perso_cod = lanceur;
 
           code_retour := code_retour||'Vous avez donc <b>échoué</b>.<br><br>';
           -- on regarde si on améliore la comp

@@ -110,7 +110,8 @@ end if;
      cout_pa := cout_pa - 1;
  end if;
 
-temp := cout_pa;
+-- 2024-09-10 : bugfix : minimum 1 PA pour le cout d'un sort !!!
+temp := GREATEST(1, cout_pa);
 code_retour := code_retour||temp;
 	return code_retour;
 end;

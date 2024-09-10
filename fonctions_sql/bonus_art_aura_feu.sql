@@ -27,7 +27,9 @@ begin
     temp := use_artefact(ligne.obj_cod);
     -- fin boucle
   end loop;
-  return code_retour;
+
+  return LEAST(1, GREATEST(0, code_retour + valeur_bonus(personnage, 'ADF') / 100));  -- ajout des bonus/malus de aura de feu (entre 0 et 100)
+
 end;$_$;
 
 

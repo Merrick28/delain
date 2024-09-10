@@ -26,7 +26,8 @@ begin
 
   code_retour := v_aura_feu;
 
-  return code_retour;
+  return LEAST(1, GREATEST(0, code_retour + valeur_bonus(personnage, 'ADF')/100));  -- ajout des bonus/malus de aura de feu (entre 0 et 1)
+
 end;$_$;
 
 
