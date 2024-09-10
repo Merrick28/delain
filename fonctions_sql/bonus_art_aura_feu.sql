@@ -28,7 +28,7 @@ begin
     -- fin boucle
   end loop;
 
-  return LEAST(100, GREATEST(0, code_retour + valeur_bonus(personnage, 'ADF')));  -- ajout des bonus/malus de aura de feu (entre 0 et 100)
+  return LEAST(1, GREATEST(0, code_retour + valeur_bonus(personnage, 'ADF') / 100));  -- ajout des bonus/malus de aura de feu (entre 0 et 100)
 
 end;$_$;
 
