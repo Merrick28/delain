@@ -272,9 +272,9 @@ switch ($methode)
         } else if ($etape_modele->aqetapmodel_tag == "#RECEVOIR #PX")
         {
             // c'est uen étape de gain , interdir les valeurs negatives
-            $_REQUEST['aqelem_param_num_1'][1][0] = (int)abs($_REQUEST['aqelem_param_num_1'][1][0] ?? 0);
+            $_REQUEST['aqelem_param_num_1'][1][0] = abs((int)$_REQUEST['aqelem_param_num_1'][1][0] ?? 0);
             if ($_REQUEST['aqelem_param_num_1'][1][0] > 200) $_REQUEST['aqelem_param_num_1'][1][0] = 200;
-            $_REQUEST['aqelem_param_num_1'][2][0] = (int)abs($_REQUEST['aqelem_param_num_1'][2][0] ?? 0);
+            $_REQUEST['aqelem_param_num_1'][2][0] = abs((int)$_REQUEST['aqelem_param_num_1'][2][0] ?? 0);
             if ($_REQUEST['aqelem_param_num_1'][2][0] > 100000) $_REQUEST['aqelem_param_num_1'][2][0] = 100000;
         }
         $etape->stocke($new);
