@@ -385,7 +385,10 @@ begin
     select into v_dex_cible, v_con_cible, v_type_cible, v_nom_cible, v_pv_cible
       perso_dex, perso_con, perso_type_perso, perso_nom, perso_pv
     from perso
-    where perso_cod = v_cible;
+    where perso_cod = v_cible and perso_pnj <> 1  ;  -- 2024-09-11 - Marlyza - annuler l'attaque si la cible est un PNJ
+    if not found then
+         return code_retour || 'Il n''est pas possible de mettre un PNJ dans le garde manger ';
+    end if;
 
     comp_attaque := 100 - round((v_dex_cible * v_dex_cible * v_dex_cible) / 120);
     code_retour := code_retour || 'Chance de réussite de cette attaque : ' || comp_attaque::text || '<br>';
