@@ -24,7 +24,7 @@ declare
     texte_evt                text; -- texte pour évènements
     nom_sort                 text; -- nom du sort
 -------------------------------------------------------------
--- variables concernant le lanceur	
+-- variables concernant le lanceur
 -------------------------------------------------------------
     lanceur alias for $1; -- perso_cod du lanceur
 -------------------------------------------------------------
@@ -63,13 +63,13 @@ begin
     -------------------------------------------------------------
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
--- on renseigne d abord le numéro du sort 
+-- on renseigne d abord le numéro du sort
     num_sort := 140;
 -- les px
     px_gagne := 0;
     -------------------------------------------------------------
 -- Etape 2 : contrôles
--------------------------------------------------------------	
+-------------------------------------------------------------
     select into nom_cible,v_pv_cible perso_nom, perso_pv_max
     from perso
     where perso_cod = cible;
@@ -105,13 +105,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'DEG';
+          and bonus_tbonus_libc = 'DEG' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'DEG';
+              and bonus_tbonus_libc = 'DEG' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'DEG', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -119,13 +119,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'VUE';
+          and bonus_tbonus_libc = 'VUE' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'VUE';
+              and bonus_tbonus_libc = 'VUE' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'VUE', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -133,13 +133,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'TOU';
+          and bonus_tbonus_libc = 'TOU' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'TOU';
+              and bonus_tbonus_libc = 'TOU' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'TOU', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -147,13 +147,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'REG';
+          and bonus_tbonus_libc = 'REG' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'REG';
+              and bonus_tbonus_libc = 'REG' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'REG', 5, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -161,13 +161,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'ARM';
+          and bonus_tbonus_libc = 'ARM' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'ARM';
+              and bonus_tbonus_libc = 'ARM' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'ARM', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -175,13 +175,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'PAA';
+          and bonus_tbonus_libc = 'PAA' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'PAA';
+              and bonus_tbonus_libc = 'PAA' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'PAA', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -189,13 +189,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'PAM';
+          and bonus_tbonus_libc = 'PAM' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'PAM';
+              and bonus_tbonus_libc = 'PAM' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'PAM', 2, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -203,13 +203,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur > 0
-          and bonus_tbonus_libc = 'ESQ';
+          and bonus_tbonus_libc = 'ESQ' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur > 0
-              and bonus_tbonus_libc = 'ESQ';
+              and bonus_tbonus_libc = 'ESQ' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'ESQ', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -217,13 +217,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'DEP';
+          and bonus_tbonus_libc = 'DEP' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'DEP';
+              and bonus_tbonus_libc = 'DEP' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'DEP', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -231,13 +231,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'JUS';
+          and bonus_tbonus_libc = 'JUS' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'JUS';
+              and bonus_tbonus_libc = 'JUS' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'JUS', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -245,13 +245,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'ERU';
+          and bonus_tbonus_libc = 'ERU' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'ERU';
+              and bonus_tbonus_libc = 'ERU' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'ERU', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -259,13 +259,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'DSG';
+          and bonus_tbonus_libc = 'DSG' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'DSG';
+              and bonus_tbonus_libc = 'DSG' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'DSG', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -273,13 +273,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'MUR';
+          and bonus_tbonus_libc = 'MUR' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'MUR';
+              and bonus_tbonus_libc = 'MUR' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'MUR', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -287,13 +287,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'DIT';
+          and bonus_tbonus_libc = 'DIT' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'DIT';
+              and bonus_tbonus_libc = 'DIT' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'DIT', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -301,13 +301,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'CFS';
+          and bonus_tbonus_libc = 'CFS' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'CFS';
+              and bonus_tbonus_libc = 'CFS' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'CFS', 3, v_bonus_valeur);
         end if;
         select into v_bonus_tour,v_bonus_valeur bonus_nb_tours,
@@ -315,13 +315,13 @@ begin
         from bonus
         where bonus_perso_cod = cible
           and bonus_valeur < 0
-          and bonus_tbonus_libc = 'BLM';
+          and bonus_tbonus_libc = 'BLM' and bonus_mode = 'S' ;
         if found then
             delete
             from bonus
             where bonus_perso_cod = cible
               and bonus_valeur < 0
-              and bonus_tbonus_libc = 'BLM';
+              and bonus_tbonus_libc = 'BLM' and bonus_mode = 'S' ;
             perform ajoute_bonus(lanceur, 'BLM', 3, v_bonus_valeur);
         end if;
     end if;
