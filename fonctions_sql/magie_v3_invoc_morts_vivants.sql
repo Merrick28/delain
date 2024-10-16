@@ -137,4 +137,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION public.nv_magie_invoc_farfa(integer, integer, integer) OWNER TO delain;
+ALTER FUNCTION public.magie_v3_invoc_morts_vivants(integer, integer, integer) OWNER TO delain;
