@@ -1,22 +1,23 @@
-CREATE or replace FUNCTION public.nv_magie_invoc_farfa(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION public.magie_v3_invoc_morts_vivants(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
-$_$/*****************************************************************/
-/* function magie_invoc_farfa : lance une invocation de farfadet */
-/*  magique                                                      */
-/* On passe en paramètres                                        */
-/*   $1 = lanceur                                                */
-/*   $2 = cible                                                  */
-/*   $3 = type lancer                                            */
-/*        0 = rune                                               */
-/*        1 = mémo                                               */
-/* Le code sortie est une chaine html utilisable directement     */
-/*****************************************************************/
-/* Créé le 09/11/2004                                            */
-/* Liste des modifications :                                     */
-/*                                                               */
-/*                                                               */
-/*****************************************************************/
+$_$/********************************************************************/
+/* function magie_v3_invoc_morts_vivants : invocation de morts-vivants */
+/*  magique                                                            */
+/* On passe en paramètres                                              */
+/*   $1 = lanceur                                                      */
+/*   $2 = cible                                                        */
+/*   $3 = type lancer                                                  */
+/*        0 = rune                                                     */
+/*        1 = mémo                                                    */
+/* Le code sortie est une chaine html utilisable directement          */
+/**********************************************************************/
+/* Créé le 16/10/2024                                                 */
+/* Liste des modifications :                                          */
+/*                                                                    */
+/*                                                                   */
+/*********************************************************************/
+
 declare
 -------------------------------------------------------------
 -- variables servant pour la sortie
@@ -74,7 +75,7 @@ begin
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
 -- on renseigne d abord le numéro du sort 
-    num_sort := 92;
+    num_sort := 300;
 -- les px
     px_gagne := 1;
 -- Lancer de dés pour le nombre de zombies (1d6)
@@ -114,7 +115,7 @@ begin
     END LOOP;
 
     insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee) values (2, lanceur, cible, 2);
-    code_retour := code_retour || 'Vous avez invoqué un farfadet.<br>';
+    code_retour := code_retour || 'Vous avez invoqué des mort-vivants.<br>';
     code_retour := code_retour || '<br>Vous gagnez ' || trim(to_char(px_gagne, '999')) || ' PX pour cette action.<br>';
     texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible].';
     insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
