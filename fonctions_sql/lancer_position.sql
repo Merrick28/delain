@@ -21,9 +21,9 @@ CREATE OR REPLACE FUNCTION public.lancer_position(integer, integer) RETURNS SETO
 begin
 		select into x_attaquant,y_attaquant,e_attaquant pos_x,pos_y,pos_etage from positions where pos_cod = pos_attaquant;
 		   v_req = 'select pos_cod from positions
-													where pos_x between ('||trim(to_char(x_attaquant,'99999999999'))||' - '||trim(to_char(distance_lancer,'99999999999'))||') and ('||trim(to_char(x_attaquant,'99999999999'))||' + '||trim(to_char(distance_lancer,'99999999999'))||')
-													and pos_y  between ('||trim(to_char(y_attaquant,'99999999999'))||' - '||trim(to_char(distance_lancer,'99999999999'))||') and ('||trim(to_char(y_attaquant,'99999999999'))||' + '||trim(to_char(distance_lancer,'99999999999'))||')
-													and pos_etage = '||trim(to_char(e_attaquant,'99999999999'))||' order by random()';
+                                where pos_x between ('||trim(to_char(x_attaquant,'99999999999'))||' - '||trim(to_char(distance_lancer,'99999999999'))||') and ('||trim(to_char(x_attaquant,'99999999999'))||' + '||trim(to_char(distance_lancer,'99999999999'))||')
+                                and pos_y  between ('||trim(to_char(y_attaquant,'99999999999'))||' - '||trim(to_char(distance_lancer,'99999999999'))||') and ('||trim(to_char(y_attaquant,'99999999999'))||' + '||trim(to_char(distance_lancer,'99999999999'))||')
+                                and (pos_etage = '||trim(to_char(e_attaquant,'99999999999'))||') order by random()';
 		    open curs2 for execute v_req;
 				loop
 					fetch curs2 into v_pos;
