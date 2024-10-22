@@ -37,7 +37,7 @@ else
 	// POSITION DU JOUEUR
 	$req_matos = "select pos_x,pos_y,pos_etage,pos_cod "
 	."from perso_position,positions "
-	."where ppos_perso_cod = $perso_cod"
+	."where ppos_perso_cod = $perso_cod "
 	."and ppos_pos_cod = pos_cod ";
     $stmt = $pdo->query($req_matos);
     $result = $stmt->fetch();
