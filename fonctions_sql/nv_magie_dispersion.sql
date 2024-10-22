@@ -176,8 +176,8 @@ select into pos_attaquant,v_pv_attaquant,v_pvmax_attaquant,x_attaquant,y_attaqua
     /*********************************************/
 		/* on sélectionne aléatoirement la case d arrivée,a v_distance max du lanceur*/
 
-		if v_direction = '' then
-		    select into position_arrivee,v_order lancer_position,lancer_des(1,1000) from lancer_position(pos_attaquant,v_distance) order by v_order limit 1;
+    if v_direction = '' then
+        select into position_arrivee,v_order lancer_position,lancer_des(1,1000) from lancer_position(pos_attaquant,v_distance) order by v_order limit 1;
     elseif v_direction = 'NE' then -- nord/est
         select pos_cod into position_arrivee from positions where pos_etage = e_attaquant and pos_x = x_attaquant + 1 and pos_y = y_attaquant + 1 ;
     elseif v_direction = 'E' then -- est
