@@ -52,7 +52,7 @@ if (count($ips) != 0)
     );
 
     $context = stream_context_create($opts);
-
+    writelog( date("d/m/y - H:i")." : stream_context_create => {$context}", 'verif_vote' );
     $result      = file_get_contents('http://www.jeux-alternatifs.com/API.php', false, $context);
     //echo "<br>Check : Résultat jeux-alternatifs: ".$result;
     writelog( date("d/m/y - H:i")." : Résultat jeux-alternatifs => {$result}", 'verif_vote' );
