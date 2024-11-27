@@ -2,7 +2,7 @@
 $verif_connexion::verif_appel();
 
 $guilde    = new guilde;
-$allguilde = $guilde->getAll();
+$allguilde = $guilde->getAll(); //echo "<pre>"; print_r($allguilde); die();
 
 ?>
 <form name="guilde" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -10,6 +10,7 @@ $allguilde = $guilde->getAll();
     <input type="hidden" name="met_guilde" value="suite">
     <table>
         <tr>
+            <td class="soustitre2"><strong>Id</strong></td>
             <td class="soustitre2"><strong>Nom</strong></td>
             <td class="soustitre2"><strong>Autorisée ?</strong></td>
             <td class="soustitre2"><strong>Refusée</strong></td>
@@ -18,9 +19,10 @@ $allguilde = $guilde->getAll();
         foreach ($allguilde as $detailguilde)
         {
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><strong>", $detailguilde['guilde_nom'], "</strong></td>";
+            echo "<td class=\"soustitre2\"><strong>", $detailguilde->guilde_cod, "</strong></td>";
+            echo "<td class=\"soustitre2\"><strong>", $detailguilde->guilde_nom, "</strong></td>";
 
-            if ($detailguilde[$champ] == 'O')
+            if ($detailguilde->$champ == 'O')
             {
                 $coche  = " checked";
                 $ncoche = "";
@@ -30,10 +32,10 @@ $allguilde = $guilde->getAll();
                 $ncoche = " checked";
             }
             echo "<td>";
-            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde['guilde_cod'] . "]\" value=\"O\"", $coche, ">";
+            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde->guilde_cod . "]\" value=\"O\"", $coche, ">";
             echo "</td>";
             echo "<td>";
-            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde['guilde_cod'] . "]\" value=\"N\"", $ncoche, ">";
+            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde->guilde_cod . "]\" value=\"N\"", $ncoche, ">";
             echo "</td>";
             echo "</tr>";
         }

@@ -7,7 +7,7 @@ where pguilde_guilde_cod = :key
 and pguilde_perso_cod = perso_cod
 and pguilde_valide = 'O'
 and " . $champ_perso . " = 'O' ";
-$stmt = $pdo->prepare($req);
+$stmtPerso = $pdo->prepare($req);
 foreach ($guilde as $key => $val)
 {
     $req    = "select guilde_nom," . $champ . " from guilde where guilde_cod = $key ";
@@ -22,8 +22,8 @@ foreach ($guilde as $key => $val)
         if ($val == 'N')
         {
 
-            $stmt    = $pdo->execute(array(":key" => $key), $stmt);
-            $alldest = $stmt->fetchAll();
+            $stmtPerso    = $pdo->execute(array(":key" => $key), $stmtPerso);
+            $alldest = $stmtPerso->fetchAll();
             if (count($alldest) != 0)
             {
                 $message             = new message();
@@ -33,7 +33,7 @@ foreach ($guilde as $key => $val)
                 $message->expediteur = $perso_cod;
                 foreach ($alldest as $result)
                 {
-                    $message->ajouteDestinataire($result['perso_cod']);
+                    $message->ajouteDestinataire($result['pguilde_perso_cod']);
                     echo "<p>Le joueur <strong>", $result['perso_nom'], "</strong> a été supprimé du méta guildage.";
                 }
                 $message->envoieMessage(false);
