@@ -76,6 +76,7 @@ if ($erreur == 0)
             }
             break;
         case "voir_meta":
+            $champ_perso  = 'pguilde_meta_caravane';
             require "_admin_echoppe_voir_meta.php";
             break;
         case "stats_biere":
