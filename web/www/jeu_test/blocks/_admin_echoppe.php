@@ -50,7 +50,7 @@ if ($erreur == 0)
             echo "<p>Ajout d'un gérant :";
 
             $stmt = $pdo->query($req_get_perso);
-            echo " < select name = \"perso_cible\">";
+            echo " <select name = \"perso_cible\">";
             while ($result = $stmt->fetch())
             {
                 echo "<option value=\"" . $result['perso_cod'] . "\">" . $result['perso_nom'] . "</option>";
