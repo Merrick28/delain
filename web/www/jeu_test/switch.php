@@ -20,7 +20,7 @@ $votesRefusee = $votes['votesRefusee'];
 
 ?>
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script-->
-    <script language="javascript">
+    <script language="javascript">//# sourceURL=switch.php.js
 
         function AddNewVote() {
             var php_var = "<?php echo $compt_cod; ?>".trim();
@@ -29,38 +29,58 @@ $votesRefusee = $votes['votesRefusee'];
             if (php_var == compte) {
                 alert('récupération de l\'ip');
             }
+
+            // On essaye d'abord avec https://ipinfo.io/json
             $.ajax({
                 type: 'GET',
-                url: 'https://api.ipify.org?format=json',
-                data: {get_param: 'value'},
+                url: 'https://ipinfo.io/json',
                 success: function (json) {
-                    if (php_var == compte) {
-                        alert('ip : ' + json.ip);
-                    }
+                    console.log('ip : ' + json.ip);
                     $.ajax({
                         type: 'post',
                         url: 'Add_vote.php',
                         data: {IP: json.ip},
                         success: function (data) {
-                            if (php_var == compte) {
-                                alert(data)
-                            }
+                            console.log(data);
                         },
                         error: function (xhr, ajaxOptions, thrownError) {
-                            if (php_var == compte) {
-                                alert(xhr.status);
-                                alert(thrownError);
-                            }
+                            console.log(xhr.status);
+                            console.log(thrownError);
                         }
                     });
                 },
+
+                // si https://ipinfo.io/json ne marche pas, autre tentative avec https://api.ipify.org
                 error: function (xhr, ajaxOptions, thrownError) {
-                    if (php_var == compte) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    }
+                    $.ajax({
+                        type: 'GET',
+                        url: 'https://api.ipify.org?format=json',
+                        data: {get_param: 'value'},
+                        success: function (json) {
+                            if (php_var == compte) {
+                                alert('ip : ' + json.ip);
+                            }
+                            $.ajax({
+                                type: 'post',
+                                url: 'Add_vote.php',
+                                data: {IP: json.ip},
+                                success: function (data) {
+                                    console.log(data)
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    console.log(xhr.status);
+                                    console.log(thrownError);
+                                }
+                            });
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            console.log(xhr.status);
+                            console.log(thrownError);
+                        }
+                    });
                 }
             });
+
         }
 
         function montre(id) {
