@@ -12,7 +12,7 @@ include_once '../includes/tools.php';
             $('tr[id^="sortlist-"]').removeClass("soustitre2");
             $('#bouton-supprimer').hide();
             $('#form-generique').show();
-            $('#form-objet').hide();
+            $('#form-specifique').hide();
             if (row>=0)
             {
                 $('#sortlist-'+row).addClass("soustitre2");
@@ -46,7 +46,7 @@ include_once '../includes/tools.php';
         function editObjetSpecifiqueSort(objsort_cod, data) {
             //executer le service asynchrone
             $('#form-generique').hide();
-            $('#form-objet').show();
+            $('#form-specifique').show();
 
             $("#spec_objsort_cod").val(objsort_cod);
             $("#obj_objsort_cod").text(data.objsort_cod ? data.objsort_cod : "");
@@ -226,7 +226,7 @@ if ($erreur == 0)
                 </table>
                 </form></div>';
 
-        echo '<div id="form-objet" style="display:none"><form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
+        echo '<div id="form-specifique" style="display:none"><form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
              <input type="hidden" name="methode" value="sauve">
              <input type="hidden" id="spec_objsort_cod" name="objsort_cod" value="0">
              <input type="hidden" id="spec_objsort_gobj_cod" name="objsort_gobj_cod" value="' . ($objsort_gobj_cod>0 ? $objsort_gobj_cod : "") . '">
