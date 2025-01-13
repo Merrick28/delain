@@ -117,7 +117,7 @@ if ($erreur == 0)
                 {
                     // Cas d'une modification de l'objet specifique
                     $clone_os = clone $objsorts;
-                    $objsorts->objsort_nb_utilisation = 1*(int)$_REQUEST["objsort_nb_utilisation"] ;
+                    $objsorts->objsort_nb_utilisation =min( abs(1*(int)$_REQUEST["objsort_nb_utilisation"]), $objsorts->objsort_nb_utilisation_max) ;
                     $objsorts->objsort_equip_requis = $objsorts->objsort_equip_requis ? 1 : 0 ;
                     $objsorts->stocke();
                     $log.="Mise à jour de l'objet_sort #".$objsorts->objsort_cod."\n".obj_diff($clone_os, $objsorts);
