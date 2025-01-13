@@ -7,10 +7,12 @@ include_once '../includes/tools.php';
 
     <script>//# sourceURL=admin_objet_sorts.js
 
-        function editObjetSort(row, objsort_cod) {
+        function editObjetGeneriqueSort(row, objsort_cod) {
             //executer le service asynchrone
             $('tr[id^="sortlist-"]').removeClass("soustitre2");
             $('#bouton-supprimer').hide();
+            $('#form-generique').show();
+            $('#form-specifique').hide();
             if (row>=0)
             {
                 $('#sortlist-'+row).addClass("soustitre2");
@@ -38,6 +40,23 @@ include_once '../includes/tools.php';
                    $("#objsort_equip_requis").val((!data.objsort_equip_requis || data.objsort_equip_requis =='false') ? 'N' : 'O');
                }
             });
+        }
+
+
+        function editObjetSpecifiqueSort(objsort_cod, data) {
+            //executer le service asynchrone
+            $('#form-generique').hide();
+            $('#form-specifique').show();
+
+            $("#spec_objsort_cod").val(objsort_cod);
+            $("#obj_objsort_cod").text(data.objsort_cod ? data.objsort_cod : "");
+            $("#obj_objsort_nom").text(data.objsort_nom ? data.objsort_nom : "");
+            $("#obj_objsort_cout").text(data.objsort_cout ? data.objsort_cout : "");
+            $("#obj_objsort_malchance").text(data.objsort_malchance ? data.objsort_malchance : "0");
+            $("#obj_objsort_nb_utilisation").val(data.objsort_nb_utilisation ? data.objsort_nb_utilisation : "0");
+            $("#obj_objsort_nb_utilisation_max").text(data.objsort_nb_utilisation_max ? data.objsort_nb_utilisation_max : "");
+            $("#obj_objsort_equip_requis").text(data.objsort_equip_requis  ? data.objsort_equip_requis  : "");
+
         }
 
     </script>
@@ -89,8 +108,20 @@ if ($erreur == 0)
             // Cas d'une suppression
             if (($_REQUEST["supprimer"] == "supprimer") && ($objsort_cod>0))
             {
-                $log.="supression de l'objet_sort #".$objsorts->objsort_cod."\n".obj_diff(new objets_sorts, $objsorts);
+                $log.="suppression de l'objet_sort #".$objsorts->objsort_cod."\n".obj_diff(new objets_sorts, $objsorts);
                 $objsorts->delete($objsort_cod);
+            }
+            else if ($_REQUEST["objet_specifique"] == "Mettre à jour")
+            {
+                if ($objsort_cod>0)
+                {
+                    // Cas d'une modification de l'objet specifique
+                    $clone_os = clone $objsorts;
+                    $objsorts->objsort_nb_utilisation = 1*(int)$_REQUEST["objsort_nb_utilisation"] ;
+                    $objsorts->objsort_equip_requis = $objsorts->objsort_equip_requis ? 1 : 0 ;
+                    $objsorts->stocke();
+                    $log.="Mise à jour de l'objet_sort #".$objsorts->objsort_cod."\n".obj_diff($clone_os, $objsorts);
+                }
             }
             else
             {
@@ -175,7 +206,7 @@ if ($erreur == 0)
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
-        echo '<form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
+        echo '<div id="form-generique"><form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
              <input type="hidden" name="methode" value="sauve">
              <input type="hidden" id="objsort_cod" name="objsort_cod" value="0">
              <input type="hidden" id="objsort_gobj_cod" name="objsort_gobj_cod" value="' . ($objsort_gobj_cod>0 ? $objsort_gobj_cod : "") . '">
@@ -193,7 +224,24 @@ if ($erreur == 0)
                 <tr><td>Equip. requis :</td><td>'.create_selectbox("objsort_equip_requis", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsort_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être quipé pour pourvoir utiliser le sort?</em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                 </table>
-                </form>';
+                </form></div>';
+
+        echo '<div id="form-specifique" style="display:none"><form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
+             <input type="hidden" name="methode" value="sauve">
+             <input type="hidden" id="spec_objsort_cod" name="objsort_cod" value="0">
+             <input type="hidden" id="spec_objsort_gobj_cod" name="objsort_gobj_cod" value="' . ($objsort_gobj_cod>0 ? $objsort_gobj_cod : "") . '">
+             <input type="hidden" id="spec_objsort_obj_cod" name="objsort_obj_cod" value="' . ($objsort_obj_cod>0 ? $objsort_obj_cod : "") . '">
+             ';
+        echo '<table width="100%" class=\'bordiv\'>
+                <tr><td>Sort :</td><td><span id="obj_objsort_cod"></span></td></tr>
+                <tr><td>Nom du sort :</td><td><span id="obj_objsort_nom"></span></td></tr>
+                <tr><td>Cout (en PA) :</td><td><span id="obj_objsort_cout"></span></td></tr>
+                <tr><td>Malchance :</td><td><span id="obj_objsort_malchance"></span></td></tr>
+                <tr><td>Nb Utilisation :</td><td><input type="text" id="obj_objsort_nb_utilisation" name="objsort_nb_utilisation" size="2">&nbsp;<em> Nombre d\'utilisatation max: </em><span id="obj_objsort_nb_utilisation_max"></span></td></tr>
+                <tr><td>Equip. requis :</td><td><span id="obj_objsort_equip_requis"></span></td></tr>
+                <tr><td></td><td><input type="submit" name="objet_specifique" value="Mettre à jour" class="test"></td></tr>
+                </table>
+                </form></div>';
 
         echo "<strong><br>Liste des sorts sur l'objet</strong> :<br>";
         $objsorts = new objets_sorts();
@@ -203,9 +251,9 @@ if ($erreur == 0)
             $lsorts = $objsorts->getBy_objsort_obj_cod($objsort_obj_cod);
         }
         if ($lsorts)
-        {
+        {   //echo "<pre>"; print_r($lsorts);
             echo '<table width="100%" class=\'bordiv\'>';
-            echo "<tr><td><input type='button' class='test' value='nouveau' onclick='editObjetSort(-1,0);'></td>
+            echo "<tr><td><input type='button' class='test' value='nouveau' onclick='editObjetGeneriqueSort(-1,0);'></td>
                       <td><strong>objsort_cod</strong></td>
                       <td><strong>sort</strong></td>
                       <td><strong>Nom sur l'objet</strong></td>
@@ -217,19 +265,40 @@ if ($erreur == 0)
             {
                 $sort = new sorts();
                 $sort->charge($os->objsort_sort_cod);
+                $data = [];
                 if((int)$os->objsort_gobj_cod==0 && (int)$os->objsort_parent_cod>0) {
+                    $isGenerique = false ;
+                    $data = [
+                        "objsort_cod" => "{$sort->sort_cod}",
+                        "objsort_nom" => "{$sort->sort_nom}",
+                        "objsort_cout" => "{$sort->sort_cout}",
+                        "objsort_malchance" => "{$os->objsort_malchance}",
+                        "objsort_nb_utilisation" => "{$os->objsort_nb_utilisation}",
+                        "objsort_nb_utilisation_max" => "{$os->objsort_nb_utilisation_max}",
+                        "objsort_equip_requis" => $os->objsort_equip_requis ? "O" : "N"
+                    ];
+
                     echo "<tr id='sortlist-{$k}'><td>Générique</td>";
-                }else{
-                    echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSort({$k}, {$os->objsort_cod});'></td>";
+                } else {
+                    $isGenerique = true ;
+                    echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetGeneriqueSort({$k}, {$os->objsort_cod});'></td>";
                 }
                 
                 echo "<td>{$os->objsort_cod}</td>
                       <td>{$os->objsort_sort_cod} ({$sort->sort_nom} - {$sort->sort_cout}PA) </td>
                       <td>".$os->getNom()."</td>
                       <td>".$os->getCout()." PA</td>
-                      <td>{$os->objsort_malchance}</td>
-                      <td>{$os->objsort_nb_utilisation_max}</td>
-                      <td>".( $os->objsort_equip_requis ? "O" : "N" )."</td></tr>";
+                      <td>{$os->objsort_malchance}</td>";
+                if ($isGenerique) {
+                    echo "<td>{$os->objsort_nb_utilisation_max}</td>";
+                } else {
+                    if ($os->objsort_nb_utilisation_max > 0) {
+                        echo "<td>{$os->objsort_nb_utilisation} / {$os->objsort_nb_utilisation_max} <input type='button' class='test' value='Modifier' onclick='editObjetSpecifiqueSort({$os->objsort_cod}, ".json_encode($data).");'></td>";
+                    } else {
+                        echo "<td></td>";
+                    }
+                }
+                echo "<td>".( $os->objsort_equip_requis ? "O" : "N" )."</td></tr>";
             }
             echo "</table>";
         }
