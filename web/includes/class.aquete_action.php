@@ -1619,6 +1619,204 @@ class aquete_action
 
     }
 
+
+
+    //==================================================================================================================
+    /**
+     * Rechargement d'objet =>  '[1:delai|1%1],[2:perso|1%0],[3:type_objet|1%0],[4:objet_generique|1%0],[5:valeur|1%1],[6:valeur|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function recharger_objet(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        // Vérification d'usage
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_objet', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'objet_generique', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'valeur')) return false ;                             // Nombre d'objet a reparer au max
+        $tarif = $p5->aqelem_param_num_1;
+
+        // Recherche du PNJ
+        $req = " select aqelem_cod, quete.perso_cod as pnj from perso
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join 
+                ( 
+                    select aqelem_cod,  perso_cod,ppos_pos_cod as pos_cod
+                    from quetes.aquete_perso 
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='perso'  
+                    join perso_position on ppos_perso_cod=aqelem_misc_cod
+                    join perso on perso_cod=ppos_perso_cod
+                    where aqperso_cod=?
+                ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+        if (!$result = $stmt->fetch(PDO::FETCH_ASSOC)) return false;       // pas sur la case du pnj
+        $pnj = new perso();
+        $pnj->charge($result["pnj"]);
+
+        // Préparation du journal pour indiquer le résultat de l'échange
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage($aqperso->aqperso_cod, $aqperso->aqperso_nb_realisation);
+
+        if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue")
+        {
+            $perso_journal->aqpersoj_texte .= "Vous décidez de ne rien faire recharger!<br>";
+            $perso_journal->stocke();
+            return true; // aucun achat
+        }
+
+
+        // préparer p6 avec la liste des objets rechargeables
+        $req = "select objsort_cod, obj_nom, tobj_libelle, objsort_nom, objsort_nb_utilisation_max, objsort_nb_utilisation
+                      from perso_objets 
+                      join objets on obj_cod=perobj_obj_cod 
+                      join objet_generique on gobj_cod=obj_gobj_cod 
+                      join type_objet on tobj_cod=gobj_tobj_cod 
+                      join objets_sorts on objsort_obj_cod=obj_cod
+                      where perobj_perso_cod=:perso_cod and objsort_nb_utilisation_max is not null and objsort_nb_utilisation > 0 ";
+
+
+        // Filter sur le type de matos pris en charge par le PNJ
+        $liste_p3 = "";
+        foreach ($p3 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p3 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+
+        // Filter sur le matos pris en charge par le PNJ
+        $liste_p4 = "";
+        foreach ($p4 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p4 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+
+        // filter en fonction du type d'objet ou du générique
+        if (($liste_p3 != "") && ($liste_p4 == ""))
+        {
+            $req .= " and gobj_tobj_cod in (".substr($liste_p3, 1).")";
+        }
+        else if (($liste_p3 == "") && ($liste_p4 != ""))
+        {
+            $req .= " and obj_gobj_cod in (".substr($liste_p4, 1).")";
+        }
+        else if (($liste_p3 != "") && ($liste_p4 != ""))
+        {
+            $req .= " and ( gobj_tobj_cod in (".substr($liste_p3, 1).") or obj_gobj_cod in (".substr($liste_p4, 1).") )";
+        }
+        else
+        {
+            $req .= " and false";       // ni objet generique ni type d'objet ? erreur QA
+        }
+
+        $req .= " order by obj_nom";
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
+        if (!$p7 = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez recharger ici...!<br>";
+            $perso_journal->stocke();
+            return true; // aucune réparation
+        }
+
+        if ( count($p7) == 0 )
+        {
+            $perso_journal->aqpersoj_texte .= "   Je ne vois rien que vous pouvez recharger ici..!!<br>";
+            $perso_journal->stocke();
+            return true; // aucun réparation
+        }
+
+        // On attend que le joueur valide son choix
+        if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" || isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
+
+
+        // Il a validé!!!! On vérifie d'abord que le perso à de quoi payer
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        $nbtrocs = 0 ;
+        $trocs_bzf = 0 ;
+        $bourse = $perso->perso_po ;
+
+        // le joueur a valider, on vérifie qu'il a l'argent et les objets nécéssaires (en sa possèsion)
+        foreach ($p7 as $k => $objet)
+        {
+            if (isset($_REQUEST["echange-{$objet["objsort_cod"]}"]))
+            {
+                $nbtrocs ++ ;
+                $trocs_bzf = $trocs_bzf + (($objet["objsort_nb_utilisation"]) * $tarif);
+            }
+        }
+
+        // Erreur la selection du joueur n'est pas valide (manque tune, ou l'objet n'est plus en sa possession)
+        if ($bourse<$trocs_bzf || $nbtrocs==0) return false;
+
+        // Erreur le joueur essaye de réparer plus d'objet qu'autorisé
+        if ($nbtrocs>$p6->aqelem_param_num_1 && $p6->aqelem_param_num_1>0) return false;
+
+
+        //=============================  On réalise la réparation a proprement dit!!! =======================================
+        // On traite d'abord le cas de Bzf
+        if ($trocs_bzf>0)
+        {
+            $texte_evt = '[cible] fait recharger du matos auprès de [attaquant] et lui donne '.$trocs_bzf.' Brouzoufs';
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                      values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                ":texte_evt" => $texte_evt,
+                ":levt_attaquant" => $pnj->perso_cod,
+                ":levt_cible" => $aqperso->aqperso_perso_cod), $stmt);
+            // Supprimer l'objet
+            //
+            $perso->perso_po = $perso->perso_po - $trocs_bzf ;
+            $perso->stocke();       // Mise à jour de la bourse
+        }
+
+        // Il faut maintenant réparer les objets du joueur
+        foreach ($p7 as $k => $objet)
+        {
+            if (isset($_REQUEST["echange-{$objet["objsort_cod"]}"]))
+            {
+                $objsort = new objets_sorts();
+                if ($objsort->charge((int)$objet["objsort_cod"]))
+                {
+                    $obj = new objets();
+                    if ($obj->charge($objsort->objsort_obj_cod))
+                    {
+                        $texte_evt = '[cible] fait recharger  <em>(' . $obj->obj_cod . ' / ' . $objsort->objsort_nom . ' / ' . $obj->get_type_libelle() . ' / ' . $obj->obj_nom . ')</em>' ;
+                        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                                values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                        $stmt2 = $pdo->prepare($req);
+                        $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                            ":texte_evt" => $texte_evt,
+                            ":levt_attaquant" => $pnj->perso_cod,
+                            ":levt_cible" => $aqperso->aqperso_perso_cod,
+                            ":levt_parametres" => "[objsort_cod]=" . $objsort->objsort_cod), $stmt2);
+                        // recharger l'objet
+                        $objsort->objsort_nb_utilisation = 0 ;
+                        $objsort->stocke();        // On sauvegarde l'objet !
+                    }
+                }
+            }
+        }
+
+
+        $perso_journal->aqpersoj_texte .= "    Vous réalisez les rechargements suivantes: ".html_entity_decode($_REQUEST["troc-phrase"])."<br>";
+        $perso_journal->stocke();
+        return true; // aucun achat
+
+    }
+
     //==================================================================================================================
     /**
      * Distribution en PX PO => '[1:texte|1%1|Titre]'

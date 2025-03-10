@@ -1241,6 +1241,207 @@ class aquete_etape
 
 
     /**
+     * Fonction pour mettre en forme le texte d'une étape du type recharger_objet: '[[1:delai|1%1],[2:perso|1%0],[3:type_objet|1%0],[4:objet_generique|1%0],[5:valeur|1%1]'
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_recharger_objet_form(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+        $form = "" ;
+
+        $etape_modele = $aqperso->get_etape_modele();
+
+        // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
+        if ( ! $aqperso->action->move_perso($aqperso) )
+        {
+            return "Pour faire un rechargement d'objet un objet, rendez-vous en sur un lieu proposant ce service." ;
+        }
+
+        // si le perso souhaite ne rien faire!
+        if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue") return "Vous avez décidé de ne rien recharger.";
+
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'type_objet', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'objet_generique', 0)) return false ;                             // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'valeur')) return false ;                             // Nombre d'objet a reparer au max
+        $tarif = $p5->aqelem_param_num_1;
+
+        // préparer p6 avec la liste des objets rechargeables
+        $req = "select objsort_cod, obj_nom, tobj_libelle, objsort_nom, objsort_nb_utilisation_max, objsort_nb_utilisation
+                      from perso_objets 
+                      join objets on obj_cod=perobj_obj_cod 
+                      join objet_generique on gobj_cod=obj_gobj_cod 
+                      join type_objet on tobj_cod=gobj_tobj_cod 
+                      join objets_sorts on objsort_obj_cod=obj_cod
+                      where perobj_perso_cod=:perso_cod and objsort_nb_utilisation_max is not null and objsort_nb_utilisation > 0 ";
+
+        // Filter sur le type de matos pris en charge par le PNJ
+        $liste_p3 = "";
+        foreach ($p3 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p3 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+        // Filter sur le matos pris en charge par le PNJ
+        $liste_p4 = "";
+        foreach ($p4 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $liste_p4 .= ",".$elem->aqelem_misc_cod ;
+            }
+        }
+
+        // filter en fonction du type d'objet ou du générique
+        if (($liste_p3 != "") && ($liste_p4 == ""))
+        {
+            $req .= " and gobj_tobj_cod in (".substr($liste_p3, 1).")";
+        }
+        else if (($liste_p3 == "") && ($liste_p4 != ""))
+        {
+            $req .= " and obj_gobj_cod in (".substr($liste_p4, 1).")";
+        }
+        else if (($liste_p3 != "") && ($liste_p4 != ""))
+        {
+            $req .= " and ( gobj_tobj_cod in (".substr($liste_p3, 1).") or obj_gobj_cod in (".substr($liste_p4, 1).") )";
+        }
+        else
+        {
+            $req .= " and false";       // ni objet generique ni type d'objet ? erreur QA
+        }
+
+        $req .= "order by obj_nom";
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
+        if (!$p7 = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return "Je ne vois rien que vous pouvez recharger ici!!!" ;
+        }
+
+        if ( count($p7) == 0 )
+        {
+            return "Je ne vois rien que vous pouvez recharger ici." ;
+        }
+
+        // charger le perso du joueru
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+
+        $faire_reparation = false ;
+        $nbtrocs = 0 ;
+        $trocs_bzf = 0 ;
+        $trocs_matos = "" ;
+        $selected_item = "" ;
+        $bourse = $perso->perso_po ;
+        if (isset($_REQUEST["dialogue-echanger"]))
+        {
+            // le joueur a valider, on vérifie qu'il a les objets nécéssaires
+            foreach ($p7 as $k => $objet)
+            {
+                if (isset($_REQUEST["echange-{$objet["objsort_cod"]}"]))
+                {
+                    $nbtrocs ++ ;
+                    $trocs_bzf = $trocs_bzf + (($objet["objsort_nb_utilisation"]) * $tarif);
+                    $trocs_matos .= "<b>" . $objet["objsort_nom"] . "</b> sur <b>" . $objet["obj_nom"] . '</b> ( <i>' .  $objet["tobj_libelle"] . " </i>), ";
+                    $bourse = $bourse - (($objet["objsort_nb_utilisation"]) * $tarif);
+                    $selected_item.='<input type="hidden" name="echange-'.$objet["objsort_cod"].'" value="'.$_REQUEST["echange-{$objet["objsort_cod"]}"].'">';
+                }
+            }
+
+            if ($bourse<0)
+            {
+                $form .= "Vous n'avez <strong>les brouzoufs</strong> nécessaires pour ses recharges, veuillez ré-essayer:<br><br>";
+            }
+            else if ($nbtrocs == 0)
+            {
+                $form .= "Vous n'avez rien sélectionné, veuillez ré-essayer:<br><br>";
+            }
+            else if ($nbtrocs>$p6->aqelem_param_num_1 && $p6->aqelem_param_num_1>0)
+            {
+                $form .= "Vous n'avez le droit qu'à <strong>{$p6->aqelem_param_num_1} recharge(s)</strong>, vous tenter d'en faire <strong>{$nbtrocs}</strong>, veuillez ré-essayer:<br><br>";
+            }
+            else
+            {
+                $faire_reparation = true ;
+            }
+        }
+
+        // panneau de transaction
+        if (!$faire_reparation || isset($_REQUEST["cancel"]))
+        {
+            // header de la forme
+            $form .= '<form method="post" action="quete_auto.php">
+            <input type="hidden" name="methode" value="dialogue">
+            <input type="hidden" name="dialogue-echanger" value="dialogue">
+            <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
+            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">&nbsp;</td><td style="min-width:400px; font-weight: bold">Objet</td><td style="min-width:400px; font-weight: bold">Sort à recharger</td><td style="min-width:400px; font-weight: bold">Prix du rechragement</td></tr>';
+
+            foreach ($p7 as $k => $objet)
+            {
+                // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
+                $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
+                              <td style="border-top: inherit;"><input name="echange-' . $objet["objsort_cod"] . '" type="checkbox" style="text-align: center;"></td>
+                              <td style="border-top: inherit;">&nbsp;' . $objet["obj_nom"] . ' ( <i>' .  $objet["tobj_libelle"] . '</i> )</td>
+                              <td style="border-top: inherit;">&nbsp;' .  $objet["objsort_nom"] . ' ( <i>' .  ((int)($objet["objsort_nb_utilisation_max"] - $objet["objsort_nb_utilisation"])) . ' / ' . $objet["objsort_nb_utilisation_max"]. '</i> )</td>
+                              <td style="border-top: inherit;">&nbsp;' . (($objet["objsort_nb_utilisation"])* $tarif) . ' Bzf</td>
+                        </tr>';
+            }
+            // footer
+            $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider les rechargements">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Ne rien recharger"></form>' ;
+            $form .= '<br><br>Vous disposez de : <strong>'.$perso->perso_po.' Bzf</strong><br>';
+            $form .= '<u><strong>ATTENTION</strong></u>:<br>';
+            if ($p6->aqelem_param_num_1>0)
+            {
+                $form .= ' * Vous ne pouvez choisir que <strong>'.$p6->aqelem_param_num_1.'</strong> ligne(s) de rechargement(s) au maximum.<br>';
+            }
+            $form .= ' * Vous quitterez cette étape en Validant ou Abandonnant cet réparation et ne pourrez y revenir que si la quête le stipule.';
+        }
+        else
+        {
+
+            // Bilan de la transaction
+            $troc_phrase = "" ;
+            if ( $_REQUEST["dialogue-echanger"] == "dialogue-validation" )
+            {
+                $form.= "Vous recharger les sorts suivants:<br> " ;
+            }
+            else
+            {
+                $form.= "Vous souhaitez recharger les sorts suivants ";
+            }
+
+            $troc_phrase .= $trocs_matos ;
+            if ($trocs_bzf>0) $troc_phrase.= " pour {$trocs_bzf} Bzf";
+
+            $form.=$troc_phrase."<br>" ;
+
+            if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" )
+            {
+                // proposer une validation
+                $form .= '<form method="post" action="quete_auto.php">
+                <input type="hidden" name="methode" value="dialogue">
+                <input type="hidden" name="dialogue-echanger" value="dialogue-validation">
+                <input type="hidden" name="troc-phrase" value="'.htmlentities($troc_phrase).'">
+                <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">                
+                <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">'.$selected_item;
+                $form.= '<input class="test" type="submit" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;<input style="text-align: center;" class="test" type="submit" name="cancel" value="Revoir la liste"></form>' ;
+                $form .= '<br><strong>RAPPEL</strong>: Vous quitterez cette étape en Validant cet échange et ne pourrez y revenir que si la quête le stipule.';
+            }
+
+        }
+
+        return $form ;
+    }
+
+
+    /**
      * Retourne en texte de l'état d'un objet par son %
      */
     function get_etat($parm)

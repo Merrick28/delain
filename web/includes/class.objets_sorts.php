@@ -102,7 +102,7 @@ class objets_sorts
                 ":objsort_malchance" => $this->objsort_malchance,
                 ":objsort_nb_utilisation_max" => $this->objsort_nb_utilisation_max,
                 ":objsort_nb_utilisation" => $this->objsort_nb_utilisation,
-                ":objsort_equip_requis" => $this->objsort_equip_requis,
+                ":objsort_equip_requis" => ($this->objsort_equip_requis && strtolower($this->objsort_equip_requis)!="false") ? "true" : "false" ,
                 ":objsort_parent_cod" => $this->objsort_parent_cod,
             ),$stmt);
 
@@ -135,7 +135,7 @@ class objets_sorts
                 ":objsort_malchance" => $this->objsort_malchance,
                 ":objsort_nb_utilisation_max" => $this->objsort_nb_utilisation_max,
                 ":objsort_nb_utilisation" => $this->objsort_nb_utilisation,
-                ":objsort_equip_requis" => $this->objsort_equip_requis,
+                ":objsort_equip_requis" => ($this->objsort_equip_requis && strtolower($this->objsort_equip_requis)!="false") ? "true" : "false" ,
                 ":objsort_parent_cod" => $this->objsort_parent_cod,
             ),$stmt);
         }
