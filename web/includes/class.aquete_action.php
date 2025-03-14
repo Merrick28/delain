@@ -1782,7 +1782,7 @@ class aquete_action
             $perso->stocke();       // Mise à jour de la bourse
         }
 
-        // Il faut maintenant réparer les objets du joueur
+        // Il faut maintenant recharger les objets du joueur
         foreach ($p7 as $k => $objet)
         {
             if (isset($_REQUEST["echange-{$objet["objsort_cod"]}"]))
