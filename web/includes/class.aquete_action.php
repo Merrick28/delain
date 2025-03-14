@@ -1764,7 +1764,7 @@ class aquete_action
         if ($nbtrocs>$p6->aqelem_param_num_1 && $p6->aqelem_param_num_1>0) return false;
 
 
-        //=============================  On réalise la réparation a proprement dit!!! =======================================
+        //=============================  On réalise le rechargement a proprement dit!!! =======================================
         // On traite d'abord le cas de Bzf
         if ($trocs_bzf>0)
         {
