@@ -47,7 +47,8 @@ $options_twig = array(
     'WORK_YEAR'        => $workYear,
     'TOTAL'            => $total,
     'DATE_MAJ'         => $date_maj,
-    'COMPTE'           => $compte
+    'COMPTE'           => $compte,
+    'TOTAL_FINANCES'    => $total,
 );
 echo $template->render(array_merge($options_twig_defaut,$options_twig));
 
