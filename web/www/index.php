@@ -48,7 +48,7 @@ $finances = new finances;
 $workDate  = explode('-', $_REQUEST['change_date']);
 $workYear  = date('Y');
 $workMonth = date('m');
-$total           = $finances->getTotalByDate($workMonth, $workYear);
+$total     = $finances->getTotalByDate($workMonth, $workYear);
 
 /** @var Twig_Loader_Filesystem $twig */
 $template     = $twig->load('index.twig');
