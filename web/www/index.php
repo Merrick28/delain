@@ -61,7 +61,7 @@ $options_twig = array(
     'START_NEWS'        => $start_news,
     'NB_NEWS'           => $tabNews->numberNews,
     'PUB'               => $pub,
-    'TOTAL_FINANCES'    => $total
+    'TOTAL_FINANCES'    => $total,
 
 
 );
