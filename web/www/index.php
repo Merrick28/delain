@@ -42,6 +42,14 @@ if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
 
+/* Finances */
+
+$finances = new finances;
+$workDate  = explode('-', $_REQUEST['change_date']);
+$workYear  = date('Y');
+$workMonth = date('m');
+$total           = $finances->getTotalByDate($workMonth, $workYear);
+
 /** @var Twig_Loader_Filesystem $twig */
 $template     = $twig->load('index.twig');
 $options_twig = array(
@@ -54,6 +62,7 @@ $options_twig = array(
     'START_NEWS'        => $start_news,
     'NB_NEWS'           => $tabNews->numberNews,
     'PUB'               => $pub,
+    'TOTAL_FINANCES'    => $total
 
 
 );
