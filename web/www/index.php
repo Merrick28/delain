@@ -45,7 +45,6 @@ $pub = choix_pub_index();
 /* Finances */
 
 $finances = new finances;
-$workDate  = explode('-', $_REQUEST['change_date']);
 $workYear  = date('Y');
 $workMonth = date('m');
 $total     = $finances->getTotalByDate($workMonth, $workYear);
