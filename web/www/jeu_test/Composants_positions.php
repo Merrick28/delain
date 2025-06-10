@@ -92,7 +92,7 @@ switch ($methode)
         $nbs          = 1;
         foreach ($allgobj as $result)
         {
-            $s_cod        = $result['gobj_cod'];
+            $s_cod        = $result->gobj_cod;
             $contenu_page .= '<TD>
 														<INPUT type="checkbox" class="vide" name="composant[' . $result->gobj_cod . ']" value="' . $result->gobj_cod . '" > ' . $result->gobj_nom;
             /*$contenu_page .= '<input type="hidden" name="" value="'. $result['gobj_cod'] .'">';*/
