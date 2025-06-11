@@ -116,7 +116,7 @@ if ($erreur == 0)
 		where pge_perso_cod = $perso_cod	
 			and pge_lieu_cod = $lieu ";
     $stmt = $pdo->query($req);
-    if ($stmt->rowCount() == 0)
+    if (!$stmt || $stmt->rowCount() == 0)
     {
         $req  = "insert into perso_grand_escalier (pge_perso_cod,pge_lieu_cod) values ($perso_cod,$lieu) ";
         $stmt = $pdo->query($req);
