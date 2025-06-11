@@ -94,9 +94,14 @@ if ($erreur == 0)
                 $nom         = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
                 $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
 
-                // Récupération lieu_url
-                $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-                $url     = $pdo->get_value($req_url, 'tlieu_url');
+                // Récupération lieu_url (trap code spécial pour le grand escalier descendant)
+                if ($tlieu_cod == -16){
+                    $tlieu_cod = 16 ;
+                    $url = 'grand_escalier_n.php' ;
+                } else {
+                    $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
+                    $url     = $pdo->get_value($req_url, 'tlieu_url');
+                }
 
                 if ($tlieu_cod == 29 || $tlieu_cod == 30)
                 {
@@ -126,7 +131,7 @@ if ($erreur == 0)
                 $req  = "select init_automap_pos(" . $lieu_pos_cod . ")";
                 $stmt = $pdo->query($req);
 
-                $req      = "select tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
+                $req      = "select case when tlieu_cod=16 and tlieu_url='grand_escalier_n.php' then tlieu_libelle||' (descendant)' when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
                 $stmt     = $pdo->query($req);
                 $result   = $stmt->fetch();
                 $type_nom = $result['tlieu_libelle'];
@@ -190,8 +195,13 @@ if ($erreur == 0)
                 $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
 
                 // Récupération lieu_url
-                $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-                $url     = $pdo->get_value($req_url, 'tlieu_url');
+                if ($tlieu_cod == -16) {
+                    $tlieu_cod = 16 ;
+                    $url = 'grand_escalier_n.php' ;
+                } else {
+                    $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
+                    $url     = $pdo->get_value($req_url, 'tlieu_url');
+                }
 
                 if ($tlieu_cod == 29 || $tlieu_cod == 30)
                 {
@@ -221,7 +231,7 @@ if ($erreur == 0)
                 }
 
 
-                $req      = "select tlieu_libelle from lieu_type where tlieu_cod = " . pg_escape_string($tlieu_cod);
+                $req      = "select case when tlieu_cod=16 and tlieu_url='grand_escalier_n.php' then tlieu_libelle||' (descendant)' when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle from lieu_type where tlieu_cod = " . pg_escape_string($tlieu_cod);
                 $stmt     = $pdo->query($req);
                 $result   = $stmt->fetch();
                 $type_nom = $result['tlieu_libelle'];
@@ -276,6 +286,9 @@ if ($erreur == 0)
             $refuge      = $result['lieu_refuge'];
             $mobile      = $result['lieu_mobile'];
             $cout_pa     = $result['lieu_prelev'];
+            $lieu_url     = $result['lieu_url'];
+
+            //die($lieu_url);
             ?>
             <p>Modifier le lieu sélectionné (<?php echo $result['lieu_nom']; ?>)</p>
             <div class="tableau2">
@@ -284,9 +297,11 @@ if ($erreur == 0)
                     <input type="hidden" name="lieu" value="<?php echo $lieu ?>">
                     <input type="hidden" name="pos_etage" value="<?php echo $pos_etage ?>">
                     Type : <select name="tlieu_cod">
-                        <?php
-                        $req = "select tlieu_cod, tlieu_libelle from lieu_type order by tlieu_libelle desc ";
-                        echo $html->select_from_query($req, 'tlieu_cod', 'tlieu_libelle', $result['lieu_tlieu_cod']);
+                        <?php # ajouter un code d'escalier  virtuel (-16) pour le grand escalier descendant
+                        $req = "select tlieu_cod, case when tlieu_cod=16 then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle from lieu_type 
+                                      union select -16 as tlieu_cod, 'Grand escalier (descendant)' as tlieu_libelle
+                                      order by tlieu_libelle desc ";
+                        echo $html->select_from_query($req, 'tlieu_cod', 'tlieu_libelle', ($lieu_url == 'grand_escalier_n.php' ? -16 : $result['lieu_tlieu_cod']));
                         ?>
                     </select><br>
                     Nom : <input type="text" name="nom" value="<?php echo $result['lieu_nom']; ?>"><br/>
@@ -375,8 +390,10 @@ if ($erreur == 0)
                     <input type="hidden" name="methode" value="creer_lieu">
                     <input type="hidden" name="pos_etage" value="<?php echo $pos_etage ?>">
                     Type : <select name="tlieu_cod">
-                        <?php
-                        $req = "select tlieu_cod, tlieu_libelle from lieu_type order by tlieu_libelle desc ";
+                        <?php #tlieu_cod=16 = escalier montant et descandant on créer virtuellement les 2 entrées (-16 escalier descandant)
+                        $req = "select tlieu_cod , case when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle from lieu_type
+                                   union select -16 as tlieu_cod, 'Grand escalier (descendant)' as tlieu_libelle
+                                   order by tlieu_libelle desc ";
                         echo $html->select_from_query($req, 'tlieu_cod', 'tlieu_libelle');
                         ?>
                     </select><br>
@@ -435,15 +452,19 @@ if ($erreur == 0)
            }
        </script>
        <table>
-       <?php 		$req_murs = "select lieu_cod, tlieu_libelle, lieu_nom, p.pos_x, p.pos_y, p.pos_etage, dest.pos_x as dest_x, dest.pos_y as dest_y, coalesce(etage_libelle, '') as etage_dest ".
-               "from lieu
-               inner join lieu_position on lpos_lieu_cod = lieu_cod
-               inner join positions p on p.pos_cod = lpos_pos_cod
-               inner join lieu_type on tlieu_cod = lieu_tlieu_cod
-               left outer join positions dest on dest.pos_cod = lieu_dest
-               left outer join etage on etage_numero = dest.pos_etage ".
-               "where p.pos_etage = $pos_etage ".
-               "order by tlieu_libelle, lieu_nom";
+       <?php 		$req_murs = "select lieu_cod, 
+                                    case when tlieu_cod=16 and lieu_url='grand_escalier_n.php' then tlieu_libelle||' (descendant)' when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle, 
+                                    lieu_nom, 
+                                    p.pos_x, p.pos_y, p.pos_etage, dest.pos_x as dest_x, dest.pos_y as dest_y, 
+                                    coalesce(etage_libelle, '') as etage_dest 
+                                        from lieu
+                                        inner join lieu_position on lpos_lieu_cod = lieu_cod
+                                        inner join positions p on p.pos_cod = lpos_pos_cod
+                                        inner join lieu_type on tlieu_cod = lieu_tlieu_cod
+                                        left outer join positions dest on dest.pos_cod = lieu_dest
+                                        left outer join etage on etage_numero = dest.pos_etage 
+                                    where p.pos_etage = $pos_etage 
+                                    order by tlieu_libelle, lieu_nom ";
            $stmt = $pdo->query($req_murs);
            while($result = $stmt->fetch())
            {
