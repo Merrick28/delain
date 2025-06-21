@@ -61,7 +61,7 @@ $compte->compt_actif = 'N';
 $compte->compt_dcreat = date('Y-m-d H:i:s');
 $compte->compt_acc_charte = 'O';
 $compte->compt_type_quatrieme = 2;
-$compte->compt_passwd_hash = crypt($pass1);
+$compte->compt_passwd_hash = crypt($pass1, sha1(microtime(true)));
 $compte->stocke(true);
 
 

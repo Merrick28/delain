@@ -21,7 +21,7 @@ if ($compte->compt_validation != $_POST['token'])
 // on efface le password "normal", au cas où
 $compte->compt_password = '';
 // on met le nouveau
-$compte->compt_passwd_hash = crypt($nouveau1);
+$compte->compt_passwd_hash = crypt($nouveau1, sha1(microtime(true)));
 // on enregistre
 $compte->stocke();
 
