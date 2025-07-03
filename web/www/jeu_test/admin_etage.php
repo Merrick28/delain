@@ -30,6 +30,7 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<a target='_blank' href='admin_meca_etage.php?admin_etage={$admin_etage}'>Gestion des Mécanismes d'étage</a><br />
 	<a target='_blank' href='admin_ea_etage.php?admin_etage={$admin_etage}'>Gestion des EA d'étage</a><br />
 	<a target='_blank' href='admin_quete_auto_edit.php?pos_etage={$admin_etage}'>Gestion des QA d'étage</a><br />
+	<a href='modif_etage3quinquies.php?admin_etage={$admin_etage}'>Nettoyer un étage</a><br />
 	<a href='modif_etage3quater.php'>Dupliquer/Supprimer un étage</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td>
 	</tr></table>";
