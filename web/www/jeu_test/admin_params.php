@@ -30,6 +30,11 @@ if ($erreur == 0)
 
     // Choix de l’onglet
     $lesMethodes = array(
+        'compteur' => array(
+            'cpt_qa_add',
+            'cpt_qa_upd',
+            'cpt_qa_del'
+        ),
         'messagerie' => array(
             'mess_add',
             'mess_del'
@@ -58,6 +63,7 @@ if ($erreur == 0)
     $onglet = (in_array($methode, $lesMethodes['globaux'])) ? 'globaux' : $onglet;
     $onglet = (in_array($methode, $lesMethodes['renommee'])) ? 'renommee' : $onglet;
     $onglet = (in_array($methode, $lesMethodes['messagerie'])) ? 'messagerie' : $onglet;
+    $onglet = (in_array($methode, $lesMethodes['compteur'])) ? 'compteur' : $onglet;
 
     if ($onglet == 'aucun' && isset($_GET['onglet']))
         $onglet = $_GET['onglet'];
@@ -78,12 +84,18 @@ if ($erreur == 0)
             $page_include     = 'admin_params.messagerie.php';
             $style_messagerie = 'style="font-weight:bold;"';
             break;
+
+        case 'compteur':   // Modifs de renommées
+            $page_include     = 'admin_params.compteur.php';
+            $style_compteur = 'style="font-weight:bold;"';
+            break;
     }
 
     echo "<h1><strong><big>Gestion des paramètres</big></strong></h1><div>
 			<a href='?onglet=globaux' $style_glob>Paramètres globaux</a>
 			 - <a href='?onglet=renommee' $style_renom>Renommées / karma</a>
-			 - <a href='?onglet=messagerie' $style_messagerie>Messagerie</a></div></div><br />";
+			 - <a href='?onglet=messagerie' $style_messagerie>Messagerie</a>
+			 - <a href='?onglet=compteur' $style_compteur>Compteurs</a></div></div><br />";
 
     if ($page_include != '')
         include_once $page_include;
