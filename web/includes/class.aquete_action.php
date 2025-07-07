@@ -64,6 +64,26 @@ class aquete_action
         return trim(strtolower($s)) ;
     }
 
+    /**
+     * Fonction qui permet d'évaluer une formule arithmétique ou de comparaison
+     * @param string $formule
+     * @return bool|mixed
+     *
+     * // Exemple d'utilisation :
+     * $resultat = evaluer_formule('5 + 3 * 2 >= 6 + 5');
+     * echo $resultat; // Affichera 1 (vrai)
+     */
+    function evaluer_formule($formule) {
+        // Autoriser chiffres, opérateurs arithmétiques, comparaisons, parenthèses et espaces
+        if (!preg_match('#^[0-9+\-*/().\s<>=!]+$#', $formule)) {
+            return false;
+        }
+        // Remplacer "=" seul par "==", mais laisser "==", "<=", ">=", "!=" intacts
+        $formule = preg_replace('/(?<![<>=!])=(?![=])/', '==', $formule);
+        return eval('return (' . $formule . ');');
+    }
+
+
     //==================================================================================================================
     private function injection_journal($aqperso, $texte_lancer)
     {
@@ -974,6 +994,43 @@ class aquete_action
 
         // les conditions sont là !!!!
         return $p4->aqelem_misc_cod ;
+    }
+
+    //==================================================================================================================
+    /**
+     * saut suviant etat d'un ou plusieur compteur =>  '[1:compteur|0%0],[2:texte|1%1],[3:etape|1%1],[4:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_compteur(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "compteur", 0)) return false ;                 // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "texte")) return false ;              // Problème lecture passage à l'etape d'erreur
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape")) return false ;              // Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape") ) return false  ;              // Problème lecture passage à l'etape suivante
+
+        $formule = strtolower($p2->aqelem_param_txt_1) ; // Formule à appliquer pour le compteur
+
+        // remplacer dans la formule les valeur de compteur
+        foreach ($p1 as $e => $elem)
+        {
+            $cptval = new compteur_valeur();
+            if ( !$cptval->chargeBy_perso_compteur($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod)){
+                return false;   // Problème lecture du compteur
+            };
+
+            $x=($e+1); // on commence à l'index 1 pour les n° de compteur
+            $formule = str_replace("[#compteur.$x]", $cptval->comptval_valeur, $formule );
+        }
+
+        if ( !$this->evaluer_formule($formule) ) {
+            // les conditions ne sont là !!!!
+            return $p3->aqelem_misc_cod ;   // on sort sur l'étape d'erreur
+        }
+
+        // les conditions sont là !!!!
+        return $p4->aqelem_misc_cod ;  // on sort sur l'étape succes
     }
 
 
