@@ -1292,6 +1292,12 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante (même si le mecanisme n'a pas été déclenché)
                     break;
 
+                case "#COMPTEUR #MODIFIER":
+                    // déclenchement d'un mecanisme d'étage, .
+                    $this->action->compteur_modifier($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même si le compteur n'a pas été modif)
+                    break;
+
                 case "#QUETE #DESACTIVATION":
                     // déclenchement d'un mecanisme d'étage, .
                     $this->action->quete_desactivation($this);

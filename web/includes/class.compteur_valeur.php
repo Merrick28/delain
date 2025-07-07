@@ -89,6 +89,50 @@ class compteur_valeur
             ),$stmt);
         }
     }
+
+    /**
+     * recehrche le compteur spécifié pour le perso, le crée s'il n'existe pas
+     *  int $perso_cod le perso
+     *  int $compteur_cod le compteur
+     *
+     * Nota si le compteur n'est pas de type individuel, on retourne (en le creant le cas échéant) la valeur globale
+     */
+    function chargeBy_perso_compteur($perso_cod, $compteur_cod)
+    {
+        $pdo = new bddpdo;
+
+        $cpt = new compteur();
+        if (!$cpt->charge($compteur_cod))
+        {
+            return false; // compteur inexistant
+        }
+
+        // préparation de la requête
+        if ($cpt->compteur_type == 0) {
+            $req = "select comptval_cod from compteur_valeur where comptval_perso_cod is null and comptval_compteur_cod = ?";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($compteur_cod),$stmt);
+        } else {
+            $req = "select comptval_cod from compteur_valeur where comptval_perso_cod = ? and comptval_compteur_cod = ?";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($perso_cod, $compteur_cod),$stmt);
+        }
+
+        // on cherche le compteur
+        if($result = $stmt->fetch())
+        {
+            return $this->charge($result['comptval_cod']);
+        }
+
+        // compteur non trouvé, on le crée
+        $this->comptval_compteur_cod = $compteur_cod;
+        $this->comptval_perso_cod = $cpt->compteur_type == 0 ? null : $perso_cod; // si c'est un compteur global, on met perso_cod à null
+        $this->comptval_valeur = $cpt->compteur_init; // valeur initiale
+        $this->stocke(true); // on le stocke
+
+        return true; // on retourne le compteur créé
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
