@@ -64,6 +64,26 @@ class aquete_action
         return trim(strtolower($s)) ;
     }
 
+    /**
+     * Fonction qui permet d'évaluer une formule arithmétique ou de comparaison
+     * @param string $formule
+     * @return bool|mixed
+     *
+     * // Exemple d'utilisation :
+     * $resultat = evaluer_formule('5 + 3 * 2 >= 6 + 5');
+     * echo $resultat; // Affichera 1 (vrai)
+     */
+    function evaluer_formule($formule) {
+        // Autoriser chiffres, opérateurs arithmétiques, comparaisons, parenthèses et espaces
+        if (!preg_match('#^[0-9+\-*/().\s<>=!]+$#', $formule)) {
+            return false;
+        }
+        // Remplacer "=" seul par "==", mais laisser "==", "<=", ">=", "!=" intacts
+        $formule = preg_replace('/(?<![<>=!])=(?![=])/', '==', $formule);
+        return eval('return (' . $formule . ');');
+    }
+
+
     //==================================================================================================================
     private function injection_journal($aqperso, $texte_lancer)
     {
@@ -974,6 +994,43 @@ class aquete_action
 
         // les conditions sont là !!!!
         return $p4->aqelem_misc_cod ;
+    }
+
+    //==================================================================================================================
+    /**
+     * saut suviant etat d'un ou plusieur compteur =>  '[1:compteur|0%0],[2:texte|1%1],[3:etape|1%1],[4:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_compteur(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "compteur", 0)) return false ;                 // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "texte")) return false ;              // Problème lecture passage à l'etape d'erreur
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape")) return false ;              // Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape") ) return false  ;              // Problème lecture passage à l'etape suivante
+
+        $formule = strtolower($p2->aqelem_param_txt_1) ; // Formule à appliquer pour le compteur
+
+        // remplacer dans la formule les valeur de compteur
+        foreach ($p1 as $e => $elem)
+        {
+            $cptval = new compteur_valeur();
+            if ( !$cptval->chargeBy_perso_compteur($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod)){
+                return false;   // Problème lecture du compteur
+            };
+
+            $x=($e+1); // on commence à l'index 1 pour les n° de compteur
+            $formule = str_replace("[#compteur.$x]", $cptval->comptval_valeur, $formule );
+        }
+
+        if ( !$this->evaluer_formule($formule) ) {
+            // les conditions ne sont là !!!!
+            return $p3->aqelem_misc_cod ;   // on sort sur l'étape d'erreur
+        }
+
+        // les conditions sont là !!!!
+        return $p4->aqelem_misc_cod ;  // on sort sur l'étape succes
     }
 
 
@@ -3923,7 +3980,55 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * declenchement d'un mécanisme =>  '[1:quete|1%0]',
+     * modifcation de valeur de compteur =>  '[1:compteur|1%0],[2:selecteur|1%1|{0~Assigner},{1~Incrémeter},{-1~Décrémenter}],[3:valeur|1%1]',
+     * p1=meca
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function compteur_modifier(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'compteur', 0)) return false ;
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'selecteur')) return false ;
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;
+
+        foreach ($p1 as $k => $elem)
+        {
+            $compteur_cod = $elem->aqelem_misc_cod;
+            $cptval = new compteur_valeur();
+            if ( ! $cptval->chargeBy_perso_compteur($aqperso->aqperso_perso_cod, $compteur_cod) ) {
+                return false; // le compteur n'existe pas pour ce perso et on a pas réussi à le créer
+            }
+
+            switch ($p2->aqelem_misc_cod)
+            {
+                case 0: // Assigner
+                    $cptval->comptval_valeur = $p3->aqelem_param_num_1;
+                    break;
+
+                case 1: // Incrémenter
+                    $cptval->comptval_valeur += $p3->aqelem_param_num_1;
+                    break;
+
+                case -1: // Décrémenter
+                    $cptval->comptval_valeur -= $p3->aqelem_param_num_1;
+                    break;
+
+                default:
+                    return false;   // erreur de saisie dans le QA
+            }
+
+            $cptval->stocke();
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * désactivation d'une QA =>  '[1:quete|1%0]',
      * p1=quete
      * @param aquete_perso $aqperso
      * @return stdClass

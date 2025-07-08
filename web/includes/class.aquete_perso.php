@@ -1002,6 +1002,24 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+                case "#SAUT #CONDITION #COMPTEUR":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionné par l'état de mécanisme, le saut est conditionel mais est toujours réussie.
+                    $etape_cod =  $this->action->saut_condition_compteur($this);
+                    if ($etape_cod < 0)
+                    {
+                        $this->aqperso_actif = ($etape_cod == -2) ? 'S' : 'E';  // Etape terminée avec Succes ou sur une Echec.
+                        $next_etape_cod = 0;                                   // Fin de quête!
+                    } else if ($etape_cod == 0)
+                    {
+                        $next_etape_cod = 1 * $this->etape->aqetape_etape_cod;     // saut à l'étape suivante comme etape du type TEXTE
+                    } else
+                    {
+                        $next_etape_cod = $etape_cod;
+                    }
+
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
                 case "#SAUT #CONDITION #DETRUIRE #OBJET":
                     // cette etape sert à faire un saut vers une autre, le saut est conditionné par l'état de mécanisme, le saut est conditionel mais est toujours réussie.
                     $etape_cod =  $this->action->saut_condition_detruire_objet($this);
@@ -1290,6 +1308,12 @@ class aquete_perso
                     // déclenchement d'un mecanisme d'étage, .
                     $this->action->meca_declenchement($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si le mecanisme n'a pas été déclenché)
+                    break;
+
+                case "#COMPTEUR #MODIFIER":
+                    // déclenchement d'un mecanisme d'étage, .
+                    $this->action->compteur_modifier($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même si le compteur n'a pas été modif)
                     break;
 
                 case "#QUETE #DESACTIVATION":
