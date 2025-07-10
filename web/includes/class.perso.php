@@ -3178,6 +3178,17 @@ class perso
             {
                 return $this->$field();
             }
+        } else if ((strpos($field, "(") > 0) == (substr($field, -1) == ")"))
+        {
+            //Cas d'une methode avec parametre recup du nom de la methode et faire un tableau de parametres ----
+            $methode = substr($field, 6,  strpos($field, "(" ) - 6 );
+            $params = explode(",", substr($field, strpos($field, "(") + 1, -1));
+
+            //print_r([[$this, $methode], $params]);die();
+            if (method_exists($this, $methode))
+            {
+                return call_user_func_array([$this, $methode], $params);
+            }
         } else
         {
             //Cas d'un propriétée---
@@ -3555,6 +3566,18 @@ class perso
         $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":pos_cod" => $position, ":limite" => $limite), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
+    }
+    /**
+     * retourne la valeur du compteur passé en paramètre pour le perso
+     */
+    public function compteur($compteur_cod)
+    {
+        $cptval = new compteur_valeur();
+        if (!$cptval->chargeBy_perso_compteur($this->perso_cod, $compteur_cod)) {
+            return false ;
+        }
+
+        return $cptval->comptval_valeur;
     }
 
 

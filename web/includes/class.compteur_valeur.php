@@ -108,7 +108,7 @@ class compteur_valeur
         }
 
         // préparation de la requête
-        if ($cpt->compteur_type == 0) {
+        if ($cpt->compteur_type == 0 or $perso_cod == 0 or $perso_cod == null) {
             $req = "select comptval_cod from compteur_valeur where comptval_perso_cod is null and comptval_compteur_cod = ?";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array($compteur_cod),$stmt);

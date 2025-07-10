@@ -1024,13 +1024,13 @@ class aquete_action
             $formule = str_replace("[#compteur.$x]", $cptval->comptval_valeur, $formule );
         }
 
-        if ( !$this->evaluer_formule($formule) ) {
-            // les conditions ne sont là !!!!
-            return $p3->aqelem_misc_cod ;   // on sort sur l'étape d'erreur
+        if ( $this->evaluer_formule($formule) ) {
+            // les conditions réuni !!!!
+            return $p3->aqelem_misc_cod ;   // on sort sur l'étape succes
         }
 
-        // les conditions sont là !!!!
-        return $p4->aqelem_misc_cod ;  // on sort sur l'étape succes
+        // les conditions NE sont PAS là !!!!
+        return $p4->aqelem_misc_cod ;  // on sort sur l'étape d'erreur
     }
 
 
