@@ -190,7 +190,7 @@ $req  = "select pge_lieu_cod,pos_x,pos_y,etage_libelle,lieu_dest
 	and lpos_pos_cod = pos_cod 
 	and etage_numero = pos_etage
 	and pge_lieu_cod not in (2139) 
-	and pos_etage > -5 
+    and lieu_url='grand_escalier_n.php'
 	and lpos_lieu_cod = lieu_cod ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() != 0)
