@@ -16,5 +16,5 @@ union
   select perso_cod, 2 as priorite from perso where perso_type_perso = 1
   and perso_actif = 'O'
   and (perso_dlt < now() or perso_pa >= 4)
-  and perso_quete in ('quete_ratier.php','enchanteur.php','quete_chasseur.php','quete_dispensaire.php','quete_alchimiste.php','quete_groquik.php', 'quete_accompagnateur.php')
+  and perso_quete in ('pnj-sous-ia','quete_ratier.php','enchanteur.php','quete_chasseur.php','quete_dispensaire.php','quete_alchimiste.php','quete_groquik.php', 'quete_accompagnateur.php')
 ) t1 order by priorite, random()

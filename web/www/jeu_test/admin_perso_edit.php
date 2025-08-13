@@ -79,8 +79,10 @@ if ($erreur == 0)
             ,perso_tangible,perso_nb_tour_intangible,perso_enc_max,perso_amelioration_nb_sort,perso_capa_repar,coalesce(perso_nb_amel_repar,0) as perso_nb_amel_repar,perso_nb_receptacle,perso_nb_amel_chance_memo
             ,perso_nb_mort,perso_nb_monstre_tue,perso_nb_joueur_tue,perso_renommee_magie,perso_kharma,perso_renommee, perso_taille
             ,perso_nb_des_degats, perso_val_des_degats, perso_nb_amel_comp, perso_actif, coalesce(perso_prestige, 0) as perso_prestige, perso_pnj, perso_effets_auto
-            ,perso_voie_magique, perso_gmon_cod
-            from perso where perso_cod = " . $_REQUEST['mod_perso_cod'];
+            ,perso_voie_magique, perso_gmon_cod, perso_quete, pia_ia_type            
+            from perso 
+            left join perso_ia on pia_perso_cod=perso_cod
+            where perso_cod = " . $_REQUEST['mod_perso_cod'];
 
         //echo "QUERY = ".$req_perso;
 
@@ -142,6 +144,8 @@ if ($erreur == 0)
         $perso_effets_auto    = $result['perso_effets_auto'];
         $perso_voie_magique   = $result['perso_voie_magique'];
         $perso_gmon_cod       = $result['perso_gmon_cod'];
+        $perso_quete          = $result['perso_quete'];
+        $pia_ia_type          = $result['pia_ia_type'];
 
         $base_generique = "";
         if ($perso_gmon_cod > 0) {
@@ -393,6 +397,26 @@ if ($erreur == 0)
                     <td class="soustitre2"></td>
                     <td class="soustitre2"></td>
                 </tr>
+
+                <tr>
+                    <td class="soustitre2">Quete de PNJ </td>
+                    <td>
+                        <?php
+                            echo create_selectbox("perso_quete", [''=>'','quete_alchimiste.php'=>"Alchimiste",'quete_chasseur.php'=>"Chasseur",'quete_dame_cygne.php'=>"Dame cygne",'quete_dispensaire.php'=>"Dispensaire",'enchanteur.php'=>"Enchanteur",'quete_forgeron.php'=>"Forgeron",'quete_groquik.php'=>"Groquick", 'quete_ratier.php'=>"Ratier", 'pnj-sous-ia'=>"Sans QA Historique"], $perso_quete);
+                        ?>&nbsp <img title="Permet de mettre un pnj sous IA, le perso ne doit pas être un monstre" src="/images/info_16.png">
+                    </td>
+                    <td class="soustitre2">IA de Monstre/PNJ</td>
+                    <td>
+                        <select name="pia_ia_type">
+                            <option value="">Aucune</option>
+                            <?php // LISTE DES VOIES MAGIQUES
+                            $req_vm = "select ia_type,ia_nom from type_ia order by ia_type";
+                            echo $html->select_from_query($req_vm, 'ia_type', 'ia_nom', $pia_ia_type);
+                            ?>
+                        </select></td>
+                </tr>
+
+
                 <TR>
                     <TD colspan="4" align="center"><input type="submit" value="Modifier le personnage"></TD>
                 </TR>
