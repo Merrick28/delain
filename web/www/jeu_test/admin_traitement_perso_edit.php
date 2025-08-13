@@ -83,14 +83,16 @@ switch ($methode)
             "perso_pnj",
             "perso_effets_auto",
             "perso_taille",
-            "perso_voie_magique");
+            "perso_voie_magique",
+            "perso_quete",
+            "pia_ia_type");
         // SELECT POUR LES VALEURS PRECEDENTES
         $req_sel_perso = "select perso_cod,perso_nom";
         foreach ($fields as $i => $value)
         {
             $req_sel_perso = $req_sel_perso . "," . $fields[$i];
         }
-        $req_sel_perso = $req_sel_perso . " from perso where perso_cod = $mod_perso_cod";
+        $req_sel_perso = $req_sel_perso . " from perso left join perso_ia on pia_perso_cod=perso_cod where perso_cod = $mod_perso_cod";
         //echo $req_sel_perso;
         $stmt_perso   = $pdo->query($req_sel_perso);
         $result_perso = $stmt_perso->fetch();
@@ -98,15 +100,13 @@ switch ($methode)
         {
             if (!($_POST[$fields[$i]] == $result_perso[$fields[$i]]))
             {
-                $log = $log . "Modification du champ " . $fields[$i] . " : " . $result_perso[$fields[$i]] . " => "
-                       . $_POST[$fields[$i]] . "\n";
+                $log = $log . "Modification du champ " . $fields[$i] . " : " . $result_perso[$fields[$i]] . " => "   . $_POST[$fields[$i]] . "\n";
             }
         }
         // CAS SPÉCIFIQUE POUR LE NOM
         if ($_POST['mod_perso_nom'] != $result_perso['perso_nom'])
         {
-            $log =
-                $log . "Modification du champ Nom : " . $result_perso['perso_nom'] . " => " . $_POST['mod_perso_nom'] . "\n";
+            $log =  $log . "Modification du champ Nom : " . $result_perso['perso_nom'] . " => " . $_POST['mod_perso_nom'] . "\n";
         }
         if (!isset($mod_perso_nom))
         {
@@ -161,11 +161,41 @@ switch ($methode)
                          . "perso_prestige = $perso_prestige,"
                          . "perso_effets_auto = $perso_effets_auto,"
                          . "perso_taille = $perso_taille,"
-                         . "perso_voie_magique = $perso_voie_magique"
+                         . "perso_voie_magique = $perso_voie_magique,"
+                         . "perso_quete = '$perso_quete'"
                          . " where perso_cod = '$mod_perso_cod'";
 
         //echo $req_upd_perso."<br>";
         $stmt_perso = $pdo->query($req_upd_perso);
+
+        // MAJ de l'IA s'il y a lieu
+        if ($result_perso["pia_ia_type"] != $_POST['pia_ia_type'])
+        {
+            if ($result_perso["pia_ia_type"] != '')
+            {
+                if ( $_POST['pia_ia_type'] > 0 )
+                {
+                    $log .= "Modification de L'IA : " . $_POST['pia_ia_type']  . "\n";
+                    $req_perso_ia = "update perso_ia set pia_ia_type={$_POST['pia_ia_type']} where pia_perso_cod= {$mod_perso_cod} ";
+                    $stmt_perso_ia = $pdo->query($req_perso_ia);
+                }
+                else
+                {
+                    $log .= "Supression de L'IA \n";
+                    $req_perso_ia = "delete from perso_ia where pia_perso_cod= {$mod_perso_cod} ";
+                    $stmt_perso_ia = $pdo->query($req_perso_ia);
+                }
+            }
+            else
+            {
+                if ( $_POST['pia_ia_type'] > 0 )
+                {
+                    $log .= "Insertion de L'IA : " . $_POST['pia_ia_type'] . "\n";
+                    $req_perso_ia = "insert into perso_ia(pia_perso_cod, pia_ia_type) values({$mod_perso_cod}, {$_POST['pia_ia_type']} ) ";
+                    $stmt_perso_ia = $pdo->query($req_perso_ia);
+                }
+            }
+        }
 
         echo "<div class='bordiv'>MAJ du perso<br /><pre>$log</pre></div>";
         writelog($log, 'perso_edit');
