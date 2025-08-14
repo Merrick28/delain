@@ -102,8 +102,10 @@ begin
           end if;
         end loop;
     end if;
+        -- on memo la date et l'endroit de la perte d'objet, ça permettra le raflage
+        update perso set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'kill_perte_objet' , (json_build_object( 'kill_date' , now(), 'kill_pos_cod',  pos_cible )::jsonb))::jsonb) where perso_cod=v_cible ;
 
-    -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
+        -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
 		for ligne_objet in
 			select perobj_cod, perobj_obj_cod, gobj_deposable, obj_nom, obj_poids,
 				case
