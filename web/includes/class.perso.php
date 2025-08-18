@@ -2543,6 +2543,38 @@ class perso
         return false ;
     }
 
+    /**
+     * Retourn vrai si la case ciblé peut-être raflée par le perso
+     * @param $position
+     * @return false|void
+     * @throws Exception
+     */
+    function peut_rafler()
+    {
+        // le perso doit être tangible pour pouvoir rafler
+        if ($this->perso_tangible == 'N') return false;
+
+        $pdo = new bddpdo;
+        $req = "select perso_misc_param as misc_param, ppos_pos_cod as pos_cod from perso join perso_position on ppos_perso_cod=perso_cod where perso_cod = :perso_cod ; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso_cod" => $this->perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        // recupération des paramètres de perte d'objets
+        $misc_param = json_decode($result["misc_param"]);
+        if (!isset($misc_param->kill_perte_objet)) return false;        //pas trouvé le paramère (donc par default pas de raflage possible)
+        $kill_perte_objet = $misc_param->kill_perte_objet ;
+
+        // vérification qu'on est bien sur la case
+        if ($kill_perte_objet->kill_pos_cod != $result["pos_cod"]) return false;
+
+        // vérification qu'il est pas trop tard
+        if (date("Y-m-d h:i:s") > date( "Y-m-d h:i:s", strtotime($kill_perte_objet->kill_date ." +20 DAYS"))) return false;
+
+
+        return true ;       // moins de 20 jours
+    }
+
     public function magasin_identifie($lieu, $objet)
     {
         $pdo    = new bddpdo();

@@ -8,7 +8,6 @@ $methode = get_request_var('methode', 'debut');
 $perso = new perso;
 $perso = $verif_connexion->perso;
 
-
 switch ($methode)
 {
     case "debut":
@@ -41,7 +40,7 @@ switch ($methode)
         </script>
         <form name="ramasser" method="post" action="ramasser.php">
             <table width="100%" cellspacing="2" cellapdding="2">
-                <input type="hidden" name="methode" value="suite">
+                <input type="hidden" id="methode" name="methode" value="suite">
                 <?php
 
                 // On recherche les position et vue du perso
@@ -58,8 +57,12 @@ switch ($methode)
                     <td colspan="3" class="soustitre"><span class="soustitre">Ramasser des objets</span></td>
                 </tr>
                 <tr>
-                    <td colspan="3" class="soustitre2"><input type="submit" class="test"
-                                                              value="Cochez les objets à ramasser." id='boutonH'/></td>
+                    <td colspan="3" class="soustitre2"><input type="submit" class="test"value="Cochez les objets à ramasser." id='boutonH'/>
+                    <?php
+                        if ($perso->peut_rafler())
+                        echo "<b>ou</b> <input type='submit' onclick=\"document.getElementById('methode').value = 'rafler'; \" class='test' value='Rafler au hasard (6PA)' id='boutonRafler'/> <em>&nbsp;&nbsp;(le raflage permet de ramasser aléatoirement 20D4+15 objets)</em>";
+                    ?>
+                    </td>
                 </tr>
                 <?php
 
@@ -195,6 +198,26 @@ switch ($methode)
             }
         }
 
+        break;
+
+        case "rafler":
+            $pa     = $perso->perso_pa;
+            $erreur = 0;
+
+            if ($pa < 6)
+            {
+                echo "<p>Vous n’avez <b>pas assez de PA</b> pour rafler la case !</p>";
+                $erreur = 1;
+            }
+
+            if ($erreur == 0)
+            {
+                echo "<p>Vous rafler la case:</b></p>";
+                $req_ramasser = "select rafle_objets($perso_cod) as resultat";
+                $stmt         = $pdo->query($req_ramasser);
+                $result       = $stmt->fetch();
+                echo $result['resultat'];
+            }
         break;
 }
 $contenu_page = ob_get_contents();
