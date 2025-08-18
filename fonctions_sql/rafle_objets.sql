@@ -46,6 +46,8 @@ code_retour text;
     nb_objet integer;		 -- nb d'objet a ramasser
 begin
 
+    code_retour := '';
+
     /**************************************/
 	/* Etape 1                            */
 	/* vérifier raflage est possible      */
@@ -108,7 +110,7 @@ begin
             -- on regarde le poids
             if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3))	then
                 v_poids_max := v_poids_max * 3;
-                code_retour := '<p>Vous ne pouvez ramasser un objet qui vous fait dépasser '||trim(to_char(v_poids_max,'99999999'))||' d’encombrement.</p>';
+                code_retour := code_retour || '<p>Vous ne pouvez ramasser un objet qui vous fait dépasser '||trim(to_char(v_poids_max,'99999999'))||' d’encombrement.</p>';
                 return code_retour;
             end if;
             v_poids_actu := v_poids_actu + v_poids_objet ; -- mise à jour du poids car on va ramasser cet objet
@@ -129,7 +131,7 @@ begin
             insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible)
                     values (nextval('seq_levt_cod'), 3, now(), 1, personnage, texte_evt, 'O', 'O');
 
-            code_retour := '<p>L’objet « ' || nom_objet || ' » a été ramassé. Il est maintenant dans votre inventaire.</p>';
+            code_retour := code_retour || '<p>L’objet « ' || nom_objet || ' » a été ramassé. Il est maintenant dans votre inventaire.</p>';
 
     end loop;
 

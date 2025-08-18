@@ -7,7 +7,6 @@ $methode = get_request_var('methode', 'debut');
 
 $perso = new perso;
 $perso = $verif_connexion->perso;
-print_r($_REQUEST);
 
 switch ($methode)
 {
@@ -214,6 +213,10 @@ switch ($methode)
             if ($erreur == 0)
             {
                 echo "<p>Vous rafler la case:</b></p>";
+                $req_ramasser = "select rafle_objets($perso_cod) as resultat";
+                $stmt         = $pdo->query($req_ramasser);
+                $result       = $stmt->fetch();
+                echo $result['resultat'];
             }
         break;
 }
