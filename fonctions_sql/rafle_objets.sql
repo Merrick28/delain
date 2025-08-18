@@ -93,9 +93,11 @@ begin
     -- 859: glyphe on ne ramasse pas
     -- 84/85: mimique on en ramasse pas (ne pouvait pas être dans l'inventaire)
     -- on ne rammasse que les objets identifiés
-    for ligne in (select obj_cod, obj_nom, obj_gobj_cod, obj_poids, pobj_cod
+    for ligne in (select obj_cod, obj_nom, obj_gobj_cod, obj_poids, pobj_cod, tobj_libelle
                     from objets
                       inner join objet_position on pobj_obj_cod = obj_cod
+                      inner join objet_generique on gobj_cod = obj_gobj_cod
+                      inner join type_objet on tobj_cod=gobj_tobj_cod
                       left join perso_identifie_objet on pio_perso_cod = personnage and pio_obj_cod = obj_cod
                       where pobj_pos_cod=pos_perso  and obj_gobj_cod not in (859, 84, 85) and pio_cod is null
                       order by random() limit nb_objet )
@@ -106,6 +108,7 @@ begin
             gobj := ligne.obj_gobj_cod ;
             v_poids_objet := ligne.obj_poids ;
             objet_position_cod := ligne.pobj_cod ;
+            tobjet := ligne.tobj_libelle ;
 
             -- on regarde le poids
             if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3))	then
