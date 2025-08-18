@@ -59,13 +59,6 @@ echo "<td><p>" . $nba . "</td>";
 echo "</tr>";
 $total_amel+= $nba;
 
-$nba = $result['perso_amelioration_degats'] ;
-echo "<tr>";
-echo "<td class=\"soustitre2\"><p>Dégats corps à corps : </td>";
-echo "<td><p>" . $nba . "</td>";
-echo "</tr>";
-$total_amel+= $nba;
-
 $nba = $result['perso_amel_deg_dex'] ;
 echo "<tr>";
 echo "<td class=\"soustitre2\"><p>Dégats distance : </td>";
