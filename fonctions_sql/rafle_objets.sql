@@ -1,6 +1,6 @@
 
 --
--- Name: rafle_objets(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: rafle_objets(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
 CREATE OR REPLACE FUNCTION public.rafle_objets(integer) RETURNS text
@@ -28,10 +28,12 @@ CREATE OR REPLACE FUNCTION public.rafle_objets(integer) RETURNS text
 declare
 code_retour text;
 	personnage alias for $1;
+   num_objet integer;
 	pos_perso positions.pos_cod%type;
 	nom_objet objets.obj_nom_generique%type;
 	texte_evt text;
 	tobjet type_objet.tobj_libelle%type;
+   objet_position_cod objet_position.pobj_cod%type;
 	gobj integer;
 	code_monstre integer;
 	code_ia text;
@@ -40,6 +42,8 @@ code_retour text;
 	v_poids_actu numeric;
 	v_poids_objet numeric;
 	v_temp integer;
+    ligne record;                -- Une ligne d’enregistrements
+    nb_objet integer;		 -- nb d'objet a ramasser
 begin
 
     /**************************************/
@@ -82,88 +86,61 @@ begin
 	/* boucle sur les objets à rafler     */
 	/**************************************/
 
-	-- on regarde le poids
-	if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3))	then
-		v_poids_max := v_poids_max * 3;
-		code_retour := '<p>Vous ne pouvez ramasser un objet qui vous fait dépasser '||trim(to_char(v_poids_max,'99999999'))||' d’encombrement.</p>';
-        return code_retour;
-    end if;
+    nb_objet := f_lit_des_roliste('20D4+15');
 
+    -- 859: glyphe on ne ramasse pas
+    -- 84/85: mimique on en ramasse pas (ne pouvait pas être dans l'inventaire)
+    -- on ne rammasse que les objets identifiés
+    for ligne in (select obj_cod, obj_nom, obj_gobj_cod, obj_poids, pobj_cod
+                    from objets
+                      inner join objet_position on pobj_obj_cod = obj_cod
+                      left join perso_identifie_objet on pio_perso_cod = personnage and pio_obj_cod = obj_cod
+                      where pobj_pos_cod=pos_perso  and obj_gobj_cod not in (859, 84, 85) and pio_cod is null
+                      order by random() limit nb_objet )
+      loop
 
+            num_objet := ligne.obj_cod ;
+            nom_objet := ligne.obj_nom ;
+            gobj := ligne.obj_gobj_cod ;
+            v_poids_objet := ligne.obj_poids ;
+            objet_position_cod := ligne.pobj_cod ;
 
-	/********************************/
-	/* Etape 5                    */
-	/* Modif Bleda 30/01/11         */
-	/* Glyphe de résurrection ?     */
-	/********************************/
-	if gobj = 859 then
-        select into v_temp 1 from perso_glyphes
-            where pglyphe_perso_cod = personnage
-                --and pglyphe_resurrection is not NULL
-              and pglyphe_obj_cod = num_objet;
-        if found then
-                    code_retour := '<p>Erreur : vous ne pouvez ramasser votre propre glyphe de résurrection !</p>';
-        return code_retour;
-        end if;
-    end if;
+            -- on regarde le poids
+            if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3))	then
+                v_poids_max := v_poids_max * 3;
+                code_retour := '<p>Vous ne pouvez ramasser un objet qui vous fait dépasser '||trim(to_char(v_poids_max,'99999999'))||' d’encombrement.</p>';
+                return code_retour;
+            end if;
+            v_poids_actu := v_poids_actu + v_poids_objet ; -- mise à jour du poids car on va ramasser cet objet
 
-	/********************************/
-	/* Etape 6                      */
-	/* on valide les changements    */
-	/********************************/
-	-- 6.1 : on supprime le objet_position
-    delete from objet_position where pobj_cod = objet_position_cod;
+            /********************************/
+            /* Etape 6                      */
+            /* on valide les changements    */
+            /********************************/
+            -- 6.1 : on supprime le objet_position
+            delete from objet_position where pobj_cod = objet_position_cod;
 
-    -- 6.2 : on regarde à tout hasard si ce n’est pas une mimique
-    if gobj = 84 then
-            code_monstre := cree_monstre_pos(38, pos_objet);
-            update perso set perso_cible = personnage where perso_cod = code_monstre;
+            -- 6.3 : on rajoute l’objet dans l’inventaire du perso
+            insert into perso_objets (perobj_cod, perobj_perso_cod, perobj_obj_cod, perobj_identifie, perobj_equipe)
+                    values (nextval('seq_perobj_cod'), personnage, num_objet, 'O', 'N');
 
-            code_ia := ia_monstre(code_monstre);
-            code_retour := '<p>Un des objets que vous essayez de ramasser est en fait une mimique, qui vous attaque en se réveillant !</p>';
-            return code_retour;
-    end if;
+            -- 6.5 : on rajoute un événement
+            texte_evt := '[perso_cod1] a ramassé un objet « ' || nom_objet || ' » (' || tobjet || ' ' || to_char(num_objet, '99999999999') || ')';
+            insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible)
+                    values (nextval('seq_levt_cod'), 3, now(), 1, personnage, texte_evt, 'O', 'O');
 
-	if gobj = 85 then
-            code_monstre := cree_monstre_pos(39, pos_objet);
-            update perso set perso_cible = personnage where perso_cod = code_monstre;
+            code_retour := '<p>L’objet « ' || nom_objet || ' » a été ramassé. Il est maintenant dans votre inventaire.</p>';
 
-            code_ia := ia_monstre(code_monstre);
-            code_retour := '<p>n des objets que vous essayez de ramasser est en fait une mimique, qui vous attaque en se réveillant !</p>';
-            return code_retour;
-    end if;
+    end loop;
 
-	-- 6.3 : on rajoute l’objet dans l’inventaire du perso
-	-- 6.3.1 : on regarde si l’objet est identifié
-	if exists (select 1 from perso_identifie_objet
-		where pio_perso_cod = personnage
-		and pio_obj_cod = num_objet)
-	then
-		insert into perso_objets (perobj_cod, perobj_perso_cod, perobj_obj_cod, perobj_identifie, perobj_equipe)
-		values (nextval('seq_perobj_cod'), personnage, num_objet, 'O', 'N');
-    else
-        insert into perso_objets (perobj_cod, perobj_perso_cod, perobj_obj_cod, perobj_identifie, perobj_equipe)
-        values (nextval('seq_perobj_cod'), personnage, num_objet, 'N', 'N');
-    end if;
-
-
-
-    -- 6.5 : on rajoute un événement
-    texte_evt := '[perso_cod1] a ramassé un objet « ' || nom_objet || ' » (' || tobjet || ' ' || to_char(num_objet, '99999999999') || ')';
-    insert into ligne_evt (levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible)
-    values (nextval('seq_levt_cod'), 3, now(), 1, personnage, texte_evt, 'O', 'O');
-
-    code_retour := '<p>L’objet « ' || nom_objet || ' » a été ramassé. Il est maintenant dans votre inventaire.</p>';
-
-                
     return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.rafle_objets(integer, integer) OWNER TO delain;
+ALTER FUNCTION public.rafle_objets(integer) OWNER TO delain;
 
 --
--- Name: FUNCTION rafle_objets(integer, integer); Type: COMMENT; Schema: public; Owner: delain
+-- Name: FUNCTION rafle_objets(integer); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION public.rafle_objets(integer, integer) IS 'Gère le ramassage d’un objet par un perso.';
+COMMENT ON FUNCTION public.rafle_objets(integer) IS 'Gère le raflage d’objet par un perso.';
