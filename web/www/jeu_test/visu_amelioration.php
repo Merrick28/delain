@@ -14,7 +14,7 @@ if ($erreur != 0)
 echo "<p class=\"titre\">Liste des améliorations pour ce perso</p>";
 $req = "select perso_niveau,perso_amelioration_armure,perso_amelioration_degats,perso_amelioration_vue,perso_des_regen,perso_temps_tour as temps_tour, calcul_temps(perso_temps_tour) as aff_temps_tour,perso_amel_deg_dex,";
 $req = $req . "perso_nb_amel_repar,perso_amelioration_nb_sort,perso_nb_receptacle,perso_nb_amel_chance_memo, perso_nb_amel_comp, ";
-$req = $req . "perso_race_cod, perso_for_init, f_carac_base(perso_cod,'FOR') as perso_for, perso_int_init, f_carac_base(perso_cod,'INT') as perso_int, perso_dex_init, f_carac_base(perso_cod,'DEX') perso_dex, perso_con_init, f_carac_base(perso_cod,'CON') perso_con ";
+$req = $req . "perso_race_cod, perso_pv_max, perso_for_init, f_carac_base(perso_cod,'FOR') as perso_for, perso_int_init, f_carac_base(perso_cod,'INT') as perso_int, perso_dex_init, f_carac_base(perso_cod,'DEX') perso_dex, perso_con_init, f_carac_base(perso_cod,'CON') perso_con ";
 $req = $req . "from perso where perso_cod = $perso_cod ";
 $stmt = $pdo->query($req);
 $result = $stmt->fetch();
@@ -46,11 +46,18 @@ echo "</tr>";
 $total_amel+= $nba;
 
 $nba = ((int)($result['perso_con']) - (int)($result['perso_con_init'])) ;
+$pv_max_theorique = (2 * (int)($result['perso_con']) + ((int)$result['perso_niveau'] - 1) * floor(((int)($result['perso_con']) + 12) / 8) );
 echo "<tr>";
 echo "<td class=\"soustitre2\"><p>Constitution : </td>";
-echo "<td><p>" . $nba . " (= {$result['perso_con']} - {$result['perso_con_init']}) </td>";
+echo "<td><p>" . $nba . " (= {$result['perso_con']} - {$result['perso_con_init']})</td>";
 echo "</tr>";
 $total_amel+= $nba;
+
+$pv_max_theorique = (2 * (int)($result['perso_con']) + ((int)$result['perso_niveau'] - 1) * floor(((int)($result['perso_con']) + 12) / 8) );
+echo "<tr>";
+echo "<td class=\"soustitre2\"><p>PV Max : </td>";
+echo "<td><p>{$result['perso_pv_max']} avec PV Max Théorique: $pv_max_theorique </td>";
+echo "</tr>";
 
 $nba = $result['perso_amelioration_degats'] ;
 echo "<tr>";
