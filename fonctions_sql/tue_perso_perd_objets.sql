@@ -43,6 +43,9 @@ begin
 	select into v_or,type_cible perso_po,perso_type_perso from perso where perso_cod = v_cible;
 	select into pos_cible ppos_pos_cod from perso_position where ppos_perso_cod = v_cible;
 
+    -- on memo la date et l'endroit de la perte d'objet, ça permettra le raflage
+    update perso set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'kill_perte_objet' , (json_build_object( 'kill_date' , now(), 'kill_pos_cod',  pos_cible )::jsonb))::jsonb) where perso_cod=v_cible ;
+    
 	-- Mort définitive : on perd tout ce qui est déposable, et tout l’or.
 	if mort_definitive = 1 then
 		for ligne_objet in
@@ -102,8 +105,6 @@ begin
           end if;
         end loop;
     end if;
-        -- on memo la date et l'endroit de la perte d'objet, ça permettra le raflage
-        update perso set perso_misc_param = COALESCE(perso_misc_param::jsonb, '{}'::jsonb) || (json_build_object( 'kill_perte_objet' , (json_build_object( 'kill_date' , now(), 'kill_pos_cod',  pos_cible )::jsonb))::jsonb) where perso_cod=v_cible ;
 
         -- ajout 19-04-2021 - marlyza - Les pochettes cadeaux (leno) ne tombent plus au sol (code 642)
 		for ligne_objet in
