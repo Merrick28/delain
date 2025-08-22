@@ -513,7 +513,7 @@ EffetAuto.Types = [
 	{	nom: 'ea_saut_sur_cible',
 		debut: true,
 		tueur: true,
-		mort: true,
+		mort: false,
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
@@ -535,7 +535,7 @@ EffetAuto.Types = [
 	{	nom: 'ea_saut_sur_case',
 		debut: true,
 		tueur: true,
-		mort: true,
+		mort: false,
 		attaque: true,
 		modifiable: true,
 		bm_compteur: true,
@@ -574,6 +574,32 @@ EffetAuto.Types = [
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 			{ nom: 'trig_objet', type: 'drop', label: 'Liste d’objet', description: 'Liste d’objet et taux de drop de chacun, chaque tirage laissera au sol un seul objet de cette liste.' }
+		],
+	},
+	{	nom: 'ea_recompense',
+		debut: false,
+		tueur: false,
+		mort: true,
+		attaque: false,
+		modifiable: true,
+		bm_compteur: false,
+		ea_etage: false,
+		affichage: 'Récompense (PX, PO et Titre)',
+		description: 'Récompense le tueur ou les participants d’un kill en PX, PO et/ou Titre.',
+		parametres: [
+			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+			{ nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+            { nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+            { nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+            { nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+            { nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles recompensé, valeur fixe ou de la forme 1d6+2. (mettre -1 pour illimité)', validation: Validation.Types.Roliste },
+            { nom: 'trig_ciblage', type: 'mod-ciblage', label: 'Modification du  ciblage', description: 'Indique comment le ciblage est modifié avec les participants à la mort du monstre (est considéré comme participant un perso ayant gagné des px à la mort du monstre).' },
+            { nom: 'trig_gain_po', type: 'texte', longueur: 10, paragraphe:'divd', label: 'Gain de PO', description: 'Ce sont les PO qui seront donnés: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
+            { nom: 'trig_gain_px', type: 'texte', longueur: 10, paragraphe:'divf', label: 'Gain de PX', description: 'Ce sont les Px qui seront donnés:: valeur fixe ou de la forme 1d2+1 (limité à 200px par perso)', validation: Validation.Types.Roliste },
+            { nom: 'trig_titre', type: 'texte', longueur: 40, label: 'Titre', description: 'Le titre devant être attribué. [monstre] sera remplacé par le nom du monstre qui a été tué.' },
+            { nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+            { nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
 		],
 	},
 	{	nom: 'ea_invocation',
@@ -1040,6 +1066,7 @@ EffetAuto.ChampChoixTypeEA = function (parametre, numero, valeur) {
 	return html;
 }
 
+
 EffetAuto.ChampChoixRearmement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
@@ -1104,6 +1131,16 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	return html;
+}
+
+EffetAuto.ChampModCiblage = function (parametre, numero, valeur) {
+    if (!valeur)
+        valeur = 0;
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+    html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Ciblage normal</option>';
+    html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Ciblage limité aux participants du kill</option></select></label>';
+    html += "<br />";
+    return html;
 }
 
 EffetAuto.ChampCibleCase = function (parametre, numero, valeur) {
@@ -1755,6 +1792,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'cible':
 			html = pd + EffetAuto.ChampCible(parametre, numero, valeur) + pf;
+			break;
+		case 'mod-ciblage':
+			html = pd + EffetAuto.ChampModCiblage(parametre, numero, valeur) + pf;
 			break;
 		case 'cible-case':
 			html = pd + EffetAuto.ChampCibleCase(parametre, numero, valeur) + pf;
