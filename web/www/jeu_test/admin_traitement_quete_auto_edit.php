@@ -183,7 +183,7 @@ switch ($methode)
         $quete->aquete_max_delai          = $_REQUEST["aquete_max_delai"] == "" ? NULL : $_REQUEST["aquete_max_delai"];
 
         /// interraction ou QA standard
-        if (isset($_REQUEST["aquete_pos_etage"]) && (int)$_REQUEST["aquete_pos_etage"]>0) {
+        if (isset($_REQUEST["aquete_pos_etage"]) && (int)$_REQUEST["aquete_pos_etage"] != 0) {
             $quete->aquete_interaction = 'O' ;
             $quete->aquete_pos_etage =  (int)$_REQUEST["aquete_pos_etage"];
         } else {
