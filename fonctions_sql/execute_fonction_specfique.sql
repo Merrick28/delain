@@ -71,56 +71,11 @@ begin
     code_fonction := ligne_fonction.fonc_nom;
     retour_fonction := '';
 
-
     if code_fonction = 'deb_tour_generique' then
       select into retour_fonction deb_tour_generique(v_perso_cod, ligne_fonction.fonc_effet, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_duree, ligne_fonction.fonc_message,  v_cible_cod, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
 
     elseif code_fonction = 'ea_ajoute_bm' then
       select into retour_fonction ea_ajoute_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
-
-    elsif code_fonction = 'deb_tour_degats' then
-      select into retour_fonction deb_tour_degats(v_perso_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, v_cible_cod, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
-
-    elsif code_fonction = 'titre' then
-      select into retour_fonction effet_auto_ajout_titre(v_cible_cod, ligne_fonction.fonc_message, v_perso_cod);
-
-    elsif code_fonction = 'necromancie' then
-      select into retour_fonction necromancie(v_perso_cod, v_cible_cod);
-
-    elsif code_fonction = 'deb_tour_rouille' then
-      select into retour_fonction deb_tour_rouille(v_perso_cod, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_effet::integer);
-
-    elsif code_fonction = 'deb_tour_invocation' then
-      if v_pos is not null then
-        select into retour_fonction deb_tour_invocation(v_perso_cod, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message, v_pos);
-      end if;
-
-    elsif code_fonction = 'poison_araignee' then
-      select into retour_fonction poison_araignee(v_perso_cod);
-
-    elsif code_fonction = 'deb_tour_degats_case' then
-      select into retour_fonction deb_tour_degats_case(v_perso_cod, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message);
-
-    elsif code_fonction = 'deb_tour_esprit_damne' then
-      select into retour_fonction deb_tour_esprit_damne(v_perso_cod);
-
-    elsif code_fonction = 'trans_crap' then
-      select into retour_fonction trans_crap(v_perso_cod);
-
-    elsif code_fonction = 'deb_tour_necromancie' then
-      select into retour_fonction deb_tour_necromancie(v_perso_cod, coalesce(nullif(ligne_fonction.fonc_force,''),'1')::numeric, ligne_fonction.fonc_proba::integer);
-
-    elsif code_fonction = 'deb_tour_haloween' then
-      select into retour_fonction deb_tour_haloween(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_proba::integer);
-
-    elsif code_fonction = 'valide_quete_avatar' then
-      select into retour_fonction valide_quete_avatar(v_perso_cod, v_cible_cod);
-
-    elsif code_fonction = 'invoque_rejetons' then
-      select into retour_fonction invoque_rejetons(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer);
-
-    elsif code_fonction = 'resurrection_monstre' then
-      select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
 
     elsif code_fonction = 'ea_supprime_bm' then
       select into retour_fonction ea_supprime_bm(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
@@ -166,6 +121,50 @@ begin
 
     elsif code_fonction = 'ea_message' then
       select into retour_fonction ea_message(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
+
+    elsif code_fonction = 'deb_tour_degats' then
+        select into retour_fonction deb_tour_degats(v_perso_cod, ligne_fonction.fonc_force, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, v_cible_cod, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json);
+
+    elsif code_fonction = 'titre' then
+        select into retour_fonction effet_auto_ajout_titre(v_cible_cod, ligne_fonction.fonc_message, v_perso_cod);
+
+    elsif code_fonction = 'resurrection_monstre' then
+        select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'necromancie' then
+        select into retour_fonction necromancie(v_perso_cod, v_cible_cod);
+
+    elsif code_fonction = 'deb_tour_rouille' then
+        select into retour_fonction deb_tour_rouille(v_perso_cod, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_effet::integer);
+
+    elsif code_fonction = 'deb_tour_invocation' then
+        if v_pos is not null then
+            select into retour_fonction deb_tour_invocation(v_perso_cod, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message, v_pos);
+        end if;
+
+    elsif code_fonction = 'poison_araignee' then
+        select into retour_fonction poison_araignee(v_perso_cod);
+    
+    elsif code_fonction = 'deb_tour_degats_case' then
+        select into retour_fonction deb_tour_degats_case(v_perso_cod, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message);
+
+    elsif code_fonction = 'deb_tour_esprit_damne' then
+        select into retour_fonction deb_tour_esprit_damne(v_perso_cod);
+
+    elsif code_fonction = 'trans_crap' then
+        select into retour_fonction trans_crap(v_perso_cod);
+
+    elsif code_fonction = 'deb_tour_necromancie' then
+        select into retour_fonction deb_tour_necromancie(v_perso_cod, coalesce(nullif(ligne_fonction.fonc_force,''),'1')::numeric, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'deb_tour_haloween' then
+        select into retour_fonction deb_tour_haloween(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'valide_quete_avatar' then
+        select into retour_fonction valide_quete_avatar(v_perso_cod, v_cible_cod);
+
+    elsif code_fonction = 'invoque_rejetons' then
+        select into retour_fonction invoque_rejetons(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer);
 
     end if;
 
