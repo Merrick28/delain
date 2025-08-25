@@ -41,7 +41,7 @@ if ($erreur == 0)
     // On est admin ici, on a les droits sur les quetes
     // Traitement des paramètres
     $aquete_cod = 1*$_REQUEST['aquete_cod'] ;
-    $pos_etage = 1*$_REQUEST['pos_etage'] ;     // SI $pos_etage >0, on est dans le cas des interactions sinon QA standard
+    $pos_etage = 1*$_REQUEST['pos_etage'] ;     // SI $pos_etage != 0, on est dans le cas des interactions sinon QA standard
     //-- traitement des actions
     if(isset($_REQUEST['methode']))
     {
@@ -64,7 +64,7 @@ if ($erreur == 0)
 
         $type_quete = isset($_REQUEST["type_quete"]) ? $_REQUEST["type_quete"] : 0 ;
 
-        if ($pos_etage>0) {
+        if ($pos_etage != 0) {
             echo '   <span style="color: white; background-color: #800000; font-weight:bold">&nbsp;&nbsp;&nbsp;GESTION DES QUËTES D’INTERACTIONS SUR L’ETAGE&nbsp;&nbsp;&nbsp;</span>';
         }
         // Liste des quetes existantes
@@ -87,7 +87,7 @@ if ($erreur == 0)
             $filtre_quete = "";
 
 
-        if ($pos_etage>0) {
+        if ($pos_etage != 0) {
             $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage = '.$pos_etage.$filtre_quete.' order by aquete_nom_alias');
         } else {
             $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete where aquete_pos_etage is null '.$filtre_quete.' order by aquete_nom_alias');
@@ -105,7 +105,7 @@ if ($erreur == 0)
                 </TABLE>
                 <HR>';
 
-        if ($pos_etage>0) {
+        if ($pos_etage != 0) {
             echo '<strong>Caractéristiques de l\'interaction</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
             echo' <br><em style="font-size:10px">Une interaction est une Quête-auto spécifique à un etage et déclenchée sur une position determinée.</em>';
             echo' <br><em style="font-size:10px">Toutes les étapes de cette interaction ne pourront avoir lieu QUE sur cette position.</em>';
@@ -145,7 +145,7 @@ if ($erreur == 0)
 
         echo    '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
         echo    '<input type="hidden" name="type_quete" value="'.$type_quete.'" />';
-        if ($pos_etage>0) {
+        if ($pos_etage != 0) {
             echo '<input type="hidden" name="aquete_journal_archive" value="N" />';
             echo '<input type="hidden" name="aquete_nb_max_instance" value="" />';
             echo '<input type="hidden" name="aquete_nb_max_participant" value="" />';
