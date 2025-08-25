@@ -55,6 +55,7 @@ declare
     v_gain_po integer ;           -- gain en PO
     v_gain_px  integer ;          -- gain en PX
     v_gain_titre text;            -- gain de titre
+    v_gain_titre_tueur text;      -- gain de titre pour le tueur
     v_partage_px integer ;        -- flag de partage de px
 
     -- Output and data holders
@@ -103,6 +104,10 @@ declare
 
     v_nom_monstre := TRIM(SPLIT_PART(v_source_nom,'(n°', 1) )  ;
     v_gain_titre := replace (COALESCE((v_params->>'fonc_trig_titre')::text, ''), '[monstre]', v_nom_monstre);
+    v_gain_titre_tueur := replace (COALESCE((v_params->>'fonc_trig_titre_tueur')::text, ''), '[monstre]', v_nom_monstre);
+    if v_gain_titre_tueur = '' then
+        v_gain_titre_tueur := v_gain_titre ;    -- s'il n'y a pas de titre spécifique pour le tueur, on prend le titre stadard
+    end if;
 
     -- Si le ciblage est limité par la VUE on ajuste la distance max
     if (v_params->>'fonc_trig_vue')::text = 'O' then
@@ -219,11 +224,23 @@ declare
                 perform insere_evenement(v_source, ligne.perso_cod, 18, '[attaquant] a donné '|| v_gain_po::text || ' PX à [cible]', 'O', 'N', null);
             end if;
 
-            if v_gain_titre != '' then  -- distribution du titre
-                -- on recherche si le perso ne l'a pas déjà
-                select count(*) into i from perso_titre where ptitre_perso_cod = ligne.perso_cod and ptitre_titre = v_gain_titre ;
-                if i = 0 then
-                    insert into perso_titre (ptitre_perso_cod, ptitre_titre, ptitre_date) values ( ligne.perso_cod, v_gain_titre, now());
+            if ligne.perso_cod = v_cible_donnee then  
+               -- c'est le tueur
+                if v_gain_titre_tueur != '' then  -- distribution du titre au tueur
+                    -- on recherche si le perso ne l'a pas déjà
+                    select count(*) into i from perso_titre where ptitre_perso_cod = ligne.perso_cod and ptitre_titre = v_gain_titre_tueur ;
+                    if i = 0 then
+                            insert into perso_titre (ptitre_perso_cod, ptitre_titre, ptitre_date) values ( ligne.perso_cod, v_gain_titre_tueur, now());
+                    end if;
+                end if;
+            else
+                -- cas des autre aventuriers (non tueurs)
+                if v_gain_titre != '' then  -- distribution du titre
+                    -- on recherche si le perso ne l'a pas déjà
+                    select count(*) into i from perso_titre where ptitre_perso_cod = ligne.perso_cod and ptitre_titre = v_gain_titre ;
+                    if i = 0 then
+                            insert into perso_titre (ptitre_perso_cod, ptitre_titre, ptitre_date) values ( ligne.perso_cod, v_gain_titre, now());
+                    end if;
                 end if;
             end if;
 
