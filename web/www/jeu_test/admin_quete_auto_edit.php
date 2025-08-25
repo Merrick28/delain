@@ -443,7 +443,8 @@ if ($erreur == 0)
         echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
         echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br>
                    Vous pouvez utiliser des images en les déposants sur le serveur à l\'aide de cet outil: <a target="_blank" href="/jeu_test/modif_etage3_images.php">ressources images</a><br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
-                   <a href="#" onclick="$(\'#info-variables\').slideToggle();"><img src="/images/info_16.png"></a><div id="info-variables" style="display:none;"><br>Le texte d\'étape peut contenir des <u>variables</u>:<br>
+                   <a href="#" onclick="$(\'#info-variables\').slideToggle();"><img src="/images/info_16.png"></a><div id="info-variables" style="display:none;">
+                   <br><b>Le texte d\'étape peut contenir des <u>variables</u></b>:<br>
                    <br>* [X] est une représentation en texte du paramètre X de l\'étape (exemple [1], [2] etc...<br> 
                    <br>* [#perso.XXXXX] est une représentation en texte de la propriété "XXXXX" du perso, comme par exemple:<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;[#perso.nom] : nom du meneur de quete<br>
@@ -459,7 +460,15 @@ if ($erreur == 0)
                    <br>* [#perso.genre(XXXXX,YYYYY)] si le perso est féminin YYYYY sera affiché sinon c\'est XXXXX, par exemple:<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;[#perso.genre(le meneur,la meneuse)] : affichera "la meneuse" pour les filles et "le meneur" pour les gars.<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;<br>
-                   <br></div></td></tr>';
+                   <br></div>
+                   <div id="info-conditions" style="display:none;"><br><u><b>Condition sur les persos</b></u>:
+                        <br>Cas particuliers sur la conditions sur les Titres du perso: 
+                        <br> * L‘opérateur « entre » n\'est pas pris en comtpe et retoune toujours faux
+                        <br> * Les opérateurs « > » et « >= » sont traités comme des « like » (le caractère % comme joker)                                         
+                        <br> * Les opérateurs « < » et « <= »  sont traités comme des « not like » (le caractère % comme joker)                                         
+                    </div>
+                   
+                   </td></tr>';
         $aquete_etape = new aquete_etape() ;
         $aqetape_saut_etape_nom = $aquete_etape->getNom(1*$etape->aqetape_saut_etape_cod) ;
         //sauf pour le cas des etapes de fin ECHEC/SUCCESS, on donne une possibilité de saut sur 'étape suivante
@@ -863,8 +872,9 @@ if ($erreur == 0)
                                      '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
-                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
-                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="15" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
+                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="25" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
+                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )                                   
+                                     <a href="#" onclick="$(\'#info-conditions\').slideToggle();"><img width="14" src="/images/info_16.png"></a>                   
                                    </td>';
                         break;
 
@@ -882,8 +892,9 @@ if ($erreur == 0)
                                      '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
-                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
-                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="15" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
+                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="25" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
+                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
+                                     <a href="#" onclick="$(\'#info-conditions\').slideToggle();"><img width="14" src="/images/info_16.png"></a>                   
                                    </td>';
                         break;
 
