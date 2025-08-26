@@ -686,6 +686,23 @@ EffetAuto.Types = [
 			{ nom: 'trig_meca', type: 'meca', label: 'Liste de mécanisme', description: 'Liste de mécanisme à activer/désactiver avec chances individuels.' }
 		],
 	},
+    {	nom: 'ea_modification_qa',
+        debut: true,
+        tueur: true,
+        mort: true,
+        attaque: true,
+        modifiable: true,
+        bm_compteur: false,
+        ea_etage: true,
+        affichage: 'Active/Desactive une QA',
+        description: 'Activation/Desactivation de Quete-Auto/Intéraction.',
+        parametres: [
+            { nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des mécanismes).', validation: Validation.Types.Numerique },
+            { nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+            { nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de X »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] n’est pas dispo ici.' },
+            { nom: 'trig_qa', type: 'qa', label: 'Liste de QA', description: 'Liste des QA à activer/désactiver avec chances individuels.' }
+        ],
+    },
 	{	nom: 'ea_teleportation',
 		debut: true,
 		tueur: true,
@@ -769,7 +786,7 @@ EffetAuto.addItem = function (elem, M)
 		$(new_elem).insertAfter(elem);
 
 		//Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
-		$('*[id$="'+new_row+'"]').each(function( index ) {
+		$('*[id$="'+new_row+'"]').find("*").each(function( index ) {
 			if ($( this ).attr("data-entry"))
 			{
 				if ($( this ).attr("data-entry") == "val")
@@ -1403,6 +1420,49 @@ EffetAuto.ChampMeca = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampQA = function (parametre, numero, valeur) {
+    if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+    var base = "fonc_" + parametre.nom + numero.toString();
+    var nomQACod = "obj_fonc_" + parametre.nom + numero.toString()+"_qa_cod";
+    var nomSens = "obj_fonc_" + parametre.nom + numero.toString()+"_sens";
+    var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+    var label = "div_" + parametre.nom + numero.toString();
+
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+    for (var i=0; i < valeur.length || i==0 ; i++)
+    {
+        html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+        html += '<input type="hidden" name="' + base + '[]">';
+
+        html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
+        var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Active</option>';
+        var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactive</option>';
+        var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverse</option>';
+        html += '</select>' ;
+
+        html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
+
+        html += '<strong>QA:</strong>&nbsp;<span title="Quête-auto ou Interaction.">';
+        html += '<input data-entry="val" id="row-'+numero+'-'+i+'-qa_cod" name="'+nomQACod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].qa_cod : "")+'">';
+        html += '</span>&nbsp';
+        html += '<span data-entry="text" id="row-'+numero+'-'+i+'-qa_nom"></span>&nbsp';
+        html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-qa\',\'quete\',\'Rechercher une quête\',[\'\',\'\',\'\']);">';
+
+        html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+        html += '</tr>';
+        if (valeur.length>0)
+        {
+            // initialiser la nom avec le
+            setNomByTableCod('row-'+numero+'-'+i+'-qa_nom', 'quete', valeur[i].qa_cod );
+        }
+    }
+    html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+    html += '</table>';
+    return html;
+}
+
 EffetAuto.ChampEAEtage = function (parametre, numero, valeur) {
 	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
 	var base = "fonc_" + parametre.nom + numero.toString();
@@ -1745,6 +1805,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'meca':
 			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
+			break;
+		case 'qa':
+			html = pd + EffetAuto.ChampQA (parametre, numero, valeur) + pf;
 			break;
 		case 'ea_etage':
 			html = pd + EffetAuto.ChampEAEtage (parametre, numero, valeur) + pf;

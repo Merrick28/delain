@@ -728,6 +728,9 @@ switch($_REQUEST["request"])
             case 'lieu':
                 $req = "select lieu_nom nom from lieu where lieu_cod = ? ";
                 break;
+            case 'quete':
+                $req = "select aquete_nom nom from quetes.aquete where aquete_cod = ? ";
+                break;
             case 'etape':
                 if ($cod==0)
                     $req = "select 'Etape suivante' nom where ?=0 ";
