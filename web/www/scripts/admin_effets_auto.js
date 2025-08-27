@@ -1436,9 +1436,9 @@ EffetAuto.ChampQA = function (parametre, numero, valeur) {
         html += '<input type="hidden" name="' + base + '[]">';
 
         html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
-        var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Active</option>';
-        var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactive</option>';
-        var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverse</option>';
+        var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Activer</option>';
+        var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactiver</option>';
+        var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverser</option>';
         html += '</select>' ;
 
         html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
