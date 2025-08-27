@@ -535,3 +535,16 @@ input.bouton {
 	margin-right:0pt;
 	text-indent:0pt;
 }
+
+
+.span_a {
+    text-decoration: underline;
+    color: #4D0505;
+    cursor: pointer;
+}
+
+.span_a:hover {
+    text-decoration: none;
+    color: #4D0505;
+
+}

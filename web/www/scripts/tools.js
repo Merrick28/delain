@@ -243,7 +243,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
             var data = d.data.data ;
             var content = "";
             for (i in data) {
-                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</em>' : '' )+'<br>';
+                content += '<span class="span_a" id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</span> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</em>' : '' )+'<br>';
             }
             if (data.length<d.data.count) {
                 content+='<br><em style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</em>';
@@ -288,10 +288,10 @@ function getTableCod(divname, table, titre, params)
         {
             options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
             options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
-            options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
-            options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
-            options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
-            options += '<a style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</a> (-3)<br>';
+            options += '<span class="span_a" style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</span> (0)<br>';
+            options += '<span class="span_a" style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</span> (-1)<br>';
+            options += '<span class="span_a" style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</span> (-2)<br>';
+            options += '<span class="span_a" style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</span> (-3)<br>';
         }
         else
         {
