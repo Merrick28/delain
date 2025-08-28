@@ -1,7 +1,7 @@
 <?php
 define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
-
+include "blocks/_test_droit_modif_etage.php";
 
 // scripts JS
 $contenu_page .= '<script>
