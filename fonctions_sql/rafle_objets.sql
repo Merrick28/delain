@@ -92,14 +92,15 @@ begin
 
     -- 859: glyphe on ne ramasse pas
     -- 84/85: mimique on en ramasse pas (ne pouvait pas être dans l'inventaire)
-    -- on ne rammasse que les objets identifiés
+    -- on ne rammasse que les objets identifiés => finalement dev pas possible
+    -- les objst ne reste identifiés que qq DLT, quand on ramasse réelement , il n'y a plus rien d'ideitifié
     for ligne in (select obj_cod, obj_nom, obj_gobj_cod, obj_poids, pobj_cod, tobj_libelle
                     from objets
                       inner join objet_position on pobj_obj_cod = obj_cod
                       inner join objet_generique on gobj_cod = obj_gobj_cod
                       inner join type_objet on tobj_cod=gobj_tobj_cod
-                      left join perso_identifie_objet on pio_perso_cod = personnage and pio_obj_cod = obj_cod
-                      where pobj_pos_cod=pos_perso  and obj_gobj_cod not in (859, 84, 85) and pio_cod is null
+                      -- left join perso_identifie_objet on pio_perso_cod = personnage and pio_obj_cod = obj_cod
+                      where pobj_pos_cod=pos_perso  and obj_gobj_cod not in (859, 84, 85) -- and pio_cod is null
                       order by random() limit nb_objet )
       loop
 
