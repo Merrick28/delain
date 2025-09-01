@@ -27,7 +27,7 @@ switch ($methode)
 			<tr>
 				<td>Etage </td>
 				<td><select name="etage">';
-        $html->etage_select(6);
+        $contenu_page .= $html->etage_select(6);
 
         $contenu_page .= '<option value="' . $result['etage_numero'] . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $result['etage_libelle'] . '</option>';
         $contenu_page .= "</select>";
@@ -68,7 +68,7 @@ switch ($methode)
 			<tr>
 				<td>Etage </td>
 				<td><select name="etage">';
-        $html->etage_select(6);
+        $contenu_page .= $html->etage_select(6);
 
         $contenu_page .= '</select></td>
 												</tr>
@@ -114,7 +114,7 @@ switch ($methode)
 													<table width="70%">
 													<tr><td>Etage à effacer</td>
 												<td><select name="etage">';
-        $html->etage_select(6);
+        $contenu_page .= $html->etage_select(6);
         $contenu_page .= '</select></select></td></tr>
 												</table>
 												<input type="submit" name="effacer" value="Supprimer tous les composants" class="test">
@@ -142,18 +142,17 @@ switch ($methode)
             $contenu_page .= '<TR>';
             $req_position = "select pos_cod,pos_x,pos_y from positions where
 													 pos_etage = :etage
-													 and pos_x = :position_x + :x
-													 and pos_y = :position_y - :y";
+													 and pos_x = :position_x 
+													 and pos_y = :position_y";
             $stmt_pos     = $pdo->prepare($req_position);
             for ($x = -4; $x < 6; $x++)
             {
                 if (($y * $y + $x * $x) < $variation)
                 {
 
-                    $stmt_pos = $pdo->execute(array(":x"        => $x,
-                                                    ":y"        => $y,
-                                                    ":etage"    => $etage,
-                                                    ":position" => $position), $stmt_pos);
+                    $stmt_pos = $pdo->execute(array(":position_x"        => $position_x + $x,
+                                                    ":position_y"        => $position_y + $y,
+                                                    ":etage"    => $etage), $stmt_pos);
                     if ($stmt_pos->rowCount() != 0)
                     {
                         $result      = $stmt_pos->fetch();
@@ -251,18 +250,17 @@ switch ($methode)
                 $contenu_page .= '<TR>';
                 $req_position = "select pos_cod,pos_x,pos_y from positions where
 													 pos_etage = :etage
-													 and pos_x = :position_x + :x
-													 and pos_y = :position_y - :y";
+													 and pos_x = :position_x 
+													 and pos_y = :position_y ";
                 $stmt_pos     = $pdo->prepare($req_position);
                 for ($x = -4; $x < 6; $x++)
                 {
                     if (($y * $y + $x * $x) < $variation)
                     {
 
-                        $stmt_pos = $pdo->execute(array(":x"        => $x,
-                                                        ":y"        => $y,
-                                                        ":etage"    => $etage,
-                                                        ":position" => $position), $stmt_pos);
+                        $stmt_pos = $pdo->execute(array(    ":etage"    => $etage,
+                                                            ":position_x"    => $position_x + $x,
+                                                            ":position_y" => $position_y + $y ), $stmt_pos);
                         if ($stmt_pos->rowCount() != 0)
                         {
                             $result      = $stmt_pos->fetch();
