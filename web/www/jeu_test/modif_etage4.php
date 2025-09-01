@@ -375,14 +375,13 @@ if ($erreur == 0) {
                 $ingredientsArray = array();
                 $texte = $result['gobj_nom'] . ' (' . $result['ingrpos_max'] . ', ' . $result['ingrpos_chance_crea'] . "\n";
                 $ingredientsArray[] = $result['ingrpos_gobj_cod'];
-                while ($result = $stmt->fetch() && $result['pos_cod'] == $caseEnCours) {
+                while (($result = $stmt->fetch()) && ($result['pos_cod'] == $caseEnCours)) {
                     $ingredientsArray[] = $result['ingrpos_gobj_cod'];
                     $texte .= $result['gobj_nom'] . ' (' . $result['ingrpos_max'] . ', ' . $result['ingrpos_chance_crea'] . "\n";
                 }
                 $nbCouleurs = sizeof($ingredientsArray);
                 $taille = (25 / $nbCouleurs);
                 $color = "#00FF00";
-
                 ?>
                 <td width="20" height="20">
                     <div id="pos_<?php echo $position; ?>" style="width:25px;height:25px"
