@@ -252,12 +252,13 @@ begin
         px_gagne := 0;
         texte_evt := '[attaquant] a lamentablement raté son balayage contre [cible]';
         perform insere_evenement(v_attaquant, ligne.perso_cod, 84, texte_evt, 'O', null);
-        return code_retour;
+        -- modification Marlyza 2019-05-19 - on a raté l'attaque de cette cible, mais il faut quand même continuer sur les autres cibles
+        -- return code_retour;
       end if;
       /* FIN   : attaque ratée sur échec critique               */
 
       /* DEBUT : attaque réussie, on va résoudre l’ensemble     */
-      if des < comp_attaque then
+      if (des <= 96) and (des < comp_attaque) then
         code_retour := code_retour || 'Il n’a pas pu esquiver votre attaque, et se la prend de plein fouet<br>';
 
         /* DEBUT : aura de feu      */
@@ -363,7 +364,7 @@ begin
         /* FIN   : coup porté : cible pas morte  */
         end if; --fin coup porté non esquivé
       /* FIN : attaque réussie                              */
-      else
+      elsif (des <= 96) then
         /* DEBUT : attaque esquivée par la cible                  */
         code_retour := code_retour || 'Très adroit, il a réussi à l’éviter<br>';
         texte_evt := '[cible] a adroitement réussi à éviter le balayage de [attaquant]';
@@ -957,14 +958,12 @@ begin
   end if;
 
   --Gestion des PA --
-  update perso
-  set perso_pa = perso_pa - 6
-  where perso_cod = v_attaquant;
+  update perso set perso_pa = GREATEST(0, perso_pa - 6) where perso_cod = v_attaquant;
   return code_retour;
 
   Exception
   when    check_violation then
-    code_retour := 'Arrêt sur erreur : valeur de v_pv_cible : ' || to_char(coalesce(v_pv_cible, 0), '9999999999') || ',
+    code_retour := COALESCE(code_retour,'') || 'Arrêt sur erreur : valeur de v_pv_cible : ' || to_char(coalesce(v_pv_cible, 0), '9999999999') || ',
 			valeur de perso_pv : ' || to_char(coalesce(v_pv_attaquant, 0), '9999999999') || ',
 			valeur de degats_portes : ' || to_char(coalesce(degats_portes, 0), '9999999999') || ',
 			valeur de nouveau_pv_cible : ' || to_char(coalesce(nouveau_pv_cible, 0), '999999999') || ',
