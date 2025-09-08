@@ -221,7 +221,7 @@ declare
 
             if v_gain_px > 0 then  -- distribution des px limité à 200px
                 update perso set perso_px = perso_px + LEAST(200, v_gain_px) where perso_cod = ligne.perso_cod;
-                perform insere_evenement(v_source, ligne.perso_cod, 18, '[attaquant] a donné '|| v_gain_px::text || ' PX à [cible]', 'O', 'N', null);
+                perform insere_evenement(v_source, ligne.perso_cod, 18, '[attaquant] a donné '|| LEAST(200, v_gain_px)::text || ' PX à [cible]', 'O', 'N', null);
             end if;
 
             if ligne.perso_cod = v_cible_donnee then
