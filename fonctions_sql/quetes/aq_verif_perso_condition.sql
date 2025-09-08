@@ -205,9 +205,9 @@ begin
       end if;
     else
       if (v_param_txt_1 = '!=') then
-        return 0;
-      else
         return 1;
+      else
+        return 0;
       end if;
     end if;
 
