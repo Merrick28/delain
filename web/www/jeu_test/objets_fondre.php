@@ -403,6 +403,7 @@ if ($_REQUEST["methode"] == "fondre")
         if ($nb_objets + $nb_objets_gros > 0)
         {
             echo "<center><div>Concrétion: <b><span id='selection-poids'>0</span></b>&nbsp; Kg&nbsp;&nbsp;&nbsp;&nbsp;<div style='display: inline-block'><input class=\"test\" type=\"submit\" value=\"Faire fondre (2PA)\" /></div></div></center></form>";
+            echo "<center><strong style='color: #800000'>ATTENTION: Tous les objets fondus seront DETRUITS!</strong><br><br>";
         } else
         {
             echo 'Vous n’avez aucun objet à fondre.<br>';
