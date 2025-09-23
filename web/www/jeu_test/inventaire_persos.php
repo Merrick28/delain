@@ -9,6 +9,11 @@ ob_start();
 
 $pdo   = new bddpdo;
 
+// recherche le compte du perso (cela permet d'afficher la page aussi en mode admin)
+$pcpt = new perso_compte();
+$pcpt->get_by_perso($perso_cod);
+
+
 // Récupérer la liste de perso (et bzf au passage) ============================================================
 $req   = "SELECT perso_cod, perso_type_perso, perso_pnj, ordre, perso_nom, perso_po, pbank_or FROM (
 
@@ -30,7 +35,7 @@ $req   = "SELECT perso_cod, perso_type_perso, perso_pnj, ordre, perso_nom, perso
           
                 ) as p LEFT JOIN perso_banque ON pbank_perso_cod=perso_cod ORDER BY perso_pnj, perso_type_perso, ordre ";
 $stmt  = $pdo->prepare($req);
-$stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+$stmt  = $pdo->execute(array(":compt_cod" =>$pcpt->pcompt_compt_cod), $stmt);
 $persos  = $stmt->fetchAll();
 
 $quatrieme = false ;
