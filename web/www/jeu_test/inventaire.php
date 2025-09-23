@@ -245,6 +245,10 @@ $stmt   = $pdo->query($req_id);
                 echo '<tr><td><a href="?methode=manger">Digérer tout ça ! (6 PA)</a></td></tr>';
             }
             ?>
+            <tr>
+                <td>Brûlons le superflu: <a href="objets_fondre.php">Faire fondre une sélection d'objets (2 PA)</a>.
+                </td>
+            </tr>
         </table>
         <?php
         /**************************/
