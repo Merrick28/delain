@@ -10,9 +10,15 @@ ob_start();
 $pdo   = new bddpdo;
 
 // recherche le compte du perso (cela permet d'afficher la page aussi en mode admin)
-$pcpt = new perso_compte();
-$pcpt->get_by_perso($perso_cod);
 
+$pcpt = new perso_compte();
+if ($perso->perso_type_perso == 3){
+    // recupérer le compte du maitre du familier
+    $pcpt->get_by_perso_fam($perso_cod);
+} else {
+    // recupérer le compte du perso
+    $pcpt->get_by_perso($perso_cod);
+}
 
 // Récupérer la liste de perso (et bzf au passage) ============================================================
 $req   = "SELECT perso_cod, perso_type_perso, perso_pnj, ordre, perso_nom, perso_po, pbank_or FROM (
