@@ -118,7 +118,7 @@ begin
     gain_pv := gain_pv + 1;
     pv_max_theorique := cast((2 * v_con + (v_niveau_actu - 1) * (v_con + 12) / 8) as integer);
     if pv_max_actuel + temp + 1 < pv_max_theorique then
-        gain_pv := max(gain_pv, temp);
+        gain_pv := max(gain_pv, temp+1);
     end if;
 
     update perso
