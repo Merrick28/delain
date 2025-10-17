@@ -181,9 +181,9 @@ begin
                     -- l'état de santé du perso a changé, on vérifie si cela déclenche l'EA
                     select f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 2)), f_to_numeric(split_part(row.fonc_trigger_param->>'fonc_trig_sante'::text, '-', 1)) into v_sante_min, v_sante_max ;
 
-                    if (    ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '0') and ((v_etat_sante <= v_sante_max  and  v_sante_avant >  v_sante_max) or (v_etat_sante >= v_sante_min and v_sante_avant <  v_sante_min)))
-                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '-1') and (v_etat_sante <= v_sante_max) and (v_sante_avant >  v_sante_max) )
-                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '1') and (v_etat_sante >= v_sante_min) and (v_sante_avant <  v_sante_min) ) ) then
+                    if (    ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '0') and ((v_etat_sante < v_sante_max  and  v_sante_avant >=  v_sante_max) or (v_etat_sante > v_sante_min and v_sante_avant <=  v_sante_min)))
+                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '-1') and (v_etat_sante < v_sante_max) and (v_sante_avant >=  v_sante_max) )
+                         or ( (row.fonc_trigger_param->>'fonc_trig_sens'::text = '1') and (v_etat_sante > v_sante_min) and (v_sante_avant <=  v_sante_min) ) ) then
                         v_do_it := true ;   -- on déclenche le trigger
                     end if;
 
