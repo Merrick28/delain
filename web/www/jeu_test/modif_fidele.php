@@ -5,6 +5,7 @@ $erreur  = 0;
 $phpself = $_SERVER['PHP_SELF'];
 $req     = "select dper_dieu_cod,dper_niveau from dieu_perso where dper_perso_cod = $perso_cod";
 $stmt    = $pdo->query($req);
+
 if ($stmt->rowCount() == 0)
 {
     echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !1";
@@ -57,6 +58,7 @@ if ($erreur == 0)
             echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
             break;
         case "ajout2":
+            $perso_cible = (int)$_REQUEST["perso"];
             $req = "insert into temple_fidele (tfid_perso_cod,tfid_lieu_cod) values ($perso_cible,$lieu) ";
             if ($stmt = $pdo->query($req))
             {
@@ -99,6 +101,7 @@ if ($erreur == 0)
             echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
             break;
         case "modif2":
+            $perso_cible = (int)$_REQUEST["perso"];
             $req = "update temple_fidele set tfid_perso_cod = $perso_cible where tfid_lieu_cod = $lieu ";
             if ($stmt = $pdo->query($req))
             {
