@@ -112,8 +112,8 @@ echo $html->etage_select();
 
 echo '</select></td>';
 echo '<td class="soustitre2">
-	<input type="checkbox" name="adapter" id="adapter" checked="checked" /><label for="adapter">Adapter le niveau suivant l’étage ?</label><br />
-	<input type="checkbox" name="antres" id="antres" checked="checked" /><label for="antres">Inclure les antres reliées à l’étage ?</label><br />
+	<input type="checkbox" name="adapter" id="adapter" /><label for="adapter">Adapter le niveau suivant l’étage ?</label><br />
+	<input type="checkbox" name="antres" id="antres" /><label for="antres">Inclure les antres reliées à l’étage ?</label><br />
 	<label for="eparpillement">Éparpillement : 1 monstre pour </label><input type="text" name="eparpillement" id="eparpillement" value="50" style="width:20px;" /><label for="eparpillement"> cases.</label>
 	</td>';
 echo '<td class="soustitre2">
