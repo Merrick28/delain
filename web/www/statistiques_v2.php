@@ -57,9 +57,17 @@ $req_halloween = "select perso_nom, count(*) as nb_bonbon from public.perso_obje
                     join objets on obj_cod=perobj_obj_cod
                     where obj_gobj_cod=1672 and (perso_type_perso=1 or perso_type_perso=3) and perso_pnj=0
                     group by perso_nom
-                    having count(*) > 1
-                    order by nb_bonbon desc
-                    limit 10";
+                    having count(*) >= (
+                        select GREATEST(min(nb_bonbon),2) from (
+                            select count(*) as nb_bonbon
+                            from public.perso_objets
+                            join perso on perso_cod = perobj_perso_cod
+                            join objets on obj_cod = perobj_obj_cod
+                            where obj_gobj_cod = 1672 and (perso_type_perso = 1 or perso_type_perso = 3) and perso_pnj = 0
+                            group by perso_nom
+                            order by nb_bonbon desc
+                            limit 10 )  as top10  )
+                    order by nb_bonbon desc";
 $stmt       = $pdo->query($req_halloween);
 while ($result = $stmt->fetch()) {
     $contenu_page .= ("<tr><td class=\"soustitre2\"><strong>{$result["perso_nom"]}</strong></td><td class=\"soustitre2\">{$result["nb_bonbon"]}</td></tr>");
