@@ -55,7 +55,7 @@ $contenu_page .= ("<tr><td class=\"soustitre2\">Aventurier</td><td class=\"soust
 $req_halloween = "select perso_nom, count(*) as nb_bonbon from public.perso_objets 
                     join perso on perso_cod=perobj_perso_cod 
                     join objets on obj_cod=perobj_obj_cod
-                    where obj_gobj_cod=28 and (perso_type_perso=1 or perso_type_perso=3) and perso_pnj=0
+                    where obj_gobj_cod=1672 and (perso_type_perso=1 or perso_type_perso=3) and perso_pnj=0
                     group by perso_nom
                     having count(*) > 1
                     order by nb_bonbon desc
