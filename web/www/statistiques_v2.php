@@ -47,6 +47,27 @@ $contenu_page .= (" et <strong>$nb_monstre</strong> monstres dans les souterrain
 
 $contenu_page .= '<br /><em>Statistiques sur les 30 derniers jours seulement</em>';
 
+//========================================================================================================================
+$contenu_page .= '<div class="titre">Les Sucreries d’Halloween du royaume souterrain</div>';
+$contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
+$contenu_page .= ("<tr><td class=\"soustitre2\">Aventurier</td><td class=\"soustitre2\">Nombre de douceur en poche</td></tr>");
+
+$req_halloween = "select perso_nom, count(*) as nb_bonbon from public.perso_objets 
+                    join perso on perso_cod=perobj_perso_cod 
+                    join objets on obj_cod=perobj_obj_cod
+                    where obj_gobj_cod=28 and (perso_type_perso=1 or perso_type_perso=3) and perso_pnj=0
+                    group by perso_nom
+                    having count(*) > 1
+                    order by nb_bonbon desc
+                    limit 10";
+$stmt       = $pdo->query($req_halloween);
+while ($result = $stmt->fetch()) {
+    $contenu_page .= ("<tr><td class=\"soustitre2\"><strong>{$result["perso_nom"]}</strong></td><td class=\"soustitre2\">{$result["nb_bonbon"]}</td></tr>");
+}
+
+$contenu_page .= ("</table><br>");
+
+//========================================================================================================================
 $contenu_page .= '<div class="titre">Statistiques Escape-Game</div>';
 
 $escape_list=[
@@ -117,7 +138,7 @@ foreach ($escape_list as $etage => $escape){
 $contenu_page .= ("</table><br>");
 
 
-
+//========================================================================================================================
 $contenu_page .= '<div class="titre">Statistiques des personnages</div>';
 
 
