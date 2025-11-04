@@ -107,6 +107,14 @@ if ($rows = $stmt->fetch())
     $animation = '<hr /><a href="' . $type_flux . G_URL . '/jeu_test/concours_barde.php">Concours de Barde</a>';
 }
 
+// Animation Léno 2019: Concours de collection
+$req       =
+    "SELECT ccol_titre FROM concours_collections where now()>=ccol_date_ouverture and now()<=ccol_date_fermeture order by ccol_cod desc limit 1 ";
+$stmt      = $pdo->query($req);
+if ($rows = $stmt->fetch())
+{
+    $animation = '<hr /><a href="' . $type_flux . G_URL . '/jeu_test/concours_collection.php">'.$rows["ccol_titre"].'</a>';
+}
 
 
 // lieux
