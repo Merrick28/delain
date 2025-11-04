@@ -25,7 +25,7 @@ echo '<script type="text/javascript">
 // Nombre maximal de membres du jury
 $nbJury = 10;
 
-echo "<pre>"; print_r($_REQUEST);
+//echo "<pre>"; print_r($_REQUEST);
 
 // Validations de formulaire
 $methode = $_REQUEST['methode'];
