@@ -16,8 +16,9 @@ function gereColonnes($colonne, $debut, $largeur = '')
 
 
 
-$contenu_page .= '<p class="titre">Concours de bardes</p>';
-$contenu_page .= '<p><a href="concours_barde.php">Accéder à la page du concours de bardes.</a></p><br />';
+$contenu_page = '<p class="titre">Les Concours</p>';
+$contenu_page .= '<p><a href="concours_barde.php">Accéder à la page du concours de bardes.</a><br />';
+$contenu_page .= '<p><a href="concours_collection.php">Accéder à la page du concours de collection.</a></p><br />';
 $contenu_page .= '<p class="titre">Quêtes</p>';
 $colonneMax = 2;
 $colonne = 0;
