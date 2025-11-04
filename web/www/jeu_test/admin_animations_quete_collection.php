@@ -25,6 +25,8 @@ echo '<script type="text/javascript">
 // Nombre maximal de membres du jury
 $nbJury = 10;
 
+//echo "<pre>"; print_r($_REQUEST);
+
 // Validations de formulaire
 $methode = $_REQUEST['methode'];
 switch ($methode)
@@ -53,12 +55,12 @@ switch ($methode)
         break;
     case 'collection_creation':    // Création d’un concours
         $form_titre           =
-            "'" . htmlspecialchars(str_replace('\'', '’', $_POST['form_titre'])) . "',";
-        $form_date_ouverture  = "'" . $_POST['form_date_ouverture'] . "'::timestamp,";
-        $form_objet           = "'" . $_POST['form_objet'] . "',";
-        $form_date_fermeture  = "'" . $_POST['form_date_fermeture'] . "'::timestamp,";
-        $form_differencier_4e = "'" . ((isset($_POST['form_differencier_4e'])) ? 'O' : 'N') . "',";
-        $form_tranche_niveau  = "'" . $_POST['form_tranche_niveau'] . "',";
+            "'" . htmlspecialchars(str_replace('\'', '’', $_POST['form_titre'])) . "'";
+        $form_date_ouverture  = "'" . $_POST['form_date_ouverture'] . "'::timestamp";
+        $form_objet           = "'" . $_POST['form_objet'] . "'";
+        $form_date_fermeture  = "'" . $_POST['form_date_fermeture'] . "'::timestamp";
+        $form_differencier_4e = "'" . ((isset($_POST['form_differencier_4e'])) ? 'O' : 'N') . "'";
+        $form_tranche_niveau  =  $_POST['form_tranche_niveau'] == '' ? 0 : (int)$_POST['form_tranche_niveau'];
         $form_description     =
             "'" . htmlspecialchars(str_replace('\'', '’', $_POST['form_description'])) . "'";
 
@@ -72,7 +74,6 @@ switch ($methode)
                                                           ccol_description)
                         VALUES (
                                 $form_titre,$form_date_ouverture,$form_objet,$form_date_fermeture,$form_differencier_4e, $form_tranche_niveau, $form_description)");
-
         echo '<p>Création effectuée</p>';
         $methode = 'debut';
 
