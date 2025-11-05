@@ -67,12 +67,6 @@ function getSelected($liste_id, $selected_id)
         listeObjets.options[listeObjets.options.length - 1].selected = selected;
     }
 
-    function filtrer_gobj(tobj_cod, selected_gobj) {
-        var listeObjets = document.getElementById('form_objet');
-        viderListe(listeObjets);
-        for (var gobj_cod in tableauObjets[tobj_cod])
-            ajouterElement(gobj_cod, tableauObjets[tobj_cod][gobj_cod], listeObjets, (selected_gobj == gobj_cod));
-    }
 </script>
 
 <?php
