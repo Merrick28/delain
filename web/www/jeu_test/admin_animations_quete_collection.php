@@ -25,7 +25,6 @@ echo '<script type="text/javascript">
 // Nombre maximal de membres du jury
 $nbJury = 10;
 
-//echo "<pre>"; print_r($_REQUEST);
 
 // Validations de formulaire
 $methode = $_REQUEST['methode'];
@@ -37,14 +36,14 @@ switch ($methode)
         $form_date_ouverture  = "ccol_date_ouverture='" . $_POST['form_date_ouverture'] . "'::timestamp,";
         $form_date_fermeture  = "ccol_date_fermeture='" . $_POST['form_date_fermeture'] . "'::timestamp,";
         $form_differencier_4e = "ccol_differencier_4e='" . ((isset($_POST['form_differencier_4e'])) ? 'O' : 'N') . "',";
-        $form_tranche_niveau  = "ccol_tranche_niveau='" . $_POST['form_tranche_niveau'] . "',";
+        $form_tranche_niveau  = "ccol_tranche_niveau=" . ($_POST['form_tranche_niveau'] == '' ? 0 : (int)$_POST['form_tranche_niveau']) . ",";;
         $form_description     =
             "ccol_description='" . htmlspecialchars(str_replace('\'', '’', $_POST['form_description'])) . "',";
         $form_objet           = "ccol_gobj_cod='" . $_POST['form_objet'] . "'";
 
-        $stmt =
-            $pdo->prepare("UPDATE concours_collections SET $form_titre $form_date_ouverture $form_date_fermeture $form_tranche_niveau $form_differencier_4e $form_description $form_objet WHERE ccol_cod=:cool_cod");
-        $stmt = $pdo->execute(array(":cool_cod" => $form_cod), $stmt);
+       $stmt =
+            $pdo->prepare("UPDATE concours_collections SET $form_titre $form_date_ouverture $form_date_fermeture $form_tranche_niveau $form_differencier_4e $form_description $form_objet WHERE ccol_cod=:ccol_cod");
+        $stmt = $pdo->execute(array(":ccol_cod" => $form_cod), $stmt);
 
         echo '<p>Modification effectuée</p>';
         $methode = 'collection_visu';
