@@ -48,6 +48,7 @@ $contenu_page .= (" et <strong>$nb_monstre</strong> monstres dans les souterrain
 $contenu_page .= '<br /><em>Statistiques sur les 30 derniers jours seulement</em>';
 
 //========================================================================================================================
+/*
 $contenu_page .= '<div class="titre">Les Sucreries d’Halloween du royaume souterrain</div>';
 $contenu_page .= ("<table cellspacing=\"2\" cellpadding=\"2\">");
 $contenu_page .= ("<tr><td class=\"soustitre2\">Aventurier</td><td class=\"soustitre2\">Nombre de douceur en poche</td></tr>");
@@ -74,7 +75,7 @@ while ($result = $stmt->fetch()) {
 }
 
 $contenu_page .= ("</table><br>");
-
+*/
 //========================================================================================================================
 $contenu_page .= '<div class="titre">Statistiques Escape-Game</div>';
 
