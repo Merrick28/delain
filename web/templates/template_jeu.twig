@@ -422,7 +422,6 @@
 
         {% if DROIT.modif_perso == 'O' %}
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a><br>
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation perso</a>
             <br>
         {% endif %}
 
@@ -441,8 +440,7 @@
         {% endif %}
 
         {% if DROIT.enchantements == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a
-                href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enluminure.php">Enluminure</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_magie.php">Modif. sorts</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif. bonus/malus</a><br>
@@ -485,18 +483,15 @@
         {% endif %}
 
         {% if PERSO.has_competence(80) %}
-            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
-                href="/jeu_test/comp_commandement.php">Commandement</a><br>
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_commandement.php">Commandement</a><br>
         {% endif %}
 
         {% if COMPTE.is_admin_monstre %}
-            <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/option_monstre.php">Option du
-            monstre</a><br>
+            <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/option_monstre.php">Option du monstre</a><br>
         {% endif %}
 
-        {% if (COMPTE.is_admin_monstre) and (DROIT.modif_perso) %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a
-                href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
+        {% if DROIT.modif_perso == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
         {% endif %}
 
         {% if PERSO.is_milice() %}
@@ -507,9 +502,7 @@
             <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/vampirisme.php">Vampirisme</a><br>
         {% endif %}
 
-
-        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion
-                compte</strong></a>
+        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion compte</strong></a>
         <hr/>
         <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a>
         - {% if COMPTE.is_admin_monstre %}
