@@ -454,9 +454,11 @@
             potions</a><br>
         {% endif %}
 
+        {% if DROIT.animations == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_quete_auto_edit.php">Quetes auto</a><br>
+        {% endif %}
+
         {% if DROIT.modif_perso == 'O' %}
-            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_quete_auto_edit.php">Quetes
-            auto</a><br>
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_titre.php">Gestion récompenses</a><br/>
         {% endif %}
 
