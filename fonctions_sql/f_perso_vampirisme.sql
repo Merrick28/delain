@@ -12,7 +12,7 @@ declare
 
   personnage alias for $1;
   code_retour numeric;
-  v_vampirisme integer;
+  v_vampirisme numeric;
 
 begin
   code_retour := 0;
