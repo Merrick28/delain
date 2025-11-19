@@ -28,7 +28,7 @@ begin
         and coalesce(obj_vampire,0) != 0 ;
 
   -- le bonus de VaMPirisme
-  v_vampirisme := COALESCE(v_vampirisme,0) + valeur_bonus(personnage, 'VMP');
+  v_vampirisme := 100 * COALESCE(v_vampirisme,0) + valeur_bonus(personnage, 'VMP');
 
 
   code_retour := GREATEST( 0, LEAST( 100, v_vampirisme));
