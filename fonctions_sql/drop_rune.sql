@@ -17,6 +17,7 @@ CREATE OR REPLACE FUNCTION public.drop_rune(integer, integer) RETURNS integer
 /* modifié le 05/07/2006 :                        */
 /*  on remet la chance de drop et l'objet         */
 /*  déposable pour les runes utilisées en sort    */
+/* marlyza fix: bug si lancé dé=100               */
 /**************************************************/
 declare
 code_retour integer;
