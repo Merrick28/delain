@@ -68,6 +68,7 @@ begin
   ----------------------------------------------------
   -- DEBUT choix action
   ----------------------------------------------------
+
   update perso
   set perso_pa = perso_pa - getparm_n(98)
   where perso_cod = personnage;
@@ -80,6 +81,7 @@ begin
     temp := lancer_des(1,20) + 26;
     temp_txt := cree_objet_perso_nombre(temp, personnage, 1);
     code_retour := 'Vous trouvez deux runes dans le cadeau !';
+    texte_evt := '[perso_cod1] a ouvert un cadeau, et a trouvé deux runes ! ' ;
   elsif v_pa <= 90 then
     -- explosion de cadeau moyenne
     select into v_pv
@@ -93,6 +95,7 @@ begin
     end if;
     code_retour := 'Le cadeau vous explose au visage !';
     update perso set perso_pv = v_pv where perso_cod = personnage;
+    texte_evt := '[perso_cod1] a ouvert un cadeau qui lui a explosé au visage faisant ' || temp::text || ' points de dégâts !';
   else
     -- explosion de cadeau forte
     select into v_pv
@@ -106,6 +109,7 @@ begin
     end if;
     code_retour := 'Le cadeau vous explose fortement au visage !';
     update perso set perso_pv = v_pv where perso_cod = personnage;
+    texte_evt := '[perso_cod1] a ouvert un cadeau qui lui a explosé fortement au visage faisant ' || temp::text || ' points de dégâts !';
   end if;
 
   /* Partie modifiee pour les recompenses de la quete de noel afin de mettre un cadeau et 2 runes dans le cadeau
@@ -129,7 +133,7 @@ begin
     code_retour := 'Vous trouvez deux runes dans le cadeau !';
     end if;
   */
-  texte_evt := '[perso_cod1] a ouvert un cadeau.';
+
   insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
   values(62,now(),personnage,texte_evt,'O','O');
   return code_retour;
