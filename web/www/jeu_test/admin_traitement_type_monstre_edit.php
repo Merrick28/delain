@@ -241,8 +241,8 @@ switch ($methode)
         $result      = $stmt->fetch();
         writelog($log . "Edit d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
         $immun_rune = (isset($_POST['immun_runes'])) ? 'O' : 'N';
-        $immun_valeur = (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0;
-        $immun_resistance = (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0;
+        $immun_valeur = max(0, min(1, (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0));
+        $immun_resistance = max(-1, min(1, (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0));
 
         $req_upd_mon =
             "update monstre_generique_immunite set immun_valeur={$immun_valeur}, immun_resistance={$immun_resistance}, immun_runes='{$immun_rune}' where immun_sort_cod={$sort_cod} and immun_gmon_cod={$gmon_cod}";
@@ -257,8 +257,8 @@ switch ($methode)
         $result      = $stmt->fetch();
         writelog($log . "Ajout d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
         $immun_rune = (isset($_POST['immun_rune'])) ? 'O' : 'N';
-        $immun_valeur = (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0;
-        $immun_resistance = (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0;
+        $immun_valeur = max(0, min(1, (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0));
+        $immun_resistance = max(-1, min(1, (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0));
 
         $req_upd_mon =
             "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, $immun_resistance, '$immun_rune')";
