@@ -823,8 +823,8 @@ if ($erreur == 0)
                                     <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
                                 <?php echo $sort_nom; ?></TD>
                             <TD><input name="immun_runes" <?php echo ($immun_runes == 'O' ? "checked" : ""); ?> type="checkbox"</TD>
-                            <TD><input name="immun_valeur" value="<?php echo $immun_valeur; ?>" type="text"</TD>
-                            <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"</TD>
+                            <TD><input name="immun_valeur" value="<?php echo $immun_valeur; ?>" type="text"></TD>
+                            <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"></TD>
                             <TD> <input type="submit" value="Modifier"/></form></TD>
                             <TD>
                                 <form method="post">
@@ -977,16 +977,25 @@ if ($erreur == 0)
 
                     <?php $req_m_comps =
                         "select comp_cod,  comp_libelle,gmoncomp_valeur,gmoncomp_chance from competences, monstre_generique_comp "
-                        . "where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod";
+                        . "where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod order by comp_libelle";
 
                     $stmt_m_comps = $pdo->query($req_m_comps);
                     while ($result_m_comps = $stmt_m_comps->fetch())
                     {
                         ?>
                         <TR>
-                            <TD width="40%"><?php echo $result_m_comps['comp_libelle']; ?> Pourcentage :
-                                (<?php echo $result_m_comps['gmoncomp_valeur'] ?> %) Chance :
-                                (<?php echo $result_m_comps['gmoncomp_chance'] ?> %)
+                            <TD width="40%">
+                                <form method="post">
+                                    <?php echo $result_m_comps['comp_libelle']; ?> =>
+                                    Pourcentage : <input type="text" size="3" name="gmoncomp_valeur" value="<?php echo $result_m_comps['gmoncomp_valeur'] ?>"> %
+                                    Chance : <input type="text" size="3" name="gmoncomp_chance" value="<?php echo $result_m_comps['gmoncomp_chance'] ?>"> %
+                                    <input type="hidden" name="methode2" value="edit">
+                                    <input type="hidden" name="sel_method" value="edit">
+                                    <input type="hidden" name="methode" value="edit_comp_mon_spe">
+                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+                                    <input type="hidden" name="typc_cod" value="<?php echo $result_m_comps['comp_cod']; ?>">
+                                    <input type="submit" value="Modifier">
+                                </form>
                             </TD>
                             <td>
                                 <form method="post">
@@ -994,8 +1003,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="supr_comp_mon_spe">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod"
-                                           value="<?php echo $result_m_comps['comp_cod']; ?>">
+                                    <input type="hidden" name="typc_cod" value="<?php echo $result_m_comps['comp_cod']; ?>">
                                     <input type="submit" value="Supprimer">
                                 </form>
                             </TD>
