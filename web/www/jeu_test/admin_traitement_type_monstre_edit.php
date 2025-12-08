@@ -318,6 +318,21 @@ switch ($methode)
         echo "Ajout d’une compétence";
         break;
 
+    case "edit_comp_mon_spe":
+        $req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
+        $stmt        = $pdo->query($req_upd_mon);
+        $result      = $stmt->fetch();
+        writelog($log . "Modification d'une competence : $typc_cod - " . $result['comp_libelle'], 'monstre_edit');
+
+        $valeur = max(0, min(100, (int)$_REQUEST["gmoncomp_valeur"]));
+        $chance = max(0, min(100, (int)$_REQUEST["gmoncomp_chance"]));
+        $req_upd_mon =
+            "update monstre_generique_comp set gmoncomp_valeur={$valeur}, gmoncomp_chance={$chance} where gmoncomp_gmon_cod={$gmon_cod} and gmoncomp_comp_cod={$typc_cod}";
+
+        $stmt = $pdo->query($req_upd_mon);
+        echo "Modification d’une compétence";
+        break;
+
     case "supr_comp_mon_spe":
         $req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
         $stmt        = $pdo->query($req_upd_mon);
