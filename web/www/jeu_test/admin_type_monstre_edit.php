@@ -25,7 +25,7 @@ foreach ($files as $filename) {
     }
 }
 
-
+//print_r($_REQUEST);die();
 //
 //Contenu de la div de droite
 //
@@ -798,12 +798,13 @@ if ($erreur == 0)
                         <th align="left">Y compris<br>lancers runiques</th>
                         <th align="left">Valeur<br>(entre 0 et 1)</th>
                         <th align="left"><span title="0 => test de resistance standard, -1 => toujours raté, 1 => toujours reussi, 0 à 1 => test de resitance, 0 à -1 => test de faiblesse">Resistance / Faiblesse<br>(entre -1 et 1, 0 pour ignorer)</span></th>
-                        <th  align="left">--</th>
+                        <th  align="left">Modif.</th>
+                        <th  align="left">Supp.</th>
                     </tr>
                     <?php $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur, immun_resistance
 						from monstre_generique_immunite
 						inner join sorts on sort_cod = immun_sort_cod
-						where immun_gmon_cod  = $gmon_cod";
+						where immun_gmon_cod  = $gmon_cod order by sort_nom";
 
                     $stmt_m_sorts = $pdo->query($req_m_sorts);
                     while ($result_m_sorts = $stmt_m_sorts->fetch())
@@ -814,18 +815,24 @@ if ($erreur == 0)
                         $immun_runes  = $result_m_sorts['immun_runes'];
                         ?>
                         <TR>
-                            <TD><?php echo $sort_nom; ?></TD>
-                            <TD><?php echo $immun_runes; ?></TD>
-                            <TD><?php echo $immun_valeur; ?></TD>
-                            <TD><?php echo $immun_resistance; ?></TD>
+                            <TD><form method="post">
+                                    <input type="hidden" name="methode2" value="edit"/>
+                                    <input type="hidden" name="sel_method" value="edit"/>
+                                    <input type="hidden" name="methode" value="edit_mon_immunite"/>
+                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
+                                    <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
+                                <?php echo $sort_nom; ?></TD>
+                            <TD><input name="immun_runes" <?php echo ($immun_runes == 'O' ? "checked" : ""); ?> type="checkbox"</TD>
+                            <TD><input name="immun_valeur" value="<?php echo $immun_valeur; ?>" type="text"</TD>
+                            <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"</TD>
+                            <TD> <input type="submit" value="Modifier"/></form></TD>
                             <TD>
                                 <form method="post">
                                     <input type="hidden" name="methode2" value="edit"/>
                                     <input type="hidden" name="sel_method" value="edit"/>
                                     <input type="hidden" name="methode" value="delete_mon_immunite"/>
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
-                                    <input type="hidden" name="sort_cod"
-                                           value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
+                                    <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
                                     <input type="submit" value="Supprimer"/>
                                 </form>
                             </TD>
