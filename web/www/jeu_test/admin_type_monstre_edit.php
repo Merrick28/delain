@@ -822,7 +822,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
                                     <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
                                 <?php echo $sort_nom; ?></TD>
-                            <TD><input name="immun_runes" <?php echo ($immun_runes == 'O' ? "checked" : ""); ?> type="checkbox"</TD>
+                            <TD><input name="immun_runes" <?php echo ($immun_runes == 'O' ? "checked" : ""); ?> type="checkbox"></TD>
                             <TD><input name="immun_valeur" value="<?php echo $immun_valeur; ?>" type="text"></TD>
                             <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"></TD>
                             <TD> <input type="submit" value="Modifier"/></form></TD>
