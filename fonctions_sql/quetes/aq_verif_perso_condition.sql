@@ -244,9 +244,9 @@ begin
 
   elsif (v_carac_cod = 39) then                  --   (39, 'Possède le titre', 'VARIABLE') -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
      if (v_param_txt_1 = '=') or (v_param_txt_1 = '!=') then
-        select into v_perso_carac count(*) from perso_titre where ptitre_perso_cod = v_perso_cod and ptitre_type is null and trim(ptitre_titre) = trim(v_param_txt_2) ;
+        select into v_perso_carac count(*) from perso_titre where ptitre_perso_cod = v_perso_cod and (ptitre_type = 8 or ptitre_type is null) and trim(ptitre_titre) = trim(v_param_txt_2) ;
      else
-        select into v_perso_carac count(*) from perso_titre where ptitre_perso_cod = v_perso_cod and ptitre_type is null and trim(ptitre_titre) like trim(v_param_txt_2) ;
+        select into v_perso_carac count(*) from perso_titre where ptitre_perso_cod = v_perso_cod and (ptitre_type = 8 or ptitre_type is null) and trim(ptitre_titre) like trim(v_param_txt_2) ;
      end if;
      -- traitement de la possessiondu titre immédiateen fonction des cas particulier
      if ( ((v_param_txt_1 = '=') and (v_perso_carac>0)) or ((v_param_txt_1 = '!=') and (v_perso_carac<=0)) ) then
