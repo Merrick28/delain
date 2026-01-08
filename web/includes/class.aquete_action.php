@@ -2066,12 +2066,12 @@ class aquete_action
                     join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=:param_id and aqelem_type='perso'  
                     join perso_position on ppos_perso_cod=aqelem_misc_cod
                     join perso on perso_cod=ppos_perso_cod
-                    where aqperso_cod=:aqperso_cod
+                    where aqperso_cod=:aqperso_cod and aqelem_quete_step=:aqperso_quete_step
                 ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
         $stmt   = $pdo->prepare($req);
 
         //print_r(array('req' =>$req, ':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id)); die();
-        $stmt   = $pdo->execute(array(':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id), $stmt);
+        $stmt   = $pdo->execute(array(':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id, ':aqperso_quete_step' => $aqperso->aqperso_quete_step), $stmt);
         if ($stmt->rowCount()==0)
         {
             return false;
