@@ -58,9 +58,14 @@ else
                     url: '<?php echo $type_flux . G_URL; ?>jeu_test/action.php',
                     data: {position: pos_cod, methode: "deplacement"}
                 }).done(function (data) {
-                    var newDoc = document.open("text/html", "replace");
-                    newDoc.write(data);
-                    newDoc.close();
+                    // Parser le nouveau document HTML
+                    var parser = new DOMParser();
+                    var newDoc = parser.parseFromString(data, 'text/html');
+
+                    // Remplacer tout le document HTML
+                    document.open();
+                    document.write(newDoc.documentElement.outerHTML);
+                    document.close();
                 });
 
             }
