@@ -62,10 +62,27 @@ else
                     var parser = new DOMParser();
                     var newDoc = parser.parseFromString(data, 'text/html');
 
-                    // Remplacer tout le document HTML
-                    document.open();
-                    document.write(newDoc.documentElement.outerHTML);
-                    document.close();
+                    // Chrome declenche les scripts du new doc mais pas FF, forcer l'execution des scripts pour FF pourrait faire 2 declechements sur Chrome
+                    // alors on commence par retirer les scripts du nouveau doc
+                    const scripts = [];
+                    newDoc.body.querySelectorAll('script').forEach(script => {
+                        scripts.push(script);
+                        script.remove();
+                    });
+
+                    // On remplace le body par le new doc
+                    document.body.innerHTML = newDoc.body.innerHTML ;
+
+                    // 2. Réinsérer dynamiquement les scripts
+                    scripts.forEach(tScript => {
+                        const objcript = document.createElement('script');
+                        if (tScript.src) {
+                            objcript.src = tScript.src;
+                        } else {
+                            objcript.textContent = tScript.textContent;
+                        }
+                        document.body.appendChild(objcript);
+                    });
                 });
 
             }
