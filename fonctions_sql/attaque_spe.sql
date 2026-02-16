@@ -350,8 +350,8 @@ begin
           where perso_cod = ligne.perso_cod;
           code_retour := code_retour || 'Votre adversaire a survécu à cette attaque. Il est maintenant <b>' || etat_perso(ligne.perso_cod) || '</b>, et un peu sonné.<br>';
 
-          /* on décale la dlt de x minutes */
-          decalage_dlt := round((armure_cible * armure_cible + 5) / 2);
+          /* on décale la dlt de x minutes -- Marlyza 2026-02-16: limiter à 2h de decalage max */
+          decalage_dlt := min(120, round((armure_cible * armure_cible + 5) / 2));
           update perso set perso_dlt = perso_dlt + (decalage_dlt::text || ' minutes')::interval
           where perso_cod = ligne.perso_cod;
           /***************Code d’analyse**********/
