@@ -64,7 +64,7 @@ if ($stmt->rowCount() != 0)
 		$dif_y = $pos_y-$perso_y;
 		$exp_x = pow($dif_x,2);
 		$exp_y = pow($dif_y,2);
-		$degre = rad2deg(acos($dif_x / (sqrt($exp_x + $exp_y) )));
+		$degre = (($exp_x + $exp_y) == 0) ? 0 : rad2deg(acos($dif_x / (sqrt($exp_x + $exp_y) )));
 		if ($dif_y < 0)
 		{
 			$degre = $degre * -1;
