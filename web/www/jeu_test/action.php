@@ -913,7 +913,7 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
             $contenu_page .= '<a href="niveau_redist.php" class="centrer">Retour</a>';
             break;
         case 'embr':
-            $contenu_page .= $perso->embr($_POST['cible']);
+            $contenu_page .= $perso->embr($_REQUEST['cible']);
             break;
         case 'ouvre_cadeau':
             $contenu_page .= $perso->ouvre_cadeau();
