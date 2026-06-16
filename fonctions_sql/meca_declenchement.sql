@@ -417,7 +417,7 @@ begin
 
                   if (v_meca_type = 'G') then
                       -- declenchement de l'EA sur les persos de chaque case du mecanisme
-                      for row in (select pmeca_pos_cod from meca_position where pmeca_cod=v_meca_cod )
+                      for row in (select pmeca_pos_cod from meca_position where pmeca_meca_cod=v_meca_cod )
                       loop
                           perform execute_fonctions(perso_cod, perso_cod, 'DEP', json_build_object('ea_fonc_cod',v_fonc_cod,'ea_pos_cod',row.pmeca_pos_cod))
                               from perso_position join perso on perso_cod=ppos_perso_cod
