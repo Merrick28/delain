@@ -311,7 +311,7 @@ begin
 ---------------------------
 -- on enlève les PA
 ---------------------------
-	update perso set perso_pa = perso_pa - pa_deplace	where perso_cod = num_perso;
+	update perso set perso_pa = GREATEST(0, perso_pa - pa_deplace)	where perso_cod = num_perso;
 
 ---------------------------
 -- si on se déplace avec une monture, traiter le comportement particulier de la monture sur certain terrain

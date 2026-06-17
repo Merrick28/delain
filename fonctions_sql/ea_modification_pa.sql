@@ -150,10 +150,8 @@ begin
     -- modification des PA de la cible !!! s'assurer de ne pas dépasser 12 PA et de ne pas descendre en dessous de 0 PA
     if v_pa_fixer= 'O' then
         update perso set perso_pa = LEAST(12, ABS(v_nb_pa)) where perso_cod = ligne.perso_cod;
-v_texte_evt := v_texte_evt || ' (PA fixés à ' || LEAST(12, ABS(v_nb_pa))::text || ')';
     else
         update perso set perso_pa = LEAST(12, GREATEST(0, perso_pa + v_nb_pa)) where perso_cod = ligne.perso_cod;
-v_texte_evt := v_texte_evt || ' (PA modifiés de ' || v_nb_pa ::text || ')';
     end if;
 
     -- On rajoute la ligne d’événements
