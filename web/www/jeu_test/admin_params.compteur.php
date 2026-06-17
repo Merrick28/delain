@@ -5,7 +5,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion::verif_appel();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
-echo '<div class="barrTitle">Compteurs (QA)</div><br />';
+echo '<div class="barrTitle">Compteurs Système</div><br />';
 
 $erreur         = false;
 $message_erreur = '';
@@ -18,7 +18,7 @@ $lesTables = array(
 );
 
 $lesNoms = array(
-    'qa' => 'Compteur QA',
+    'qa' => 'Compteurs Système',
 );
 
 $lesColonnes = array(
