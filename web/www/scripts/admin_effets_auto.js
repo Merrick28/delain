@@ -794,6 +794,30 @@ EffetAuto.Types = [
             { nom: 'trig_nb_pa', type: 'texte', label: 'Nombre de PA', description: 'Le nombre de PA (positif=gain / négatif=perte). Valeur fixe ou de la forme 1d6+2.' },
             { nom: 'trig_pa_fixer', type: 'checkbox', label: 'Fixer les PA ', description: 'Si coché, la cible aura un nombre de PA egale à la valeur fixé par le paramètre « Nombre de PA»' },
         ],
+    },
+    {	nom: 'ea_modification_compteur',
+        debut: true,
+        tueur: true,
+        mort: true,
+        attaque: true,
+        modifiable: true,
+        bm_compteur: true,
+        ea_etage: true,
+        affichage: 'Modification des compteurs systèmes',
+        description: 'Modifier un des compteurs de la cible',
+        parametres: [
+            { nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
+            { nom: 'trig_races', type: 'vorpale', label: 'Ciblage Vorpale', description: 'Liste de race pour le ciblage du type Vorpale.' },
+            { nom: 'portee', type: 'entier', label: 'Portée:', paragraphe:'divd', description: 'La portée de l’effet: -1 pour tout l’étage.', validation: Validation.Types.Entier },
+            { nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
+            { nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
+            { nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', paragraphe:'divd', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
+            { nom: 'trig_exclure_porteur', type: 'checkbox', label: 'Exclure le porteur/compagnons', paragraphe:'divf', description: 'Si coché, le ciblage excluras le porteur de l’EA et ses compagnons que sont le familier et le cavalier/monture (on ne peut exclure le porteur d’un ciblage « Soi même » ).' },
+            { nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+            { nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
+            { nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+            { nom: 'trig_sys_compteur', type: 'SYSCompteur', label: 'Liste des compteurs', description: 'Liste des compteurs à modifier.' },
+        ],
     }
 ];
 /*=============================== fin de défintion des EA ===============================*/
@@ -1444,6 +1468,43 @@ EffetAuto.ChampMeca = function (parametre, numero, valeur) {
 	html += '</table>';
 	return html;
 }
+EffetAuto.ChampSysCompteur = function (parametre, numero, valeur) {
+	if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+	var base = "fonc_" + parametre.nom + numero.toString();
+    var nomCompteurCod = "obj_fonc_" + parametre.nom + numero.toString()+"_compteur_cod";
+	var nomSens = "obj_fonc_" + parametre.nom + numero.toString()+"_sens";
+	var nomValeur = "obj_fonc_" + parametre.nom + numero.toString()+"_valeur";
+	var label = "div_" + parametre.nom + numero.toString();
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+	for (var i=0; i < valeur.length || i==0 ; i++)
+	{
+		html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+		html += '<input type="hidden" name="' + base + '[]">';
+
+        html += '&nbsp;<strong><span title="Au format dé rolliste">Valeur</span>:</strong>&nbsp;<input name="'+nomValeur+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].valeur : "")+'">&nbsp;';
+
+        html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
+		var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Assigner</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="1">Incrémenter</option>';
+		var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Décrémenter</option>';
+		html += '</select><br>' ;
+
+		html += '<strong>Compteur:</strong>&nbsp;<span title="Compteur.">';
+		html += '<input data-entry="val" id="row-'+numero+'-'+i+'-compteur_cod" name="'+nomCompteurCod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].compteur_cod : "")+'">';
+		html += '</span>&nbsp';
+		html += '<span style="" data-entry="text" id="row-'+numero+'-'+i+'-compteur_nom"></span>&nbsp';
+		html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-compteur\',\'compteur\',\'Rechercher un compteur\',[\'\',\'\',\'\']);">';
+
+		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+
+		html += '</tr>';
+	}
+	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+	html += '</table>';
+	return html;
+}
 
 EffetAuto.ChampQA = function (parametre, numero, valeur) {
     if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
@@ -1830,6 +1891,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'meca':
 			html = pd + EffetAuto.ChampMeca (parametre, numero, valeur) + pf;
+			break;
+		case 'SYSCompteur':
+			html = pd + EffetAuto.ChampSysCompteur (parametre, numero, valeur) + pf;
 			break;
 		case 'qa':
 			html = pd + EffetAuto.ChampQA (parametre, numero, valeur) + pf;
