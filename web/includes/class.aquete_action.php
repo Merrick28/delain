@@ -4002,25 +4002,8 @@ class aquete_action
                 return false; // le compteur n'existe pas pour ce perso et on a pas réussi à le créer
             }
 
-            switch ($p2->aqelem_misc_cod)
-            {
-                case 0: // Assigner
-                    $cptval->comptval_valeur = $p3->aqelem_param_num_1;
-                    break;
+            $cptval->compteur_modif($compteur_cod, $aqperso->aqperso_perso_cod, $p3->aqelem_param_num_1, $p2->aqelem_misc_cod);
 
-                case 1: // Incrémenter
-                    $cptval->comptval_valeur += $p3->aqelem_param_num_1;
-                    break;
-
-                case -1: // Décrémenter
-                    $cptval->comptval_valeur -= $p3->aqelem_param_num_1;
-                    break;
-
-                default:
-                    return false;   // erreur de saisie dans le QA
-            }
-
-            $cptval->stocke();
         }
 
         return true;

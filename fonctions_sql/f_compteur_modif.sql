@@ -24,13 +24,15 @@ declare
     v_sens alias for $4;
 
     v_compteur_type integer;
-    v_compteur_init integer;
+    v_compteur_init numeric;
+    v_compteur_min numeric;
+    v_compteur_max numeric;
     v_valeur numeric;
     v_comptval_cod integer;
 
 begin
 
-    select compteur_type, compteur_init into v_compteur_type, v_compteur_init from compteur where compteur_cod = v_compteur_cod;
+    select compteur_type, compteur_init , compteur_min , compteur_max into v_compteur_type, v_compteur_init, v_compteur_min, v_compteur_max from compteur where compteur_cod = v_compteur_cod;
     if not found then
         return null;
     end if;
@@ -83,7 +85,20 @@ begin
 
     end if;
 
+    -- récupérer la valeur du compteur après modification
     select comptval_valeur into v_valeur from compteur_valeur where comptval_cod = v_comptval_cod;
+
+    -- ajouter un controle des limites
+    if v_compteur_min is not null and v_valeur < v_compteur_min then
+        v_valeur := v_compteur_min;
+    end if;
+
+    if v_compteur_max is not null and v_valeur > v_compteur_max then
+        v_valeur := v_compteur_max;
+    end if;
+
+    -- mettre à jour la valeur du compteur si elle a été modifiée par les limites
+    update compteur_valeur set comptval_valeur = v_valeur where comptval_cod = v_comptval_cod;
 
 
     return v_valeur;

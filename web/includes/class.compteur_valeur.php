@@ -154,6 +154,24 @@ class compteur_valeur
         return $retour;
     }
 
+    /**
+     * retourne modifie un compeur et retourne sa valeur, par défaut ne fait rine mais retourne la valeur du compteur
+     * le compteur est initialisé si ce n'est pas le cas.
+     *  $compteur_cod: le compteur à modifier
+     *  $perso_cod: le perso pour lequel on modifie le compteur (null pour les compteurs globaux)
+     *  $valeur: la valeur à ajouter (sens=1) , soustraire (sens=-1) ou assigner (sens=0) au compteur
+     *  $sens: 1 pour ajouter, -1 pour soustraire et 0 pour assigner
+     */
+    public function compteur_modif($compteur_cod, $perso_cod=null, $valeur ='0', $sens=1  )
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_compteur_modif(:compteur_cod, :perso_cod, :valeur, :sens) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":compteur_cod" => $compteur_cod, ":perso_cod" => $perso_cod, ":valeur" => $valeur, ":sens" => $sens), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
     public function __call($name, $arguments){
         switch(substr($name, 0, 6)){
             case 'getBy_':
