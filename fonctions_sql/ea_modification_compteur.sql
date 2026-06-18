@@ -141,9 +141,9 @@ begin
                 order by random()
                 limit v_cibles_nombre_max)
   loop
-
+    -- code_retour:= code_retour || 'perso=' || ligne.perso_cod::text || ' param=' || v_params->>'fonc_trig_sys_compteur'::text ||'<br>';
     -- le dé solliste peut donner une valeur différente pour chaque cible
-    for cpt in (select value from json_array_elements((v_params->>'trig_sys_compteur')::json)  )
+    for cpt in (select value from json_array_elements((v_params->>'fonc_trig_sys_compteur')::json)  )
     loop
         v_sens := f_to_numeric((cpt.value->>'sens')::text);
         v_compteur_cod := f_to_numeric((cpt.value->>'compteur_cod')::text);

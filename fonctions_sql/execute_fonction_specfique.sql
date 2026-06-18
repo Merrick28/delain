@@ -175,7 +175,6 @@ begin
 
     elsif code_fonction = 'ea_modification_compteur' then
       select into retour_fonction ea_modification_compteur(v_perso_cod, v_cible_cod, ligne_fonction.fonc_portee, ligne_fonction.fonc_type_cible, ligne_fonction.fonc_nombre_cible, ligne_fonction.fonc_proba/100, ligne_fonction.fonc_message, (coalesce(ligne_fonction.fonc_trigger_param, '{}')::jsonb || coalesce(v_param, '{}')::jsonb)::json );
-
     end if;
 
     if coalesce(retour_fonction, '') != '' then
