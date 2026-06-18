@@ -1,8 +1,8 @@
 --
--- Name: aq_verif_perso_condition(integer,integer,text,text,text); Type: FUNCTION; Schema: potions; Owner: postgres
+-- Name: aq_verif_perso_condition(integer,integer,text,text,text,integer default null); Type: FUNCTION; Schema: potions; Owner: postgres
 --
 
-CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text) RETURNS integer
+CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text, integer default null) RETURNS integer
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function aq_verif_perso_condition						         */
@@ -11,7 +11,8 @@ AS $_$/*********************************************************/
 /*  $2 = type de carac                                   */
 /*  $3 = condition                                       */
 /*  $4 = valeur de ref                                   */
-/*  $5 = seconde valeur (pour condition "entre")        */
+/*  $5 = seconde valeur (pour condition "entre")         */
+/*  $6 = index (pour certaines carac seulement)           */
 /* Sortie :                                              */
 /*  code_retour = 1 si condition vérifiée 0 sinon        */
 /*********************************************************/
@@ -21,6 +22,7 @@ declare
   v_param_txt_1 alias for $3;	  --  condition (=, <=, < etc....
   v_param_txt_2 alias for $4;	  --  valeur de référence
   v_param_txt_3 alias for $5;	  -- seconde valeur de référence si condition "entre"
+  v_param_idx alias for $6;	     -- l'index ne sert que dans certain cas, par exemple le code d'un compteur sur test de compteur
   --
   v_perso_carac text;             -- la carac du perso a vérifier
   v_type_comparaison text;        -- comparaison NUM ou CHAR
@@ -330,4 +332,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text) OWNER TO delain;
+ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text,integer) OWNER TO delain;

@@ -465,7 +465,12 @@ if ($erreur == 0)
                         <br>Cas particuliers sur la conditions sur les Titres du perso: 
                         <br> * L‘opérateur « entre » n\'est pas pris en comtpe et retoune toujours faux
                         <br> * Les opérateurs « > » et « >= » sont traités comme des « like » (le caractère % comme joker)                                         
-                        <br> * Les opérateurs « < » et « <= »  sont traités comme des « not like » (le caractère % comme joker)                                         
+                        <br> * Les opérateurs « < » et « <= »  sont traités comme des « not like » (le caractère % comme joker)          
+                        <br><br><u><b>Conditions indexées</b></u>:
+                        <br>Cas particuliers pour les conditions indexées: 
+                        <br> * La condition est dépéndante d\'un paramètre (l\'index)
+                        <br> * Compteurs : Mettre en index, le CODE du Compteur à tester <a target=_blank href ="admin_params.php?onglet=compteur">(voir les compteurs)</a>                                         
+                                    
                     </div>
                    
                    </td></tr>';
@@ -873,7 +878,8 @@ if ($erreur == 0)
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="25" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
-                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )                                   
+                                     &nbsp;&nbsp;( <span title="&rArr; pour la condition « entre » seulement">et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"></span>&nbsp)                                   
+                                     &nbsp;<span title="&rArr; pour les conditions du type INDEX">Index:<input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="5" value="'.$element->aqelem_param_num_3.'"></span>                              
                                      <a href="#" onclick="$(\'#info-conditions\').slideToggle();"><img width="14" src="/images/info_16.png"></a>                   
                                    </td>';
                         break;
@@ -893,7 +899,8 @@ if ($erreur == 0)
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
                                      <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="25" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
-                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
+                                     &nbsp;&nbsp;( <span title="&rArr; pour la condition « entre » seulement">et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="25" value="'.$element->aqelem_param_txt_3.'"></span>&nbsp)                                   
+                                     &nbsp;<span title="&rArr; pour les conditions du type INDEX">Index:<input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="5" value="'.$element->aqelem_param_num_3.'"></span>                              
                                      <a href="#" onclick="$(\'#info-conditions\').slideToggle();"><img width="14" src="/images/info_16.png"></a>                   
                                    </td>';
                         break;

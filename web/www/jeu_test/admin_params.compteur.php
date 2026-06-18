@@ -213,8 +213,9 @@ foreach ($lesTypes as $i)
     $col_lib = $lesColonnes[$i]['lib'];
     $log_commpteur = $lesNoms[$i];
     echo "<table id='table_compteur_$i'><tr>
-			<td class='titre' colspan='6'><strong>$log_commpteur</strong></td></tr>";
+			<td class='titre' colspan='9'><strong>$log_commpteur</strong></td></tr>";
     echo '<tr>
+			<td class="titre"><strong>CODE</strong></td>
 			<td class="titre"><strong>Titre</strong></td>
 			<td class="titre"><strong>Type</strong></td>
 			<td class="titre"><strong>Init</strong></td>
@@ -224,6 +225,7 @@ foreach ($lesTypes as $i)
 			<td class="titre" ><strong>Problèmes détectés </strong></td>
 		  </tr>';
     echo "<tr><form method='POST' action='#'>
+		<td class='titre' style='padding:2px;'></td>
 		<td class='titre' style='padding:2px;'><input name='compteur_lib' type='text' size='64' /></td>
 		<td class='titre' style='padding:2px;'>".create_selectbox("compteur_typ", array("0"=>"Global", "1"=>"Individuel"), 0)."</td>
 		<td class='titre' style='padding:2px;'><input name='compteur_def' type='text' size='6' value='0'/> </td>
@@ -233,7 +235,7 @@ foreach ($lesTypes as $i)
 			<input type='submit' value='Ajouter' class='test' /></td><td class='titre'></td>
 		</form></tr>";
 
-    $req = "select $col_cod, $col_def, $col_min, $col_max, $col_typ, $col_lib from $table_cpt order by $col_def";
+    $req = "select $col_cod, $col_def, $col_min, $col_max, $col_typ, $col_lib from $table_cpt order by $col_cod";
     $stmt = $pdo->query($req);
     $prev_type = false;
     while ($result = $stmt->fetch())
@@ -249,6 +251,7 @@ foreach ($lesTypes as $i)
         $message_erreur = '';
 
         echo "<tr><form method='POST' action='#'>
+			<td style='text-align: center; padding:2px;'>$compteur_cod</td>
 			<td style='padding:2px;'><input name='compteur_lib' type='text' size='64' value='$compteur_lib' /></td>
 			<td style='padding:2px;'>".create_selectbox("compteur_typ", array("0"=>"Global", "1"=>"Individuel"), $compteur_typ)."</td> 
 			<td style='padding:2px;'><input name='compteur_def' type='text' size='6' value='$compteur_def' /></td>

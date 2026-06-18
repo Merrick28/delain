@@ -1387,6 +1387,7 @@ EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
 	var nomSigne = "obj_fonc_" + parametre.nom + numero.toString()+"_signe";
 	var nomVal1 = "obj_fonc_" + parametre.nom + numero.toString()+"_val1";
 	var nomVal2 = "obj_fonc_" + parametre.nom + numero.toString()+"_val2";
+	var nomVal3 = "obj_fonc_" + parametre.nom + numero.toString()+"_val3";
 	var label = "div_" + parametre.nom + numero.toString();
 
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
@@ -1418,6 +1419,7 @@ EffetAuto.ChampListePersoCondition = function (parametre, numero, valeur) {
 
 		html += '&nbsp;<input id="val1'+row+'" data-entry="val" name="'+nomVal1+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].val1 : "")+'">';
 		html += '&nbsp;et&nbsp;<input id="val2'+row+'" data-entry="val" name="'+nomVal2+'[]" type="text" size="2" value="'+( valeur.length>0 ? valeur[i].val2 : "")+'">';
+		html += '&nbsp;idx:&nbsp;<input id="val3'+row+'" data-entry="val" name="'+nomVal3+'[]" type="text" size="2" value="'+( valeur.length>0 && valeur[i].val3 ? valeur[i].val3 : "")+'">';
 		html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
 		html += '</tr>';
 	}
