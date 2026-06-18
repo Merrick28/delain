@@ -2,7 +2,7 @@
 // fichier de déclaration des constantes
 
 
-$__VERSION = "20250827";        // A changer aussi dans variable_menu.php
+$__VERSION = "20260618";        // A changer aussi dans variable_menu.php
 
 //$racine_url = "http://www.jdr-delain.net/";
 $racine_url = ((isset($_SERVER['HTTPS'])||isset($_SERVER['SSL_PROTOCOL'])) ? "https://" : "http://").$_SERVER['HTTP_HOST']."/";
