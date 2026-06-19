@@ -70,7 +70,8 @@ begin
   (36, 'Nombre de sorts niveau 4 connus', 'COMPETENCE'),
   (37, 'Nombre de sorts niveau 5 connus', 'COMPETENCE'),
   (38, 'Nombre de sorts niveau 6 connus', 'COMPETENCE'),
-  (39, 'Possède le titre', 'VARIABLE') -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
+  (39, 'Possède le titre', 'VARIABLE'), -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
+  (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
   ;
  */
 
@@ -266,7 +267,16 @@ begin
      else
         return 0;  -- erreur dans les paramètres
      end if;
-  else
+
+  elsif (v_carac_cod = 40) then                  --  (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
+    -- on récupère la valeur du compteur (en appelant la fonction de modification du compteur avec le sens ajout et une valeur de 0 pour ne pas réllement le modifier)
+    -- cette fonction va créer le compteur avec la valeur initiale si il n'existe pas encore.
+    select into v_perso_carac f_compteur_modif(v_param_idx, v_perso_cod, '0', 1)::text ;
+    if v_perso_carac is null then
+      return 0;  -- erreur dans les paramètres (mauvais compteur par exemple
+    end if;
+
+  else -- cas des compteurs non prévus, on retourne 0 pour dire que la condition n'est pas vérifiée
     return 0 ;    -- erreur dans les paramètres
 
   end if;
