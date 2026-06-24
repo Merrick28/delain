@@ -1,8 +1,8 @@
 --
--- Name: aq_verif_perso_condition(integer,integer,text,text,text); Type: FUNCTION; Schema: potions; Owner: postgres
+-- Name: aq_verif_perso_condition(integer,integer,text,text,text,numeric default null); Type: FUNCTION; Schema: potions; Owner: postgres
 --
 
-CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text) RETURNS integer
+CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text, numeric default null) RETURNS integer
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function aq_verif_perso_condition						         */
@@ -11,7 +11,8 @@ AS $_$/*********************************************************/
 /*  $2 = type de carac                                   */
 /*  $3 = condition                                       */
 /*  $4 = valeur de ref                                   */
-/*  $5 = seconde valeur (pour condition "entre")        */
+/*  $5 = seconde valeur (pour condition "entre")         */
+/*  $6 = index (pour certaines carac seulement)           */
 /* Sortie :                                              */
 /*  code_retour = 1 si condition vérifiée 0 sinon        */
 /*********************************************************/
@@ -21,6 +22,7 @@ declare
   v_param_txt_1 alias for $3;	  --  condition (=, <=, < etc....
   v_param_txt_2 alias for $4;	  --  valeur de référence
   v_param_txt_3 alias for $5;	  -- seconde valeur de référence si condition "entre"
+  v_param_idx alias for $6;	     -- l'index ne sert que dans certain cas, par exemple le code d'un compteur sur test de compteur
   --
   v_perso_carac text;             -- la carac du perso a vérifier
   v_type_comparaison text;        -- comparaison NUM ou CHAR
@@ -68,7 +70,8 @@ begin
   (36, 'Nombre de sorts niveau 4 connus', 'COMPETENCE'),
   (37, 'Nombre de sorts niveau 5 connus', 'COMPETENCE'),
   (38, 'Nombre de sorts niveau 6 connus', 'COMPETENCE'),
-  (39, 'Possède le titre', 'VARIABLE') -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
+  (39, 'Possède le titre', 'VARIABLE'), -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
+  (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
   ;
  */
 
@@ -264,7 +267,16 @@ begin
      else
         return 0;  -- erreur dans les paramètres
      end if;
-  else
+
+  elsif (v_carac_cod = 40) then                  --  (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
+    -- on récupère la valeur du compteur (en appelant la fonction de modification du compteur avec le sens ajout et une valeur de 0 pour ne pas réllement le modifier)
+    -- cette fonction va créer le compteur avec la valeur initiale si il n'existe pas encore.
+    select into v_perso_carac f_compteur_modif(v_param_idx::integer, v_perso_cod, '0'::text, 1)::text ;
+    if v_perso_carac is null then
+      return 0;  -- erreur dans les paramètres (mauvais compteur par exemple
+    end if;
+
+  else -- cas des compteurs non prévus, on retourne 0 pour dire que la condition n'est pas vérifiée
     return 0 ;    -- erreur dans les paramètres
 
   end if;
@@ -330,4 +342,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text) OWNER TO delain;
+ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text,numeric) OWNER TO delain;

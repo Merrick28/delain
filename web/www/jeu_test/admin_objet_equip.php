@@ -67,7 +67,7 @@ if ($erreur == 0) {
                         $element->objelem_misc_cod = 1*$_REQUEST["objelem_misc_cod"][$param_id][$e];
                         $element->objelem_param_num_1 = isset($_REQUEST["objelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["objelem_param_num_1"][$param_id][$e] : NULL ;
                         $element->objelem_param_num_2 = isset($_REQUEST["objelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['objelem_param_num_2'][$param_id][$e] : NULL ;
-                        $element->objelem_param_num_3 = isset($_REQUEST["objelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['objelem_param_num_3'][$param_id][$e] : NULL ;
+                        $element->objelem_param_num_3 = isset($_REQUEST["objelem_param_num_3"][$param_id][$e]) ? (int)$_REQUEST['objelem_param_num_3'][$param_id][$e] : NULL ;
                         $element->objelem_param_txt_1 = $_REQUEST["objelem_param_txt_1"][$param_id][$e];
                         $element->objelem_param_txt_2 = $_REQUEST['objelem_param_txt_2'][$param_id][$e];
                         $element->objelem_param_txt_3 = $_REQUEST['objelem_param_txt_3'][$param_id][$e];
@@ -209,10 +209,12 @@ if ($erreur == 0) {
                                     <input data-entry="val" id="' . $row_id . 'objelem_cod" name="objelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->objelem_type == $param['type'] ? $element->objelem_cod : '') . '"> 
                                     <input name="objelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
                                      ' . create_selectbox("objelem_param_num_1[$param_id][]", array("0" => "ET", "1" => "OU"), 1 * $element->objelem_param_num_1, array('id' => "{$row_id}objelem_param_num_1", 'style' => 'style="width: 100px;" data-entry="val"')) . '
-                                     ' . create_selectbox_from_req("objelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1 * $element->objelem_misc_cod, array('id' => "{$row_id}objelem_misc_cod", 'style' => 'style="width: 250px;" data-entry="val"')) . '
+                                     ' . create_selectbox_from_req("objelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1 * $element->objelem_misc_cod, array('id' => "{$row_id}objelem_misc_cod", 'style' => 'style="width: 250px;" data-entry="val"')) . '
                                      ' . create_selectbox("objelem_param_txt_1[$param_id][]", array("=" => "=", "!=" => "!=", "<" => "<", "<=" => "<=", "entre" => "entre", ">" => ">", ">=" => ">="), $element->objelem_param_txt_1, array('id' => "{$row_id}objelem_param_txt_1", 'style' => 'style="width: 50px;" data-entry="val"')) . '
                                      <input data-entry="val" name="objelem_param_txt_2[' . $param_id . '][]" id="' . $row_id . 'objelem_param_txt_2" type="text" size="15" value="' . $element->objelem_param_txt_2 . '" style="margin-top: 5px;">
-                                     &nbsp;&nbsp;( et <input data-entry="val" name="objelem_param_txt_3[' . $param_id . '][]" id="' . $row_id . 'objelem_param_txt_3" type="text" size="15" value="' . $element->objelem_param_txt_3 . '"> &rArr; pour la condition « entre » seulement )
+                                     &nbsp;&nbsp;( <span title="&rArr; pour la condition « entre » seulement">et <input data-entry="val" name="objelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'objelem_param_txt_3" type="text" size="15" value="'.$element->objelem_param_txt_3.'"></span>&nbsp)                                   
+                                     &nbsp;<span title="&rArr; pour les conditions du type INDEX">Index:<input data-entry="val" name="objelem_param_num_3['.$param_id.'][]" id="'.$row_id.'objelem_param_num_3" type="text" size="5" value="'.($element->objelem_param_num_3==0 ? '': $element->objelem_param_num_3 ).'"></span>                              
+                                     
                                    </td>';
                     break;
                 default:

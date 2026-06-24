@@ -75,7 +75,7 @@ begin
   loop
 
     v_nb_condition := v_nb_condition + 1 ;
-    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, ligne.aqelem_misc_cod, ligne.aqelem_param_txt_1, ligne.aqelem_param_txt_2, ligne.aqelem_param_txt_3) ;
+    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, ligne.aqelem_misc_cod, ligne.aqelem_param_txt_1, ligne.aqelem_param_txt_2, ligne.aqelem_param_txt_3, ligne.aqelem_param_num_3) ;
 
   end loop;
 
@@ -101,7 +101,7 @@ begin
   loop
 
     v_nb_condition := v_nb_condition + 1 ;
-    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, ligne.aqelem_misc_cod, ligne.aqelem_param_txt_1, ligne.aqelem_param_txt_2, ligne.aqelem_param_txt_3) ;
+    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, ligne.aqelem_misc_cod, ligne.aqelem_param_txt_1, ligne.aqelem_param_txt_2, ligne.aqelem_param_txt_3, ligne.aqelem_param_num_3) ;
 
   end loop;
 
