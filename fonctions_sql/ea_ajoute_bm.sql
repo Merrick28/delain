@@ -203,7 +203,8 @@ begin
         end if;
     elsif v_pv < 0 then
         -- attenuer les dégats eventullement en cas de PvP (le porteur de l'EA est un joueur et la cible aussi)
-        v_pv := effectue_degats_perso(ligne.perso_cod, v_pv, v_source) ;
+        -- marlyza 24-06-2026 - suppression de cette reduction de dégats, pas de PvP sur les EA
+        -- v_pv := effectue_degats_perso(ligne.perso_cod, v_pv, v_source) ;
 
         code_retour := code_retour || '<br />'|| ligne.perso_nom || ' perd  «' || (-v_pv)::text || '» points de vie' ;
         if v_bloque_magie = 1 then
