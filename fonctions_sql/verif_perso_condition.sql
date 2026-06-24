@@ -38,7 +38,7 @@ begin
 	loop
 
     v_nb_condition := v_nb_condition + 1 ;
-    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, f_to_numeric(ligne.v->>'cond')::integer, ligne.v->>'signe', ligne.v->>'val1', ligne.v->>'val2', ligne.v->>'val3') ;
+    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, f_to_numeric(ligne.v->>'cond')::integer, ligne.v->>'signe', ligne.v->>'val1', ligne.v->>'val2', f_to_numeric(ligne.v->>'val3')) ;
 
 	end loop;
 
@@ -55,7 +55,7 @@ begin
 	loop
 
     v_nb_condition := v_nb_condition + 1 ;
-    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, f_to_numeric(ligne.v->>'cond')::integer, ligne.v->>'signe', ligne.v->>'val1', ligne.v->>'val2', ligne.v->>'val3') ;
+    v_nb_verif := v_nb_verif + quetes.aq_verif_perso_condition(v_perso_cod, f_to_numeric(ligne.v->>'cond')::integer, ligne.v->>'signe', ligne.v->>'val1', ligne.v->>'val2', f_to_numeric(ligne.v->>'val3')) ;
 
 	end loop;
 

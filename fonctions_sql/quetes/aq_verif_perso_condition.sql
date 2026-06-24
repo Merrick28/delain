@@ -1,8 +1,8 @@
 --
--- Name: aq_verif_perso_condition(integer,integer,text,text,text,integer default null); Type: FUNCTION; Schema: potions; Owner: postgres
+-- Name: aq_verif_perso_condition(integer,integer,text,text,text,numeric default null); Type: FUNCTION; Schema: potions; Owner: postgres
 --
 
-CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text, integer default null) RETURNS integer
+CREATE or REPLACE FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text, numeric default null) RETURNS integer
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function aq_verif_perso_condition						         */
@@ -271,7 +271,7 @@ begin
   elsif (v_carac_cod = 40) then                  --  (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
     -- on récupère la valeur du compteur (en appelant la fonction de modification du compteur avec le sens ajout et une valeur de 0 pour ne pas réllement le modifier)
     -- cette fonction va créer le compteur avec la valeur initiale si il n'existe pas encore.
-    select into v_perso_carac f_compteur_modif(v_param_idx, v_perso_cod, '0', 1)::text ;
+    select into v_perso_carac f_compteur_modif(v_param_idx::integer, v_perso_cod, '0'::text, 1)::text ;
     if v_perso_carac is null then
       return 0;  -- erreur dans les paramètres (mauvais compteur par exemple
     end if;
@@ -342,4 +342,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text,integer) OWNER TO delain;
+ALTER FUNCTION quetes.aq_verif_perso_condition(integer,integer,text,text,text,numeric) OWNER TO delain;
