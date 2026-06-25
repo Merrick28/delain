@@ -2229,38 +2229,52 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                    // Problème lecture des paramètres
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'bonus', 0)) return false ;       // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'texte')) ; // le paramètre n'est pas existant dans les premières versions
 
-        shuffle($p2);                                       // ordre aléatoire pour les objets
+
+
+        shuffle($p2);                                       // ordre aléatoire pour les bonus
 
         $nbdon = $p1->aqelem_param_num_1 ;
         $nbbonus = count ($p2) ;
 
-        // Vérification sur le nombre d'objet
-        if ($nbdon <= 0) return true;       // etape bizarre !! on ne donne aucun bonus/malus
+        // Vérification sur le nombre d'bonus
+        if ($nbdon < 0) return true;       // si négatif, erreur de saisie si 0=> degat/soins seulement
 
-        // Préparation de la liste des bonus/malus donner en fonction du nombre demandé
-        $liste_bonus = array() ;
-        if ($nbdon > $nbbonus) $nbdon = $nbbonus;
-        // On donne les bonus dans la limite demandé (aléatoirement)
-        for ($i=0; $i<$nbdon; $i++) $liste_bonus[$i] = clone $p2[$i];
-
-        // le sbonus sont appliqué directment
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array()); // on fait le menage pour le recréer
-        $param_ordre = 0 ;
-        foreach ($liste_bonus as $k => $elem)
+        if ($nbdon < 0)
         {
+            // Préparation de la liste des bonus/malus donner en fonction du nombre demandé
+            $liste_bonus = array() ;
+            if ($nbdon > $nbbonus) $nbdon = $nbbonus;
+            // On donne les bonus dans la limite demandé (aléatoirement)
+            for ($i=0; $i<$nbdon; $i++) $liste_bonus[$i] = clone $p2[$i];
 
-            // instancier l'objet générique
-            $req = "select ajoute_bonus(:perso_cod, tbonus_libc, :duree, :valeur) from bonus_type where tbonus_cod = :tbonus_cod ;  ";
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(":tbonus_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod , ":duree" =>  $elem->aqelem_param_num_2, ":valeur" =>  $elem->aqelem_param_num_1), $stmt);
-            if ($result = $stmt->fetch())
+            // le sbonus sont appliqué directment
+            $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array()); // on fait le menage pour le recréer
+            $param_ordre = 0 ;
+            foreach ($liste_bonus as $k => $elem)
             {
-                $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
-                $param_ordre ++ ;
-                $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+
+                // instancier l'objet générique
+                $req = "select ajoute_bonus(:perso_cod, tbonus_libc, :duree, :valeur) from bonus_type where tbonus_cod = :tbonus_cod ;  ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":tbonus_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod , ":duree" =>  $elem->aqelem_param_num_2, ":valeur" =>  $elem->aqelem_param_num_1), $stmt);
+                if ($result = $stmt->fetch())
+                {
+                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $param_ordre ++ ;
+                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                }
             }
         }
+
+        // gestion des soins/degats
+        if (!$p3->aqelem_param_txt_1) return true; // pas de paramètre soin/degats on sort après le traitement de BM
+
+        // les soins/degats sont au format dé roliste
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+        $resultat = $perso->modif_perso_pv($p3->aqelem_param_txt_1);
 
         return true;
     }
