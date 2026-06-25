@@ -2239,7 +2239,7 @@ class aquete_action
         // Vérification sur le nombre d'bonus
         if ($nbdon < 0) return true;       // si négatif, erreur de saisie si 0=> degat/soins seulement
 
-        if ($nbdon < 0)
+        if ($nbdon > 0)
         {
             // Préparation de la liste des bonus/malus donner en fonction du nombre demandé
             $liste_bonus = array() ;
