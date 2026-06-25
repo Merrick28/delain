@@ -1,4 +1,4 @@
-﻿﻿<?php
+﻿<?php
 include "blocks/_header_page_jeu.php";
 if (!defined('APPEL'))
 {

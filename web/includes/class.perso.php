@@ -3599,6 +3599,25 @@ class perso
         $result = $stmt->fetch();
         return $result['resultat'];
     }
+
+    /**
+     * modifie les PV du perso (degats/soin)
+     * $pv_roliste: degats/soins au format dé roliste
+     * $event: texte d'evennement si besoin
+     * $perso_attaquant: perso qui inflige les degats/soin (si null c'est le perso lui-même), utilisé pour l'event
+     */
+
+    public function modif_perso_pv($pv_roliste, $event=null, $perso_attaquant=null)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_modif_perso_pv(:perso, :pv_roliste, :attaquant) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod, ":pv_roliste" => $pv_roliste, ":attaquant" => $perso_attaquant), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
     /**
      * retourne la valeur du compteur passé en paramètre pour le perso
      */
