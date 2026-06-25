@@ -72,6 +72,7 @@ begin
   (38, 'Nombre de sorts niveau 6 connus', 'COMPETENCE'),
   (39, 'Possède le titre', 'VARIABLE'), -- signe "entre" sera interprété comme "contient", les signes <, >, <=, >= : considéré comme "like" avec caractère % dans la chaine
   (40, 'Compteur (index=code du compteur)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
+  (41, 'st équipé d’un type d’objet générique', 'OBJET'),
   ;
  */
 
@@ -276,7 +277,23 @@ begin
       return 0;  -- erreur dans les paramètres (mauvais compteur par exemple
     end if;
 
-  else -- cas des compteurs non prévus, on retourne 0 pour dire que la condition n'est pas vérifiée
+  elsif (v_carac_cod = 41) then                  --   (41, 'Est équipé d’un type d’objet générique', 'OBJET')
+    select obj_cod into v_perso_carac from perso_objets join objets on perobj_obj_cod=obj_cod where perobj_perso_cod = v_perso_cod and perobj_equipe='O' and obj_gobj_cod = TO_NUMBER(v_param_txt_2, '9999999999.99') LIMIT 1 ;
+    if found then
+      if (v_param_txt_1 = '=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    else
+      if (v_param_txt_1 = '!=') then
+        return 1;
+      else
+        return 0;
+      end if;
+    end if;
+
+else -- cas des compteurs non prévus, on retourne 0 pour dire que la condition n'est pas vérifiée
     return 0 ;    -- erreur dans les paramètres
 
   end if;
