@@ -2229,9 +2229,7 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                    // Problème lecture des paramètres
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'bonus', 0)) return false ;       // Problème lecture des paramètres
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'texte')) ; // le paramètre n'est pas existant dans les premières versions
-
-
+        $p3 = $element->get_aqperso_element( $aqperso, 3, 'texte') ; // le paramètre n'est pas existant dans les premières versions
 
         shuffle($p2);                                       // ordre aléatoire pour les bonus
 
