@@ -293,7 +293,7 @@ begin
       end if;
     end if;
 
-  elsif (v_carac_cod = 42) then                  --  (42, 'Distance (index=code de position)', 'INDEX'), -- le v_param_idx est le code du compteur à vérifier
+  elsif (v_carac_cod = 42) then                  --  (42, 'Distance (index=code de position)', 'INDEX'), -- le v_param_idx est le code de la position à vérifier
     -- on récupère la distance entre la position du perso et la position demandé en paramètre
     select into v_perso_carac distance(ppos_pos_cod, v_param_idx::integer)::text from perso_position where ppos_perso_cod=v_perso_cod;
     if v_perso_carac is null then
