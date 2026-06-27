@@ -16,6 +16,10 @@ CREATE OR REPLACE FUNCTION public.eboulement(etage_cod integer, nouveaux_murs in
 /* On passe en paramètres  :                                     */
 /*    1 le code de l''étage                                      */
 /*    2 le nombre de murs à rajouter                             */
+/*                                                               */
+/* Marlyza 27/06/2026 : ajout du mode terrain (si etage_mine < 0)*/
+/* pour ne rajouter des murs que sur les cases de  type de       */
+/* terrain mur (pos_ter_cod=17)                                  */
 /*****************************************************************/
 declare
 v_etage_cod alias for $1;
@@ -25,31 +29,35 @@ v_etage_cod alias for $1;
     compteur integer;
     v_mur_type integer;
     v_mur_richesse integer;
+    v_mode_terrain boolean;
 begin
     compteur := 0;
     code_retour := '';
-select into v_mur_type, v_mur_richesse etage_mine_type, etage_mine_richesse from etage
-where etage_numero = v_etage_cod;
-for ligne in (select pos_cod from positions a where pos_etage = v_etage_cod and
-        not exists (select mur_pos_cod from murs where mur_pos_cod = a.pos_cod) and
-        not exists (select ppos_pos_cod from perso_position where ppos_pos_cod = a.pos_cod) and
-        not exists (select lpos_pos_cod from lieu_position,positions b
-            where lpos_pos_cod = b.pos_cod
-            and abs(a.pos_x - b.pos_x) <= 1
-            and abs(a.pos_y - b.pos_y) <= 1
-            and a.pos_etage = b.pos_etage)
-        order by random() limit nouveaux_murs) loop
+
+    select into v_mur_type, v_mur_richesse, v_mode_terrain etage_mine_type, etage_mine_richesse, (etage_mine < 0) from etage
+    where etage_numero = v_etage_cod;
+    for ligne in (select pos_cod from positions a where pos_etage = v_etage_cod and
+            (not v_mode_terrain or pos_ter_cod=17) and       -- filtre terrain conditionnel
+            not exists (select mur_pos_cod from murs where mur_pos_cod = a.pos_cod) and
+            not exists (select ppos_pos_cod from perso_position where ppos_pos_cod = a.pos_cod) and
+            (v_mode_terrain or not exists (select lpos_pos_cod from lieu_position,positions b
+                                        where lpos_pos_cod = b.pos_cod
+                                        and abs(a.pos_x - b.pos_x) <= 1
+                                        and abs(a.pos_y - b.pos_y) <= 1
+                                        and a.pos_etage = b.pos_etage))
+            order by random() limit nouveaux_murs)
+    loop
         insert into murs (mur_pos_cod, mur_type, mur_creusable, mur_usure, mur_richesse)
             values (ligne.pos_cod, v_mur_type, 'O', 300, v_mur_richesse);
         compteur := compteur + 1;
         code_retour := code_retour || 'Ajouté un mur à l''étage ' || trim(to_char(v_etage_cod,'999'))
             || ' en position ' || trim(to_char(ligne.pos_cod,'9999999')) || E'\r\n';
-end loop;
+    end loop;
 
     if compteur != 0 then
         code_retour := code_retour || 'Ajouté ' || trim(to_char(compteur,'999'))
             || ' murs à l''etage ' || trim(to_char(v_etage_cod,'999')) || E'\r\n';
-end if;
+    end if;
 
 return code_retour;
 
