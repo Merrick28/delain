@@ -1311,19 +1311,19 @@ class aquete_perso
                     break;
 
                 case "#COMPTEUR #MODIFIER":
-                    // déclenchement d'un mecanisme d'étage, .
+                    // modifcation d'un ou de plusieurs compteurs .
                     $this->action->compteur_modifier($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si le compteur n'a pas été modif)
                     break;
 
                 case "#QUETE #DESACTIVATION":
-                    // déclenchement d'un mecanisme d'étage, .
+                    // désactivation d'une QA
                     $this->action->quete_desactivation($this);
                     $status_etape = 1;      // 1 => ok etape suivante
                     break;
 
                 case "#QUETE #ACTIVATION":
-                    // déclenchement d'un mecanisme d'étage, .
+                    // activation d'un QA .
                     $this->action->quete_activation($this);
                     $status_etape = 1;      // 1 => ok etape suivante
                     break;

@@ -4004,7 +4004,7 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'compteur', 0)) return false ;
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'selecteur')) return false ;
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'texte')) return false ;
 
         foreach ($p1 as $k => $elem)
         {
@@ -4014,7 +4014,7 @@ class aquete_action
                 return false; // le compteur n'existe pas pour ce perso et on a pas réussi à le créer
             }
 
-            $cptval->compteur_modif($compteur_cod, $aqperso->aqperso_perso_cod, $p3->aqelem_param_num_1, $p2->aqelem_misc_cod);
+            $cptval->compteur_modif($compteur_cod, $aqperso->aqperso_perso_cod, $p3->aqelem_param_txt_1, $p2->aqelem_misc_cod);
 
         }
 
