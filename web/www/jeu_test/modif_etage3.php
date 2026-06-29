@@ -414,6 +414,7 @@ if ($erreur == 0)
 			Y max : <input type="text" name="y_max"><br /><br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="50" /><br />
 			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
+            <small><em>Si le taux est négatif (-1 à -1000), le remplissage de mur aura lieu uniquement sur les terrains de type "mur" (-1 le mur sera quasiment toujours présent, -1000 une fois ouvert il ne se refemera quasi-jamais)</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value='999'><br />
 			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value='1000'><br />
@@ -576,6 +577,7 @@ if ($erreur == 0)
             <br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
 			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
+            <small><em>Si le taux est négatif (-1 à -1000), le remplissage de mur aura lieu uniquement sur les terrains de type "mur" (-1 le mur sera quasiment toujours présent, -1000 une fois ouvert il ne se refemera quasi-jamais)</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value="<?php echo  $etage_mine_type; ?>" /><br />
 			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value="<?php echo  $etage_mine_richesse; ?>" /><br />
