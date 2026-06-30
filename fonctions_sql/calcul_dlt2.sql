@@ -141,6 +141,7 @@ declare
   v_ter_cod integer;      -- cod du terrain
   v_pos_cod integer;      -- cod du monstre genrique si c'est le cas!
   v_perso_cod integer;      --  perso_cod familier/maitre
+  v_perso_pos_cod integer;      -- pos_cod du perso
 
 begin
   v_limite_quatriemes := 1;
@@ -155,7 +156,7 @@ begin
   from perso
   where perso_cod = personnage for update;
 
-  select into v_fonction_dessus,v_niveau pos_fonction_dessus,pos_etage
+  select into v_fonction_dessus,v_niveau, v_perso_pos_cod pos_fonction_dessus,pos_etage, pos_cod
   from positions,perso_position
   where ppos_pos_cod = pos_cod
         and ppos_perso_cod = personnage;
@@ -247,6 +248,9 @@ begin
   else
     --Mise en place des fonctions sur une case lors de l’activation du perso
     code_retour2 := '';
+
+    -- executiond es EA d'étage déclenché sur evenement activation de DLT
+    code_retour2 := code_retour2 || execute_fonctions(personnage, null, 'DEP', json_build_object('ancien_pos_cod',v_perso_pos_cod,'ancien_etage',v_niveau,'nouveau_pos_cod',v_perso_pos_cod,'nouveau_etage',v_niveau)) ;
 
     if v_fonction_dessus is not null and v_fonction_dessus != '' then
       code_retour2 := '<p>';
