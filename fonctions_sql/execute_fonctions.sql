@@ -76,7 +76,9 @@ begin
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
 			and (fonc_type = v_evenement OR fonc_type = 'CES' OR (  fonc_type = 'POS'
               AND fonc_trigger_param->>'fonc_trig_rearme' != -1
-              AND ( (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, ''))  OR (coalesce(v_param->>'ancien_pos_cod'::text, '') = '' ))
+              AND ( (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, ''))
+	                OR (coalesce(v_param->>'ancien_pos_cod'::text, '') = '')
+	                OR (fonc_trigger_param->>'fonc_trig_sens' = 1) )
               AND    (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
@@ -85,11 +87,11 @@ begin
 		)
 	loop
 
-    -- par défaut on execute la fonction d'EA trouvée
-    v_do_it := true;
+      -- par défaut on execute la fonction d'EA trouvée
+      v_do_it := true;
 
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' != -2 then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' NOT IN (-2, 1) then -- -------------------------------------------------------------------------------------
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
@@ -160,6 +162,22 @@ begin
             end if;
 
         end if;
+
+	  elseif (row.fonc_type = 'POS') and (row.fonc_trigger_param->>'fonc_trig_sens' = 1) then -- -------------------------------------------------------------------------------------
+        -- activation de DLT sur cas à EA
+
+        -- par défaut on ne déclenche pas
+        v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
+
+        -- vérifier si le perso est sur une case à EA et s'il verifie les conditions demandée (Activation DLT vérifié par ancien_pos_cod = nouveau_pos_cod)
+        if (      (coalesce(v_param->>'ancien_pos_cod'::text, '') = coalesce(v_param->>'nouveau_pos_cod'::text, ''))
+              AND (row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+              AND (verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1) ) then
+
+             v_do_it := true ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
+
+        end if;
+
 
 	  elseif row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
 	      -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
