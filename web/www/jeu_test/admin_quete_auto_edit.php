@@ -271,8 +271,10 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
+                    $estEtapeSaut = false;
                     if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #COMPTEUR", "#SAUT #CONDITION #DETRUIRE #OBJET", "#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
                     {
+                        $estEtapeSaut = true;
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
                         if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #PERSO", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #PA", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
@@ -354,6 +356,26 @@ if ($erreur == 0)
                         {
                             echo "<strong style='color: yellow'>&rArr; Etape suivante #{$etape->aqetape_saut_etape_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
                         }
+                    }
+                    else if (!$estEtapeSaut && ! in_array($etape_modele->aqetapmodel_tag, ["#END #OK", "#END #KO"]))
+                    {
+                        // si ce n'est pas une etape saut ni un saut forcé, ni une etape terminale, on affiche le n° d'étape suivante classique
+                        $e = new aquete_etape;
+                        if (!$e->charge($etape->aqetape_etape_cod))    // on charge l'étape pour récupérer le nom!
+                        {
+                            if ($etape->aqetape_etape_cod <= 0)
+                            {
+                                echo "<strong style='color: seagreen'>&rArr; Etape suivante #{$etape->aqetape_etape_cod}</strong> <em style='color: yellow'>Fin de la quête</em><br>";
+                            } else {
+                                echo "<strong style='color: red'>&rArr; Etape suivante #{$etape->aqetape_etape_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
+
+                            }
+                        }
+                        else
+                        {
+                            echo "<strong style='color: seagreen'>&rArr; Etape suivante #{$etape->aqetape_etape_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
+                        }
+
                     }
 
                     // Saut d'étape timeout (sortie par le delai)
