@@ -1317,7 +1317,7 @@ class aquete_action
         $i = -1 ;
         foreach ($p6 as $k => $elem)
         {
-            if ($elem->aqelem_misc_cod!=0)
+            if (($elem->aqelem_misc_cod!=0) || ((int)$elem->aqelem_param_txt_2!=0) || ((int)$elem->aqelem_param_txt_3!=0))
             {
                 $i = $k ;                       // On cale l'id sur l'ordre de lélément à vendre
                 $p6_matos[$i] = $elem ;         // partie gauche
@@ -1453,32 +1453,34 @@ class aquete_action
                     $e->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
                 }
 
-                // instancier les X objets à mettre dans l'inventaire du joueur
-                for ($nbobj = 0; $nbobj < $nb * $elem->aqelem_param_num_1; $nbobj++)
+                // instancier les X objets à mettre dans l'inventaire du joueur (seulement si le gain ést un objet (PO/PX sont traité d'un coup après
+                if ( $elem->aqelem_misc_cod != 0)
                 {
-                    $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
-                    if ($result = $stmt->fetch())
+                    for ($nbobj = 0; $nbobj < $nb * $elem->aqelem_param_num_1; $nbobj++)
                     {
-                        if (1 * $result["obj_cod"] > 0)
+                        $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
+                        if ($result = $stmt->fetch())
                         {
-                            $objet = new objets();
-                            $objet->charge((int)$result["obj_cod"]);
+                            if (1 * $result["obj_cod"] > 0)
+                            {
+                                $objet = new objets();
+                                $objet->charge((int)$result["obj_cod"]);
 
-                            $texte_evt = '[cible] fait du troc avec [attaquant] et reçoit un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                                $texte_evt = '[cible] fait du troc avec [attaquant] et reçoit un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                                         values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                            $stmt2 = $pdo->prepare($req);
-                            $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
-                                ":texte_evt" => $texte_evt,
-                                ":levt_attaquant" => $pnj->perso_cod,
-                                ":levt_cible" => $aqperso->aqperso_perso_cod,
-                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
+                                $stmt2 = $pdo->prepare($req);
+                                $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                                    ":texte_evt" => $texte_evt,
+                                    ":levt_attaquant" => $pnj->perso_cod,
+                                    ":levt_cible" => $aqperso->aqperso_perso_cod,
+                                    ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
+                            }
                         }
                     }
                 }
-
             }
         }
 

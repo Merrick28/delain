@@ -795,7 +795,7 @@ class aquete_etape
         $i = -1 ;
         foreach ($p6 as $k => $elem)
         {
-            if ($elem->aqelem_misc_cod!=0)
+            if (($elem->aqelem_misc_cod!=0) || ((int)$elem->aqelem_param_txt_2!=0) || ((int)$elem->aqelem_param_txt_3!=0))
             {
                 $i = $k ;                       // On cale l'id sur l'ordre de lélément à vendre
                 $p6_matos[$i] = $elem ;         // partie gauche
@@ -808,7 +808,6 @@ class aquete_etape
             }
 
         }
-
 
         $perso = new perso();
         $perso->charge($aqperso->aqperso_perso_cod);
@@ -851,7 +850,10 @@ class aquete_etape
                     $maxitem = MAX($maxitem, $nb) ;
                     $nbitem += $nb  ;
                     $selected_item.='<input type="hidden" name="echange-'.$k.'" value="'.$_REQUEST["echange-{$k}"].'">';
-                    $trocs_matos[$elem->aqelem_misc_cod] = (!isset($trocs_matos[$elem->aqelem_misc_cod])) ? $nb * (int)$elem->aqelem_param_num_1 : $trocs_matos[$elem->aqelem_misc_cod] + $nb * (int)$elem->aqelem_param_num_1 ;
+                    if ($elem->aqelem_misc_cod)
+                    {   // selulement s'il y a un gain d'objet (il pourrait y avoir seulement un gain de PO/PX
+                        $trocs_matos[$elem->aqelem_misc_cod] = (!isset($trocs_matos[$elem->aqelem_misc_cod])) ? $nb * (int)$elem->aqelem_param_num_1 : $trocs_matos[$elem->aqelem_misc_cod] + $nb * (int)$elem->aqelem_param_num_1 ;
+                    }
                     $trocs_gain_bzf +=  $nb * (int)$elem->aqelem_param_txt_2  ;
                     $trocs_gain_px +=  $nb * (int)$elem->aqelem_param_txt_3  ;
 
@@ -915,7 +917,6 @@ class aquete_etape
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
             <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
             <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">Qté</td><td style="min-width:400px; font-weight: bold">Objet à acquérir</td><td style="min-width:400px; font-weight: bold">Prix</td><td style="min-width:400px; font-weight: bold"></td></tr>';
-
             foreach ($p6_matos as $k => $elem)
             {
                 $objet = new objet_generique();
@@ -924,14 +925,15 @@ class aquete_etape
                 $form_block = "" ;
                 $first_col = true ;
                 $rowstock = true;
+                $gain_bzf = 1 * (int)$elem->aqelem_param_txt_2;
+                $gain_px = 1 * (int)$elem->aqelem_param_txt_3;
+
                 // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
                 foreach ($p6_couts[$k] as $kk => $e)
                 {
                     $prix = new objet_generique();
                     $prix->charge($e->aqelem_param_num_2);
                     $bzf = 1 * (int)$e->aqelem_param_txt_1;
-                    $gain_bzf = 1 * (int)$e->aqelem_param_txt_2;
-                    $gain_px = 1 * (int)$e->aqelem_param_txt_3;
 
                     $enstock = true;
                     if ((!isset($inventaire[$e->aqelem_param_num_2]) || ($inventaire[$e->aqelem_param_num_2] < (int)$e->aqelem_param_num_3)) && ((int)$e->aqelem_param_num_3 > 0)) $enstock = false;
@@ -963,10 +965,11 @@ class aquete_etape
                 }
 
                 // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
-                $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
-                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'"><input ' . ($rowstock ? ((isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"] >0) ? ' value='.$_REQUEST["echange-{$k}"] : '') : 'disabled ') . ' name="echange-' . $k . '" type="text" size="1" style="text-align: center;"></td>
-                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'">&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom ;
-                if ($gain_bzf != 0) $form .= ' +'. $gain_bzf . '&nbsp;Bzf';
+                $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">';
+                $form.='<td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'"><input ' . ($rowstock ? ((isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"] >0) ? ' value='.$_REQUEST["echange-{$k}"] : '') : 'disabled ') . ' name="echange-' . $k . '" type="text" size="1" style="text-align: center;"></td>';
+                $form.='<td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'">';
+                if ($elem->aqelem_misc_cod != 0) $form.='&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom ;
+                if ($gain_bzf != 0) $form .=  (($elem->aqelem_misc_cod != 0) ? ' +' : '' ). $gain_bzf . '&nbsp;Bzf';
                 if ($gain_px != 0) $form .= (($gain_bzf !=0) ? ' et ' : ' +') . $gain_px . '&nbsp;PX';
                 $form .= '</td>';
                 $form .= $form_block ;
