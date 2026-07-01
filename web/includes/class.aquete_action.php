@@ -1353,6 +1353,8 @@ class aquete_action
         $enstock = true ;
         $bourse = $perso->perso_po ;
         $trocs_bzf = 0 ;
+        $gain_bzf = 0 ;
+        $gain_px = 0 ;
         foreach ($p6_matos as $k => $elem)
         {
             if (isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"]>0)
@@ -1367,6 +1369,8 @@ class aquete_action
                     // check brouzouf
                     $trocs_bzf += $nb * (int)$e->aqelem_param_txt_1;
                     $bourse = $bourse - $nb * (int)$e->aqelem_param_txt_1;
+                    $gain_bzf +=  $nb * (int)$e->aqelem_param_txt_2;
+                    $gain_px +=  $nb * (int)$e->aqelem_param_txt_3;
                     if ($bourse < 0)
                     {
                         $enstock = false;
@@ -1478,6 +1482,41 @@ class aquete_action
             }
         }
 
+        // ajout des gains en PX
+        if ($gain_px > 0)
+        {
+            $perso->perso_px = $perso->perso_px + $gain_px;
+            $perso->stocke();
+
+            $texte_evt = "[attaquant] a donné {$gain_px} PX à [cible]." ;
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(18, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" =>   $pnj->perso_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(18, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" =>  $pnj->perso_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
+        }
+
+        // ajout des gains en Brouzoufs
+        if ($gain_bzf>0)
+        {
+            $perso->perso_po = $perso->perso_po + $gain_bzf;
+            $perso->stocke();
+
+            $texte_evt = "[attaquant] a donné {$gain_bzf} brouzoufs à [cible]." ;
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(40, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" =>  $pnj->perso_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                          values(40, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" =>  $pnj->perso_cod, ":levt_cible" =>  $aqperso->aqperso_perso_cod ), $stmt);
+        }
 
         $perso_journal->aqpersoj_texte .= "   ".count($p6)." objet(s) sont disponible(s) à l'échange.<br>";
         $perso_journal->aqpersoj_texte .= "    Vous réalisez l'échange suivant: ".html_entity_decode($_REQUEST["troc-phrase"])."<br>";

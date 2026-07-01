@@ -818,6 +818,8 @@ class aquete_etape
         $trocs_en_stock = [] ;
         $trocs = [] ;
         $trocs_matos = [] ;
+        $trocs_gain_bzf = 0 ;
+        $trocs_gain_px = 0 ;
         $trocs_bzf = 0 ;
         $req = "select obj_gobj_cod, count(*) as count  from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? group by obj_gobj_cod";
         $stmt   = $pdo->prepare($req);
@@ -850,6 +852,8 @@ class aquete_etape
                     $nbitem += $nb  ;
                     $selected_item.='<input type="hidden" name="echange-'.$k.'" value="'.$_REQUEST["echange-{$k}"].'">';
                     $trocs_matos[$elem->aqelem_misc_cod] = (!isset($trocs_matos[$elem->aqelem_misc_cod])) ? $nb * (int)$elem->aqelem_param_num_1 : $trocs_matos[$elem->aqelem_misc_cod] + $nb * (int)$elem->aqelem_param_num_1 ;
+                    $trocs_gain_bzf +=  $nb * (int)$elem->aqelem_param_txt_2  ;
+                    $trocs_gain_px +=  $nb * (int)$elem->aqelem_param_txt_3  ;
 
                     // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
                     foreach ($p6_couts[$k] as $kk => $e)
@@ -925,7 +929,9 @@ class aquete_etape
                 {
                     $prix = new objet_generique();
                     $prix->charge($e->aqelem_param_num_2);
-                    $bzf = 1 * $e->aqelem_param_txt_1;
+                    $bzf = 1 * (int)$e->aqelem_param_txt_1;
+                    $gain_bzf = 1 * (int)$e->aqelem_param_txt_2;
+                    $gain_px = 1 * (int)$e->aqelem_param_txt_3;
 
                     $enstock = true;
                     if ((!isset($inventaire[$e->aqelem_param_num_2]) || ($inventaire[$e->aqelem_param_num_2] < (int)$e->aqelem_param_num_3)) && ((int)$e->aqelem_param_num_3 > 0)) $enstock = false;
@@ -959,7 +965,10 @@ class aquete_etape
                 // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
                 $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
                                   <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'"><input ' . ($rowstock ? ((isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"] >0) ? ' value='.$_REQUEST["echange-{$k}"] : '') : 'disabled ') . ' name="echange-' . $k . '" type="text" size="1" style="text-align: center;"></td>
-                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'">&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom . '</td>';
+                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'">&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom ;
+                if ($gain_bzf != 0) $form .= ' +'. $gain_bzf . '&nbsp;Bzf';
+                if ($gain_px != 0) $form .= (($gain_bzf !=0) ? ' et ' : ' +') . $gain_px . '&nbsp;PX';
+                $form .= '</td>';
                 $form .= $form_block ;
 
             }
@@ -1007,10 +1016,12 @@ class aquete_etape
                 if ($k==count($trocs_matos) && $k>1) $troc_phrase .= ' et '; else if ($k>1) $troc_phrase .= ', ';
                 $troc_phrase .= $nbobj.' x <strong>'.$objet->gobj_nom.'</strong>';
             }
+            if ($trocs_gain_bzf != 0) $troc_phrase .= " + <strong>{$trocs_gain_bzf} Bzf</strong>";
+            if ($trocs_gain_px != 0) $troc_phrase .=  (($trocs_gain_bzf !=0) ? ' et ' : "+ " )." <strong>{$trocs_gain_px} PX</strong>";
 
             // ensuite le cout en bz et objet
             $k = 0 ;
-            if ($trocs_bzf>0) $troc_phrase.= " pour {$trocs_bzf} Bzf";
+            if ($trocs_bzf>0) $troc_phrase.= " au tarif de <strong>{$trocs_bzf} Bzf</strong>";
             if (count($trocs)>0)  $troc_phrase.= (($trocs_bzf>0) ? " et " : "")." en échange de ";
             foreach ($trocs as $obj => $nbobj)
             {
