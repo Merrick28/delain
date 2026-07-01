@@ -363,12 +363,9 @@ if ($erreur == 0)
                         $e = new aquete_etape;
                         if (!$e->charge($etape->aqetape_etape_cod))    // on charge l'étape pour récupérer le nom!
                         {
-                            if ($etape->aqetape_etape_cod <= 0)
+                            if ($etape->aqetape_etape_cod > 0)
                             {
-                                echo "<strong style='color: seagreen'>&rArr; Etape suivante #{$etape->aqetape_etape_cod}</strong> <em style='color: yellow'>Fin de la quête</em><br>";
-                            } else {
                                 echo "<strong style='color: red'>&rArr; Etape suivante #{$etape->aqetape_etape_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
-
                             }
                         }
                         else
