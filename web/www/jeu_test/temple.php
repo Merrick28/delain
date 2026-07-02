@@ -49,16 +49,16 @@ if ($erreur == 0)
 
             <form name="soins" method="post" action="temple_soins.php">
                 <input type="hidden" class="vide" name="soin" value="soin_femelle">
-        <p><input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps :
-            «
-            Pouvez-vous me soigner ? » - 20 brouzoufs.<br/>
-            <input type="radio" name="soins" value="2">Vous dévoilez une large plaie qui vous fait souffrir : «
-            Pouvez-vous
-            soigner cette blessure ? » - 35 brouzoufs.<br/>
-            <input type="radio" name="soins" value="3">Dans un souffle, vous murmurez « J’agonise... sauvez-moi... » -
-            60
-            brouzoufs.<br/>
-        <p><input type="submit" value="Valider !" class="test"></p>
+        <p>
+        <p>
+            <input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps : « Pouvez-vous me soigner ? » (+5 PV) - 20 brouzoufs.<br/>
+            <input type="radio" name="soins" value="2">Vous grimacez face aux bleus et coupures qui constellent votre peau : « Un petit remontant s'il vous plaît. » (+10 PV) - 35 brouzoufs.<br/>
+            <input type="radio" name="soins" value="3">Vous dévoilez une large plaie qui commence à vous faire souffrir : « Pouvez-vous soigner cette blessure ? » (+20 PV) - 60 brouzoufs.<br/>
+            <input type="radio" name="soins" value="4">Vous tenez votre flanc ensanglanté, le visage crispé par la douleur : « Vite, j'ai besoin de points de suture... » (+50 PV) - 150 brouzoufs.<br/>
+            <input type="radio" name="soins" value="5">Vous titubez lourdement, manquant de vous effondrer à chaque pas : « Par pitié... pansez mes traumatismes... » (+100 PV) - 400 brouzoufs.<br/>
+            <input type="radio" name="soins" value="6">Dans un souffle, le regard vitreux, vous murmurez : « J’agonise... sauvez-moi... » (+250 PV) - 1000 brouzoufs.<br/>
+        </p>
+        <input type="submit" value="Valider !" class="test"></p>
         </form>
         <hr/>
     <?php } else
@@ -91,16 +91,15 @@ if ($erreur == 0)
                 <br>« Soyez le bienvenu dans ce dispensaire, Messire. Que puis-je pour vous ? » </em>
             <form name="soins" method="post" action="temple_soins.php">
                 <input type="hidden" class="vide" name="soin" value="soin_male">
-        <p><input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps :
-            «
-            Pouvez-vous me soigner ? » - 20 brouzoufs.<br/>
-            <input type="radio" name="soins" value="2">Vous dévoilez une large plaie qui vous fait souffrir : «
-            Pouvez-vous
-            soigner cette blessure ? » - 35 brouzoufs.<br/>
-            <input type="radio" name="soins" value="3">Dans un souffle, vous murmurez « J’agonise... sauvez-moi... » -
-            60
-            brouzoufs.<br/>
-        <p><input type="submit" value="Valider !" class="test"></p>
+        <p>
+            <input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps : « Pouvez-vous me soigner ? » (+5 PV) - 20 brouzoufs.<br/>
+            <input type="radio" name="soins" value="2">Vous grimacez face aux bleus et coupures qui constellent votre peau : « Un petit remontant s'il vous plaît. » (+10 PV) - 35 brouzoufs.<br/>
+            <input type="radio" name="soins" value="3">Vous dévoilez une large plaie qui commence à vous faire souffrir : « Pouvez-vous soigner cette blessure ? » (+20 PV) - 60 brouzoufs.<br/>
+            <input type="radio" name="soins" value="4">Vous tenez votre flanc ensanglanté, le visage crispé par la douleur : « Vite, j'ai besoin de points de suture... » (+50 PV) - 150 brouzoufs.<br/>
+            <input type="radio" name="soins" value="5">Vous titubez lourdement, manquant de vous effondrer à chaque pas : « Par pitié... pansez mes traumatismes... » (+100 PV) - 400 brouzoufs.<br/>
+            <input type="radio" name="soins" value="6">Dans un souffle, le regard vitreux, vous murmurez : « J’agonise... sauvez-moi... » (+250 PV) - 1000 brouzoufs.<br/>
+        </p>
+        <input type="submit" value="Valider !" class="test"></p>
 
         </form>
         <hr/>

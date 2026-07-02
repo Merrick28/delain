@@ -24,9 +24,15 @@ if ($erreur == 0)
     $pv[1]     = 5;
     $pv[2]     = 10;
     $pv[3]     = 20;
+    $pv[4]     = 50;
+    $pv[5]     = 100;
+    $pv[6]     = 250;
     $cout[1]   = 20;
     $cout[2]   = 35;
     $cout[3]   = 60;
+    $cout[4]   = 150;
+    $cout[5]   = 400;
+    $cout[6]   = 1000;
     $req_soins = "select temple_soins($perso_cod,$pv[$soins],$cout[$soins]) as soins";
     $stmt = $pdo->query($req_soins);
     $result = $stmt->fetch();
