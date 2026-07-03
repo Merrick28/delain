@@ -272,7 +272,7 @@ if ($erreur == 0)
                     echo '</div></div>';
 
                     $estEtapeSaut = false;
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #COMPTEUR", "#SAUT #CONDITION #DETRUIRE #OBJET", "#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #TRANSACTION", "#SAUT #CONDITION #COMPTEUR", "#SAUT #CONDITION #DETRUIRE #OBJET", "#SAUT #MULTIPLE #CONDITION #PERSO", "#SAUT #CONDITION #EQUIPE", "#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #PERSO","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #PA","#SAUT #CONDITION #MECA","#SAUT #CONDITION #CODE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #ALEATOIRE","#SAUT #CONDITION #COMPETENCE","#SAUT #CONDITION #CARAC")))
                     {
                         $estEtapeSaut = true;
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
@@ -309,6 +309,11 @@ if ($erreur == 0)
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 3) ;
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 4));
+                        } else if (in_array($etape_modele->aqetapmodel_tag, array("#SAUT #CONDITION #TRANSACTION")))
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 3) ;
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 4));
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
                         } else
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;

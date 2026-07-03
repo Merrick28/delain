@@ -1254,6 +1254,126 @@ class aquete_action
         return $retour;
     }
 
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivante en fonction d'objet en transaction =>  '[1:objet_generique|0%0],[2:etape|0%0],[3:etape|1%1],[4:etape|1%1],[5:selecteur|1%1|{0~Recupérer},{1~Supprimer},{2~Annuler}],[6:selecteur|1%1|{0~Recupérer},{1~Supprimer},{2~Annuler}]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_transaction(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        // Vérification d'usage
+        $element = new aquete_element();
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'etape')) return (object)['etape' => 0, 'transac' => false] ;                         // Problème lecture des paramètres
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'perso', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;    // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ;;    // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'etape', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ;;              // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'etape')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;              // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'selecteur')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;          // Problème lecture des paramètres
+        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, 'selecteur')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;          // Problème lecture des paramètres
+
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        $pnj_cod_list = "";
+        foreach ($p1 as $k => $elem) $pnj_cod_list.=$elem->aqelem_misc_cod.",";
+        $pnj_cod_list.= "0";       // on rajoute un code 0 pour être sûr de ne pas avoir une liste vide et une query qui planterai à cause de ça
+
+        // Recherche des transactions en cours avec un des persos (comme c'est en transaction il est forcement sur la même case que le joueur)!
+        $req = "select tran_cod, tran_obj_cod, tran_acheteur from transaction where tran_acheteur in ({$pnj_cod_list}) and tran_vendeur=:tran_vendeur and tran_prix=0 ; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array( ":tran_vendeur" => $aqperso->aqperso_perso_cod ), $stmt);
+        if (!$result = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; // aucune transaction trouvé, fin avec sortie sur l'etape pas de transaction!!!
+        }
+
+        // one s'intérresse qu'à la première transaction trouvée
+        $objet = new objets();
+        $objet->charge((int)$result["tran_obj_cod"]);
+        $tran_cod = (int)$result["tran_cod"] ;
+
+        // recherche de l'objet par son generique dans la liste
+        $flagTrouveGenerique = false ;
+        $k = 0 ;
+        while ( ($flagTrouveGenerique == false) && ( $k < count($p2)) )
+        {
+            if ($p2[$k]->aqelem_misc_cod == $objet->obj_gobj_cod)
+            {
+                $flagTrouveGenerique = true ;
+            }
+            else
+            {
+                $k++;   // next generique
+            }
+        }
+
+        //on a passé en revue les transactions, maintenant on regarde si l'objet correspond à un des génériques de la liste
+        if ($flagTrouveGenerique == true)
+        {
+            // On a trouvé un générique, on traite la transaction: accepter/supprimer/annuler
+            if ($p6->aqelem_misc_cod == 2 )
+            {
+                //on refuse la transaction
+                $req_ref_tran = "delete from transaction where tran_cod = :transaction";
+                $stmt = $pdo->prepare($req_ref_tran);
+                $stmt = $pdo->execute(array(":transaction" => (int)$tran_cod),$stmt);
+            }
+            else
+            {
+                //on accepte la transaction
+                $req = "select accepte_transaction(:tran_cod) as resultat; ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array( ":tran_cod" => (int)$tran_cod), $stmt);
+                if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+                {
+                    // la transaction a été faite, l'objet est maitnenant dans l'inventaire du PNJ, s'il ne sert pas on le supprime
+                    if ($p6->aqelem_misc_cod == 1 )
+                    {
+                        $objet->supprime();
+                    }
+                }
+            }
+
+            // on sort sur etape prévue pour le generique trouvé
+            return (object)['etape' => ( $k < count($p3) ) ? $p3[$k]->aqelem_misc_cod : $p3[count($p3) -1]->aqelem_misc_cod, 'transac' => true] ;
+        }
+        else
+        {
+            // On a pas trouvé, mais qui ne correspond à aucun générique, on traite la transaction: accepte/supprime
+            if ($p7->aqelem_misc_cod == 2 )
+            {
+                //on refuse la transaction
+                $req_ref_tran = "delete from transaction where tran_cod = :transaction";
+                $stmt = $pdo->prepare($req_ref_tran);
+                $stmt = $pdo->execute(array(":transaction" => (int)$tran_cod),$stmt);
+            }
+            else
+            {
+                //on accepte la transaction
+                $req = "select accepte_transaction(:tran_cod) as resultat; ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array( ":tran_cod" => (int)$tran_cod), $stmt);
+                if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+                {
+                    // la transaction a été faite, l'objet est maitnenant dans l'inventaire du PNJ, s'il ne sert pas on le supprime
+                    if ($p7->aqelem_misc_cod == 1 )
+                    {
+                        $objet->supprime();
+                    }
+                }
+            }
+            // Aucun générique trouvé, on sort sur etape prévu a cet effet: generique trouvé mais pas dans la liste
+            return (object)['etape' => $p4->aqelem_misc_cod, 'transac' => true] ;
+
+        }
+
+    }
+
     //==================================================================================================================
     /**
      * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%1],[2:etape|1%1],[3:choix_etape|1%0]'
