@@ -1040,7 +1040,8 @@ class aquete_perso
 
                 case "#SAUT #CONDITION #TRANSACTION":
                     // cette etape sert à faire un saut vers une autre, le saut est conditionné par un objet en transaction
-                    $etape_cod =  $this->action->saut_condition_transaction($this);
+                    $retour =  $this->action->saut_condition_transaction($this); // le retour est un objet qui contient l'étape suivante mais aussi s'il reste des transac atraiter
+                    $etape_cod = $retour->etape;
                     if ($etape_cod < 0)
                     {
                         $this->aqperso_actif = ($etape_cod == -2) ? 'S' : 'E';  // Etape terminée avec Succes ou sur une Echec.
@@ -1054,6 +1055,12 @@ class aquete_perso
                     }
 
                     $status_etape = 1;      // 1 => ok etape suivante,
+                
+                    // cas particulier, on peut boucler plusieurs fois sur cette étape tant qu'il y a des objets en transaction
+                    if ($retour->transac && in_array($this->aqperso_etape_cod, $etape_ran)){
+                        // on reset la liste des etapes déjà passées (on ré-autorise le passage sur toues les étapes de recompense)
+                        $etape_ran = [] ;
+                    }
                     break;
 
 

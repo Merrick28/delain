@@ -1267,13 +1267,13 @@ class aquete_action
 
         // Vérification d'usage
         $element = new aquete_element();
-        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'etape')) return false ;                         // Problème lecture des paramètres
-        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'perso', 0)) return $p5->aqelem_misc_cod ;    // Problème lecture des paramètres
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return $p5->aqelem_misc_cod ;    // Problème lecture des paramètres
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'etape', 0)) return $p5->aqelem_misc_cod ;              // Problème lecture des paramètres
-        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'etape')) return $p5->aqelem_misc_cod ;              // Problème lecture des paramètres
-        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'selecteur')) return $p5->aqelem_misc_cod ;          // Problème lecture des paramètres
-        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, 'selecteur')) return $p5->aqelem_misc_cod ;          // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'etape')) return (object)['etape' => 0, 'transac' => false] ;                         // Problème lecture des paramètres
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'perso', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;    // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ;;    // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'etape', 0)) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ;;              // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'etape')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;              // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'selecteur')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;          // Problème lecture des paramètres
+        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, 'selecteur')) return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; ;          // Problème lecture des paramètres
 
 
         $perso = new perso();
@@ -1289,7 +1289,7 @@ class aquete_action
         $stmt = $pdo->execute(array( ":tran_vendeur" => $aqperso->aqperso_perso_cod ), $stmt);
         if (!$result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            return  $p5->aqelem_misc_cod  ; // aucune transaction trouvé, fin avec sortie sur l'etape pas de transaction!!!
+            return (object)['etape' => $p5->aqelem_misc_cod, 'transac' => false] ; // aucune transaction trouvé, fin avec sortie sur l'etape pas de transaction!!!
         }
 
         // one s'intérresse qu'à la première transaction trouvée
@@ -1340,7 +1340,7 @@ class aquete_action
             }
 
             // on sort sur etape prévue pour le generique trouvé
-            return ( $k < count($p3) ) ? $p3[$k]->aqelem_misc_cod : $p3[count($p3) -1]->aqelem_misc_cod ;
+            return (object)['etape' => ( $k < count($p3) ) ? $p3[$k]->aqelem_misc_cod : $p3[count($p3) -1]->aqelem_misc_cod, 'transac' => true] ;
         }
         else
         {
@@ -1368,7 +1368,7 @@ class aquete_action
                 }
             }
             // Aucun générique trouvé, on sort sur etape prévu a cet effet: generique trouvé mais pas dans la liste
-            return $p4->aqelem_misc_cod;
+            return (object)['etape' => $p4->aqelem_misc_cod, 'transac' => true] ;
 
         }
 
