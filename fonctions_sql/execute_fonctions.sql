@@ -48,6 +48,10 @@ declare
 	v_sort_aggressif text;     -- sort de agressif
 	v_sort_soutien text;       -- sort de agressif
 
+    -- variable specifique au A, AE, AT, AC, ACE, ACT
+    v_type_attaque text;         -- type d'attaque (0 pas d arme, 1 contact, 2 distance)
+    v_trig_type_attaque text;    -- type du declencheur sur le type d'attaque (0 les 2, 1 attaque au CaC, 2 attaque à distance)
+
 	-- variable specifique au POS
   v_pos_cod integer;         -- position de l'EA de type POS
 	plist record;              -- list de perso
@@ -283,6 +287,19 @@ begin
                 (row.fonc_trigger_param->>'fonc_trig_type_neutre'::text = 'O' and v_sort_soutien = 'N' and v_sort_aggressif = 'N')
             )  then
             v_do_it := false ;    -- type MAC avec des conditions non-remplies pour cet EA (pas le bon type de sort)
+        end if;
+
+    elseif  v_evenement in ('A', 'AE', 'AT', 'AC', 'ACE', 'ACT') then -- ---------------------------------------------------------------------------------
+        -- Vérifier le type de déclenchement avec type_attaque :
+        -- v_type_attaque        : 0 = pas d'arme, 1 = contact, 2 = distance
+        -- v_trig_type_attaque   : 0 = les 2 types, 1 = CaC uniquement, 2 = distance uniquement
+        v_type_attaque := coalesce(v_param->>'type_attaque'::text, '0') ;       -- par défaut on considère que c'est une attaque sans arme (0)
+        v_trig_type_attaque := coalesce(row.fonc_trigger_param->>'fonc_trig_type_attaque'::text, '0') ; -- par défaut on considère que le déclencheur est sur les 2 types d'attaque (0)
+        if (    (v_trig_type_attaque = '1' and v_type_attaque = '2')
+              or
+                (v_trig_type_attaque = '2' and v_type_attaque in ('0', '1'))
+            )  then
+            v_do_it := false ;    -- type avec des conditions non-remplies pour cet EA (pas le bon type d'attaque)
         end if;
 
     elseif v_evenement = 'OTR' then -- ---------------------------------------------------------------------------------

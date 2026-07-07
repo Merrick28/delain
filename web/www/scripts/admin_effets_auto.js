@@ -33,13 +33,15 @@ EffetAuto.Triggers = {
 			declencheur:'Attaque sa cible',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
-			]
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
+            ]
 	},
 	"AE":  {description: "lorsqu’il attaque sa cible qui esquive.",
 			default:'deb_tour_generique',
 			declencheur:'Attaque sa cible qui esquive',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
 			]
 	},
 	"AT":  {description: "lorsqu’il attaque et touche sa cible.",
@@ -47,6 +49,7 @@ EffetAuto.Triggers = {
 			declencheur:'Attaque et touche sa cible',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
 			]
 	},
 	"AC":  {description: "lorsqu’il est attaqué.",
@@ -54,6 +57,7 @@ EffetAuto.Triggers = {
 			declencheur:'Est attaqué',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
 			]
 	},
 	"ACE": {description: "lorsqu’il esquive.",
@@ -61,6 +65,7 @@ EffetAuto.Triggers = {
 			declencheur:'Esquive une attaque',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
 			]
 	},
 	"ACT": {description: "lorsqu’il est touché.",
@@ -68,6 +73,7 @@ EffetAuto.Triggers = {
 			declencheur:'Est touché par une attaque',
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.' , ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
+                { nom: 'trig_type_attaque', type: 'TypeATT', label: 'Type d’attaque ?', description: 'Cocher pour déclencher sur les attaques au Corps à corps à distance ou les 2.' },
 			]
 	},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
@@ -1049,6 +1055,16 @@ EffetAuto.ChampChoixBMCsens = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampChoixTypeATT = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Attaque à distance et Corps à Corps</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Attaque au Corps à Corps</option></label>';
+	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Attaque à distance</option></select></label>';
+	return html;
+}
+
 EffetAuto.ChampChoixPVsens = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
@@ -1870,6 +1886,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'perso-condition':
 			html = pd + EffetAuto.ChampListePersoCondition (parametre, numero, valeur) + pf;
+			break;
+		case 'TypeATT':
+			html = pd + EffetAuto.ChampChoixTypeATT (parametre, numero, valeur) + pf;
 			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
