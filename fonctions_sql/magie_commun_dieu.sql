@@ -133,7 +133,7 @@ begin
 -- on enlève les PA
 	cout_pa := cout_pa + valeur_bonus(lanceur, 'PAM');
 -- on regarde s il y a concentration
-	if valeur_bonus(cible, 'DFM') != 0 then
+	if lancer_des(1, 100) <= LEAST(100,valeur_bonus(cible, 'DFM')) then
 		code_retour := '0;'||code_retour||'Votre sort est rejeté car la cible est sous le coup d''une protection magique.';
 		return code_retour;
 	end if;

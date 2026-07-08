@@ -574,7 +574,7 @@ begin
 	end if;
 
 	-- La cible est sous défense magique ?
-	if valeur_bonus(cible, 'DFM') != 0 then
+	if lancer_des(1, 100) <= LEAST(100,valeur_bonus(cible, 'DFM')) then
 		code_retour := '0;'||code_retour||'Votre sort est rejeté car la cible est sous le coup d’une protection magique.<br />';
     if type_lancer != -1 then   -- sauf EA
 		    update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
