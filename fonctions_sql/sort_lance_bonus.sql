@@ -225,7 +225,7 @@ begin
 
 
 	-- La cible est sous défense magique ?
-	if valeur_bonus(cible, 'DFM') != 0 then
+	if lancer_des(1, 100) <= LEAST(100,valeur_bonus(cible, 'DFM'))  then
 		code_retour := code_retour||'Votre sort est rejeté car la cible est sous le coup d’une protection magique.<br />';
 		update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
 		texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] qui est protégé par un Défense magique.';

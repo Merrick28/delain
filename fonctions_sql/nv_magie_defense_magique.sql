@@ -81,7 +81,7 @@ begin
     code_retour := split_part(magie_commun_txt, ';', 3);
     px_gagne := split_part(magie_commun_txt, ';', 4);
 -- on enlève les bonus existants
-    perform ajoute_bonus(cible, 'DFM', 2, -2);
+    perform ajoute_bonus(cible, 'DFM', 2, 100);
     code_retour := code_retour || '<br>' || nom_cible || ' sera insensible à n''importe quel sort pendant 2 tours.<br>';
     code_retour := code_retour || '<br>Vous gagnez ' || px_gagne || ' PX pour cette action.<br>';
     texte_evt := '[attaquant] a lancé ' || nom_sort || ' sur [cible].';
