@@ -316,7 +316,7 @@ if ($erreur == 0)
                         echo $html->etage_select($result['pos_etage'], "WHERE etage_arene='$etage_arene'");
                         ?>
                     </select><br/>
-                    Dieu (pour les temples et autels)
+                    Dieu (pour les temples, autels et portails démoniaques)
                     <select name="dieu">
                         <option value="null">Pas de dieu</option>
                         <?php
@@ -401,7 +401,7 @@ if ($erreur == 0)
                     Description : <textarea name="description"></textarea><br/>
                     Position X : <input type="text" name="pos_x" value="0"><br/>
                     Position Y : <input type="text" name="pos_y" value="0"><br/>
-                    Dieu (pour les temples) <select name="dieu">
+                    Dieu (pour les temples, autels et portails démoniaques) <select name="dieu">
                         <option value="null">Pas de dieu</option>
                         <?php
                         $req = "select dieu_cod,dieu_nom from dieu order by dieu_nom desc ";
@@ -453,7 +453,7 @@ if ($erreur == 0)
        </script>
        <table>
        <?php 		$req_murs = "select lieu_cod, 
-                                    case when tlieu_cod=16 and lieu_url='grand_escalier_n.php' then tlieu_libelle||' (descendant)' when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle, 
+                                    case when tlieu_cod in (8,17,33) then tlieu_libelle|| COALESCE(' ('||dieu_nom||')', '') when tlieu_cod=16 and lieu_url='grand_escalier_n.php' then tlieu_libelle||' (descendant)' when  tlieu_cod=16  then tlieu_libelle||' (montant)' else tlieu_libelle end as tlieu_libelle, 
                                     lieu_nom, 
                                     p.pos_x, p.pos_y, p.pos_etage, dest.pos_x as dest_x, dest.pos_y as dest_y, 
                                     coalesce(etage_libelle, '') as etage_dest 
@@ -462,7 +462,8 @@ if ($erreur == 0)
                                         inner join positions p on p.pos_cod = lpos_pos_cod
                                         inner join lieu_type on tlieu_cod = lieu_tlieu_cod
                                         left outer join positions dest on dest.pos_cod = lieu_dest
-                                        left outer join etage on etage_numero = dest.pos_etage 
+                                        left outer join etage on etage_numero = dest.pos_etage
+                                        left outer join dieu on dieu_cod = lieu_dieu_cod
                                     where p.pos_etage = $pos_etage 
                                     order by tlieu_libelle, lieu_nom ";
            $stmt = $pdo->query($req_murs);
