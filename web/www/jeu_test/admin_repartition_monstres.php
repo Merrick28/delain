@@ -15,13 +15,13 @@ if ($erreur == 0)
 	{
 		switch ($methode) {
 			case "ajouter":
-				$req = "insert into repart_monstre (rmon_gmon_cod,rmon_etage_cod,rmon_poids, rmon_max) values ($gmon_cod,$pos_etage,$poids, $rmon_max) ";
+				$req = "insert into repart_monstre (rmon_gmon_cod,rmon_etage_cod,rmon_poids, rmon_max, rmon_dieu_cod) values ($gmon_cod,$pos_etage,$poids, $rmon_max, $rmon_dieu_cod) ";
 				$stmt = $pdo->query($req);
 				echo "<p>AJOUTE</p>";
 			break;
 
 			case "modifier":
-				$req = "update repart_monstre set rmon_poids = $poids, rmon_max = $rmon_max where rmon_cod = $rmon_cod ";
+				$req = "update repart_monstre set rmon_poids = $poids, rmon_max = $rmon_max, rmon_dieu_cod = $rmon_dieu_cod where rmon_cod = $rmon_cod ";
 				$stmt = $pdo->query($req);
 				echo "<p>MODIFIER</p>";
 			break;
@@ -112,11 +112,12 @@ if($result = $stmt->fetch())
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Monstre / Monture</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Poids / nombre présents</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Nombre maximal (0 = pas de maximum)</TH>
+			<TH width="20%" align="center" valign="top" nowrap="nowrap">Dieu</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Modifier</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Supprimer</TH>
 		</TR>
 <?php
-	$req = "select rmon_cod, mg.gmon_cod, mg.gmon_nom, rmon_poids, rmon_max, coalesce(monstres.nombre, 0) as nombre, mg.gmon_monture
+	$req = "select rmon_cod, mg.gmon_cod, mg.gmon_nom, rmon_poids, rmon_max, rmon_dieu_cod, coalesce(monstres.nombre, 0) as nombre, mg.gmon_monture
 		from repart_monstre
 		inner join monstre_generique mg ON mg.gmon_cod = rmon_gmon_cod
 		left outer join
@@ -135,6 +136,10 @@ if($result = $stmt->fetch())
 	while($result = $stmt->fetch())
 	{
         $style = ($result['gmon_monture'] == 'O' ) ? 'style="background-color:gold;"' : "" ;
+
+        // ratachement d'un dieu à ce type de monstre
+        $req = "select 1 as ordre, 0 as dieu_cod, 'Aucun' as dieu_nom union all select 2 as ordre, dieu_cod, dieu_nom from dieu order by ordre, dieu_nom ";
+        $selectdieu = $html->select_from_query($req, 'dieu_cod', 'dieu_nom', $result['rmon_dieu_cod']);
 ?>
 	<form method="post" name="modif_mon_<?php  echo  $result['rmon_cod']; ?>">
 		<input type="hidden" name="methode" value="modifier">
@@ -144,6 +149,7 @@ if($result = $stmt->fetch())
 			<TD><?php echo '<strong>' . $result['gmon_nom'] . '</strong><em> (code = ' . $result['gmon_cod'] . ')</em>';?></TD>
 			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $result['rmon_poids']; ?>"> / <?php  echo  $result['nombre']; ?></p></TD>
 			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $result['rmon_max']; ?>"></p></TD>
+            <TD><p align="center"><select name="rmon_dieu_cod"><?php  echo $selectdieu?></select></p></TD>
 			<TD><p align="center"><input type="submit" value="Modifier"></p></TD>
 			<TD><p align="center"><input type="submit" value="Supprimer" onClick="document.modif_mon_<?php  echo  $result['rmon_cod']; ?>.methode.value='supprimer'"></p></TD>
 		</TR>
@@ -163,10 +169,17 @@ Ajouter un nouveau monstre :
 	{
 		echo "<option value=\"" , $result['gmon_cod'] , "\" >" , $result['gmon_nom'] , "</option>";
 	}
+
+
+    // ratachement d'un dieu à ce type de monstre
+    $req = "select 1 as ordre, 0 as dieu_cod, 'Aucun' as dieu_nom union all select 2 as ordre, dieu_cod, dieu_nom from dieu order by ordre, dieu_nom ";
+    $selectdieu = $html->select_from_query($req, 'dieu_cod', 'dieu_nom', 0);
+
 ?>
 	</select>
 	Poids : <input type="text" name="poids" value="0">
 	Nombre maximal : <input type="text" name="rmon_max" value="0">
+	Dieu : <select name="rmon_dieu_cod"><?php  echo $selectdieu?></select>
 	<input type="submit" value="Ajouter" class='test'>
 </form>
 <?php }

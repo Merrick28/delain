@@ -109,11 +109,13 @@ begin
   if v_type_portail = 8 then
       -- recherche d'un portail démoniaque
       select into pos_portail pos_cod
-        from lieu,lieu_position,positions
+        from lieu,lieu_position,positions,repart_monstre
         where lieu_tlieu_cod = 8
         and lpos_lieu_cod = lieu_cod
         and lpos_pos_cod = pos_cod
         and pos_etage = v_level
+        and rmon_etage_cod = pos_etage and rmon_gmon_cod = v_gmon
+        and (rmon_dieu_cod = lieu_dieu_cod or lieu_dieu_cod is null)
         order by random()
         limit 1;
   else
