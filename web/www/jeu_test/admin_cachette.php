@@ -719,9 +719,10 @@ if ($erreur == 0)
             // SUPPRESSION D’OBJETS DE LA CACHETTE
             $req_cache = "select distinct obj_gobj_cod
 				from cachettes_objets,objets
-				where objcache_cod_cache_cod = $cache_cod
+				where objcache_cod_cache_cod = :cache_cod
 					and objcache_obj_cod = obj_cod ";
             $stmt      = $pdo->prepare($req_cache);
+
             $stmt      = $pdo->execute(array(":cache_cod" => $cache_cod), $stmt);
             while ($result = $stmt->fetch())
             {
