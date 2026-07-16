@@ -93,7 +93,8 @@ for ($loop = 0; $loop < 2; $loop++)
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_bonus['tbonus_libc'] . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $detail_bonus['tbonus_libc'] . '.png';
-            } else
+            }
+            else
             {
                 $img = '/../images/interface/bonus/BONUS.png';
             }
@@ -114,7 +115,12 @@ for ($loop = 0; $loop < 2; $loop++)
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $carac . '.png';
-            } else
+            }
+            else if ($carac == "CON")
+            {   // windows ne sait pas gérér corretement le fichier CON qu'il prend pour la console
+                $img = '/../images/interface/bonus/CON+.png';
+            }
+            else
             {
                 $img = "/../images/interface/bonus/BONUS.png";
             }
@@ -150,7 +156,12 @@ for ($loop = 0; $loop < 2; $loop++)
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $carac . '.png';
-            } else
+            }
+            else if ($carac == "CON")
+            {   // windows ne sait pas gérér corretement le fichier CON qu'il prend pour la console
+                $img = '/../images/interface/bonus/CON+.png';
+            }
+            else
             {
                 $img = '/../images/interface/bonus/MALUS.png';
             }

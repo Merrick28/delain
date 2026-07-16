@@ -101,7 +101,12 @@ function affiche_perso($perso_cod)
             if (is_file(__DIR__ . "/../images/interface/bonus/{$img}.png"))
             {
                 $img = '<img class="img-malus" src="/images/interface/bonus/' . $img . '.png">';
-            } else
+            }
+            else if ($img == "CON")
+            {   // windows ne sait pas gérér corretement le fichier CON qu'il prend pour la console
+                $img = '<img class="img-malus" src="/images/interface/bonus/CON+.png">';
+            }
+            else
             {
                 $img = '<img src="/../images/interface/bonus/MALUS.png">';
             }

@@ -10,6 +10,8 @@ CREATE OR REPLACE FUNCTION public.distance_vue(integer) RETURNS integer
 /* on passe en parametre :                                 */
 /*   $1 = perso_cod du monstre                             */
 /* on a un entier en sortie                                */
+/* Marlyza le 16/07/2026: ajout du bonus/malus VU3 qui     */
+/*          fixe la distance de vue                        */
 /***********************************************************/
 declare
 	code_retour integer;
@@ -28,6 +30,14 @@ begin
 --	end if;
 
 /*******************************************************/
+/* Etape 0 : court-circuit sur bonus VU3               */
+/*******************************************************/
+	if valeur_bonus(v_perso, 'VU3') != 0 then
+	    -- le bonus/malus VU3 fixe la distance de vue, les bonus autres bonus/malus, amelioration et objet n'y change rien
+	    return GREATEST(1, valeur_bonus(v_perso, 'VU3'));
+    end if;
+
+/*******************************************************/
 /* Etape 1 : on regarde si il y a quelque chose en vue */
 /*******************************************************/
 	select into v_perso_vue,v_perso_amelioration_vue perso_vue,perso_amelioration_vue from perso
@@ -36,7 +46,7 @@ begin
 	if valeur_bonus(v_perso, 'VU2') != 0 then
 	    -- malus VU2 alter la vue en % de sa valeur!
 	    distance_vue := distance_vue - ( valeur_bonus(v_perso, 'VU2') * distance_vue / 100 );
-  end if;
+    end if;
 
 --if to_char(now(),'DD/MM/YYYY') = '07/02/2011' then
 --		if distance_vue > 3 then

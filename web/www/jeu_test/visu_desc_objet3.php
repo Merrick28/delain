@@ -281,12 +281,16 @@ if ($autorise == 1)
             {
                 $tbonus = new bonus_type();
                 $tbonus->charge($objbm->objbm_tbonus_cod);
-                $typebm =
-                    (($tbonus->tbonus_gentil_positif == "t" && $objbm->objbm_bonus_valeur > 0) || ($tbonus->tbonus_gentil_positif != "t" && $objbm->objbm_bonus_valeur < 0)) ? "Bonus" : "Malus";
+                $typebm = (($tbonus->tbonus_gentil_positif == "t" && $objbm->objbm_bonus_valeur > 0) || ($tbonus->tbonus_gentil_positif != "t" && $objbm->objbm_bonus_valeur < 0)) ? "Bonus" : "Malus";
                 if (is_file(__DIR__ . "/../images/interface/bonus/" . $tbonus->tbonus_libc . ".png"))
                 {
                     $img = '<img src="/../images/interface/bonus/' . $tbonus->tbonus_libc . '.png">';
-                } else
+                }
+                else if ($tbonus->tbonus_libc == "CON")
+                {   // windows ne sait pas gérér corretement le fichier CON qu'il prend pour la console
+                    $img = '<img src="/../images/interface/bonus/CON+.png">';
+                }
+                else
                 {
                     $img = '<img src="/../images/interface/bonus/' . strtoupper($typebm) . '.png">';
                 }
