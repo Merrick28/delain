@@ -128,12 +128,10 @@ if ($stmt->rowCount() == 0)
                         echo "<td><p>" . $result['tobj_libelle'] . "</p></td>";
                         echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\"></p></td>";
                         echo "</tr>";
-                        ?>
-                        </table>
-                        <input type="submit" class="test centrer" value="Récupérer les objets cochés !">
-                        </form>
-                        <?php
                     }
+                    echo "</table>";
+                    echo "<input type=\"submit\" class=\"test centrer\" value=\"Récupérer les objets cochés !\">";
+                    echo "</form>";
                 } else
                 {
                     echo "<tr><td colspan=\"3\" class=\"soustitre\">Aucun objet dans la cachette !</td></tr>";
