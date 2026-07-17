@@ -146,10 +146,12 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_nom_ea', type: 'POSNomEtage', label: 'Nom de l’EA', description: 'Nommer l’EA afin de la retrouver plus facileemnt dans l’édition de l’étage' },
 			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C’est le temps minimum (en minutes) entre 2 déclenchements d’actions.', ValidationTrigger:true, validation: Validation.Types.EntierOuVide },
 			{ nom: 'trig_pos_cods', type: 'texte', longueur: 50,  label: 'Liste de position', description: 'Liste des positions déchenchant l’EA (pos_cod séparé par des « , » ' },
-			{ nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 cas)' },
 			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet sur la case de déclenchement ou sur toute la grappe/liste de position définie par l’EA)' },
-			{ nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
-			{ nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
+            { nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
+            { nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 case) et plus encore...' },
+            { nom: 'trig_objet', type: 'objets', label: 'Liste d’objet declencheur', paragraphe:'divdh', description: 'Liste des objets qui déclenchent l’effet s’ils sont ramassé ou deposé sur la case.' },
+            { nom: 'trig_type_objet', type: 'typeObjet', label: 'Liste de type d’objet déclencheur', paragraphe:'div', description: 'Liste des types d’objets qui déclenchent l’effet s’ils sont ramassé ou deposé sur la case.' },
+            { nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', paragraphe:'divfh', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
 		]
 	},
 }
@@ -1126,15 +1128,58 @@ EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampChoixSensDeplacementChange = function (select, numero) {
+    var estDansGroupe = (select.value == '3' || select.value == '4');
+    var etaitDansGroupe = (select.dataset.groupeObjet === '1');
+
+    if (estDansGroupe && !etaitDansGroupe) {
+        EffetAuto.ChampChoixSensDeplacementShowObjet ( numero );
+    } else if (!estDansGroupe && etaitDansGroupe) {
+        EffetAuto.ChampChoixSensDeplacementHideObjet( numero );
+    }
+
+    select.dataset.groupeObjet = estDansGroupe ? '1' : '0';
+}
+
+EffetAuto.ChampChoixSensDeplacementHideObjet = function ( numero ) {
+    var block = document.getElementById('block_trigger_'+numero);
+    if (block) {
+        block.style.display = 'none';
+    }
+}
+
+EffetAuto.ChampChoixSensDeplacementShowObjet = function ( numero ) {
+    var block = document.getElementById('block_trigger_'+numero);
+    if (block) {
+        block.style.display = 'block';
+    }
+}
+
+
+EffetAuto.ChampChoixSensDeplacementInit = function (conteneur) {
+    conteneur = conteneur || document;
+    var selects = conteneur.querySelectorAll('select.select-sens-deplacement');
+    selects.forEach(function (select) {
+        var numero = select.dataset.numero;
+        if (select.value == '3' || select.value == '4') {
+            EffetAuto.ChampChoixSensDeplacementShowObjet(numero);
+        } else {
+            EffetAuto.ChampChoixSensDeplacementHideObjet(numero);
+        }
+    });
+}
+
 EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option>';
-	html += '<option value="-2" ' + ((valeur == -2) ? 'selected="selected"' : '' ) + '>Sur évenement mécanisme</option></label>';
-	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Sur activation DLT</option></select></label></select>';
+	html += '<option value="-2" ' + ((valeur == -2) ? 'selected="selected"' : '' ) + '>Sur évenement mécanisme</option>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Sur activation DLT</option>';
+	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Sur ramassage d’objet sur la case</option>';
+	html += '<option value="4" ' + ((valeur == 4) ? 'selected="selected"' : '' ) + '>Sur abandons d’objet sur la case</option></select></label>';
 	html += "<br />";
 	return html;
 }
@@ -1281,6 +1326,75 @@ EffetAuto.ChampListeObjet = function (parametre, numero, valeur) {
 	html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
 	html += '</table>';
 	return html;
+}
+
+// idem ChampListeObjet mais avec choix tous les objets
+EffetAuto.ChampListeObjets = function (parametre, numero, valeur) {
+    if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+    var base = "fonc_" + parametre.nom + numero.toString();
+    var nomObjet = "obj_fonc_" + parametre.nom + numero.toString()+"_gobj_cod";
+    var label = "div_" + parametre.nom + numero.toString();
+
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+    for (var i=0; i < valeur.length || i==0 ; i++)
+    {
+        var gobjCod = valeur.length ? valeur[i].gobj_cod : "";
+
+        html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+        html += '<input type="hidden" name="' + base + '[]">';
+
+        html += '<strong>Objet:</strong>&nbsp;<span title="Laisser vide ou 0 pour n’importe quel objet.">';
+        html += '<input data-entry="val" id="row-'+numero+'-'+i+'-gobj_cod" name="'+nomObjet+'[]" type="text" size="4" value="'+gobjCod+'">';
+        html += '</span>&nbsp';
+        html += '<span data-entry="text" id="row-'+numero+'-'+i+'-gobj_nom"></span>&nbsp';
+        html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-gobj\',\'objet_generique\',\'Rechercher un objet\',[\'\',\'\',\'\']);">';
+
+        html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+        html += '</tr>';
+        if (valeur.length>0 && gobjCod)
+        {
+            // initialiser le nom affiché à partir du code déjà connu
+            setNomByTableCod('row-'+numero+'-'+i+'-gobj_nom', 'objet_generique', gobjCod );
+        }
+    }
+    html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+    html += '</table>';
+    return html;
+}
+
+EffetAuto.ChampListeTypeObjets = function (parametre, numero, valeur) {
+    if (!valeur) valeur = []; else if (typeof valeur == "string") valeur=JSON.parse(valeur);
+    var base = "fonc_" + parametre.nom + numero.toString();
+    var nomTypeObjet = "obj_fonc_" + parametre.nom + numero.toString()+"_tobj_cod";
+    var label = "div_" + parametre.nom + numero.toString();
+
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
+
+    for (var i=0; i < valeur.length || i==0 ; i++)
+    {
+        var tobjCod = valeur.length ? valeur[i].tobj_cod : "";
+
+        html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
+        html += '<input type="hidden" name="' + base + '[]">';
+
+        html += '<strong>Type d’objet:</strong>&nbsp;<span title="Laisser vide ou 0 pour n’importe quel type d’objet.">';
+        html += '<input data-entry="val" id="row-'+numero+'-'+i+'-tobj_cod" name="'+nomTypeObjet+'[]" type="text" size="4" value="'+tobjCod+'">';
+        html += '</span>&nbsp';
+        html += '<span data-entry="text" id="row-'+numero+'-'+i+'-tobj_nom"></span>&nbsp';
+        html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-tobj\',\'type_objet\',\'Rechercher un type d’objet\',[\'\',\'\',\'\']);">';
+
+        html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+        html += '</tr>';
+        if (valeur.length>0 && tobjCod)
+        {
+            // initialiser le nom affiché à partir du code déjà connu
+            setNomByTableCod('row-'+numero+'-'+i+'-tobj_nom', 'type_objet', tobjCod );
+        }
+    }
+    html += '<tr id="add-row-'+numero+'-0-" style="display: block;"><td><input type="button" class="test" value="Nouveau" onclick="EffetAuto.addItem($(this).parent(\'td\').parent(\'tr\').prev(), 0);"></td></tr>';
+    html += '</table>';
+    return html;
 }
 
 EffetAuto.ChampTransac = function (parametre, numero, valeur) {
@@ -1824,7 +1938,18 @@ EffetAuto.Supprime = function (id, numero, silence) {
 	}
 }
 
+// fonction d'init des champs appelé un fois que le html a été chargé
+EffetAuto.ChampsInit = function (conteneur) {
+    conteneur = conteneur || document;
+
+    // Appel des fonctions qui demande une init après charegement de la page
+    EffetAuto.ChampChoixSensDeplacementInit(conteneur);
+}
+
+
 EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable) {
+
+    var numhide = "block_trigger_"  + numero.toString();
 
 	if (parametre.paragraphe && parametre.paragraphe=="divd") {
 		var pd = '<p style="padding: 1px; margin: 1px;"><span title="' + parametre.description + '">';
@@ -1835,6 +1960,12 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divf") {
 		var pd = '&nbsp;<span title="' + parametre.description + '">';
 		var pf = '</span></p>';
+	} else 	if (parametre.paragraphe && parametre.paragraphe=="divdh") {
+        var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pf = '</span>';
+	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfh") {
+        var pd = '&nbsp;</div></div><span title="' + parametre.description + '">';
+        var pf = '</span></p>';
 	} else {
 		var pd = '<p style="padding: 1px; margin: 1px;" title="' + parametre.description + '">';
 		var pf = '</p>';
@@ -1937,6 +2068,12 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'objet':
 			html = pd + EffetAuto.ChampListeObjet (parametre, numero, valeur) + pf;
+			break;
+		case 'objets':
+			html = pd + EffetAuto.ChampListeObjets (parametre, numero, valeur) + pf;
+			break;
+		case 'typeObjet':
+			html = pd + EffetAuto.ChampListeTypeObjets (parametre, numero, valeur) + pf;
 			break;
 		case 'transac':
 			html = pd + EffetAuto.ChampTransac (parametre, numero, valeur) + pf;
@@ -2075,6 +2212,10 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	}
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
+
+    // Fonction d'init des champs après le chargement du DOM
+    EffetAuto.ChampsInit(divEA);
+
 	if (implantation) {
 		// en cas d'un EA implanté on supprime le boutton suppression (elle est supprimé à l'aide du pere)
 		$('#del-button-' + EffetAuto.num_courant).hide();

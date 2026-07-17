@@ -250,7 +250,7 @@ begin
     code_retour2 := '';
 
     -- executiond es EA d'étage déclenché sur evenement activation de DLT
-    code_retour2 := code_retour2 || execute_fonctions(personnage, null, 'DEP', json_build_object('ancien_pos_cod',v_perso_pos_cod,'ancien_etage',v_niveau,'nouveau_pos_cod',v_perso_pos_cod,'nouveau_etage',v_niveau)) ;
+    code_retour2 := code_retour2 || execute_fonctions(personnage, null, 'DEP', json_build_object('type_dep','active_dlt','ancien_pos_cod',v_perso_pos_cod,'ancien_etage',v_niveau,'nouveau_pos_cod',v_perso_pos_cod,'nouveau_etage',v_niveau)) ;
 
     if v_fonction_dessus is not null and v_fonction_dessus != '' then
       code_retour2 := '<p>';

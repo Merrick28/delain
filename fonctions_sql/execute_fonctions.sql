@@ -28,6 +28,7 @@ declare
 	v_gmon_cod integer;        -- Le code du monstre générique
   v_gmon_nom text;           -- Le nom du monstre générique
   v_gobj_cod integer;         -- code generique d'un objet
+  v_tobj_cod integer;         -- code type d'un objet
   v_obj_cod integer;          -- code d'un objet
   v_sante_avant integer;     -- % de blessure au passage précédent
   v_etat_sante integer;      -- % de blessure actuel
@@ -53,7 +54,7 @@ declare
     v_trig_type_attaque text;    -- type du declencheur sur le type d'attaque (0 les 2, 1 attaque au CaC, 2 attaque à distance)
 
 	-- variable specifique au POS
-  v_pos_cod integer;         -- position de l'EA de type POS
+    v_pos_cod integer;         -- position de l'EA de type POS
 	plist record;              -- list de perso
 
 begin
@@ -82,7 +83,7 @@ begin
               AND fonc_trigger_param->>'fonc_trig_rearme' != -1
               AND ( (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, ''))
 	                OR (coalesce(v_param->>'ancien_pos_cod'::text, '') = '')
-	                OR (fonc_trigger_param->>'fonc_trig_sens' = 1) )
+	                OR (fonc_trigger_param->>'fonc_trig_sens' in (1,3,4)) )
               AND    (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
@@ -95,7 +96,7 @@ begin
       v_do_it := true;
 
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' NOT IN (-2, 1) then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' NOT IN (-2, 1, 3, 4) then -- -------------------------------------------------------------------------------------
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
@@ -173,8 +174,8 @@ begin
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
 
-        -- vérifier si le perso est sur une case à EA et s'il verifie les conditions demandée (Activation DLT vérifié par ancien_pos_cod = nouveau_pos_cod)
-        if (      (coalesce(v_param->>'ancien_pos_cod'::text, '') = coalesce(v_param->>'nouveau_pos_cod'::text, ''))
+        -- vérifier si le perso est sur une case à EA et s'il verifie les conditions demandée (Activation DLT vérifié par type_dep= active_dlt)
+        if (      (coalesce(v_param->>'type_dep'::text, '') = 'active_dlt')
               AND (row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
               AND (verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1) ) then
 
@@ -182,9 +183,60 @@ begin
 
         end if;
 
+	  elseif (row.fonc_type = 'POS') and (row.fonc_trigger_param->>'fonc_trig_sens' in (3,4))  then -- -------------------------------------------------------------------------------------
+        -- ramassage ou depot d'objet sur case à EA
 
-	  elseif row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
-	      -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
+        -- par défaut on ne déclenche pas
+        v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
+
+        -- vérifier si le perso est sur une case à EA et s'il verifie les conditions demandée (Activation DLT vérifié par type_dep= active_dlt)
+        if (    (    ((coalesce(v_param->>'type_dep'::text, '') = 'ramasse_objet') and row.fonc_trigger_param->>'fonc_trig_sens' = 3)
+	              OR ((coalesce(v_param->>'type_dep'::text, '') = 'depose_objet')  and row.fonc_trigger_param->>'fonc_trig_sens' = 4) )
+              AND (row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+              AND (verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1) ) then
+
+            v_do_it := true;
+
+            -- type POS, on vérifie si les conditions sont remplies : l'objet déposé et ramassé est bien celui attendu
+            v_gobj_cod := (v_param->>'gobj_cod')::integer;
+            v_tobj_cod := (v_param->>'tobj_cod')::integer;
+
+            -- vérification sur fonc_trig_objet (gobj_cod)
+
+            if not exists (
+                select 1
+                from jsonb_array_elements((row.fonc_trigger_param->>'fonc_trig_objet')::jsonb) e
+                where coalesce(nullif(e->>'gobj_cod','')::integer, 0) = 0
+                   or (e->>'gobj_cod')::integer = v_gobj_cod ) then
+
+                v_do_it := false;   -- type POS avec des conditions non-remplies pour cet EA (pas le bon objet)
+
+            else
+                -- le générique est ok, vérification sur fonc_trig_type_objet (tobj_cod)
+                if not exists (
+                        select 1
+                        from jsonb_array_elements((row.fonc_trigger_param->>'fonc_trig_type_objet')::jsonb) e
+                        where coalesce(nullif(e->>'tobj_cod','')::integer, 0) = 0
+                           or (e->>'tobj_cod')::integer = v_tobj_cod ) then
+
+                    v_do_it := false;   -- type POS avec des conditions non-remplies pour cet EA (pas le bon type d'objet)
+
+                end if;
+            end if;
+
+        end if;
+
+	  elseif row.fonc_type = 'DEP' then -- -------------------------------------------------------------------------------------
+	    -- DEP = l'evenement DEP est aussi declenché sur ramassage/depot/activation de dlt et traité par un event POS
+	    -- on doit s'assurer ici que DEP est bien déclenché par un déplacement (il n'y a pas de type_dep pour les deplacements)
+
+        if (coalesce(v_param->>'type_dep'::text, '') != '') then
+            v_do_it := false ;    -- type DEP avec des conditions non-remplies pour cet EA (pas le bon type de déclenchement)
+
+        end if;
+
+      elseif row.fonc_type = 'CES' then -- -------------------------------------------------------------------------------------
+	    -- CES = Change d'Etat de Santé, au premier passage on memorise la santé, aux passages suivants on vérifie le seuil de déclenchement
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type CES avec des conditions non-remplies pour cet EA (pas encore le passage de seuil ou premier passage)
