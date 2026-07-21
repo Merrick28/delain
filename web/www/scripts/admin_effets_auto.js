@@ -149,10 +149,12 @@ EffetAuto.Triggers = {
 			{ nom: 'trig_rearme', type: 'POSrearme', label: 'Mode de ré-armement', description: 'Comment l’EA sera-t-elle ré-armée? (Bascule = les conditions de déclenchement doivent-être retombées avant un nouvel effet sur la case de déclenchement ou sur toute la grappe/liste de position définie par l’EA)' },
             { nom: 'trig_type', type: 'POStype', label: 'Type de déclencheur', description: 'Ce type infuencera sur l’usage des baguettes' },
             { nom: 'trig_sens', type: 'POSsens', label: 'Sens de déplacement', description: 'L’EA va être déclenché, si le perso arrive ou quitte la case (ou dans les 2 case) et plus encore...' },
-            { nom: 'trig_objet', type: 'objets', label: 'Liste d’objet declencheur', paragraphe:'divdh', description: 'Liste des objets qui déclenchent l’effet s’ils sont ramassé ou deposé sur la case.' },
+            { nom: 'trig_objet', type: 'objets', label: 'Liste d’objet declencheur', paragraphe:'divdh', block:'1', description: 'Liste des objets qui déclenchent l’effet s’ils sont ramassé ou deposé sur la case.' },
             { nom: 'trig_type_objet', type: 'typeObjet', label: 'Liste de type d’objet déclencheur', paragraphe:'div', description: 'Liste des types d’objets qui déclenchent l’effet s’ils sont ramassé ou deposé sur la case.' },
-            { nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', paragraphe:'divfh', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },
-		]
+            { nom: 'trig_min_bzf', type: 'entier', label: 'Min Brouzouf:', paragraphe:'divfdh', block:'2', description: 'Minimum brouzoufs: 0 pour pas de mini.' },
+            { nom: 'trig_max_bzf', type: 'entier', label: 'Max Brouzouf:', paragraphe:'div', description: 'Maximum brouzoufs: 0 pour pas de maxi.' },
+            { nom: 'trig_condition', type: 'perso-condition', label: 'Condition du perso déclencheur', paragraphe:'divfh', description: 'L’EA va être déclenché seuelement si le perso vérifie ces conditions' },]
+
 	},
 }
 
@@ -1129,27 +1131,36 @@ EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
 }
 
 EffetAuto.ChampChoixSensDeplacementChange = function (select, numero) {
-    var estDansGroupe = (select.value == '3' || select.value == '4');
-    var etaitDansGroupe = (select.dataset.groupeObjet === '1');
+    var estDansGroupe1 = (select.value == '3' || select.value == '4');
+    var etaitDansGroupe1 = (select.dataset.groupeObjet1 === '1');
+    var estDansGroupe2 = (select.value == '5' || select.value == '6');
+    var etaitDansGroupe2 = (select.dataset.groupeObjet2 === '1');
 
-    if (estDansGroupe && !etaitDansGroupe) {
-        EffetAuto.ChampChoixSensDeplacementShowObjet ( numero );
-    } else if (!estDansGroupe && etaitDansGroupe) {
-        EffetAuto.ChampChoixSensDeplacementHideObjet( numero );
+    if (estDansGroupe1 && !etaitDansGroupe1) {
+        EffetAuto.ChampChoixSensDeplacementShowObjet ( numero, 1 );
+    } else if (!estDansGroupe1 && etaitDansGroupe1) {
+        EffetAuto.ChampChoixSensDeplacementHideObjet( numero, 1 );
     }
 
-    select.dataset.groupeObjet = estDansGroupe ? '1' : '0';
+    if (estDansGroupe2 && !etaitDansGroupe2) {
+        EffetAuto.ChampChoixSensDeplacementShowObjet ( numero, 2 );
+    } else if (!estDansGroupe2 && etaitDansGroupe2) {
+        EffetAuto.ChampChoixSensDeplacementHideObjet( numero, 2 );
+    }
+
+    select.dataset.groupeObjet1 = estDansGroupe1 ? '1' : '0';
+    select.dataset.groupeObjet2 = estDansGroupe2 ? '1' : '0';
 }
 
-EffetAuto.ChampChoixSensDeplacementHideObjet = function ( numero ) {
-    var block = document.getElementById('block_trigger_'+numero);
+EffetAuto.ChampChoixSensDeplacementHideObjet = function ( numero, block ) {
+    var block = document.getElementById('block_trigger_'+numero+'_'+block);
     if (block) {
         block.style.display = 'none';
     }
 }
 
-EffetAuto.ChampChoixSensDeplacementShowObjet = function ( numero ) {
-    var block = document.getElementById('block_trigger_'+numero);
+EffetAuto.ChampChoixSensDeplacementShowObjet = function ( numero, block ) {
+    var block = document.getElementById('block_trigger_'+numero+'_'+block);
     if (block) {
         block.style.display = 'block';
     }
@@ -1162,9 +1173,14 @@ EffetAuto.ChampChoixSensDeplacementInit = function (conteneur) {
     selects.forEach(function (select) {
         var numero = select.dataset.numero;
         if (select.value == '3' || select.value == '4') {
-            EffetAuto.ChampChoixSensDeplacementShowObjet(numero);
+            EffetAuto.ChampChoixSensDeplacementShowObjet(numero, 1);
         } else {
-            EffetAuto.ChampChoixSensDeplacementHideObjet(numero);
+            EffetAuto.ChampChoixSensDeplacementHideObjet(numero, 1);
+        }
+        if (select.value == '5' || select.value == '6') {
+            EffetAuto.ChampChoixSensDeplacementShowObjet(numero, 2);
+        } else {
+            EffetAuto.ChampChoixSensDeplacementHideObjet(numero, 2);
         }
     });
 }
@@ -1172,14 +1188,16 @@ EffetAuto.ChampChoixSensDeplacementInit = function (conteneur) {
 EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet1="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" data-groupe-objet1="' + ((valeur == 5 || valeur == 6) ? '1' : '0')+ '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option>';
 	html += '<option value="-2" ' + ((valeur == -2) ? 'selected="selected"' : '' ) + '>Sur évenement mécanisme</option>';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Sur activation DLT</option>';
 	html += '<option value="3" ' + ((valeur == 3) ? 'selected="selected"' : '' ) + '>Sur ramassage d’objet sur la case</option>';
-	html += '<option value="4" ' + ((valeur == 4) ? 'selected="selected"' : '' ) + '>Sur abandons d’objet sur la case</option></select></label>';
+	html += '<option value="4" ' + ((valeur == 4) ? 'selected="selected"' : '' ) + '>Sur abandons d’objet sur la case</option>';
+	html += '<option value="5" ' + ((valeur == 5) ? 'selected="selected"' : '' ) + '>Sur ramassage de brouzoufs sur la case</option>';
+	html += '<option value="6" ' + ((valeur == 6) ? 'selected="selected"' : '' ) + '>Sur abandons de brouzoufs sur la case</option></select></label>';
 	html += "<br />";
 	return html;
 }
@@ -1949,8 +1967,6 @@ EffetAuto.ChampsInit = function (conteneur) {
 
 EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable) {
 
-    var numhide = "block_trigger_"  + numero.toString();
-
 	if (parametre.paragraphe && parametre.paragraphe=="divd") {
 		var pd = '<p style="padding: 1px; margin: 1px;"><span title="' + parametre.description + '">';
 		var pf = '</span>';
@@ -1961,11 +1977,16 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		var pd = '&nbsp;<span title="' + parametre.description + '">';
 		var pf = '</span></p>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divdh") {
+        var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
         var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
         var pf = '</span>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfh") {
         var pd = '&nbsp;</div></div><span title="' + parametre.description + '">';
         var pf = '</span></p>';
+	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfdh") {
+        var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
+        var pd = '&nbsp;</div><div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pf = '</span>';
 	} else {
 		var pd = '<p style="padding: 1px; margin: 1px;" title="' + parametre.description + '">';
 		var pf = '</p>';
