@@ -7,13 +7,14 @@ if ($quantite <= 0) {
     $req_depose = "select depose_or($perso_cod,$quantite) as depose";
     $stmt = $pdo->query($req_depose);
     $result = $stmt->fetch();
-    if ($result['depose'] == 0) {
+    $r = explode(';', $result['depose']);
+    if ($r[0] == 0) {
         echo("<p>Vous avez déposé avec succès $quantite brouzoufs au sol.\n");
-        if ($result['depose'] != "0"){
-            echo ltrim($result['depose'], "0;") ."\n";
+        if ($r[1] != ""){
+            echo $r[1] ."\n";
         }
     } else {
-        printf("<p>Une erreur est survenue : %s", ltrim($result['depose'], "-1;"));
+        printf("<p>Une erreur est survenue : %s", $r[1]);
     }
 }
 $contenu_page = ob_get_contents();
