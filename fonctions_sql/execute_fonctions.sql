@@ -29,6 +29,9 @@ declare
   v_gmon_nom text;           -- Le nom du monstre générique
   v_gobj_cod integer;         -- code generique d'un objet
   v_tobj_cod integer;         -- code type d'un objet
+  v_qte_or integer;         -- quantité d'or
+  v_min_bzf integer;         -- quantité d'or minimale
+  v_max_bzf integer;         -- quantité d'or maximale
   v_obj_cod integer;          -- code d'un objet
   v_sante_avant integer;     -- % de blessure au passage précédent
   v_etat_sante integer;      -- % de blessure actuel
@@ -83,7 +86,7 @@ begin
               AND fonc_trigger_param->>'fonc_trig_rearme' != -1
               AND ( (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, ''))
 	                OR (coalesce(v_param->>'ancien_pos_cod'::text, '') = '')
-	                OR (fonc_trigger_param->>'fonc_trig_sens' in (1,3,4)) )
+	                OR (fonc_trigger_param->>'fonc_trig_sens' in (1,3,4,5,6)) )
               AND    (  ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != 0  AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' != -2 AND fonc_trigger_param->>'fonc_trig_sens' != -1 AND fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'nouveau_pos_cod'::text, '') ||',%' )
 			              OR ( fonc_trigger_param->>'fonc_trig_sens' = -2 AND f_to_numeric(v_param->>'ea_fonc_cod'::text)=fonc_cod ) )))
@@ -96,7 +99,7 @@ begin
       v_do_it := true;
 
 	  -- on boucle sur tous les évenements qui déclenchent des effets, mais certains déclencheurs ont des paramètres supplémentaires à vérifier.
-	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' NOT IN (-2, 1, 3, 4) then -- -------------------------------------------------------------------------------------
+	  if row.fonc_type = 'POS' and row.fonc_trigger_param->>'fonc_trig_sens' NOT IN (-2, 1, 3, 4, 5, 6) then -- -------------------------------------------------------------------------------------
 
         -- par défaut on ne déclenche pas
         v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
@@ -222,6 +225,33 @@ begin
                     v_do_it := false;   -- type POS avec des conditions non-remplies pour cet EA (pas le bon type d'objet)
 
                 end if;
+            end if;
+
+        end if;
+
+	  elseif (row.fonc_type = 'POS') and (row.fonc_trigger_param->>'fonc_trig_sens' in (5,6))  then -- -------------------------------------------------------------------------------------
+        -- ramassage ou depot d'objet sur case à EA
+
+        -- par défaut on ne déclenche pas
+        v_do_it := false ;    -- type POS, on vérifie si les conditions sont remplies: arrive/quitte et condition perso
+
+        -- vérifier si le perso est sur une case à EA et s'il verifie les conditions demandée (Activation DLT vérifié par type_dep= active_dlt)
+        if (    (    ((coalesce(v_param->>'type_dep'::text, '') = 'ramasse_or') and row.fonc_trigger_param->>'fonc_trig_sens' = 5)
+	              OR ((coalesce(v_param->>'type_dep'::text, '') = 'depose_or')  and row.fonc_trigger_param->>'fonc_trig_sens' = 6) )
+              AND (row.fonc_trigger_param->>'fonc_trig_pos_cods' like '% ' || coalesce(v_param->>'ancien_pos_cod'::text, '') ||',%')
+              AND (verif_perso_condition(v_perso_cod, json_extract_path_text(row.fonc_trigger_param, 'fonc_trig_condition')::json ) = 1) ) then
+
+            v_do_it := false;
+
+            -- type POS, on vérifie si les conditions sont remplies : l'or déposé et ramassé est bien dans les minima et maxima attendus
+            v_qte_or := (v_param->>'qte_or')::integer;
+            v_min_bzf := coalesce(nullif(row.fonc_trigger_param->>'fonc_trig_min_bzf','')::integer, 0);
+            v_max_bzf := coalesce(nullif(row.fonc_trigger_param->>'fonc_trig_max_bzf','')::integer, 0);
+
+            -- vérification sur la quantité d'or (min et max) qui declenche par l'EA
+            if (v_qte_or >= v_min_bzf) and (v_max_bzf = 0 or v_qte_or <= v_max_bzf)
+            then
+                v_do_it := true;   -- quantité d'or dans les limites, on déclenche l'EA
             end if;
 
         end if;

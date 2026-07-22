@@ -2,15 +2,18 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 if ($quantite <= 0) {
-    echo("La somme que vous voulez mettre au sol n'est pas valide !)");
+    echo("La somme que vous voulez mettre au sol n'est pas valide !");
 } else {
     $req_depose = "select depose_or($perso_cod,$quantite) as depose";
     $stmt = $pdo->query($req_depose);
     $result = $stmt->fetch();
     if ($result['depose'] == 0) {
-        echo("<p>Vous avez déposé avec succès $quantite brouzoufs au sol.");
+        echo("<p>Vous avez déposé avec succès $quantite brouzoufs au sol.\n");
+        if ($result['depose'] != "0"){
+            echo ltrim($result['depose'], "0;") ."\n";
+        }
     } else {
-        printf("<p>Une erreur est survenue : %s", $result['depose']);
+        printf("<p>Une erreur est survenue : %s", ltrim($result['depose'], "-1;"));
     }
 }
 $contenu_page = ob_get_contents();
