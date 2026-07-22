@@ -1460,7 +1460,7 @@ if ($erreur == 0)
                                     <OPTION value="I">
                                         Inconnu
                                     </OPTION>
-                                </SELECT></TD>z
+                                </SELECT></TD>
                         </TR>
 
                         <TR>
