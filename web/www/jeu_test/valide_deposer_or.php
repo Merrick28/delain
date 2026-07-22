@@ -8,7 +8,7 @@ if ($quantite <= 0) {
     $stmt = $pdo->query($req_depose);
     $result = $stmt->fetch();
     $r = explode(';', $result['depose']);
-    if ($r[0] == 0) {
+    if ((int)$r[0] == 0) {
         echo("<p>Vous avez déposé avec succès $quantite brouzoufs au sol.\n");
         if ($r[1] != ""){
             echo $r[1] ."\n";
