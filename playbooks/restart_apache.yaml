@@ -1,0 +1,9 @@
+---
+- hosts: all
+  remote_user: delain
+  become: yes
+  tasks:
+    - name: restart apache
+      service:
+        name: apache2
+        state: restarted
