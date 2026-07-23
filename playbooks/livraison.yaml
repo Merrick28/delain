@@ -1,0 +1,19 @@
+---
+- hosts: all
+  remote_user: delain
+  become: no
+  tasks:
+
+    - name: Prepare diff
+      raw: /home/delain/delain/shell/scan_diff.sh
+    - name: Git pull
+      git:
+        repo=git@github.com:Merrick28/delain.git
+        dest=/home/delain/delain
+        accept_hostkey=yes
+        version=master
+        force=yes
+    - name: Empty cache
+      raw: rm -rf /home/delain/delain/cache/*
+    - name: Livraison SQL
+      raw: /home/delain/delain/shell/livraisons.sh
