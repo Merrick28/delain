@@ -2178,6 +2178,8 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	divEA.style.cssFloat = 'left';
 	divEA.style.maxWidth = '500px';
 	divEA.style.overflow = 'auto';
+    divEA.dataset.numero = EffetAuto.num_courant;
+    divEA.dataset.existant = "1";
 
 	var donnees = EffetAuto.getDonnees(type);
 	donnees.declenchement = EffetAuto.Triggers[declenchement] ?  EffetAuto.Triggers[declenchement].description : 'Déclenchement inconnu...';
@@ -2355,6 +2357,7 @@ EffetAuto.NouvelEffetAuto = function (container) {
 	divEA.style.cssFloat = 'left';
 	divEA.style.maxWidth = '500px';
 	divEA.style.overflow = 'auto';
+    divEA.dataset.numero = numero;
 
 	document.getElementById('fonctions_ajoutees').value += ',' + numero.toString();
 	var html = '';
@@ -2377,3 +2380,46 @@ EffetAuto.NouvelEffetAuto = function (container) {
 	EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
 	EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
 }
+
+EffetAuto.ModifiedSet = {};
+
+EffetAuto.MarqueModifie = function (numero) {
+    if (!EffetAuto.ModifiedSet[numero]) {
+        EffetAuto.ModifiedSet[numero] = true;
+        var champ = document.getElementById('fonctions_modifiees');
+        if (champ) champ.value += ',' + numero;
+    }
+};
+
+
+EffetAuto.PreparerSoumission = function () {
+    $('#liste_fonctions [data-existant="1"]').each(function () {
+        var numero = $(this).data('numero');
+        var estModifie = EffetAuto.ModifiedSet[numero];
+        var estSupprime = $(this).css('display') === 'none';
+
+        // EA existant non modifié (ou supprimé) : ses champs sont désactivés
+        // pour ne pas être envoyés dans le POST, on ne garde que l'essentiel
+        if (!estModifie || estSupprime) {
+            $(this).find('[name]').prop('disabled', true);
+        }
+    });
+};
+
+EffetAuto.Soumission = function () {
+    var valide = Validation.Valide ();      // valide les données de la forme
+    if (!valide) return false;
+
+    // preparer le submit avec uniquement les elements modifiés
+    EffetAuto.PreparerSoumission();
+    return true;
+};
+
+
+// écoute déléguée : tout changement dans un EA le marque comme modifié
+$(document).on('change input', '#liste_fonctions [name]', function () {
+    var container = $(this).closest('[data-numero]');
+    if (container.length) {
+        EffetAuto.MarqueModifie(container.data('numero'));
+    }
+});
