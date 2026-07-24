@@ -56,7 +56,13 @@ if ($erreur == 0)
             'ren_k_creation',
             'ren_k_modif',
             'ren_k_supp'
-        )
+        ),
+        'compteur_valeur' => array(
+            'cptval_show',
+            'cptval_upd',
+            'cptval_add',
+            'cptval_del'
+        ),
     );
 
     $onglet = 'aucun';
@@ -64,6 +70,7 @@ if ($erreur == 0)
     $onglet = (in_array($methode, $lesMethodes['renommee'])) ? 'renommee' : $onglet;
     $onglet = (in_array($methode, $lesMethodes['messagerie'])) ? 'messagerie' : $onglet;
     $onglet = (in_array($methode, $lesMethodes['compteur'])) ? 'compteur' : $onglet;
+    $onglet = (in_array($methode, $lesMethodes['compteur_valeur'])) ? 'compteur_valeur' : $onglet;
 
     if ($onglet == 'aucun' && isset($_GET['onglet']))
         $onglet = $_GET['onglet'];
@@ -87,6 +94,11 @@ if ($erreur == 0)
 
         case 'compteur':   // Modifs de renommées
             $page_include     = 'admin_params.compteur.php';
+            $style_compteur = 'style="font-weight:bold;"';
+            break;
+
+        case 'compteur_valeur':   // Modifs de renommées
+            $page_include     = 'admin_params.compteur_valeur.php';
             $style_compteur = 'style="font-weight:bold;"';
             break;
     }

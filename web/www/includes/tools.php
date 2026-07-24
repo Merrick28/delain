@@ -546,6 +546,9 @@ function save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)
     {
         if (!empty($numero) || $numero === 0)
         {
+            if (!isset($post['fonc_id' . $numero])) {
+                continue; // EA non modifié côté client, ses champs n'ont pas été soumis
+            }
             $fonc_cod = fonctions::format($post['fonc_id' . $numero]);
             if (!in_array($fonc_cod, $fonctions_supprimees))
             {

@@ -213,7 +213,7 @@ foreach ($lesTypes as $i)
     $col_lib = $lesColonnes[$i]['lib'];
     $log_commpteur = $lesNoms[$i];
     echo "<table id='table_compteur_$i'><tr>
-			<td class='titre' colspan='9'><strong>$log_commpteur</strong></td></tr>";
+			<td class='titre' colspan='10'><strong>$log_commpteur</strong></td></tr>";
     echo '<tr>
 			<td class="titre"><strong>CODE</strong></td>
 			<td class="titre"><strong>Titre</strong></td>
@@ -221,7 +221,7 @@ foreach ($lesTypes as $i)
 			<td class="titre"><strong>Init</strong></td>
 			<td class="titre"><strong>Min</strong></td>
 			<td class="titre"><strong>Max</strong></td>
-			<td class="titre" colspan="2"><strong>Action</strong></td>
+			<td class="titre" colspan="3"><strong>Action</strong></td>	
 			<td class="titre" ><strong>Problèmes détectés </strong></td>
 		  </tr>';
     echo "<tr><form method='POST' action='#'>
@@ -231,7 +231,7 @@ foreach ($lesTypes as $i)
 		<td class='titre' style='padding:2px;'><input name='compteur_def' type='text' size='6' value='0'/> </td>
 		<td class='titre' style='padding:2px;'><input name='compteur_min' type='text' size='6' value=''/> </td>
 		<td class='titre' style='padding:2px;'><input name='compteur_max' type='text' size='6' value=''/> </td>
-		<td class='titre' style='padding:2px;' colspan='2'><input type='hidden' name='methode' value='cpt_" . $i . "_add' />
+		<td class='titre' style='padding:2px;' colspan='3'><input type='hidden' name='methode' value='cpt_" . $i . "_add' />
 			<input type='submit' value='Ajouter' class='test' /></td><td class='titre'></td>
 		</form></tr>";
 
@@ -269,6 +269,11 @@ foreach ($lesTypes as $i)
 			<input type='hidden' name='compteur_cod' value='$compteur_cod' />
 			<input type='submit' value='Supprimer' class='test' />
 			</form></td>";
+
+        echo "<td style='padding:2px; text-align:center;'>
+            <a href='admin_params.php?onglet=compteur_valeur&methode=cptval_show&compteur_cod=$compteur_cod'>Voir valeurs</a>
+            </td>";
+
         if ($erreur)
             echo "<td style='padding:2px; color:#660000'><p>$message_erreur</p></td>";
         else

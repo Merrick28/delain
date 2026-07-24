@@ -1077,7 +1077,7 @@ if ($erreur == 0)
 
 
                 ?>
-                <form method="post" onsubmit="return Validation.Valide ();">
+                <form method="post" onsubmit="return EffetAuto.Soumission();">
                     <input type="hidden" name="methode2" value="edit">
                     <input type="hidden" name="methode" value="add_mon_fonction">
                     <input type="hidden" name="sel_method" value="edit">
@@ -1086,6 +1086,7 @@ if ($erreur == 0)
                     <input type='hidden' name='fonctions_ajoutees' id='fonctions_ajoutees' value=''/>
                     <input type='hidden' name='fonctions_annulees' id='fonctions_annulees' value=''/>
                     <input type='hidden' name='fonctions_existantes' id='fonctions_existantes' value=''/>
+                    <input type='hidden' name='fonctions_modifiees' id='fonctions_modifiees' value=''/>
                     <div id="liste_fonctions"></div><script>
                     <?php
 
@@ -1460,7 +1461,7 @@ if ($erreur == 0)
                                     <OPTION value="I">
                                         Inconnu
                                     </OPTION>
-                                </SELECT></TD>z
+                                </SELECT></TD>
                         </TR>
 
                         <TR>

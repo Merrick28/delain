@@ -139,7 +139,8 @@ if ($erreur == 0)
         echo '<select id="liste_ea_modele" style="display:none;">' . $html->select_from_query($req, 'ea_cod', 'ea_nom') . '</select>';
 
         // Interface de saisie
-        echo '<form method="post" onsubmit="return Validation.Valide ();">
+        ##echo '<form method="post" onsubmit="return Validation.Valide ();">
+        echo '<form method="post" onsubmit="return EffetAuto.Soumission();">
             <input type="hidden" name="methode2" value="edit">
             <input type="hidden" name="methode" value="add_mon_fonction">
             <input type="hidden" name="sel_method" value="edit">
@@ -148,6 +149,7 @@ if ($erreur == 0)
             <input type="hidden" name="fonctions_ajoutees" id="fonctions_ajoutees" value=""/>
             <input type="hidden" name="fonctions_annulees" id="fonctions_annulees" value=""/>
             <input type="hidden" name="fonctions_existantes" id="fonctions_existantes" value=""/>
+            <input type="hidden" name="fonctions_modifiees" id="fonctions_modifiees" value=""/>
             <div id="liste_fonctions"></div><script>
             EffetAuto.EditionEAPosition = true ; // En mode EA les implantations d\'EA sont interdites
             EffetAuto.EditionEA.etage_cod = '.$pos_etage.' ;
