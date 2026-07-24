@@ -881,13 +881,14 @@ if ($erreur == 0)
 
 
         ?>
-        <form method="post" action="#" onsubmit="return Validation.Valide ();">
+        <form method="post" action="#" onsubmit="return EffetAuto.Soumission();">
             <input type="hidden" name="methode" value="add_effet_auto">
             <input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod ?>">
             <input type='hidden' name='fonctions_supprimees' id='fonctions_supprimees' value=''/>
             <input type='hidden' name='fonctions_ajoutees' id='fonctions_ajoutees' value=''/>
             <input type='hidden' name='fonctions_annulees' id='fonctions_annulees' value=''/>
             <input type='hidden' name='fonctions_existantes' id='fonctions_existantes' value=''/>
+            <input type='hidden' name='fonctions_modifiees' id='fonctions_modifiees' value=''/>
             <div id="liste_fonctions"></div>
             <script>EffetAuto.MontreValidite = true;
             <?php
