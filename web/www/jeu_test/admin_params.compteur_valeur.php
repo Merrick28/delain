@@ -147,9 +147,11 @@ echo "<tr>
 // Ligne d'ajout (uniquement pertinent pour un compteur individuel, ou pour créer la ligne globale manquante)
 echo "<tr><form method='POST' action='#'>
 	<td class='titre' style='padding:2px;'></td>
-	<td class='titre' style='padding:2px;'>";
+	<td style='padding:2px;'>";
 if ($compteur_typ == 1) {
-    echo "<input name='comptval_perso_cod' type='text' size='10' placeholder='perso_cod' />";
+    echo "<input data-entry='val' id='add_perso_cod' name='comptval_perso_cod' type='text' size='6' value='' />&nbsp;";
+    echo "<span data-entry='text' id='add_perso_nom'></span>&nbsp;";
+    echo "<input type='button' class='test' value='rechercher' onclick=\"getTableCod('add_perso','perso','Rechercher un personnage',['','','']);\">";
 } else {
     echo "<em>Global</em>";
 }
