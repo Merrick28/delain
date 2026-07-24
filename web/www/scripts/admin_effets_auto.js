@@ -1962,6 +1962,14 @@ EffetAuto.ChampsInit = function (conteneur) {
 
     // Appel des fonctions qui demande une init après charegement de la page
     EffetAuto.ChampChoixSensDeplacementInit(conteneur);
+
+    // écoute déléguée : tout changement dans un EA le marque comme modifié
+    $(document).on('change input', '#liste_fonctions [name]', function () {
+        var container = $(this).closest('[data-numero]');
+        if (container.length) {
+            EffetAuto.MarqueModifie(container.data('numero'));
+        }
+    });
 }
 
 
@@ -2406,9 +2414,22 @@ EffetAuto.PreparerSoumission = function () {
     });
 };
 
+EffetAuto.DesactiveChampsCaches = function () {
+    // les blocs conditionnels (ex: objet déclencheur selon le sens de déplacement)
+    // sont identifiés par un id "block_trigger_{numero}_{n}" et masqués via display:none
+    $('div[id^="block_trigger_"]').each(function () {
+        if ($(this).css('display') === 'none') {
+            $(this).find('[name]').prop('disabled', true);
+        }
+    });
+};
+
 EffetAuto.Soumission = function () {
     var valide = Validation.Valide ();      // valide les données de la forme
     if (!valide) return false;
+
+    // désactiver les champs actuellement cachés (blocs conditionnels non pertinents)
+    EffetAuto.DesactiveChampsCaches();
 
     // preparer le submit avec uniquement les elements modifiés
     EffetAuto.PreparerSoumission();
@@ -2416,10 +2437,3 @@ EffetAuto.Soumission = function () {
 };
 
 
-// écoute déléguée : tout changement dans un EA le marque comme modifié
-$(document).on('change input', '#liste_fonctions [name]', function () {
-    var container = $(this).closest('[data-numero]');
-    if (container.length) {
-        EffetAuto.MarqueModifie(container.data('numero'));
-    }
-});
