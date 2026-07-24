@@ -849,7 +849,8 @@ if ($erreur == 0)
                                      '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select tbonus_cod, tonbus_libelle||case when tbonus_gentil_positif then ' (+)' else ' (-)' end from bonus_type order by tonbus_libelle", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
                                      Puissance :<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" style="margin-top: 5px;">
                                      Nombre de DLT :<input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'">
-                                   </td>';
+                                     Mode : '.create_selectbox("aqelem_param_num_3[$param_id][]", array("0"=>"Standard","1"=>"Cumulatif"), 1*$element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                    </td>';
                         break;
 
                     case 'meca':       // pour les mecanisme d'étage

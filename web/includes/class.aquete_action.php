@@ -2415,9 +2415,11 @@ class aquete_action
             {
 
                 // instancier l'objet générique
-                $req = "select ajoute_bonus(:perso_cod, tbonus_libc, :duree, :valeur) from bonus_type where tbonus_cod = :tbonus_cod ;  ";
+                $req = "select ajoute_bonus(:perso_cod, CASE WHEN :mode=1 then tbonus_libc || '+' ELSE tbonus_libc END, :duree, :valeur) from bonus_type where tbonus_cod = :tbonus_cod ;  ";
                 $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":tbonus_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod , ":duree" =>  $elem->aqelem_param_num_2, ":valeur" =>  $elem->aqelem_param_num_1), $stmt);
+                $stmt   = $pdo->execute(array(":tbonus_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod , ":duree" =>  $elem->aqelem_param_num_2, ":valeur" =>  $elem->aqelem_param_num_1, ":mode" =>  $elem->aqelem_param_num_3), $stmt);
+
+
                 if ($result = $stmt->fetch())
                 {
                     $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
