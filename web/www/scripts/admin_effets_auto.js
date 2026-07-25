@@ -1965,11 +1965,32 @@ EffetAuto.Supprime = function (id, numero, silence) {
 EffetAuto.ChampsInit = function (conteneur) {
     conteneur = conteneur || document;
 
-    // Appel des fonctions qui demande une init après charegement de la page
+    // Appel des fonctions qui demande une init après chargement de la page
     EffetAuto.ChampChoixSensDeplacementInit(conteneur);
 
 }
 
+EffetAuto.EAInit = function () {
+    if (!EffetAuto._bindingsInit) {
+        EffetAuto._bindingsInit = true;
+
+        $(document).on('change input', '#liste_fonctions [name]', function () {
+            var container = $(this).closest('[data-numero]');
+            if (container.length) {
+                EffetAuto.MarqueModifie(container.data('numero'));
+            }
+        });
+
+        $(document).on('change', '#liste_fonctions input[id^="fonc_trig_nom_ea"]', function () {
+            if (EffetAuto.EditionEAPosition) {
+                EffetAuto.InitFiltreEA();
+            }
+        });
+    }
+
+    // Filtrer si besoin : recalculé à chaque appel, indépendamment des bindings
+    EffetAuto.InitFiltreEA();
+}
 
 EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable) {
 
