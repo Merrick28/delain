@@ -1980,12 +1980,12 @@ EffetAuto.EAInit = function () {
                 EffetAuto.MarqueModifie(container.data('numero'));
             }
         });
-
+/*      Le filtrage à la volée et trop perturbant
         $(document).on('change', '#liste_fonctions input[id^="fonc_trig_nom_ea"]', function () {
             if (EffetAuto.EditionEAPosition) {
                 EffetAuto.InitFiltreEA();
             }
-        });
+        }); */
     }
 
     // Filtrer si besoin : recalculé à chaque appel, indépendamment des bindings
@@ -2572,18 +2572,3 @@ EffetAuto.AppliqueFiltreNomEA = function (select) {
         this.style.display = visible ? '' : 'none';
     });
 };
-
-// ↓ Bindings délégués enregistrés UNE SEULE FOIS au chargement du script
-// (déplacés hors de ChampsInit pour éviter les doublons d'écouteurs)
-$(document).on('change input', '#liste_fonctions [name]', function () {
-    var container = $(this).closest('[data-numero]');
-    if (container.length) {
-        EffetAuto.MarqueModifie(container.data('numero'));
-    }
-});
-
-$(document).on('change', '#liste_fonctions input[id^="fonc_trig_nom_ea"]', function () {
-    if (EffetAuto.EditionEAPosition) {
-        EffetAuto.InitFiltreEA();
-    }
-});
