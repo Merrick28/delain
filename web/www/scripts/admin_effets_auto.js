@@ -4,6 +4,7 @@ EffetAuto.MontreValidite = false;
 EffetAuto.EditionCompteur = false;
 EffetAuto.EditionEAPosition = false;
 EffetAuto.EditionEA = {etage_cod:0};
+EffetAuto.EAGroupes = {};   // numero -> clé de groupe ('grp_N', 'uniques', ou null si pas de nom)
 
 /*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
@@ -1943,14 +1944,18 @@ EffetAuto.Supprime = function (id, numero, silence) {
 			EffetAuto.SupprimeEAChild('#ea-container-' + numero);
 		}
 
-		if (id != -1) {
-			document.getElementById('fonctions_supprimees').value += ',' + id.toString();
-			document.getElementById('fonction_id_' + id).style.display = 'none';
-		}
-		else {
-			document.getElementById('fonctions_annulees').value += ',' + numero.toString();
-			document.getElementById('fonction_num_' + numero).style.display = 'none';
-		}
+        if (id != -1) {
+            document.getElementById('fonctions_supprimees').value += ',' + id.toString();
+            var elemDel = document.getElementById('fonction_id_' + id);
+            elemDel.style.display = 'none';
+            elemDel.classList.add('ea-supprime');
+        }
+        else {
+            document.getElementById('fonctions_annulees').value += ',' + numero.toString();
+            var elemAnn = document.getElementById('fonction_num_' + numero);
+            elemAnn.style.display = 'none';
+            elemAnn.classList.add('ea-supprime');
+        }
 		EffetAuto.EnleveValidation (numero, 'trigger');
 		EffetAuto.EnleveValidation (numero, 'effet');
 	}
@@ -1963,13 +1968,6 @@ EffetAuto.ChampsInit = function (conteneur) {
     // Appel des fonctions qui demande une init après charegement de la page
     EffetAuto.ChampChoixSensDeplacementInit(conteneur);
 
-    // écoute déléguée : tout changement dans un EA le marque comme modifié
-    $(document).on('change input', '#liste_fonctions [name]', function () {
-        var container = $(this).closest('[data-numero]');
-        if (container.length) {
-            EffetAuto.MarqueModifie(container.data('numero'));
-        }
-    });
 }
 
 
@@ -2387,6 +2385,13 @@ EffetAuto.NouvelEffetAuto = function (container) {
 	// récupérer le premier élément de la liste des triggers par défaut (sur nouvel EA)
 	EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
 	EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
+
+    EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
+    EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
+
+    if (!container && EffetAuto.EditionEAPosition) {
+        EffetAuto.InitFiltreEA();
+    }
 }
 
 EffetAuto.ModifiedSet = {};
@@ -2404,10 +2409,8 @@ EffetAuto.PreparerSoumission = function () {
     $('#liste_fonctions [data-existant="1"]').each(function () {
         var numero = $(this).data('numero');
         var estModifie = EffetAuto.ModifiedSet[numero];
-        var estSupprime = $(this).css('display') === 'none';
+        var estSupprime = $(this).hasClass('ea-supprime');   // ← remplace le test css('display')
 
-        // EA existant non modifié (ou supprimé) : ses champs sont désactivés
-        // pour ne pas être envoyés dans le POST, on ne garde que l'essentiel
         if (!estModifie || estSupprime) {
             $(this).find('[name]').prop('disabled', true);
         }
@@ -2436,4 +2439,130 @@ EffetAuto.Soumission = function () {
     return true;
 };
 
+EffetAuto._commonPrefixLen = function (a, b) {
+    var n = Math.min(a.length, b.length), i = 0;
+    while (i < n && a[i] === b[i]) i++;
+    return i;
+};
 
+EffetAuto.CalculeGroupesNomEA = function () {
+    EffetAuto.EAGroupes = {};
+
+    var items = [];
+    $('#liste_fonctions > [data-numero]').each(function () {
+        var numero = $(this).data('numero');
+        var input = document.getElementById('fonc_trig_nom_ea' + numero);
+        if (!input) return;   // pas un EA de type POS
+        var nom = input.value || '';
+        items.push({ numero: numero, nom: nom, nomLower: nom.toLowerCase() });
+    });
+
+    // items sans nom : toujours visibles quel que soit le filtre
+    items.filter(function (it) { return it.nom === ''; })
+        .forEach(function (it) { EffetAuto.EAGroupes[it.numero] = null; });
+
+    var nommes = items.filter(function (it) { return it.nom !== ''; });
+
+    // tri alphabétique insensible à la casse : propriété clé qui permet
+    // un regroupement par simple fusion d'éléments consécutifs
+    nommes.sort(function (a, b) {
+        return a.nomLower < b.nomLower ? -1 : (a.nomLower > b.nomLower ? 1 : 0);
+    });
+
+    var clusters = [];
+    var courant = null;
+    nommes.forEach(function (item) {
+        if (courant === null) {
+            courant = { membres: [item], prefixeLower: item.nomLower };
+        } else {
+            var plen = EffetAuto._commonPrefixLen(courant.prefixeLower, item.nomLower);
+            if (plen >= 5) {
+                courant.membres.push(item);
+                courant.prefixeLower = courant.prefixeLower.substr(0, plen);
+            } else {
+                clusters.push(courant);
+                courant = { membres: [item], prefixeLower: item.nomLower };
+            }
+        }
+    });
+    if (courant !== null) clusters.push(courant);
+
+    var groupesMulti = clusters.filter(function (c) { return c.membres.length >= 2; });
+    var uniques = clusters.filter(function (c) { return c.membres.length === 1; })
+        .map(function (c) { return c.membres[0]; });
+
+    var options = [{ value: '', label: 'Toutes les EA' }];
+
+    groupesMulti
+        .map(function (cluster, idx) {
+            // label affiché avec la casse d'origine du premier membre trié
+            var label = cluster.membres[0].nom.substr(0, cluster.prefixeLower.length);
+            return { cluster: cluster, label: label, key: 'grp_' + idx };
+        })
+        .sort(function (a, b) { return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1; })
+        .forEach(function (g) {
+            g.cluster.membres.forEach(function (m) { EffetAuto.EAGroupes[m.numero] = g.key; });
+            options.push({ value: g.key, label: g.label + ' (' + g.cluster.membres.length + ')' });
+        });
+
+    if (uniques.length > 0) {
+        uniques.forEach(function (m) { EffetAuto.EAGroupes[m.numero] = 'uniques'; });
+        options.push({ value: 'uniques', label: 'EA uniques (' + uniques.length + ')' });
+    }
+
+    return options;
+};
+
+EffetAuto.InitFiltreEA = function () {
+    if (!EffetAuto.EditionEAPosition) return;
+
+    var valeurPrecedente = $('#filtre_nom_ea').length ? $('#filtre_nom_ea').val() : '';
+    var options = EffetAuto.CalculeGroupesNomEA();
+
+    var conteneur = document.getElementById('filtre_nom_ea_container');
+    if (!conteneur) {
+        conteneur = document.createElement('div');
+        conteneur.id = 'filtre_nom_ea_container';
+        var liste = document.getElementById('liste_fonctions');
+        liste.parentNode.insertBefore(conteneur, liste);
+    }
+
+    var html = '<label><strong>Filtrer par nom d’EA :</strong>&nbsp;<select id="filtre_nom_ea" onchange="EffetAuto.AppliqueFiltreNomEA(this);">';
+    options.forEach(function (o) {
+        html += '<option value="' + o.value + '">' + o.label + '</option>';
+    });
+    html += '</select></label><br /><br />';
+    conteneur.innerHTML = html;
+
+    if (options.some(function (o) { return o.value === valeurPrecedente; })) {
+        $('#filtre_nom_ea').val(valeurPrecedente);
+    }
+
+    EffetAuto.AppliqueFiltreNomEA(document.getElementById('filtre_nom_ea'));
+};
+
+EffetAuto.AppliqueFiltreNomEA = function (select) {
+    var val = select.value;
+    $('#liste_fonctions > [data-numero]').each(function () {
+        if ($(this).hasClass('ea-supprime')) return; // reste masqué, le filtre n'intervient pas
+        var numero = $(this).data('numero');
+        var key = EffetAuto.EAGroupes[numero];
+        var visible = (val === '') || (key === null) || (key === val);
+        this.style.display = visible ? '' : 'none';
+    });
+};
+
+// ↓ Bindings délégués enregistrés UNE SEULE FOIS au chargement du script
+// (déplacés hors de ChampsInit pour éviter les doublons d'écouteurs)
+$(document).on('change input', '#liste_fonctions [name]', function () {
+    var container = $(this).closest('[data-numero]');
+    if (container.length) {
+        EffetAuto.MarqueModifie(container.data('numero'));
+    }
+});
+
+$(document).on('change', '#liste_fonctions input[id^="fonc_trig_nom_ea"]', function () {
+    if (EffetAuto.EditionEAPosition) {
+        EffetAuto.InitFiltreEA();
+    }
+});

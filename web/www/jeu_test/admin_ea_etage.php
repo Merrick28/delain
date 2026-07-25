@@ -166,6 +166,7 @@ if ($erreur == 0)
 
         echo getJS_ea_existant($req, false, false);
 
+        echo 'EffetAuto.InitFiltreEA(); ';
         echo '</script>';
         echo '<div style="clear: both;">
                 <a onclick="EffetAuto.NouvelEffetAuto (); return false;">Nouvel effet</a><br/><br/>
