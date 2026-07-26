@@ -305,8 +305,13 @@ function get_texte_declenchement($fonc_type)
         case 'POS':
             $texteDeclenchement = 'lorsqu’il arrive ou quitte une case à EA.';
             break;
+        case 'CES':
+            $texteDeclenchement = 'le perso change d’état de santé.';
+            break;
+        case 'OTR':
+            $texteDeclenchement = 'le perso reçoit une transaction.';
+            break;
     }
-
     return $texteDeclenchement ;
 }
 

@@ -908,6 +908,8 @@ if ($erreur == 0)
 
             echo getJS_ea_existant($req, true, false);
 
+            echo 'EffetAuto.EAInit(); ';
+
             ?>
             </script>
 

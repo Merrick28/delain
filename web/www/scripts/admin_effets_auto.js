@@ -899,6 +899,11 @@ EffetAuto.videListe = function (numero) {
 
 EffetAuto.remplirListe = function (type, numero) {
 	EffetAuto.videListe (numero);
+
+    // mémorise le type de déclenchement sur le container, pour le filtre par déclenchement
+    var container = document.querySelector('#liste_fonctions [data-numero="' + numero + '"]');
+    if (container) container.dataset.declenchement = type;
+
 	var liste = document.getElementById('fonction_type_' + numero);
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
@@ -2207,6 +2212,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	divEA.style.overflow = 'auto';
     divEA.dataset.numero = EffetAuto.num_courant;
     divEA.dataset.existant = "1";
+    divEA.dataset.declenchement = declenchement;
 
 	var donnees = EffetAuto.getDonnees(type);
 	donnees.declenchement = EffetAuto.Triggers[declenchement] ?  EffetAuto.Triggers[declenchement].description : 'Déclenchement inconnu...';
@@ -2534,8 +2540,70 @@ EffetAuto.CalculeGroupesNomEA = function () {
     return options;
 };
 
-EffetAuto.InitFiltreEA = function () {
-    if (!EffetAuto.EditionEAPosition) return;
+EffetAuto.CalculeGroupesDeclenchement = function () {
+    var groupes = {};   // type -> nombre d'occurrences
+    var declenchements = {};   // numero -> type
+
+    $('#liste_fonctions > [data-numero]').each(function () {
+        var numero = $(this).data('numero');
+        var type = this.dataset.declenchement;
+        if (!type) return;
+        declenchements[numero] = type;
+        groupes[type] = (groupes[type] || 0) + 1;
+    });
+
+    EffetAuto.EADeclenchements = declenchements;
+
+    var options = [{ value: '', label: 'Tous les déclenchements' }];
+
+    Object.keys(groupes)
+        .map(function (type) {
+            var label = EffetAuto.Triggers[type] ? EffetAuto.Triggers[type].description : type;
+            return { value: type, label: label + ' (' + groupes[type] + ')' };
+        })
+        .sort(function (a, b) { return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1; })
+        .forEach(function (o) { options.push(o); });
+
+    return options;
+};
+
+EffetAuto.InitFiltreDeclenchement = function () {
+    var valeurPrecedente = $('#filtre_declenchement').length ? $('#filtre_declenchement').val() : '';
+    var options = EffetAuto.CalculeGroupesDeclenchement();
+
+    var conteneur = document.getElementById('filtre_declenchement_container');
+    if (!conteneur) {
+        conteneur = document.createElement('div');
+        conteneur.id = 'filtre_declenchement_container';
+        var liste = document.getElementById('liste_fonctions');
+        liste.parentNode.insertBefore(conteneur, liste);
+    }
+
+    var html = '<label><strong>Filtrer par déclenchement :</strong>&nbsp;<select id="filtre_declenchement" onchange="EffetAuto.AppliqueFiltreDeclenchement(this);">';
+    options.forEach(function (o) {
+        html += '<option value="' + o.value + '">' + o.label + '</option>';
+    });
+    html += '</select></label><br /><br />';
+    conteneur.innerHTML = html;
+
+    if (options.some(function (o) { return o.value === valeurPrecedente; })) {
+        $('#filtre_declenchement').val(valeurPrecedente);
+    }
+
+    EffetAuto.AppliqueFiltreDeclenchement(document.getElementById('filtre_declenchement'));
+};
+
+EffetAuto.AppliqueFiltreDeclenchement = function (select) {
+    var val = select.value;
+    $('#liste_fonctions > [data-numero]').each(function () {
+        if ($(this).hasClass('ea-supprime')) return;
+        var type = this.dataset.declenchement;
+        var visible = (val === '') || (type === val);
+        this.style.display = visible ? '' : 'none';
+    });
+};
+
+EffetAuto.InitFiltreNomEA  = function () {
 
     var valeurPrecedente = $('#filtre_nom_ea').length ? $('#filtre_nom_ea').val() : '';
     var options = EffetAuto.CalculeGroupesNomEA();
@@ -2571,4 +2639,12 @@ EffetAuto.AppliqueFiltreNomEA = function (select) {
         var visible = (val === '') || (key === null) || (key === val);
         this.style.display = visible ? '' : 'none';
     });
+};
+
+EffetAuto.InitFiltreEA = function () {
+    if (EffetAuto.EditionEAPosition) {
+        EffetAuto.InitFiltreNomEA();
+    } else {
+        EffetAuto.InitFiltreDeclenchement();
+    }
 };
