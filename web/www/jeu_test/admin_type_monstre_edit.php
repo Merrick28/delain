@@ -1094,6 +1094,7 @@ if ($erreur == 0)
 						from fonction_specifique where fonc_gmon_cod = $gmon_cod order by fonc_cod ";
 
                     echo getJS_ea_existant($req, false, false);
+                    echo 'EffetAuto.EAInit(); ';
 
                     ?>
                     </script>

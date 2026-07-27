@@ -161,6 +161,7 @@ if ($erreur == 0)
                         order by fonc_cod ";
 
         echo getJS_ea_existant($req, false, false);
+        echo 'EffetAuto.EAInit(); ';
 
         echo '</script>';
         echo '<div style="clear: both;">
