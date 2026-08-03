@@ -82,7 +82,8 @@ begin
 	for row in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null and (v_evenement='BMC' OR v_evenement='DEP')))
-			and (fonc_type = v_evenement OR fonc_type = 'CES' OR (  fonc_type = 'POS'
+			and (coalesce(fonc_mode, '') != 'ea_implantation')
+	        and (fonc_type = v_evenement OR fonc_type = 'CES' OR (  fonc_type = 'POS'
               AND fonc_trigger_param->>'fonc_trig_rearme' != -1
               AND ( (coalesce(v_param->>'ancien_pos_cod'::text, '') != coalesce(v_param->>'nouveau_pos_cod'::text, ''))
 	                OR (coalesce(v_param->>'ancien_pos_cod'::text, '') = '')

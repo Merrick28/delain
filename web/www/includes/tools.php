@@ -421,7 +421,7 @@ function delete_ea($fonc_cod)
  * @throws Exception
  * Insertion nouvel effet auto
  */
-function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod)
+function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod, $fonc_mode = null)
 {
     $pdo = new bddpdo; // connection à la DB
 
@@ -437,8 +437,8 @@ function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod)
     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
     $fonc_trigger_param = get_ea_trigger_param($post, $numero);
 
-    $req = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite)
-						VALUES (:fonc_nom, :fonc_gmon_cod, :fonc_perso_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param, {$fonc_validite_sql})
+    $req = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode)
+						VALUES (:fonc_nom, :fonc_gmon_cod, :fonc_perso_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param, {$fonc_validite_sql}, :fonc_mode)
 						RETURNING fonc_cod";
     $stmt = $pdo->prepare($req);
     $stmt = $pdo->execute(array(
@@ -454,7 +454,8 @@ function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod)
         ":fonc_portee" => $post['fonc_portee' . $numero],
         ":fonc_proba" => $post['fonc_proba' . $numero],
         ":fonc_message" => $post['fonc_message' . $numero],
-        ":fonc_trigger_param" => json_encode($fonc_trigger_param)
+        ":fonc_trigger_param" => json_encode($fonc_trigger_param),
+        ":fonc_mode" => $fonc_mode
     ), $stmt);
     $result    = $stmt->fetch();
     $fonc_cod  = $result['fonc_cod'];
@@ -477,14 +478,14 @@ function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod)
  * Sauvegarde un nouvel EA et eventuellement son EA fils (recursivement)
  * return le message de sauvegarde et le fonc_cod du nouvel EA
  */
-function insert_eas($fonctions_implantation, $post, $numero, $fonc_gmon_cod, $fonc_perso_cod)
+function insert_eas($fonctions_implantation, $post, $numero, $fonc_gmon_cod, $fonc_perso_cod, $fonc_mode = null)
 {
     $message = "";
 
     // s'il s'agit d'une EA implantrice, l'EA d'implantantée doit être sauvegardée avant (le fonc_cod de l'implantée devient le fonc_effet de l'implanteur)
     if (in_array($numero, $fonctions_implantation["implantrices"])){
         // sauvegarde de l'implantée (sans rattachment ni monstre ni perso)
-        $result= insert_eas($fonctions_implantation, $post, $fonctions_implantation["implantation"][$numero], null, null);
+        $result= insert_eas($fonctions_implantation, $post, $fonctions_implantation["implantation"][$numero], null, null, 'ea_implantation');
 
         // lier les 2 EA
         $post['fonc_effet' . $numero] = $result["fonc_cod"] ;
@@ -492,7 +493,7 @@ function insert_eas($fonctions_implantation, $post, $numero, $fonc_gmon_cod, $fo
     }
 
     // maintenant qu'une eventuelle EA implantée est sauvegardée on peut sauver l'EA normale ou implantatrice
-    $result= insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod);
+    $result= insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod, $fonc_mode);
     $message.= $result["message"];
 
     return ["fonc_cod"=>$result["fonc_cod"], "message" => $message];
