@@ -20,7 +20,7 @@ begin
 	select into temp count(*)
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
-		and bonus_tbonus_libc = tbonus_libc and bonus_mode != 'E' ;
+		and bonus_tbonus_libc = tbonus_libc and bonus_mode not in ('E', 'A') ;
 
 	select into temp_car count(*)
 		from carac_orig inner join perso on perso_cod = corig_perso_cod
@@ -36,7 +36,7 @@ begin
 		where bonus_perso_cod = v_perso
 		and bonus_tbonus_libc = tbonus_libc
 		and bonus_valeur<>0
-		and bonus_mode != 'E' loop
+		and bonus_mode not in ('E', 'A') loop
 			if (ligne.bonus_valeur > 0) then
 				bonus_signe := '+';
 			else

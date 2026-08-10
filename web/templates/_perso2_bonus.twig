@@ -244,6 +244,45 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
 
     </tr>
 </table>
+<div class="titre">Auras</div>
+{% if TAB_AURAS|length == 0 %}
+<table>
+    <tr valign="top">
+        <td style="padding:15px;">
+            <p>Vous n’avez aucune aura active en ce moment.</p>
+        </td>
+    </tr>
+</table>
+{% else %}
+    <table>
+        <tr>
+            <td class="soustitre2"><strong>Aura</strong></td>
+            <td class="soustitre2"><strong>Puissance restante</strong></td>
+            <td class="soustitre2"><strong>Protège contre</strong></td>
+            <td class="soustitre2"><strong>Échéance</strong></td>
+            <td class=""></td>
+        </tr>
+        {% for aura in TAB_AURAS %}
+            <tr class="delain-tooltip" title="{{ aura.tbonus_description|raw }}">
+                <td class="soustitre2"><strong>{{ aura.tonbus_libelle }}</strong></td>
+                <td>
+                    <div style="text-align:center;">{{ aura.bonus_valeur }}</div>
+                </td>
+                <td>
+                    <div style="text-align:center;">{{ aura.absorbe_libelle|default('—') }}</div>
+                </td>
+                <td>
+                    <div style="text-align:center;">{{ aura.bonus_dfin|date('d/m/Y H:i:s') }}</div>
+                </td>
+                <td style="text-align:center"><img src="{{ aura.img }}">
+                    {% if aura.img_malus != "" %}
+                        <img src="{{ aura.img_malus }}">
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
 <script>//# sourceURL=_perso2_bonus_twig.js
     $(document).ready(function () {
         $(".delain-tooltip").tooltip({

@@ -509,7 +509,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES BONUS Standards
-                            $req_bon = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_bon = "select CASE WHEN tbonus_aura THEN '[Aura] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, COALESCE(bonus_nb_tours, 0) as bonus_nb_tours
                                         from bonus
                                         inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                                         where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -569,14 +569,14 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES MALUS Standards
-                            $req_mal = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
-		from bonus
-		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-		where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
-		and
-			(tbonus_gentil_positif = 't' and bonus_valeur < 0
-			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-		order by bonus_tbonus_libc";
+                            $req_mal = "select CASE WHEN tbonus_aura THEN '[Aura] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, COALESCE(bonus_nb_tours, 0) as bonus_nb_tours
+                                        from bonus
+                                        inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                                        where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
+                                        and
+                                            (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                                            or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                                        order by bonus_tbonus_libc";
                             $stmt    = $pdo->query($req_mal);
                             while ($result = $stmt->fetch())
                             {

@@ -3272,6 +3272,7 @@ class perso
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur < 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                  and bonus_mode != 'A'
                   group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
@@ -3302,6 +3303,7 @@ class perso
                     (tbonus_gentil_positif = 't' and bonus_valeur < 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
+                    and bonus_mode != 'A'
                   group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
@@ -3332,10 +3334,33 @@ class perso
                     (tbonus_gentil_positif = 't' and bonus_valeur > 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
                     and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
+                    and bonus_mode != 'A'
                   group by obj_cod, obj_nom, tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode, coalesce(tbonus_description, tonbus_libelle)
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return array();
+        }
+        return $result;
+    }
+
+    public function perso_aura()
+    {
+        $pdo  = new bddpdo;
+        $req = "select b.bonus_cod, b.bonus_valeur, b.bonus_dfin, bt.tbonus_libc, bt.tonbus_libelle, bt.tbonus_aura_libc,
+                     coalesce(bt.tbonus_description, bt.tonbus_libelle) as tbonus_description,
+                     bt2.tonbus_libelle as absorbe_libelle
+                  from bonus b
+                  inner join bonus_type bt on bt.tbonus_libc = b.bonus_tbonus_libc
+                  left join bonus_type bt2 on bt2.tbonus_libc = bt.tbonus_aura_libc
+                  where b.bonus_perso_cod = :perso_cod
+                    and b.bonus_mode = 'A'
+                  order by bt.tonbus_libelle";
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
         if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
             return array();
