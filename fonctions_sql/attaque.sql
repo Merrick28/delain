@@ -1215,8 +1215,8 @@ begin
   /* on regarde si une fonction doit être exécutée  */
   /**************************************************/
   -- on exécute les fonctions déclenchées par l'attaque portée ou recue
-  code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'A',  json_build_object('type_attaque', v_type_arme));
-  code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'AC',  json_build_object('type_attaque', v_type_arme_cible));
+  code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'A',  json_build_object('type_attaque', v_type_arme_cible));
+  code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'AC',  json_build_object('type_attaque', v_type_arme));
   /* Fin modif Kahlann */
 
   --
@@ -1517,8 +1517,8 @@ begin
     /* on regarde si un EA doit être exécuté          */
     /**************************************************/
     -- on exécute les fonctions déclenchées par une attaque effectuee esquivee ou une attaque recue esquivee
-    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AE', json_build_object('type_attaque', v_type_arme));
-    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACE', json_build_object('type_attaque', v_type_arme_cible));
+    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AE', json_build_object('type_attaque', v_type_arme_cible));
+    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACE', json_build_object('type_attaque', v_type_arme));
     /* Fin modif Kahlann */
     --code_retour := code_retour || '<hr><b>Informations de débuggage : </b><br><i>' || debug_txt || '</i><br><hr>';
     /*insert into trace2 (trace2_texte) values (debug_txt);*/
@@ -1530,8 +1530,8 @@ begin
     /* on regarde si une fonction doit être exécutée  */
     /**************************************************/
     -- on exécute les fonctions déclenchées par une attaque effectuee qui touche ou une attaque recue qui touche
-    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AT',  json_build_object('type_attaque', v_type_arme));
-    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACT', json_build_object('type_attaque', v_type_arme_cible));
+    code_retour := code_retour || execute_fonctions(v_attaquant, v_cible, 'AT',  json_build_object('type_attaque', v_type_arme_cible));
+    code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'ACT', json_build_object('type_attaque', v_type_arme));
   /* Fin modif Kahlann */
   end if; -- fin esquive
   /************************************/
