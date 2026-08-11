@@ -569,14 +569,14 @@ switch($_REQUEST["request"])
             $filter = "";
 
             // requete de comptage
-            $req = "select count(*) from bonus_type where tonbus_libelle ilike ? {$filter}";
+            $req = "select count(*) from bonus_type where CASE WHEN tbonus_aura THEN '[Aura] - ' ELSE '' END || tonbus_libelle ilike ? {$filter}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select tbonus_cod cod, tonbus_libelle nom from bonus_type where tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT {$limit}";
+            $req = "select tbonus_cod cod, CASE WHEN tbonus_aura THEN '[Aura] - ' ELSE '' END || tonbus_libelle nom from bonus_type where CASE WHEN tbonus_aura THEN '[Aura] - ' ELSE '' END || tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
