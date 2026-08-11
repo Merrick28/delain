@@ -845,6 +845,12 @@ EffetAuto.addItem = function (elem, M)
 		var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
 		$(new_elem).insertAfter(elem);
 
+        // Marquer l'EA comme modifié (pour la savegarde)
+        var container = elem.closest('[data-numero]');
+        if (container.length) {
+            EffetAuto.MarqueModifie(container.data('numero'));
+        }
+
 		//Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
 		$('*[id$="'+new_row+'"]').find("*").each(function( index ) {
 			if ($( this ).attr("data-entry"))
@@ -859,7 +865,7 @@ EffetAuto.addItem = function (elem, M)
 				}
 				else if ($( this ).attr("data-entry") == "checked")
 				{
-					$( this ).prop('checked');
+					$( this ).prop('checked', true);
 				}
 				else if ($( this ).attr("data-entry") == "unchecked")
 				{
@@ -883,6 +889,11 @@ EffetAuto.delItem = function  (elem, n)
 	var min = (n>0 ? n : 1) ;
 	if ( elem.parent().find("tr[id^='row-']").length > min  )
 	{
+        // Marquer l'EA comme modifié (pour la savegarde)
+        var container = elem.closest('[data-numero]');
+        if (container.length) {
+            EffetAuto.MarqueModifie(container.data('numero'));
+        }
 		elem.remove();
 	}
 	else
@@ -1816,7 +1827,7 @@ EffetAuto.ChampListeBM2 = function (parametre, numero, valeur) {
 		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--2") ? 'selected="selected"' : '' );
 		html += '<option value="--2" ' + selectionne + '>Bonus et Malus Non-Nettoyables</option>';
 		var selectionne = ((valeur.length && valeur[i].tbonus_libc == "--3") ? 'selected="selected"' : '' );
-		html += '<option value="--3" ' + selectionne + '>Bonus et Malus Compteurs</option></optgroup><optgroup label="Standards">';
+		html += '<option value="--3" ' + selectionne + '>Bonus et Malus Compteurs</option></optgroup><optgroup label="Individuellement">';
 
 
 		html += EffetAuto.CopieListe ('liste_bm_modele',  valeur.length ? valeur[i].tbonus_libc : "");

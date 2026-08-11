@@ -3346,7 +3346,7 @@ class perso
         return $result;
     }
 
-    public function perso_aura()
+    public function perso_auras()
     {
         $pdo  = new bddpdo;
         $req = "select b.bonus_cod, b.bonus_valeur, b.bonus_dfin, bt.tbonus_libc, bt.tonbus_libelle, bt.tbonus_aura_libc,

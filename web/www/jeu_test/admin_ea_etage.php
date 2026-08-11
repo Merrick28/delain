@@ -100,14 +100,23 @@ if ($erreur == 0)
         echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
 
         // Liste des Bonus-malus
-        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
-                            from bonus_type
-                            order by tonbus_libelle ";
-        echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+        $req = "select tbonus_libc, 
+                       CASE WHEN tbonus_aura THEN '[Aura] - ' WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle,
+                       CASE WHEN tbonus_aura THEN 1 WHEN tbonus_compteur='N' THEN 2 ELSE 3 END as categorie_ordre,
+                       CASE WHEN tbonus_aura THEN '1. Aura' WHEN tbonus_compteur='O' THEN '3. Compteur' ELSE '2. Standard' END as categorie_libelle
+                    from bonus_type
+                    order by categorie_ordre, tonbus_libelle ";
+        echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle', '', 'categorie_libelle') . '</select>';
 
         // Liste des Bonus-malus pour les compteurs
-        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle from bonus_type  order by tonbus_libelle ";
-        echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+        $req = "select tbonus_libc, 
+                       CASE WHEN tbonus_aura THEN '[Aura] - ' WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle,
+                       CASE WHEN tbonus_aura THEN 1 WHEN tbonus_compteur='N' THEN 2 ELSE 3 END as categorie_ordre,
+                       CASE WHEN tbonus_aura THEN '1. Aura' WHEN tbonus_compteur='O' THEN '3. Compteur' ELSE '2. Standard' END as categorie_libelle
+                   from bonus_type  
+                   where tbonus_aura is false
+                   order by categorie_ordre, tonbus_libelle ";
+        echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle', '', 'categorie_libelle') . '</select>';
 
         // Liste des conditions de perso
         $req = "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod ";

@@ -174,7 +174,7 @@ for ($loop = 0; $loop < 2; $loop++)
 /* AURAS */
 //
 $tab_auras = array();
-$perso_aura = $perso->perso_aura();
+$perso_aura = $perso->perso_auras();
 foreach ($perso_aura as $key => $detail_aura)
 {
     if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_aura['tbonus_libc'] . ".png"))
