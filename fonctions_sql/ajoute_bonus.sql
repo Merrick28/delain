@@ -27,10 +27,9 @@ declare
   v_degressivite integer;  -- pour la dégressivité
   v_nb integer;  -- pour la dégressivité
   v_i integer;  -- pour les boucles
-	temp integer;	-- variable fourre tout
-	v_valeur_avant integer;	-- BM avant l'ajout
-	v_valeur_apres integer;	-- BM après l'ajout
-  code_retour text;
+  temp integer;	-- variable fourre tout
+  v_valeur_avant integer;	-- BM avant l'ajout
+  v_valeur_apres integer;	-- BM après l'ajout
 
   -- variables spécifiques aux auras
   v_gentil_positif boolean;
@@ -113,27 +112,44 @@ begin
     v_signe := sign(v_valeur);
     v_abs_valeur := abs(v_valeur);
 
-    for ligne_aura in (
-          select b.bonus_cod, b.bonus_valeur
-              from bonus b
-              inner join bonus_type bt on bt.tbonus_libc = b.bonus_tbonus_libc
-              where b.bonus_perso_cod = v_perso
-                and bt.tbonus_aura = true
-                and bt.tbonus_aura_libc = v_type
-                and b.bonus_dfin > now()
-              order by b.bonus_cod
-        ) loop
+    -- Recherche de l'unique aura protectrice active
+    select b.bonus_cod, b.bonus_valeur, bt.tonbus_libelle aura_libelle, btm.tonbus_libelle malus_libelle
+    into ligne_aura
+    from bonus b
+     inner join bonus_type bt on bt.tbonus_libc = b.bonus_tbonus_libc
+     left join bonus_type btm on btm.tbonus_libc = v_type
+        where b.bonus_perso_cod = v_perso
+          and bt.tbonus_aura = true
+          and bt.tbonus_aura_libc = v_type
+          and b.bonus_dfin > now()
+            limit 1;
 
-        exit when v_abs_valeur <= 0;
-
+    if found then
         if ligne_aura.bonus_valeur > v_abs_valeur then
+            -- L'aura absorbe entièrement le malus et reste active
             update bonus set bonus_valeur = bonus_valeur - v_abs_valeur where bonus_cod = ligne_aura.bonus_cod;
             v_abs_valeur := 0;
+            if ligne_aura.malus_libelle is null then
+                perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a totalement absorbé un malus.', 'O', NULL);
+            else
+                perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a totalement absorbé le malus « ' || ligne_aura.malus_libelle || ' ».', 'O', NULL);
+            end if;
         else
+            -- L'aura absorbe partiellement/totalement le malus et s'éteint
             v_abs_valeur := v_abs_valeur - ligne_aura.bonus_valeur;
             delete from bonus where bonus_cod = ligne_aura.bonus_cod;
+
+            if v_abs_valeur > 0 then
+               if ligne_aura.malus_libelle is null then
+                    perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a absorbé partiellement un malus.', 'O', NULL);
+                else
+                  perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a absorbé partiellement le malus « ' || ligne_aura.malus_libelle || ' ».', 'O', NULL);
+               end if;
+            end if;
+            perform insere_evenement(v_perso, v_perso, 115, 'Le flux d''aura  « ' || ligne_aura.aura_libelle || ' » enveloppant [perso_cod1] s''est éteint.', 'O', NULL);
+
         end if;
-    end loop;
+    end if;
 
     v_valeur := v_signe * v_abs_valeur;
 
