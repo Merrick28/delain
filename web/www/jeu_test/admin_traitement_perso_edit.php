@@ -262,7 +262,7 @@ switch ($methode)
     case "update_bonmal":
 
         // On liste les bonus / malus, et pour chacun, on regarde ce qui a changé.
-        $req_bm = "select tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+        $req_bm = "select tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, coalesce(bonus_nb_tours, 0) as bonus_nb_tours
 			from bonus
 			inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 			where bonus_perso_cod = $mod_perso_cod";
@@ -271,7 +271,7 @@ switch ($methode)
         {
             $lib     = $result['tonbus_libelle'];
             $anc_val = $result['bonus_valeur'];
-            $anc_dur = $result['bonus_nb_tours'];
+            $anc_dur = $result['bonus_nb_tours'] ;
             $tbon    = $result['bonus_cod'];
             $id      = $tbon;
             if (isset($_POST["PERSO_BM_val_$id"]) && isset($_POST["PERSO_BM_dur_$id"]))
@@ -297,6 +297,7 @@ switch ($methode)
 
     case "add_bonmal":
         if (!isset($bonmal_cumul)) $bonmal_cumul = "";
+        if (!isset($bonmal_duree) || $bonmal_duree=="") $bonmal_duree = "0";
 
         $bonmal_type = $bonmal_cod . ($bonmal_cumul == "on" ? "+" : "");
         $req_bm      = "select ajoute_bonus ($mod_perso_cod, '$bonmal_type', $bonmal_duree, $bonmal_valeur)";

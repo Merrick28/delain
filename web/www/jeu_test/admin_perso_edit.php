@@ -509,7 +509,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES BONUS Standards
-                            $req_bon = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_bon = "select CASE WHEN tbonus_aura THEN '[Aura] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, COALESCE(bonus_nb_tours, 0) as bonus_nb_tours
                                         from bonus
                                         inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                                         where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -569,14 +569,14 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES MALUS Standards
-                            $req_mal = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
-		from bonus
-		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-		where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
-		and
-			(tbonus_gentil_positif = 't' and bonus_valeur < 0
-			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-		order by bonus_tbonus_libc";
+                            $req_mal = "select CASE WHEN tbonus_aura THEN '[Aura] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, COALESCE(bonus_nb_tours, 0) as bonus_nb_tours
+                                        from bonus
+                                        inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                                        where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
+                                        and
+                                            (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                                            or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                                        order by bonus_tbonus_libc";
                             $stmt    = $pdo->query($req_mal);
                             while ($result = $stmt->fetch())
                             {
@@ -661,11 +661,15 @@ if ($erreur == 0)
                             <option value=""> --</option>
                             <?php
                             // LISTE DES Bonus
-                            $req_bm = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
-		from bonus_type
-		order by tonbus_libelle ";
+                            $req_bm = "select tbonus_libc, 
+                                              CASE WHEN tbonus_compteur='O' THEN '[compteur] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, 
+                                              tbonus_gentil_positif,
+                                              CASE WHEN tbonus_aura THEN 1 WHEN tbonus_compteur='O' THEN 3 ELSE 2 END as categorie_ordre,
+                                              CASE WHEN tbonus_aura THEN 'Aura' WHEN tbonus_compteur='O' THEN 'Compteur' ELSE 'Standard' END as categorie_libelle
+                                            from bonus_type
+                                            order by categorie_ordre, tonbus_libelle ";
 
-                            echo $html->select_from_query($req_bm, 'tbonus_libc', 'tonbus_libelle');
+                            echo $html->select_from_query($req_bm, 'tbonus_libc', 'tonbus_libelle','', 'categorie_libelle');
 
                             // Écriture du JS qui dit si on a un bonus ou un malus
                             $stmt = $pdo->query($req_bm);
@@ -847,16 +851,23 @@ if ($erreur == 0)
         echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
 
         // Liste des Bonus-malus
-        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
-		from bonus_type
-		order by tonbus_libelle ";
-        echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+        $req = "select tbonus_libc, 
+                       CASE WHEN tbonus_aura THEN '[Aura] - ' WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle,
+                       CASE WHEN tbonus_aura THEN 1 WHEN tbonus_compteur='N' THEN 2 ELSE 3 END as categorie_ordre,
+                       CASE WHEN tbonus_aura THEN '1. Aura' WHEN tbonus_compteur='O' THEN '3. Compteur' ELSE '2. Standard' END as categorie_libelle
+                    from bonus_type
+                    order by categorie_libelle, tonbus_libelle ";
+        echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle', '', 'categorie_libelle') . '</select>';
 
         // Liste des Bonus-malus
-        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
-		from bonus_type
-		order by tonbus_libelle ";
-        echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+        $req = "select tbonus_libc, 
+                       CASE WHEN tbonus_aura THEN '[Aura] - ' WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle,
+                       CASE WHEN tbonus_aura THEN 1 WHEN tbonus_compteur='N' THEN 2 ELSE 3 END as categorie_ordre,
+                       CASE WHEN tbonus_aura THEN '1. Aura' WHEN tbonus_compteur='O' THEN '3. Compteur' ELSE '2. Standard' END as categorie_libelle
+                    from bonus_type
+                    where tbonus_aura is false
+                    order by categorie_libelle, tonbus_libelle ";
+        echo '<select id="liste_bmc_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle', '', 'categorie_libelle') . '</select>';
 
         // Liste des conditions de perso
         $req = "select aqtypecarac_cod, aqtypecarac_nom, aqtypecarac_type  from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod ";

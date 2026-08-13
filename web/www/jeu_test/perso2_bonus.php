@@ -170,6 +170,36 @@ for ($loop = 0; $loop < 2; $loop++)
     }
 }
 
+//
+/* AURAS */
+//
+$tab_auras = array();
+$perso_aura = $perso->perso_auras();
+foreach ($perso_aura as $key => $detail_aura)
+{
+    if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_aura['tbonus_libc'] . ".png"))
+    {
+        $img = '/../images/interface/bonus/' . $detail_aura['tbonus_libc'] . '.png';
+    }
+    else
+    {
+        $img = '/../images/interface/bonus/AURA.png';
+    }
+    $detail_aura['img'] = $img;
+
+
+    if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_aura['tbonus_aura_libc'] . ".png"))
+    {
+        $img_malus = '/../images/interface/bonus/' . $detail_aura['tbonus_aura_libc'] . '.png';
+    }
+    else
+    {
+        $img_malus = '';
+    }
+    $detail_aura['img_malus'] = $img_malus;
+    $tab_auras[]        = $detail_aura;
+}
+
 $template     = $twig->load('_perso2_bonus.twig');
 $options_twig = array(
 
@@ -181,6 +211,7 @@ $options_twig = array(
     'TAB_BONUS'         => $tab_bonus,
     'TAB_MALUS'         => $tab_malus,
     'BONUS_CARAC'       => $bonus_carac,
-    'MALUS_CARAC'       => $malus_carac
+    'MALUS_CARAC'       => $malus_carac,
+    'TAB_AURAS'         => $tab_auras
 );
 $contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));

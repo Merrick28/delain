@@ -726,12 +726,15 @@ begin
     update transaction set tran_nb_tours = tran_nb_tours - 1 where tran_acheteur = personnage;
     delete from transaction  where tran_acheteur = personnage  and tran_nb_tours <= 0;
 
-    /* bonus */
+    /* décrémenter le nombre de tours des bonus/malus */
     update bonus
     set bonus_nb_tours = bonus_nb_tours - 1
-    where bonus_perso_cod = personnage and bonus_mode!='E';   -- sauf equipement
+    where bonus_perso_cod = personnage and bonus_mode not in ('E', 'A');   -- sauf equipement et auras
 
     delete from bonus where bonus_nb_tours <= 0;
+
+    /* supression des auras expirées */
+    delete from bonus where bonus_mode = 'A' and bonus_dfin is not null and bonus_dfin <= now();
 
     /* caracs origine */
     update carac_orig
@@ -877,6 +880,7 @@ begin
     /* Mise à jour des bonus évolutifs, en empêchant les changements de signe et les annulations */
     update bonus set bonus_valeur = bonus_valeur + bonus_croissance
     where bonus_perso_cod = personnage
+          and bonus_mode not in ('E', 'A')
           and sign(bonus_valeur) = sign(bonus_valeur + bonus_croissance)
           and bonus_valeur + bonus_croissance <> 0;
   end if;

@@ -27,10 +27,22 @@ declare
   v_degressivite integer;  -- pour la dégressivité
   v_nb integer;  -- pour la dégressivité
   v_i integer;  -- pour les boucles
-	temp integer;	-- variable fourre tout
-	v_valeur_avant integer;	-- BM avant l'ajout
-	v_valeur_apres integer;	-- BM après l'ajout
-  code_retour text;
+  temp integer;	-- variable fourre tout
+  v_valeur_avant integer;	-- BM avant l'ajout
+  v_valeur_apres integer;	-- BM après l'ajout
+
+  -- variables spécifiques aux auras
+  v_gentil_positif boolean;
+  v_est_aura boolean;
+  v_aura_libc varchar(3);
+  v_aura_vmax numeric;
+  v_est_malus boolean;
+  v_abs_valeur numeric;
+  v_signe integer;
+  ligne_aura record;
+  v_aura_existante record;
+  v_nouvelle_valeur numeric;
+
 begin
   v_retour := 1;    -- par defaut on considère avoir appliqué un bonus
 
@@ -43,6 +55,113 @@ begin
   end if;
   v_carac := bonus_type_carac(v_type);      -- la vrai carac concerné par le bonus/malus (dans le cas de BM de carac)
 
+  -- =============== Traitement des AURAS =========================
+  -- infos du type de bonus/malus concerné, y compris les infos d'aura
+  select tbonus_gentil_positif, coalesce(tbonus_aura, false), tbonus_aura_libc, coalesce(tbonus_aura_vmax, 0)
+    into v_gentil_positif, v_est_aura, v_aura_libc, v_aura_vmax
+    from bonus_type where tbonus_libc = v_type;
+
+  -- =====================================================================================
+  -- CAS 1 : le type de bonus est une AURA -> pose/cumul de l'aura, on sort ensuite
+  -- =====================================================================================
+  if v_est_aura then
+
+    v_abs_valeur := abs(v_valeur);  -- une aura est toujours positive, peu importe le signe fourni
+
+    select bonus_cod, bonus_valeur, bonus_dfin into v_aura_existante from bonus where bonus_perso_cod = v_perso  and bonus_tbonus_libc = v_type limit 1;
+
+    if found and v_aura_existante.bonus_dfin > now() then
+      -- l'aura existe déjà et est active : cumul de la valeur (borné par vmax) + prolongation de 5 jours
+      if v_aura_vmax > 0 then
+        v_nouvelle_valeur := least(v_aura_existante.bonus_valeur + v_abs_valeur, v_aura_vmax);
+      else
+        v_nouvelle_valeur := v_aura_existante.bonus_valeur + v_abs_valeur;
+      end if;
+
+      update bonus set bonus_valeur = v_nouvelle_valeur, bonus_dfin = now() + '5 days'::interval where bonus_cod = v_aura_existante.bonus_cod;
+
+      v_retour := 0;  -- aura existante mise à jour
+
+    else
+
+      -- pas d'aura active (absente ou expirée) : nouvelle aura
+      if v_aura_vmax > 0 then
+          v_nouvelle_valeur := least(v_abs_valeur, v_aura_vmax);
+      else
+          v_nouvelle_valeur := v_abs_valeur;
+      end if;
+
+      insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur, bonus_mode, bonus_dfin)
+            values (v_perso, v_type, null, v_nouvelle_valeur, 'A', now() + '5 days'::interval);
+
+      v_retour := 1;  -- nouvelle aura posée
+    end if;
+
+    -- retour immédiat car c'est une aura, on ne fait pas de traitement normal de bonus/malus
+    return v_retour;
+  end if;
+
+  -- =====================================================================================
+  -- CAS 2 : ajout normal d'un bonus/malus -> absorption par une éventuelle aura
+  --          protectrice si c'est un malus
+  -- =====================================================================================
+  v_est_malus := (v_gentil_positif and v_valeur < 0) or (not v_gentil_positif and v_valeur > 0);
+
+  if v_est_malus then
+
+    v_signe := sign(v_valeur);
+    v_abs_valeur := abs(v_valeur);
+
+    -- Recherche de l'unique aura protectrice active
+    select b.bonus_cod, b.bonus_valeur, bt.tonbus_libelle aura_libelle, btm.tonbus_libelle malus_libelle
+    into ligne_aura
+    from bonus b
+     inner join bonus_type bt on bt.tbonus_libc = b.bonus_tbonus_libc
+     left join bonus_type btm on btm.tbonus_libc = v_type
+        where b.bonus_perso_cod = v_perso
+          and bt.tbonus_aura = true
+          and bt.tbonus_aura_libc = v_type
+          and b.bonus_dfin > now()
+            limit 1;
+
+    if found then
+        if ligne_aura.bonus_valeur > v_abs_valeur then
+            -- L'aura absorbe entièrement le malus et reste active
+            update bonus set bonus_valeur = bonus_valeur - v_abs_valeur where bonus_cod = ligne_aura.bonus_cod;
+            v_abs_valeur := 0;
+            if ligne_aura.malus_libelle is null then
+                perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a totalement absorbé un malus.', 'O', NULL);
+            else
+                perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a totalement absorbé le malus « ' || ligne_aura.malus_libelle || ' ».', 'O', NULL);
+            end if;
+        else
+            -- L'aura absorbe partiellement/totalement le malus et s'éteint
+            v_abs_valeur := v_abs_valeur - ligne_aura.bonus_valeur;
+            delete from bonus where bonus_cod = ligne_aura.bonus_cod;
+
+            if v_abs_valeur > 0 then
+               if ligne_aura.malus_libelle is null then
+                    perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a absorbé partiellement un malus.', 'O', NULL);
+                else
+                  perform insere_evenement(v_perso, v_perso, 115, 'L''aura « ' || ligne_aura.aura_libelle ||  ' » de [perso_cod1] a absorbé partiellement le malus « ' || ligne_aura.malus_libelle || ' ».', 'O', NULL);
+               end if;
+            end if;
+            perform insere_evenement(v_perso, v_perso, 115, 'Le flux d''aura  « ' || ligne_aura.aura_libelle || ' » enveloppant [perso_cod1] s''est éteint.', 'O', NULL);
+
+        end if;
+    end if;
+
+    v_valeur := v_signe * v_abs_valeur;
+
+    -- malus totalement absorbé : rien à appliquer
+    if v_valeur = 0 then
+      return 0;
+    end if;
+
+  end if;
+
+
+  -- =============== Traitement Normal Bonus/Malus =========================
   -- Pour déclenchement d'EA sur changement de BM, on mémorise la valeur avant modification.
   v_valeur_avant := valeur_bonus(v_perso, v_type);
 
