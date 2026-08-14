@@ -417,7 +417,7 @@ if ($erreur == 0)
     if ($objusebm_gobj_cod>0)
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
-            * On limite à <strong>1 seule utilisation</strong> de BM par générique<br>
+            * On limite à <strong>1 seul rattachement</strong> de BM par générique<br>
             * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
             * N’oubliez pas que TOUS les exemplaires d’un objet générique seront immédiatement modifiés<br>
             * Il y a des objets qui ne peuvent pas être utilisé <em>(ce n’est pas contrôlé ici)</em><br>
@@ -428,7 +428,7 @@ if ($erreur == 0)
     else
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
-            * On limite à <strong>1 seule utilisation</strong> de BM par objet (<i>l’utilisation objet remplace celle du générique</i>) <br>
+            * On limite à <strong>1 seul rattachement</strong> de BM par objet (<i>l’utilisation objet remplace celle du générique</i>) <br>
             * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
             * N’oubliez pas que l’utilisation ajoutée ici, le seront en plus de ceux du générique<br>
             * Il y a des objets qui ne peuvent pas être utilisé <em>(ce n’est pas contrôlé ici)</em><br>
