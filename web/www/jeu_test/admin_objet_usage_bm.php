@@ -309,7 +309,7 @@ if ($erreur == 0)
                     </td></tr>                
                 <tr><td>Malchance :</td><td><input type="text" id="objusebm_malchance" name="objusebm_malchance" size="4">&nbsp;<em> au format 99.99 c\'est le % d\'échec possible (0 ou vide = toujours réussi)</em></td></tr>
                 <tr><td>Nb Utilisation :</td><td><input type="text" id="objusebm_nb_utilisation_max" name="objusebm_nb_utilisation_max" size="4">&nbsp;<em> nombre d\'utilisation possible (illimité si vide)</em></td></tr>
-                <tr><td>Destruction de l\'objet? :</td><td>'.create_selectbox("objusebm_vide_detruit", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objusebm_vide_detruit")).'&nbsp;<em> l\'objet doit-t-il être détruit s\'il est vide?</em></td></tr>
+                <tr><td>Destruction de l\'objet? :</td><td>'.create_selectbox("objusebm_vide_detruit", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objusebm_vide_detruit")).'&nbsp;<em> l\'objet doit-t-il être détruit s\'il est vide?</em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                 </table>
                 </form>';

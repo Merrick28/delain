@@ -274,6 +274,7 @@ if ($erreur == 0)
                 </tr>
 
                 <?php
+                // SORT ==================================================================
                 $objsorts = new objets_sorts();
                 echo "<tr><td class=\"soustitre2\">Spécifique: Sort(s) rattaché(s)</td><td>";
                 if ($list = $objsorts->getBy_objsort_obj_cod($num_objet))
@@ -290,6 +291,8 @@ if ($erreur == 0)
                     echo 'Aucun: <a target="_blank" href="admin_objet_sort.php?objsort_obj_cod='.$num_objet.'">en créer</a>';
                 }
                 echo "</td></tr>";
+
+                // SORT BM==================================================================
                 $objsortbms = new objets_sorts_bm();
                 echo "<tr><td class=\"soustitre2\">Spécifique: Sort(s) BM rattaché(s)</td><td>";
                 if ($list = $objsortbms->getBy_objsortbm_obj_cod($num_objet))
@@ -306,6 +309,25 @@ if ($erreur == 0)
                     echo 'Aucun: <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_obj_cod='.$num_objet.'">en créer</a>';
                 }
                 echo "</td></tr>";
+
+                // USAGE BM==================================================================
+                $objsortbms = new objets_usage_bm();
+                echo "<tr><td class=\"soustitre2\">Spécifique: Utilisation BM rattaché(s)</td><td>";
+                if ($list = $objsortbms->getBy_objusebm_obj_cod($num_objet))
+                {
+                    foreach ($list as $objsortbm) {
+                        $bonus = new bonus_type();
+                        $bonus->charge($objsortbm->objusebm_tbonus_cod);
+                        echo $bonus->tonbus_libelle." (".$objsortbm->objusebm_cout."PA), ";
+                    }
+                    echo ': <a target="_blank" href="admin_objet_usage_bm.php?objusebm_obj_cod='.$num_objet.'">éditer</a>';
+                }
+                else
+                {
+                    echo 'Aucun: <a target="_blank" href="admin_objet_usage_bm.php?objusebm_obj_cod='.$num_objet.'">en créer</a>';
+                }
+                echo "</td></tr>";
+
                 /* A FAIRE
                 $objbm = new objets_bm();
                 echo "<tr><td class=\"soustitre2\">Spécifique: Bonus/malus permanent rattaché(s)</td><td>";

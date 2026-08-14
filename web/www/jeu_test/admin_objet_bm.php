@@ -277,7 +277,7 @@ if ($erreur == 0)
                 <tr><td>Equip. requis :</td><td>'.create_selectbox("objbm_equip_requis", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objbm_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être équipé pour subir le bonus/malus?</em></td></tr>
                 <tr style="display:none;"><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em></em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
-                <tr colspan="2"><td><font color="red" size="+3"><u><b>ATTENTION</b></u>: Le bonus permanent d’aura (<u>répéré par [Aura]</u>) n’est pas possible!!</td></tr>
+                <tr colspan="2"><td><font color="red" size="+3"><u><b>ATTENTION</b></u>: Le bonus permanent d’aura (<u>répéré par [Aura]</u>) n’est pas possible!!<br> <strong>-------> NE PAS LE FAIRE</strong></td></tr>
                  </table>
                 </form>';
         echo "<strong><br>Liste des bonus/malus sur l'objet</strong> :<br>";
