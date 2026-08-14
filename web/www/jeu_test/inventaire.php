@@ -449,7 +449,7 @@ $stmt   = $pdo->query($req_id);
         /* Etape 4 : matos non équipé, identifié */
         /*****************************************/
 
-        $req_matos      = "select obj_etat, tobj_cod, gobj_cod, tobj_libelle, obj_nom, obj_cod, obj_poids, gobj_tobj_cod, gobj_pa_normal, tobj_equipable, gobj_url, COALESCE(obon_cod, -1) as obon_cod, obon_libelle
+        $req_matos      = "select obj_etat, tobj_cod, gobj_cod, tobj_libelle, obj_nom, obj_cod, obj_poids, gobj_tobj_cod, coalesce(gobj_pa_normal, 0) as gobj_pa_normal, tobj_equipable, gobj_url, COALESCE(obon_cod, -1) as obon_cod, obon_libelle
                         from perso_objets
                         INNER JOIN objets ON obj_cod = perobj_obj_cod
                         INNER JOIN objet_generique ON gobj_cod = obj_gobj_cod
@@ -491,8 +491,7 @@ $stmt   = $pdo->query($req_id);
                 while ($result = $stmt->fetch())
                 {
 
-                    $potion_buvable =
-                        ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
+                    $potion_buvable = ( $result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561 );
                     //if ($result['obon_cod'] >= 0)
                     $poid_catégorie += max($result['obj_poids'], 0);
 
@@ -526,11 +525,27 @@ $stmt   = $pdo->query($req_id);
                                $result['obj_cod']);
                     }
 
+                    /* on a une seule utilisation par objet
+                        * si c'est une potion, on n'affiche pas les autres usages possibles (s'il y en a), on affiche juste le lien pour boire la potion
+                     * */
                     if ($potion_buvable)
                     {
                         //echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $result['gobj_cod'] . '">Boire (2PA)</a>';
-                        echo '<a href="choix_potion.php?&obj_cod=' . $result['obj_cod'] . '">Utiliser (2PA)</a>';
+                        echo '<a href="choix_potion.php?&obj_cod=' . $result['obj_cod'] . '">Utiliser (2PA)</a> ';
                     }
+                    else
+                    {
+                        // pour eviter une instanciation de chaque objet pour get_objets_usage_bm qui pourrait consommer du temps et de la mémoire inutilement
+                        // on va fournir un tableau avec les champs requis obj_cod et gobj_cod (code de l'objet et de son generique)
+                        $objuse = new objets_usage_bm();
+                        $usages = $objuse->get_objets_usage_bm( ['obj_cod' => $result['obj_cod'], 'gobj_cod' => $result['gobj_cod']] ) ;
+                        if( count($usages)> 0 )
+                        {
+                            // on ne prend q'un seul usage par objet, le premier de la liste, pour eviter de surcharger l'interface
+                            echo '<a href="objet_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
+                        }
+                    }
+
                     echo("</td>");
                     echo("<td class=\"soustitre2\">");
 

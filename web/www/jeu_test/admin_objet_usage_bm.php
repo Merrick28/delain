@@ -3,6 +3,9 @@
 include "blocks/_header_page_jeu.php";
 include_once '../includes/tools.php';
 
+// Nombre maximum de Bonus/Malus qu'on peut rattacher à un même objet (générique ou spécifique)
+define('OBJUSEBM_NB_MAX', 1);
+
 ?>
 
     <script>//# sourceURL=admin_objet_usage_bm.js
@@ -172,34 +175,61 @@ if ($erreur == 0)
             else
             {
                 // Cas d'une creation/modification
-                $clone_os = clone $objusebm;
 
-                $objusebm->objusebm_parent_cod = null ;
-                $objusebm->objusebm_gobj_cod = $_REQUEST["objusebm_gobj_cod"]== "" ? null : 1*(int)$_REQUEST["objusebm_gobj_cod"];
-                $objusebm->objusebm_obj_cod = $_REQUEST["objusebm_obj_cod"]== "" ? null : 1*(int)$_REQUEST["objusebm_obj_cod"] ;
-                $objusebm->objusebm_tbonus_cod = 1*(int)$_REQUEST["objusebm_tbonus_cod"];
-                $objusebm->objusebm_cout = $_REQUEST["objusebm_cout"]=='' ? 4 : 1*(int)$_REQUEST["objusebm_cout"];
-                $objusebm->objusebm_bonus_valeur = $_REQUEST["objusebm_bonus_valeur"]=='' ? "1" : $_REQUEST["objusebm_bonus_valeur"];
-                $objusebm->objusebm_bonus_nb_tours = $_REQUEST["objusebm_bonus_nb_tours"]=='' ? "1" : $_REQUEST["objusebm_bonus_nb_tours"];
-                $objusebm->objusebm_bonus_distance = $_REQUEST["objusebm_bonus_distance"]=='' ?  0 : (int)$_REQUEST["objusebm_bonus_distance"];
-                $objusebm->objusebm_bonus_aggressif = $_REQUEST["objusebm_bonus_aggressif"]=='' ? "N" : $_REQUEST["objusebm_bonus_aggressif"];
-                $objusebm->objusebm_bonus_soutien = $_REQUEST["objusebm_bonus_soutien"]=='' ? "N" : $_REQUEST["objusebm_bonus_soutien"];
-                $objusebm->objusebm_bonus_soi_meme = $_REQUEST["objusebm_bonus_soi_meme"]=='' ? "O" : $_REQUEST["objusebm_bonus_soi_meme"];
-                $objusebm->objusebm_bonus_monstre = $_REQUEST["objusebm_bonus_monstre"]=='' ? "O" : $_REQUEST["objusebm_bonus_monstre"];
-                $objusebm->objusebm_bonus_familier = $_REQUEST["objusebm_bonus_familier"]=='' ? "O" : $_REQUEST["objusebm_bonus_familier"];
-                $objusebm->objusebm_bonus_joueur = $_REQUEST["objusebm_bonus_joueur"]=='' ? "O" : $_REQUEST["objusebm_bonus_joueur"];
-                $objusebm->objusebm_bonus_case = $_REQUEST["objusebm_bonus_case"]=='' ? "N" : $_REQUEST["objusebm_bonus_case"];
-                $objusebm->objusebm_bonus_mode = $_REQUEST["objusebm_bonus_mode"]=='' ? "S" : $_REQUEST["objusebm_bonus_mode"];
-                $objusebm->objusebm_malchance = $_REQUEST["objusebm_malchance"]=='' ? 0 : 1*(float)$_REQUEST["objusebm_malchance"];
-                $objusebm->objusebm_nb_utilisation_max = $_REQUEST["objusebm_nb_utilisation_max"]=='' ? null : 1*(int)$_REQUEST["objusebm_nb_utilisation_max"];
-                $objusebm->objusebm_nb_utilisation = 0 ;
-                $objusebm->objusebm_vide_detruit = $_REQUEST["objusebm_vide_detruit"]=="O" ? "O" : "N" ;
-                $objusebm->stocke($new);
-
-                // dans le cas d'un generique mise à jour des repliques déjà en jeu !
-                if ($_REQUEST["objusebm_gobj_cod"]!="")
+                // Contrôle du nombre max de BM rattachables (uniquement lors d'un AJOUT, pas d'une modification)
+                $limite_bm_atteinte = false;
+                if ($new)
                 {
-                    $req = "UPDATE objets_usage_bm osb1 SET 
+                    $bm_gobj_cod = $_REQUEST["objusebm_gobj_cod"]== "" ? 0 : 1*(int)$_REQUEST["objusebm_gobj_cod"];
+                    $bm_obj_cod  = $_REQUEST["objusebm_obj_cod"]== "" ? 0 : 1*(int)$_REQUEST["objusebm_obj_cod"];
+
+                    if ($bm_gobj_cod>0) {
+                        $lusages_existants = $objusebm->getBy_objusebm_gobj_cod($bm_gobj_cod);
+                    } else {
+                        $lusages_existants = $objusebm->getBy_objusebm_obj_cod($bm_obj_cod);
+                    }
+
+                    if ($lusages_existants && count($lusages_existants) >= OBJUSEBM_NB_MAX)
+                    {
+                        $limite_bm_atteinte = true;
+                    }
+                }
+
+                if ($limite_bm_atteinte)
+                {
+                    $log.="tentative d'ajout de BM refusée sur gobj_cod={$bm_gobj_cod} / obj_cod={$bm_obj_cod} : nombre maximum de ".OBJUSEBM_NB_MAX." BM déjà atteint\n";
+                    echo '<div class="hr" style="color:red;"><strong>Impossible d\'ajouter ce Bonus/Malus : le nombre maximum de '.OBJUSEBM_NB_MAX.' BM par objet est déjà atteint.</strong></div>';
+                }
+                else
+                {
+                    $clone_os = clone $objusebm;
+
+                    $objusebm->objusebm_parent_cod = null ;
+                    $objusebm->objusebm_gobj_cod = $_REQUEST["objusebm_gobj_cod"]== "" ? null : 1*(int)$_REQUEST["objusebm_gobj_cod"];
+                    $objusebm->objusebm_obj_cod = $_REQUEST["objusebm_obj_cod"]== "" ? null : 1*(int)$_REQUEST["objusebm_obj_cod"] ;
+                    $objusebm->objusebm_tbonus_cod = 1*(int)$_REQUEST["objusebm_tbonus_cod"];
+                    $objusebm->objusebm_cout = $_REQUEST["objusebm_cout"]=='' ? 4 : 1*(int)$_REQUEST["objusebm_cout"];
+                    $objusebm->objusebm_bonus_valeur = $_REQUEST["objusebm_bonus_valeur"]=='' ? "1" : $_REQUEST["objusebm_bonus_valeur"];
+                    $objusebm->objusebm_bonus_nb_tours = $_REQUEST["objusebm_bonus_nb_tours"]=='' ? "1" : $_REQUEST["objusebm_bonus_nb_tours"];
+                    $objusebm->objusebm_bonus_distance = $_REQUEST["objusebm_bonus_distance"]=='' ?  0 : (int)$_REQUEST["objusebm_bonus_distance"];
+                    $objusebm->objusebm_bonus_aggressif = $_REQUEST["objusebm_bonus_aggressif"]=='' ? "N" : $_REQUEST["objusebm_bonus_aggressif"];
+                    $objusebm->objusebm_bonus_soutien = $_REQUEST["objusebm_bonus_soutien"]=='' ? "N" : $_REQUEST["objusebm_bonus_soutien"];
+                    $objusebm->objusebm_bonus_soi_meme = $_REQUEST["objusebm_bonus_soi_meme"]=='' ? "O" : $_REQUEST["objusebm_bonus_soi_meme"];
+                    $objusebm->objusebm_bonus_monstre = $_REQUEST["objusebm_bonus_monstre"]=='' ? "O" : $_REQUEST["objusebm_bonus_monstre"];
+                    $objusebm->objusebm_bonus_familier = $_REQUEST["objusebm_bonus_familier"]=='' ? "O" : $_REQUEST["objusebm_bonus_familier"];
+                    $objusebm->objusebm_bonus_joueur = $_REQUEST["objusebm_bonus_joueur"]=='' ? "O" : $_REQUEST["objusebm_bonus_joueur"];
+                    $objusebm->objusebm_bonus_case = $_REQUEST["objusebm_bonus_case"]=='' ? "N" : $_REQUEST["objusebm_bonus_case"];
+                    $objusebm->objusebm_bonus_mode = $_REQUEST["objusebm_bonus_mode"]=='' ? "S" : $_REQUEST["objusebm_bonus_mode"];
+                    $objusebm->objusebm_malchance = $_REQUEST["objusebm_malchance"]=='' ? 0 : 1*(float)$_REQUEST["objusebm_malchance"];
+                    $objusebm->objusebm_nb_utilisation_max = $_REQUEST["objusebm_nb_utilisation_max"]=='' ? null : 1*(int)$_REQUEST["objusebm_nb_utilisation_max"];
+                    $objusebm->objusebm_nb_utilisation = 0 ;
+                    $objusebm->objusebm_vide_detruit = $_REQUEST["objusebm_vide_detruit"]=="O" ? "O" : "N" ;
+                    $objusebm->stocke($new);
+
+                    // dans le cas d'un generique mise à jour des repliques déjà en jeu !
+                    if ($_REQUEST["objusebm_gobj_cod"]!="")
+                    {
+                        $req = "UPDATE objets_usage_bm osb1 SET 
                                     objusebm_tbonus_cod=osb2.objusebm_tbonus_cod,
                                     objusebm_cout=osb2.objusebm_cout,
                                     objusebm_bonus_valeur=osb2.objusebm_bonus_valeur,
@@ -217,11 +247,12 @@ if ($erreur == 0)
                                     objusebm_nb_utilisation_max=osb2.objusebm_nb_utilisation_max
                                     FROM objets_usage_bm osb2
                                     WHERE osb2.objusebm_cod=:objusebm_cod and osb1.objusebm_parent_cod=osb2.objusebm_cod";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":objusebm_cod" => $objusebm->objusebm_cod), $stmt);
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":objusebm_cod" => $objusebm->objusebm_cod), $stmt);
+                    }
+                    // Logger les infos pour suivi admin
+                    $log.="ajoute/modifie de l'objet_usage #".$objusebm->objusebm_cod."\n".obj_diff($clone_os, $objusebm);
                 }
-                // Logger les infos pour suivi admin
-                $log.="ajoute/modifie de l'objet_usage #".$objusebm->objusebm_cod."\n".obj_diff($clone_os, $objusebm);
             }
 
             writelog($log,'objet_edit', true);
@@ -324,9 +355,21 @@ if ($erreur == 0)
         }
         if ($lusages)
         {
+            $nb_bm_actuel = count($lusages);
+            $quota_bm_atteint = ($nb_bm_actuel >= OBJUSEBM_NB_MAX);
+
             echo '<table width="100%" class=\'bordiv\'>';
-            echo "<tr><td><input type='button' class='test' value='nouveau' onclick='editObjetUsageBM(-1,0);'></td>
-                      <td><strong>objusebm_cod</strong></td>
+            if ($quota_bm_atteint)
+            {
+                echo "<tr><td><input type='button' class='test' value='nouveau' onclick=\"alert('Quota atteint : ".OBJUSEBM_NB_MAX." BM maximum sont deja rattaches a cet objet. Supprimez-en un avant d’en ajouter un nouveau.');\"></td>
+                      <td><strong>objusebm_cod</strong></td>";
+            }
+            else
+            {
+                echo "<tr><td><input type='button' class='test' value='nouveau' onclick='editObjetUsageBM(-1,0);'></td>
+                      <td><strong>objusebm_cod</strong></td>";
+            }
+            echo "
                       <td><strong>Bonus</strong></td>
                       <td><strong>Coût</strong></td>
                       <td><strong>Puissance</strong></td>
@@ -352,14 +395,14 @@ if ($erreur == 0)
                       <td>".$os->objusebm_bonus_valeur."</td>
                       <td>".$os->objusebm_bonus_nb_tours."</td>
                       <td>" .( $os->objusebm_bonus_soi_meme =="O" ? "Soit-même," : "" )
-                    .( $os->objusebm_bonus_monstre =="O" ? "Monstres," : "" )
-                    .( $os->objusebm_bonus_familier =="O" ? "Familiers," : ( $os->objusebm_bonus_familier =="C" ? "Fam. Coterie," : "" ) )
-                    .( $os->objusebm_bonus_joueur =="O" ? "Joueurs," : ( $os->objusebm_bonus_joueur =="C" ? "Coterie," : "" ) )
-                    .( $os->objusebm_bonus_case =="O" ? "Case," : "" )."</td>
+                        .( $os->objusebm_bonus_monstre =="O" ? "Monstres," : "" )
+                        .( $os->objusebm_bonus_familier =="O" ? "Familiers," : ( $os->objusebm_bonus_familier =="C" ? "Fam. Coterie," : "" ) )
+                        .( $os->objusebm_bonus_joueur =="O" ? "Joueurs," : ( $os->objusebm_bonus_joueur =="C" ? "Coterie," : "" ) )
+                        .( $os->objusebm_bonus_case =="O" ? "Case," : "" )."</td>
                       <td>" .$os->objusebm_bonus_distance."</td>
                       <td>" .( $os->objusebm_bonus_mode != "S" ? "Cumulatif," : "" )
-                    .( $os->objusebm_bonus_soutien =="O" ? "Soutien," : "" )
-                    .( $os->objusebm_bonus_aggressif =="O" ? "Agressif," : "" )."</td>                                          
+                        .( $os->objusebm_bonus_soutien =="O" ? "Soutien," : "" )
+                        .( $os->objusebm_bonus_aggressif =="O" ? "Agressif," : "" )."</td>                                          
                       <td>{$os->objusebm_malchance}</td>
                       <td>{$os->objusebm_nb_utilisation_max}</td>
                       <td>".( $os->objusebm_vide_detruit ? "O" : "N" )."</td></tr>";
@@ -374,6 +417,7 @@ if ($erreur == 0)
     if ($objusebm_gobj_cod>0)
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * On limite à <strong>1 seule utilisation</strong> de BM par générique<br>
             * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
             * N’oubliez pas que TOUS les exemplaires d’un objet générique seront immédiatement modifiés<br>
             * Il y a des objets qui ne peuvent pas être utilisé <em>(ce n’est pas contrôlé ici)</em><br>
@@ -384,6 +428,7 @@ if ($erreur == 0)
     else
     {
         echo '<br> <strong><u>Remarques</u></strong>:<br>
+            * On limite à <strong>1 seule utilisation</strong> de BM par objet (<i>l’utilisation objet remplace celle du générique</i>) <br>
             * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
             * N’oubliez pas que l’utilisation ajoutée ici, le seront en plus de ceux du générique<br>
             * Il y a des objets qui ne peuvent pas être utilisé <em>(ce n’est pas contrôlé ici)</em><br>

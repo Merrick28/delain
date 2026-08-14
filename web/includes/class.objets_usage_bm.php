@@ -211,23 +211,26 @@ class objets_usage_bm
 
     /***
      * Retourne la liste des utilisations d'un objet
-     * @return array|bool
+     * @return objets|array
+     *  $objet peut être une instance de la classe objets ou un tableau d'instances de la classe objets
+     *      ou un tableau a 2 entrées avec les clés "obj_cod" et "obj_gobj_cod"
      */
-    function get_objets_usage_bm(objets $objet)
+    function get_objets_usage_bm( $objet)
     {
         $retour = array();
         $pdo = new bddpdo;
         // Les utilisations, sont tous les générique de l'objet plus eventuellement des spécifiques
-        $req = "select objusebm_cod from objets_usage_bm where objusebm_obj_cod=:obj_cod 
+        $req = "select objusebm_cod, 1 as ordre  from objets_usage_bm where objusebm_obj_cod=:obj_cod 
                     union 
-                select objusebm_cod from objets_usage_bm where objusebm_gobj_cod=:gobj_cod and objusebm_cod not in (select objusebm_parent_cod from objets_usage_bm where objusebm_obj_cod=:obj_cod) 
-                order by objusebm_cod ";
+                select objusebm_cod, 2 as ordre from objets_usage_bm where objusebm_gobj_cod=:gobj_cod and objusebm_cod not in (select objusebm_parent_cod from objets_usage_bm where objusebm_obj_cod=:obj_cod) 
+                order by ordre, objusebm_cod ";
 
 
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":gobj_cod" => $objet->obj_gobj_cod,
-            ":obj_cod" => $objet->obj_cod
-        ),$stmt);
+        $stmt = $pdo->execute(array(":gobj_cod" => is_array($objet) ? $objet['gobj_cod'] : $objet->obj_gobj_cod,
+                                    ":obj_cod" => is_array($objet) ? $objet['obj_cod'] : $objet->obj_cod
+                                ),$stmt);
+
         while($result = $stmt->fetch())
         {
             $temp = new objets_usage_bm();
