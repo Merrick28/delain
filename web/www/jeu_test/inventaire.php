@@ -542,7 +542,7 @@ $stmt   = $pdo->query($req_id);
                         if( count($usages)> 0 )
                         {
                             // on ne prend q'un seul usage par objet, le premier de la liste, pour eviter de surcharger l'interface
-                            echo '<a href="objet_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
+                            echo '<a href="choix_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
                         }
                     }
 

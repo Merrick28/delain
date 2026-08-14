@@ -328,8 +328,8 @@ if ($erreur == 0)
                 <tr><td>Ciblage:</td><td>
                         Soi-même: '.create_selectbox("objusebm_bonus_soi_meme", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_soi_meme")).'
                         Monstres: '.create_selectbox("objusebm_bonus_monstre", array("O"=>"Oui","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_monstre")).'
-                        Familiers: '.create_selectbox("objusebm_bonus_familier", array("O"=>"Oui","C"=>"Coterie","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_familier")).'
-                        Joueurs: '.create_selectbox("objusebm_bonus_joueur", array("O"=>"Oui","C"=>"Coterie","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_joueur")).'
+                        Familiers: '.create_selectbox("objusebm_bonus_familier", array("O"=>"Oui","3"=>"Triplette","C"=>"Coterie","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_familier")).'
+                        Joueurs: '.create_selectbox("objusebm_bonus_joueur", array("O"=>"Oui","3"=>"Triplette","C"=>"Coterie","N"=>"Non"), 'O', array("id"=>"objusebm_bonus_joueur")).'
                         <input type="hidden" name="objusebm_bonus_case" value="N"><!--Une case: '.create_selectbox("objusebm_bonus_case", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objusebm_bonus_case")).'-->
                     </td></tr>
                 <tr><td>Distance de la cible:</td><td><input type="text" id="objusebm_bonus_distance" name="objusebm_bonus_distance" size="4">&nbsp;</td></tr>                                  
@@ -396,8 +396,8 @@ if ($erreur == 0)
                       <td>".$os->objusebm_bonus_nb_tours."</td>
                       <td>" .( $os->objusebm_bonus_soi_meme =="O" ? "Soit-même," : "" )
                         .( $os->objusebm_bonus_monstre =="O" ? "Monstres," : "" )
-                        .( $os->objusebm_bonus_familier =="O" ? "Familiers," : ( $os->objusebm_bonus_familier =="C" ? "Fam. Coterie," : "" ) )
-                        .( $os->objusebm_bonus_joueur =="O" ? "Joueurs," : ( $os->objusebm_bonus_joueur =="C" ? "Coterie," : "" ) )
+                        .( $os->objusebm_bonus_familier =="O" ? "Familiers," : ( $os->objusebm_bonus_familier =="C" ? "Fam. Coterie," : ( $os->objusebm_bonus_familier =="3" ? "Fam. Triplette," : "" ) ) )
+                        .( $os->objusebm_bonus_joueur =="O" ? "Joueurs," : ( $os->objusebm_bonus_joueur =="C" ? "Coterie," : ( $os->objusebm_bonus_joueur =="3" ? "Triplette," : "" ) ) )
                         .( $os->objusebm_bonus_case =="O" ? "Case," : "" )."</td>
                       <td>" .$os->objusebm_bonus_distance."</td>
                       <td>" .( $os->objusebm_bonus_mode != "S" ? "Cumulatif," : "" )
