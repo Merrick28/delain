@@ -42,6 +42,7 @@ declare
   v_bonus_valeur integer;
   v_bonus_nb_tours integer;
   v_tbonus_libc char(4);
+  v_des integer;			-- lancer de dés
 
   v_compt_cod integer;	-- compte du lanceur
   v_coterie integer;	-- coterie du lanceur
@@ -188,10 +189,24 @@ begin
        code_retour :=  code_retour || ', l''objet a été détruit car il est vide.' ;
     end if;
 
-    if v_malchance >0 and random() > v_malchance then
-        return 'Oups, l''objet « ' || v_obj_nom || ' » n''a pas fonctionné correctement, il n''a eu aucun effet sur ' || v_perso_nom_cible || '.' ;
-    end if;
+    -- Il y a certains objets qui possède un facteur de malchance, faisant échoué son utilisation
+    if v_malchance >0 then
+        v_des := 100 * lancer_des(1,100);   -- facteur_malchance a une précision à 0.01 %
+        if v_des <= 100 * v_malchance then
 
+            texte_evt := '[attaquant] a tenté d''utiliser  l''objet « ' || v_obj_nom || ' » sur [cible] et a échoué.'  ;
+
+            insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
+                values(nextval('seq_levt_cod'),116,now(),1,v_perso_cod,texte_evt,'O','O',v_perso_cod,v_cible_cod);
+
+            if v_perso_cod != v_cible_cod then
+                insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
+                    values(nextval('seq_levt_cod'),116,now(),1,v_cible_cod,texte_evt,'N','O',v_perso_cod,v_cible_cod);
+            end if;
+
+            return 'Oups, l''objet « ' || v_obj_nom || ' » n''a pas fonctionné correctement, il n''a eu aucun effet sur ' || v_perso_nom_cible || '.' ;
+        end if;
+    end if;
 
     if coalesce(v_bonus_nb_tours,0) = 0 then
        -- supression du BM au lieu de le donner
