@@ -43,6 +43,7 @@ declare
   v_bonus_nb_tours integer;
   v_tbonus_libc char(4);
   v_des integer;			-- lancer de dés
+  v_bonmal_actuel numeric ;   -- valeur du BM actuel
 
   v_compt_cod integer;	-- compte du lanceur
   v_coterie integer;	-- coterie du lanceur
@@ -85,7 +86,7 @@ begin
    -- recuperation des information sur l'objet est son l'usage
     select  obj_nom, objusebm_cout, objusebm_bonus_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_familier, objusebm_bonus_distance,
             objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_vide_detruit, coalesce(objusebm_malchance,0), objusebm_bonus_mode,
-            f_lit_des_roliste(COALESCE(objusebm_bonus_valeur,'0')), f_lit_des_roliste(COALESCE(objusebm_bonus_nb_tours,'1')), tbonus_libc
+            f_lit_des_roliste(COALESCE(objusebm_bonus_valeur,'0')), f_lit_des_roliste(COALESCE(objusebm_bonus_nb_tours,'0')), tbonus_libc
         into v_obj_nom, v_cout, v_soi_meme, v_bonus_monstre, v_bonus_joueur, v_bonus_familier, v_bonus_distance,
             v_nb_usage_max, v_nb_usage, v_vide_detruit, v_malchance, v_bonus_mode,
             v_bonus_valeur, v_bonus_nb_tours, v_tbonus_libc
@@ -208,10 +209,29 @@ begin
         end if;
     end if;
 
-    if coalesce(v_bonus_nb_tours,0) = 0 then
-       -- supression du BM au lieu de le donner
-        delete from bonus where bonus_tbonus_libc = v_tbonus_libc and bonus_perso_cod = v_cible_cod;
-    else
+    -- on ne joue pas avec les bonus de caractéristiques, on ne peut pas les supprimer (on peut les ajouter avec des conditions)
+    if v_bonus_nb_tours = 0  and v_tbonus_libc not in ('DEX', 'INT', 'FOR', 'CON')  then
+        -- supression du BM au lieu de le donner
+        if v_bonus_valeur = '0' then -- on supprime tous les malus mais aussi tous les bonus
+            delete from bonus where bonus_perso_cod = v_cible_cod and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode!='E';
+        else
+            select bonus_valeur into v_bonmal_actuel
+                from bonus
+                where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S'
+                order by abs(bonus_valeur) desc
+            limit 1;
+            if found then -- nota: si pas trouvé, il n'y a rien a supprimer
+                if abs(v_bonmal_actuel) < abs(v_bonmal_valeur) then
+                    -- on supprime plus qu'il n'en faut, on retire tout
+                    delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                    else
+                    -- Il reste un peu de bonus/malus on diminue l'encours
+                    update bonus set bonus_valeur= sign(bonus_valeur) * (abs(v_bonmal_actuel) - abs(v_bonmal_valeur)) where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                end if;
+            end if;
+        end if;
+
+    elsif v_bonus_nb_tours!=0 and v_bonus_valeur!=0 then
         -- faire l'action d'ajouter le BM sur la cible
         perform ajoute_bonus(v_cible_cod, CASE WHEN v_bonus_mode = 'C' THEN '+'||v_tbonus_libc  ELSE v_tbonus_libc END, v_bonus_nb_tours, v_bonus_valeur);
     end if;
