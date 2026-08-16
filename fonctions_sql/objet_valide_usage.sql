@@ -46,18 +46,18 @@ begin
     end if;
 
     -- controle sur l'existence de l'usage de l'objet
-    select objusebm_cod into v_temp from objets_usages_bm where objusebm_obj_cod = v_obj_cod and objusebm_cod = v_objusebm_cod limit 1;
+    select objusebm_cod into v_temp from objets_usage_bm where objusebm_obj_cod = v_obj_cod and objusebm_cod = v_objusebm_cod limit 1;
     if not found then
         -- usage de l'objet non trouvé => verification de l'existence d'un usage générique
-        select objusebm_cod into v_temp from objets_usages_bm where objusebm_gobj_cod = v_gobj_cod and objusebm_cod = v_objusebm_cod limit 1;
+        select objusebm_cod into v_temp from objets_usage_bm where objusebm_gobj_cod = v_gobj_cod and objusebm_cod = v_objusebm_cod limit 1;
         if not found then
             return -3;      -- usage de sur l'objet et son générique non trouvé
         end if;
 
         -- créer un usage specifique pour l'objet à partir de l'usage générique
-        INSERT INTO objets_usages_bm (objusebm_parent_cod, objusebm_gobj_cod, objusebm_obj_cod, objusebm_tbonus_cod, objusebm_bonus_valeur, objusebm_bonus_nb_tours, objusebm_cout, objusebm_malchance, objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_bonus_distance, objusebm_bonus_aggressif, objusebm_bonus_soutien, objusebm_bonus_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_case, objusebm_bonus_mode, objusebm_bonus_familier, objusebm_vide_detruit)
+        INSERT INTO objets_usage_bm (objusebm_parent_cod, objusebm_gobj_cod, objusebm_obj_cod, objusebm_tbonus_cod, objusebm_bonus_valeur, objusebm_bonus_nb_tours, objusebm_cout, objusebm_malchance, objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_bonus_distance, objusebm_bonus_aggressif, objusebm_bonus_soutien, objusebm_bonus_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_case, objusebm_bonus_mode, objusebm_bonus_familier, objusebm_vide_detruit)
             SELECT  objusebm_cod, null, v_obj_cod, objusebm_tbonus_cod, objusebm_bonus_valeur, objusebm_bonus_nb_tours, objusebm_cout, objusebm_malchance, objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_bonus_distance, objusebm_bonus_aggressif, objusebm_bonus_soutien, objusebm_bonus_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_case, objusebm_bonus_mode, objusebm_bonus_familier, objusebm_vide_detruit
-            FROM objets_usages_bm WHERE objusebm_cod = v_objusebm_cod limit 1
+            FROM objets_usage_bm WHERE objusebm_cod = v_objusebm_cod limit 1
             RETURNING objusebm_cod INTO v_temp;
         if not found then
             return -4;      -- erreur lors de la création de l'usage spécifique
@@ -70,7 +70,7 @@ begin
     -- récupération du nombre d'utilisation de l'objet
     select objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_vide_detruit
         into v_nb_usage_max, v_nb_usage, v_vide_detruit
-        from objets_usages_bm where objusebm_cod = v_objusebm_cod limit 1;
+        from objets_usage_bm where objusebm_cod = v_objusebm_cod limit 1;
     if not found then
         return -5;      -- erreur lors de la récupération du nombre d'utilisation
     end if;

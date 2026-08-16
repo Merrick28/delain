@@ -83,13 +83,13 @@ begin
 
 
    -- recuperation des information sur l'objet est son l'usage
-    select  obj_nom, objusebm_cout, objsebm_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_familier, objusebm_bonus_distance,
+    select  obj_nom, objusebm_cout, objusebm_bonus_soi_meme, objusebm_bonus_monstre, objusebm_bonus_joueur, objusebm_bonus_familier, objusebm_bonus_distance,
             objusebm_nb_utilisation_max, objusebm_nb_utilisation, objusebm_vide_detruit, coalesce(objusebm_malchance,0), objusebm_bonus_mode,
-            objusebm_bonus_valeur, COALESCE(objusebm_bonus_nb_tours,1), tbonus_libc
+            f_lit_des_roliste(COALESCE(objusebm_bonus_valeur,'0')), f_lit_des_roliste(COALESCE(objusebm_bonus_nb_tours,'1')), tbonus_libc
         into v_obj_nom, v_cout, v_soi_meme, v_bonus_monstre, v_bonus_joueur, v_bonus_familier, v_bonus_distance,
             v_nb_usage_max, v_nb_usage, v_vide_detruit, v_malchance, v_bonus_mode,
             v_bonus_valeur, v_bonus_nb_tours, v_tbonus_libc
-        from objets_usages_bm
+        from objets_usage_bm
         join objets on objusebm_obj_cod = obj_cod
         join bonus_type on tbonus_cod = objusebm_tbonus_cod
         where objusebm_cod = v_objusebm_cod
@@ -106,7 +106,7 @@ begin
         join perso_position on ppos_perso_cod = perso_cod
         join positions on pos_cod = ppos_pos_cod
         left join groupe_perso on pgroupe_perso_cod = perso_cod and pgroupe_statut = 1
-    where perso_cod = personnage;
+    where perso_cod = v_perso_cod;
     if not found or v_pa < v_cout then
         return 'Erreur : Vous n''avez pas assez de PA pour effectuer cette action';
     end if;
@@ -123,7 +123,7 @@ begin
               union
               select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=v_compt_cod and perso_actif='O'
           ) as triplette on triplette_perso_cod = perso_cod
-        where perso_cod = cible and perso_actif='O';
+        where perso_cod = v_cible_cod and perso_actif='O';
     if not found then
           return 'Erreur : la cible n''a pas été trouvée';
     end if;
@@ -176,7 +176,7 @@ begin
     update perso set perso_pa = perso_pa - v_cout where perso_cod = v_perso_cod;
 
     -- mise à jour du nombre d'utilisation de l'objet
-    update objets_usages_bm set objusebm_nb_utilisation = objusebm_nb_utilisation + 1 where objusebm_cod = v_objusebm_cod;
+    update objets_usage_bm set objusebm_nb_utilisation = objusebm_nb_utilisation + 1 where objusebm_cod = v_objusebm_cod;
 
     -- ajout de l'événement dans la table ligne_evt
     texte_evt := '[attaquant] a utilise l''objet « ' || v_obj_nom || ' » sur [cible]'  ;
