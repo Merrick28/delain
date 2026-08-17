@@ -217,14 +217,14 @@ begin
         else
             select bonus_valeur into v_bonmal_actuel
                 from bonus
-                where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S'
+                where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode in ('S', 'A')
                 order by abs(bonus_valeur) desc
-            limit 1;
+                limit 1;
             if found then -- nota: si pas trouvé, il n'y a rien a supprimer
                 if abs(v_bonmal_actuel) < abs(v_bonmal_valeur) then
                     -- on supprime plus qu'il n'en faut, on retire tout
-                    delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
-                    else
+                    delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode in ('S', 'A') ;
+                else
                     -- Il reste un peu de bonus/malus on diminue l'encours
                     update bonus set bonus_valeur= sign(bonus_valeur) * (abs(v_bonmal_actuel) - abs(v_bonmal_valeur)) where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
                 end if;
@@ -243,8 +243,8 @@ begin
         insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
             values(nextval('seq_levt_cod'),116,now(),1,v_cible_cod,texte_evt,'N','O',v_perso_cod,v_cible_cod);
     else
-            insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
-                values(nextval('seq_levt_cod'),116,now(),1,v_perso_cod,texte_evt,'O','O',v_perso_cod,v_cible_cod);
+        insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
+            values(nextval('seq_levt_cod'),116,now(),1,v_perso_cod,texte_evt,'O','O',v_perso_cod,v_cible_cod);
     end if;
 
     return code_retour;

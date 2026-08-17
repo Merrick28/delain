@@ -362,6 +362,24 @@ class objets
     }
 
     /***
+     * Retourne la liste des usages attachés sur l'objet
+     * @return array|bool
+     */
+    function get_usages_attaches()
+    {
+        $retour = array();
+
+        $objsort = new objets_usage_bm();
+        $retour = $objsort->get_objets_usage_bm($this) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /***
      * Retourne la liste des sorts de bonus attachés sur l'objet
      * @return array|bool
      */

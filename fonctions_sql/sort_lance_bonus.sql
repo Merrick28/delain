@@ -260,13 +260,13 @@ begin
       else
           select bonus_valeur, bonus_nb_tours into v_bonmal_actuel, v_nbtour_actuel
               from bonus
-              where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S'
-              order by abs(bonus_valeur) desc
+              where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode in ('S', 'A')
+          order by abs(bonus_valeur) desc
               limit 1;
           if found then -- nota: si pas trouvé, il n'y a rien a supprimer
               if abs(v_bonmal_actuel) < abs(v_bonmal_valeur) then
                   -- on supprime plus qu'il n'en faut, on retire tout
-                  delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode='S' ;
+                  delete from bonus where sign(bonus_valeur) != sign(v_bonmal_valeur) and bonus_perso_cod = cible and  bonus_tbonus_libc = v_tbonus_libc and bonus_mode in ('S', 'A')  ;
                   if aggressif = 'O' then
                       code_retour := code_retour||'vous lui supprimez un bonus  `'|| nom_bonus || '.<br>';
                   else

@@ -238,6 +238,8 @@ if ($autorise == 1)
         // Il faudrait passer toute la page en PDO, mais en attendant faisons en sorte que les nouveautées le soient déjà!
         $obj = new objets();
         $obj->charge($objet);
+        $gobj = new objet_generique();
+        $gobj->charge($obj->obj_gobj_cod);
         $flagSort = false ;
         if ($sorts_attaches = $obj->get_sorts_attaches())
         {
@@ -270,6 +272,44 @@ if ($autorise == 1)
                 echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->objsortbm_cout . " PA)</em>".$usage."</td>";
                 echo "<tr>";
             }
+        }
+
+        // utilisation sous forme de potion, ou usage par rattachement
+        $potion_buvable = ( $gobj->gobj_tobj_cod == 21 && $obj->gobj_cod != 412 && $obj->gobj_cod != 561 );
+        if ($potion_buvable)
+        {
+
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet peut être utilisé:</strong></td>";
+            echo "</tr>";
+
+            echo "<tr><td class=\"soustitre2\"><strong></strong>Utilisation:</td>";
+            $usage .= "<em>(usage unique)<em>";
+            $utiliser = '<a href="choix_potion.php?&obj_cod=' .$objet . '">Utiliser (2PA)</a> ';
+            echo "<td>" .$utiliser . " ".$usage."</td>";
+            echo "<tr>";
+
+        }
+        else if ($usages_attaches = $obj->get_usages_attaches())
+        {
+            $objusage = $usages_attaches[0];
+
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet peut être utilisé:</strong></td>";
+            echo "</tr>";
+
+            // restriction d'un seul usage par objet, on prend le premier usage de la liste, si il y en a plusieurs, on ne les affichera pas
+            //foreach ($usages_attaches as $objusage)
+            $objusage = $usages_attaches[0];
+
+            echo "<tr><td class=\"soustitre2\"><strong></strong>Utilisation:</td>";
+            $usage = ($objusage->objusebm_nb_utilisation_max == 0 ) ? "" : " - <strong>Charge(s)</strong> : " . ($objusage->objusebm_nb_utilisation_max - $objusage->objusebm_nb_utilisation) ." / ". $objusage->objusebm_nb_utilisation_max ;
+            $usage .= ($objusage->objusebm_vide_detruit ? " <em>(détruit si vide)<em>" : "");
+
+            $utiliser = '<a href="choix_utilisation.php?obj_cod=' . $objet . '&objusebm_cod=' . $objusage->objusebm_cod . '">Utiliser ('.$objusage->objusebm_cout.'PA)</a> ';
+
+            echo "<td>" .$utiliser . " ".$usage."</td>";
+            echo "<tr>";
         }
 
         if ($bm_attaches = $obj->get_bm_attaches())
