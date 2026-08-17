@@ -31,6 +31,7 @@ class objets_usage_bm
     var $objusebm_bonus_mode = 'S';
     var $objusebm_bonus_familier = 'N';
     var $objusebm_vide_detruit = 'N';
+    var $objusebm_description = '';
 
     function __construct()
     {
@@ -73,6 +74,7 @@ class objets_usage_bm
         $this->objusebm_bonus_mode = $result['objusebm_bonus_mode'];
         $this->objusebm_bonus_familier = $result['objusebm_bonus_familier'];
         $this->objusebm_vide_detruit = $result['objusebm_vide_detruit'];
+        $this->objusebm_description = $result['objusebm_description'];
         return true;
     }
 
@@ -106,7 +108,8 @@ class objets_usage_bm
             objusebm_bonus_case,
             objusebm_bonus_mode,
             objusebm_bonus_familier,
-            objusebm_vide_detruit                        )
+            objusebm_vide_detruit,
+            objusebm_description                        )
                     values
                     (
                         :objusebm_parent_cod,
@@ -128,7 +131,8 @@ class objets_usage_bm
                         :objusebm_bonus_case,
                         :objusebm_bonus_mode,
                         :objusebm_bonus_familier,
-                        :objusebm_vide_detruit                        )
+                        :objusebm_vide_detruit,
+                        :objusebm_description                        )
     returning objusebm_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -152,6 +156,7 @@ class objets_usage_bm
                 ":objusebm_bonus_mode" => $this->objusebm_bonus_mode,
                 ":objusebm_bonus_familier" => $this->objusebm_bonus_familier,
                 ":objusebm_vide_detruit" => $this->objusebm_vide_detruit,
+                ":objusebm_description" => $this->objusebm_description,
             ),$stmt);
 
 
@@ -181,7 +186,9 @@ class objets_usage_bm
             objusebm_bonus_case = :objusebm_bonus_case,
             objusebm_bonus_mode = :objusebm_bonus_mode,
             objusebm_bonus_familier = :objusebm_bonus_familier,
-            objusebm_vide_detruit = :objusebm_vide_detruit                        where objusebm_cod = :objusebm_cod ";
+            objusebm_vide_detruit = :objusebm_vide_detruit,
+            objusebm_description = :objusebm_description
+                        where objusebm_cod = :objusebm_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objusebm_cod" => $this->objusebm_cod,
@@ -205,6 +212,7 @@ class objets_usage_bm
                 ":objusebm_bonus_mode" => $this->objusebm_bonus_mode,
                 ":objusebm_bonus_familier" => $this->objusebm_bonus_familier,
                 ":objusebm_vide_detruit" => $this->objusebm_vide_detruit,
+                ":objusebm_description" => $this->objusebm_description
             ),$stmt);
         }
     }

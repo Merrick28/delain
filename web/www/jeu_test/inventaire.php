@@ -531,7 +531,8 @@ $stmt   = $pdo->query($req_id);
                     if ($potion_buvable)
                     {
                         //echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $result['gobj_cod'] . '">Boire (2PA)</a>';
-                        echo '<a href="choix_potion.php?&obj_cod=' . $result['obj_cod'] . '">Utiliser (2PA)</a> ';
+                        $title="Boire ou faire boire la potion.";
+                        echo '<a href="choix_potion.php?&obj_cod=' . $result['obj_cod'] . '" title="' . $title . '">Utiliser (2PA)</a> ';
                     }
                     else
                     {
@@ -542,7 +543,8 @@ $stmt   = $pdo->query($req_id);
                         if( count($usages)> 0 )
                         {
                             // on ne prend q'un seul usage par objet, le premier de la liste, pour eviter de surcharger l'interface
-                            echo '<a href="choix_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
+                            $title=htmlspecialchars($usages[0]->objusebm_description, ENT_QUOTES, 'UTF-8');
+                            echo '<a href="choix_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '" title="' . $title . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
                         }
                     }
 

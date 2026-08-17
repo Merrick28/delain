@@ -310,6 +310,14 @@ if ($autorise == 1)
 
             echo "<td>" .$utiliser . " ".$usage."</td>";
             echo "<tr>";
+
+            if ($objusage->objusebm_description != "")
+            {
+                echo "<tr><td class=\"soustitre2\"><strong></strong>Description:</td>";
+                echo "<td>".$objusage->objusebm_description."</td>";
+                echo "</tr>";
+            }
+
         }
 
         // gestion des bonus/malus rattachés à l'objet
