@@ -304,7 +304,7 @@ if ($autorise == 1)
 
             echo "<tr><td class=\"soustitre2\"><strong></strong>Utilisation:</td>";
             $usage = ($objusage->objusebm_nb_utilisation_max == 0 ) ? "" : " - <strong>Charge(s)</strong> : " . ($objusage->objusebm_nb_utilisation_max - $objusage->objusebm_nb_utilisation) ." / ". $objusage->objusebm_nb_utilisation_max ;
-            $usage .= ($objusage->objusebm_vide_detruit ? " <em>(détruit si vide)<em>" : "");
+            $usage .= ($objusage->objusebm_vide_detruit && $objusage->objusebm_nb_utilisation_max != 0 ? " <em>(détruit si vide)<em>" : "");
 
             $utiliser = '<a href="choix_utilisation.php?obj_cod=' . $objet . '&objusebm_cod=' . $objusage->objusebm_cod . '">Utiliser ('.$objusage->objusebm_cout.'PA)</a> ';
 
@@ -312,6 +312,7 @@ if ($autorise == 1)
             echo "<tr>";
         }
 
+        // gestion des bonus/malus rattachés à l'objet
         if ($bm_attaches = $obj->get_bm_attaches())
         {
             echo "<tr>";
@@ -341,6 +342,7 @@ if ($autorise == 1)
             }
         }
 
+        // gestion des conditions de ramassage et d'équipement
         if ($objelem_attaches = $obj->get_condition_inventaire())
         {
             echo "<tr>";
