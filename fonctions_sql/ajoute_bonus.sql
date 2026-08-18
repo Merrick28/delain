@@ -66,35 +66,41 @@ begin
   -- =====================================================================================
   if v_est_aura then
 
-    v_abs_valeur := abs(v_valeur);  -- une aura est toujours positive, peu importe le signe fourni
-
     select bonus_cod, bonus_valeur, bonus_dfin into v_aura_existante from bonus where bonus_perso_cod = v_perso  and bonus_tbonus_libc = v_type limit 1;
 
     if found and v_aura_existante.bonus_dfin > now() then
-      -- l'aura existe déjà et est active : cumul de la valeur (borné par vmax) + prolongation de 5 jours
+      -- l'aura existe déjà et est active : cumul de la valeur (borné par vmax) + raz du delai à 5 jours
       if v_aura_vmax > 0 then
-        v_nouvelle_valeur := least(v_aura_existante.bonus_valeur + v_abs_valeur, v_aura_vmax);
+        v_nouvelle_valeur := greatest(0, least(v_aura_existante.bonus_valeur + v_valeur, v_aura_vmax));
       else
-        v_nouvelle_valeur := v_aura_existante.bonus_valeur + v_abs_valeur;
+        v_nouvelle_valeur := greatest(0, v_aura_existante.bonus_valeur + v_valeur);
       end if;
 
-      update bonus set bonus_valeur = v_nouvelle_valeur, bonus_dfin = now() + '5 days'::interval where bonus_cod = v_aura_existante.bonus_cod;
+      if v_nouvelle_valeur > 0 then -- on met à jour la valeur et la date de fin, sinon on supprime l'aura
+        update bonus set bonus_valeur = v_nouvelle_valeur, bonus_dfin = now() + '5 days'::interval where bonus_cod = v_aura_existante.bonus_cod;
+      else
+        delete from bonus where bonus_cod = v_aura_existante.bonus_cod;
+      end if;
 
       v_retour := 0;  -- aura existante mise à jour
 
     else
 
-      -- pas d'aura active (absente ou expirée) : nouvelle aura
+      -- pas d'aura active (absente ou expirée) : creation d'une nouvelle aura
       if v_aura_vmax > 0 then
-          v_nouvelle_valeur := least(v_abs_valeur, v_aura_vmax);
+          v_nouvelle_valeur := greatest(0, least(v_valeur, v_aura_vmax));
       else
-          v_nouvelle_valeur := v_abs_valeur;
+          v_nouvelle_valeur := greatest(0, v_valeur);
       end if;
 
-      insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur, bonus_mode, bonus_dfin)
-            values (v_perso, v_type, null, v_nouvelle_valeur, 'A', now() + '5 days'::interval);
+      if v_nouvelle_valeur > 0 then
+        insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur, bonus_mode, bonus_dfin)
+                values (v_perso, v_type, null, v_nouvelle_valeur, 'A', now() + '5 days'::interval);
 
-      v_retour := 1;  -- nouvelle aura posée
+        v_retour := 1;  -- nouvelle aura posée
+      else
+        v_retour := 0;  -- aura non posée car valeur nulle ou négative
+      end if;
     end if;
 
     -- retour immédiat car c'est une aura, on ne fait pas de traitement normal de bonus/malus

@@ -226,6 +226,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-objet-generique-sort-bm" ).length ) params.objet_generique_sort_bm = $( "#spop-tablecod-objet-generique-sort-bm" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-objet-generique-bm" ).length ) params.objet_generique_bm = $( "#spop-tablecod-objet-generique-bm" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-objet-generique-equipe" ).length ) params.objet_generique_equipe = $( "#spop-tablecod-objet-generique-equipe" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-objet-generique-usage-bm" ).length ) params.objet_generique_usage_bm = $( "#spop-tablecod-objet-generique-usage-bm" ).prop( "checked" ) ? true : false ;
 
     //executer le service asynchrone
     runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
@@ -312,6 +313,7 @@ function getTableCod(divname, table, titre, params)
         options += 'Sorts BM: <input type="checkbox" id="spop-tablecod-objet-generique-sort-bm" onChange="getTableCod_update();"> ';
         options += ' Bonus/malus : <input type="checkbox" id="spop-tablecod-objet-generique-bm" onChange="getTableCod_update();"> ';
         options += ' Cond. Equip.: <input type="checkbox" id="spop-tablecod-objet-generique-equipe" onChange="getTableCod_update();"> ';
+        options += ' Usage BM: <input type="checkbox" id="spop-tablecod-objet-generique-usage-bm" onChange="getTableCod_update();"> ';
    }
 
     $("#" + divname_cod).parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +

@@ -742,6 +742,24 @@ if ($erreur == 0)
                 echo 'Aucun: <a target="_blank" href="admin_objet_sort_bm.php?objsortbm_gobj_cod='.$gobj_cod.'">en créer</a>';
             }
             echo "</td></tr>";
+
+            $objusebms = new objets_usage_bm();
+            echo "<tr><td class=\"soustitre2\">Utilisation BM rattaché(s)</td><td>";
+            if ($list = $objusebms->getBy_objusebm_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objusebm) {
+                    $bonus = new bonus_type();
+                    $bonus->charge($objusebm->objusebm_tbonus_cod);
+                    echo $bonus->tonbus_libelle." (".$objusebm->objusebm_cout."PA), ";
+                }
+                echo ': <a target="_blank" href="admin_objet_usage_bm.php?objusebm_gobj_cod='.$gobj_cod.'">éditer</a>';
+            }
+            else
+            {
+                echo 'Aucun: <a target="_blank" href="admin_objet_usage_bm.php?objusebm_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
+
             $objbm = new objets_bm();
             echo "<tr><td class=\"soustitre2\">Bonus/malus permanent rattaché(s)</td><td>";
             if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))

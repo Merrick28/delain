@@ -4,7 +4,6 @@ if (!defined('APPEL'))
 {
     define('APPEL', 1);
 }
-
 $perso = $verif_connexion->perso;
 
 /**
@@ -685,6 +684,19 @@ else if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_t
                     $contenu_page .= $result['resultat'] . '<br><br>';
                 }
             }
+            break;
+        case 'objet_utilisation':
+
+            echo "<pre>POST: "; print_r($_POST); echo "</pre>";
+            // apeler la fonction de l'objet
+            $req      = 'select objet_utilisation(:perso_cod, :obj_cod, :objusebm_cod, :cible) as resultat';
+            $stmt     = $pdo->prepare($req);
+            $stmt     = $pdo->execute(array(':perso_cod' => $perso_cod, ':obj_cod' => $_POST['obj_cod'], ':objusebm_cod' => $_POST['objusebm_cod'], ':cible' => $_POST['cible']), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                $contenu_page .= $result['resultat'] . '<br><br>';
+            }
+
             break;
         case 'rituel_modif_caracs':
             if (((int)$_POST['diminution'] <= 0) || ((int)$_POST['amelioration'] <= 0))
