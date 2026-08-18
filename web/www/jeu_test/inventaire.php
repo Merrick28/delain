@@ -330,7 +330,18 @@ $stmt   = $pdo->query($req_id);
                         echo "<td class=\"soustitre2\">" . get_etat($result['obj_etat']) . "</td>";
                         echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $result['gobj_pa_normal'] . "</div></td>";
                         echo "<td><a href=\"javascript:document.remettre.perobj.value=" . $result['perobj_cod'] . ";document.remettre.submit();\">";
-                        echo "Remettre dans l’inventaire (2PA)</a>";
+                        echo "Remettre dans l’inventaire (2PA)</a> ";
+
+                        // pour eviter une instanciation de chaque objet pour get_objets_usage_bm qui pourrait consommer du temps et de la mémoire inutilement
+                        // on va fournir un tableau avec les champs requis obj_cod et gobj_cod (code de l'objet et de son generique)
+                        $objuse = new objets_usage_bm();
+                        $usages = $objuse->get_objets_usage_bm( ['obj_cod' => $result['obj_cod'], 'gobj_cod' => $result['gobj_cod']] ) ;
+                        if( count($usages)> 0 )
+                        {
+                            // on ne prend q'un seul usage par objet, le premier de la liste, pour eviter de surcharger l'interface
+                            $title=htmlspecialchars($usages[0]->objusebm_description, ENT_QUOTES, 'UTF-8');
+                            echo '<a href="choix_utilisation.php?obj_cod=' . $result['obj_cod'] . '&objusebm_cod=' . $usages[0]->objusebm_cod . '" title="' . $title . '">Utiliser ('.$usages[0]->objusebm_cout.'PA)</a> ';
+                        }
 
                         ?>
                         </td>
@@ -521,7 +532,7 @@ $stmt   = $pdo->query($req_id);
 
                     if ($result['tobj_equipable'] == 1)
                     {
-                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=equiper&objet=%s\">Equiper (2PA)</a>",
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=equiper&objet=%s\">Equiper (2PA)</a> ",
                                $result['obj_cod']);
                     }
 
