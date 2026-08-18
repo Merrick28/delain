@@ -22,7 +22,7 @@
                         </tr>
                     {% endif %}
                     <tr>
-                        <td rowspan="12">
+                        <td rowspan="13">
                             <img style="max-height: 500px; max-width: 500px;" src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom|raw }}">
                             {% if MEMEPERSO %}
                                 {% if VISU_PERSO.perso_crapaud == 0 %}
@@ -92,6 +92,24 @@
                             {% endif %}
                         </td>
                     </tr>
+
+                    <tr>
+                        <td class="soustitre2">Auras actives :</td>
+                        <td>
+                            {% if AURAS|length == 0 %}
+                                Aucune aura active
+                            {% else %}
+                                {% for AURA in AURAS %}
+                                    <span title="{{ AURA.tbonus_description }}">
+                                        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background-color:{{ AURA.etat_couleur }};margin-right:4px;"></span>
+                                        {{ AURA.tonbus_libelle }} — <em>{{ AURA.etat_libelle }}</em>
+                                    </span><br/>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+
+
                     <tr>
                         <td class="soustitre2">Guilde :</td>
                         <td>

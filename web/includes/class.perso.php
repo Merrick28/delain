@@ -3349,7 +3349,7 @@ class perso
     public function perso_auras()
     {
         $pdo  = new bddpdo;
-        $req = "select b.bonus_cod, b.bonus_valeur, b.bonus_dfin, bt.tbonus_libc, bt.tonbus_libelle, bt.tbonus_aura_libc,
+        $req = "select b.bonus_cod, b.bonus_valeur, b.bonus_valeur_initiale, b.bonus_dfin, bt.tbonus_libc, bt.tonbus_libelle, bt.tbonus_aura_libc,
                      coalesce(bt.tbonus_description, bt.tonbus_libelle) as tbonus_description,
                      bt2.tonbus_libelle as absorbe_libelle
                   from bonus b
