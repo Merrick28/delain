@@ -77,7 +77,7 @@ begin
       end if;
 
       if v_nouvelle_valeur > 0 then -- on met à jour la valeur et la date de fin, sinon on supprime l'aura
-        update bonus set bonus_valeur = v_nouvelle_valeur, bonus_dfin = now() + '5 days'::interval where bonus_cod = v_aura_existante.bonus_cod;
+        update bonus set bonus_valeur_initiale = GREATEST(bonus_valeur_initiale, v_nouvelle_valeur),  bonus_valeur = v_nouvelle_valeur, bonus_dfin = now() + '5 days'::interval where bonus_cod = v_aura_existante.bonus_cod;
       else
         delete from bonus where bonus_cod = v_aura_existante.bonus_cod;
       end if;
@@ -94,8 +94,8 @@ begin
       end if;
 
       if v_nouvelle_valeur > 0 then
-        insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur, bonus_mode, bonus_dfin)
-                values (v_perso, v_type, null, v_nouvelle_valeur, 'A', now() + '5 days'::interval);
+        insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur_initiale, bonus_valeur, bonus_mode, bonus_dfin)
+                values (v_perso, v_type, null, v_nouvelle_valeur, v_nouvelle_valeur, 'A', now() + '5 days'::interval);
 
         v_retour := 1;  -- nouvelle aura posée
       else

@@ -14,6 +14,11 @@ if ($visu == $perso_cod) {
     $memeperso = true;
 }
 
+//charge les infos du perso qui consulte la fiche (pour savoir si coterie/triplette)
+$viewer_perso = new perso;
+$viewer_perso->charge($perso_cod);
+
+// chargement des infos du perso à visualiser
 if (!$visu_perso->charge($visu)) {
     die('Erreur sur le chargement de perso');
 }
@@ -58,6 +63,37 @@ $race->charge($visu_perso->perso_race_cod);
 $perobj        = new perso_objets();
 $objets_portes = $perobj->getByPersoEquipe($visu_perso->perso_cod);
 
+
+// Détermine si celui qui consulte la fiche appartient à la même coterie ou à la même
+// triplette (même compte) que le perso visualisé : dans ce cas seulement, on peut
+// révéler le nom précis des auras. Sinon, terme générique.
+$aura_info_visible = true;
+if (!$memeperso) {
+    $coterie_visu = $visu_perso->coterie();
+    if ($coterie_visu != -1 && $coterie_visu == $viewer_perso->coterie()) {
+        $aura_info_visible = true;
+    } elseif ($visu_perso->membreTriplette($perso_cod)) {
+        $aura_info_visible = true;
+        echo "<p>Vous êtes dans la même triplette que ce perso : vous pouvez voir le nom précis de ses auras.</p>";
+    } else {
+        $aura_info_visible = false;
+    }
+}
+
+// Auras actives du perso : on calcule l'état qualitatif (libellé + couleur) côté PHP,
+// sans jamais exposer bonus_valeur, tbonus_aura_vmax ni bonus_dfin au template.
+// Le nom précis de l'aura n'est révélé qu'aux membres de la coterie/triplette.
+$auras = $visu_perso->perso_auras();
+foreach ($auras as &$aura) {
+    $aura['etat_libelle'] = bonus::get_etat_aura($aura['bonus_valeur'], $aura['bonus_valeur_initiale'], 'etat');
+    $aura['etat_couleur'] = bonus::get_etat_aura($aura['bonus_valeur'], $aura['bonus_valeur_initiale'], 'couleur');
+
+    if (!$aura_info_visible) {
+        $aura['tonbus_libelle']     = 'Aura inconnue';
+        $aura['tbonus_description'] = '';
+    }
+}
+unset($aura);
 
 // détection des symbole d'équipe (chasuble) dans les objets portés : 1573 - Chasuble rouge / 1574 - Chasuble bleu
 $jeu_equipe = array_values (array_filter($objets_portes, function($obj) { return in_array($obj->objet->obj_gobj_cod, [1573, 1574]); }));
@@ -120,6 +156,7 @@ $options_twig = array(
     'RACE'          => $race,
     'PERSO_SEX_TXT' => $perso_sex_txt,
     'OBJETS_PORTES' => $objets_portes,
+    'AURAS'         => $auras,
     'PGUILDE'       => $pguilde,
     'GUILDE'        => $guilde,
     'GUILDE_RANG'   => $guilde_rang,

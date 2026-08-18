@@ -177,6 +177,46 @@ class bonus
         return $retour;
     }
 
+    /**
+     * Calcule l'état visuel d'une aura (libellé ou couleur) en fonction
+     * de sa valeur actuelle par rapport à sa valeur à la création.
+     * Ne révèle jamais la valeur réelle : uniquement un état qualitatif.
+     * @param numeric $valeur : bonus_valeur (valeur actuelle de l'aura)
+     * @param numeric $valeur_initiale : bonus_valeur_initiale (valeur à la création)
+     * @param string $type : "etat" pour le libellé texte, autre chose pour la couleur
+     * @return string
+     */
+    static function get_etat_aura($valeur, $valeur_initiale, $type = "etat")
+    {
+        if (empty($valeur_initiale) || $valeur_initiale <= 0)
+        {
+            $pourcentage = 0;
+        }
+        else
+        {
+            $pourcentage = min(100, ($valeur / $valeur_initiale) * 100);
+        }
+
+        if ($type == "etat")
+        {
+            if ($pourcentage < 15)        $retour = 'presque éteinte';
+            else if ($pourcentage < 25)   $retour = 'vacillante';
+            else if ($pourcentage < 50)   $retour = 'fortement affaiblie';
+            else if ($pourcentage < 75)   $retour = 'affaiblie';
+            else if ($pourcentage < 100)  $retour = 'quasi intacte';
+            else                          $retour = 'intacte';
+        }
+        else
+        {
+            if ($pourcentage < 15)        $retour = '#c62828'; // rouge
+            else if ($pourcentage < 25)   $retour = '#e8672c'; // orangé-rouge
+            else if ($pourcentage < 50)   $retour = '#f2a93c'; // orange
+            else if ($pourcentage < 75)   $retour = '#c6cf3a'; // vert-jaune
+            else if ($pourcentage < 100)  $retour = '#6cbf3e'; // vert clair
+            else                          $retour = '#1b8a3c'; // vert intense
+        }
+        return $retour;
+    }
 
     public function __call($name, $arguments)
     {
