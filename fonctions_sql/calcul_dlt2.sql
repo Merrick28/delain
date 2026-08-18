@@ -355,9 +355,11 @@ begin
 
       bonus_regen := floor((pv_max*v_bonus_reg2)/100);
       if bonus_regen > 0 then
+        /*
+         Marlyza 2026-08-18 - On ne limite plus le bonus de regen à 25 (certain on augmenté leur REG ignorant cette limitation)
         if bonus_regen > 25 then
           bonus_regen := 25;
-        end if;
+        end if; */
         total_regen := total_regen + bonus_regen;
       end if;
 
