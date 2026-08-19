@@ -75,6 +75,7 @@ begin
   (41, 'Est équipé d’un objet générique', 'OBJET'),
   (42, 'Distance (index=code de position)', 'INDEX'),
   (43, 'Est équipé d’un type d'objet', 'TYPE'),
+  (44, 'Possède un bonus/malus', 'INDEX'), -- index=tbonus_cod, valeur = somme des bonus hors équipement
   ;
  */
 
@@ -317,6 +318,11 @@ begin
             return 0;
         end if;
     end if;
+
+  elsif (v_carac_cod = 44) then                  -- (44, 'Possède un bonus/malus', 'INDEX')
+    select into v_perso_carac coalesce(sum(bonus_valeur),0)::text
+        from bonus b join bonus_type bt on bt.tbonus_libc = b.bonus_tbonus_libc
+        where b.bonus_perso_cod = v_perso_cod and bt.tbonus_cod = v_param_idx::integer and coalesce(b.bonus_mode,'S') != 'E';
 
   else -- cas des compteurs non prévus, on retourne 0 pour dire que la condition n'est pas vérifiée
     return 0 ;    -- erreur dans les paramètres
