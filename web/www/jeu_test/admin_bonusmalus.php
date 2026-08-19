@@ -101,10 +101,31 @@ if ($erreur == 0)
         return "<label for='$id_unique'>$label&nbsp;</label><input ".($disabled ? "disabled " : "")."type='checkbox' $checked name='$name' id='$id_unique' />";
     }
 
-    $req = 'SELECT
-			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite, tbonus_description, tbonus_compteur, bonus_type_carac(tbonus_libc) type_carac
-		FROM bonus_type
-		ORDER BY tbonus_libc';
+    $req = "SELECT
+                tbonus_cod,
+                tbonus_libc,
+                tonbus_libelle,
+                tbonus_nettoyable,
+                tbonus_gentil_positif,
+                tbonus_aura,
+                tbonus_compteur,
+                tbonus_cumulable,
+                tbonus_degressivite,
+                tbonus_description,
+                bonus_type_carac(tbonus_libc) type_carac,
+                CASE
+                        WHEN tbonus_aura = true THEN 'Aura'
+                        WHEN tbonus_compteur = 'O' THEN 'Compteur'
+                        ELSE 'Standard'
+                    END AS type_bm
+            FROM bonus_type
+            ORDER BY
+                CASE
+                    WHEN tbonus_aura = true THEN 1
+                    WHEN tbonus_compteur = 'O' THEN 3
+                    ELSE 2
+                END,
+                tonbus_libelle;";
 
     // Tableau des sorts runiques
     echo '<h1>Bonus et malus</h1>
@@ -126,8 +147,10 @@ if ($erreur == 0)
 
     $stmt = $pdo->query($req);
 
+    $current_type_bm = '';
     while ($result = $stmt->fetch())
     {
+        //echo "<pre>"; print_r($result);
         // Récupération des données
         $tbonus_cod            = $result['tbonus_cod'];
         $tonbus_libelle        = $result['tonbus_libelle'];
@@ -139,15 +162,22 @@ if ($erreur == 0)
         $tbonus_compteur       = $result['tbonus_compteur'];
         $tbonus_degressivite   = $result['tbonus_degressivite'];
         $tbonus_description    = $result['tbonus_description'];
+        $type_bm               = $result['type_bm'];
+        $is_aura               = ($result['tbonus_aura'] === true);
 
+        if ($current_type_bm != $type_bm)
+        {
+            echo "<tr><td colspan='9' class='titre' style='text-align:center;'><strong>$type_bm</strong></td></tr>";
+            $current_type_bm = $type_bm;
+        }
         echo "<form action='#' method='POST'><tr>
 			<td class='soustitre2'>$tbonus_libc</td>
 			<td class='soustitre2'><input type='text' value='$tonbus_libelle' name='tonbus_libelle' size='30' /></td>
-			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_nettoyable_' . $tbonus_cod, 'tbonus_nettoyable', $tbonus_nettoyable) . "</td>
+			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_nettoyable_' . $tbonus_cod, 'tbonus_nettoyable', $tbonus_nettoyable, $is_aura) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_gentil_positif_' . $tbonus_cod, 'tbonus_gentil_positif', $tbonus_gentil_positif) . "</td>
-			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable_' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable, $type_carac) . "</td>	
-			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_compteur_' . $tbonus_cod, 'tbonus_compteur', $tbonus_compteur) . "</td>	
-			<td class='soustitre2'><input ".($type_carac ? "disabled " : "")."type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />". (in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : ($type_carac ? ' Bonus de carac' : '' ) )."</td>					
+			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable_' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable, ($type_carac || $is_aura)) . "</td>	
+			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_compteur_' . $tbonus_cod, 'tbonus_compteur', $tbonus_compteur, ($type_carac || $is_aura)) . "</td>	
+			<td class='soustitre2'><input ".($is_aura ? "disabled " : "")."type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />". (in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : ($type_carac ? ' Bonus de carac' : '' ) )."</td>					
 			<td class='soustitre2'><textarea name='tbonus_description'/>$tbonus_description</textarea></td>					
 			<td class='soustitre2'><input type='hidden' value='$tbonus_cod' name='tbonus_cod' />
 				<input type='hidden' value='modif' name='methode' />
