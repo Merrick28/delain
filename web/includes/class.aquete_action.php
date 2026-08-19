@@ -74,12 +74,13 @@ class aquete_action
      * echo $resultat; // Affichera 1 (vrai)
      */
     function evaluer_formule($formule) {
-        // Autoriser chiffres, opérateurs arithmétiques, comparaisons, parenthèses et espaces
-        if (!preg_match('#^[0-9+\-*/().\s<>=!]+$#', $formule)) {
+        // Autoriser chiffres, opérateurs arithmétiques, comparaisons, parenthèses, espaces et opérateurs logiques (| et &)
+        if (!preg_match('#^[0-9+\-*/().\s<>=!|&]+$#', $formule)) {
             return false;
         }
         // Remplacer "=" seul par "==", mais laisser "==", "<=", ">=", "!=" intacts
         $formule = preg_replace('/(?<![<>=!])=(?![=])/', '==', $formule);
+
         return eval('return (' . $formule . ');');
     }
 
