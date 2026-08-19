@@ -112,6 +112,7 @@ if ($erreur == 0)
                 tbonus_cumulable,
                 tbonus_degressivite,
                 tbonus_description,
+                bonus_type_carac(tbonus_libc) type_carac,
                 CASE
                         WHEN tbonus_aura = true THEN 'Aura'
                         WHEN tbonus_compteur = 'O' THEN 'Compteur'
@@ -156,7 +157,7 @@ if ($erreur == 0)
         $tbonus_nettoyable     = $result['tbonus_nettoyable'];
         $tbonus_gentil_positif = $result['tbonus_gentil_positif'];
         $tbonus_libc           = $result['tbonus_libc'];
-        $type_carac            = (in_array($result['tbonus_libc'], ['DEX', 'FOR', 'INT', 'CON'])) ? true : false ;
+        $type_carac            = (in_array($result['type_carac'], ['DEX', 'FOR', 'INT', 'CON']) && ! in_array($result['tbonus_libc'], ['DEX', 'FOR', 'INT', 'CON'])) ? true : false ;
         $tbonus_cumulable      = $result['tbonus_cumulable'];
         $tbonus_compteur       = $result['tbonus_compteur'];
         $tbonus_degressivite   = $result['tbonus_degressivite'];
