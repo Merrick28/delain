@@ -511,7 +511,7 @@ switch($_REQUEST["request"])
             foreach ($words as $k => $w)
             {
                 if ($k>0)  $filter.= "AND ";
-                $filter.= "('compteur_libelle ('||CASE WHEN compteur_type=0 THEN 'global' ELSE 'individuel' END||')' ilike :search$k) ";
+                $filter.= "(compteur_libelle ||' ('||CASE WHEN compteur_type=0 THEN 'global' ELSE 'individuel' END||')' ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
 
