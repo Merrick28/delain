@@ -103,6 +103,7 @@ switch ($methode)
                 $etape = new aquete_etape();
                 $etape->charge($result["aqetape_cod"]);
                 $etape->aqetape_etape_cod = $aquete_etape_map[ $etape->aqetape_etape_cod ] ;
+                $etape->aqetape_saut_etape_cod = $aquete_etape_map[ $etape->aqetape_saut_etape_cod ] ;
                 $etape->stocke();
             }
 
