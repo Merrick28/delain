@@ -45,7 +45,7 @@ begin
       -- bonus sur les PV (sauf vampire)
       if v_niveau_vampire = 0 then
         -- v_regen := v_regen + LEAST(25, FLOOR(v_perso_des_regen * v_perso_pv_max / 100));
-        v_regen := v_regen + FLOOR(v_perso_des_regen * v_perso_pv_max / 100);
+        v_regen := v_regen + greatest(0, v_perso_des_regen-1) + FLOOR(v_perso_des_regen * v_perso_pv_max / 100);
       end if;
 
       --
