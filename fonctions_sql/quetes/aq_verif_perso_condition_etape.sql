@@ -91,7 +91,7 @@ begin
 	for ligne in
       select aqelem_misc_cod, aqelem_param_num_2, aqelem_param_num_3, aqelem_param_txt_1, aqelem_param_txt_2, aqelem_param_txt_3, aqelem_quete_step
       from quetes.aquete_element
-      where (aqelem_type='perso_condition' or aqelem_type='perso_condition_list') and aqelem_misc_cod>0
+      where (aqelem_type='perso_condition' or aqelem_type='perso_condition_liste') and aqelem_misc_cod>0
                 and aqelem_param_num_1=1 and aqelem_aqetape_cod = v_aqetape_cod and aqelem_param_id=v_param_id
                 and ((aqelem_aqperso_cod IS NULL and v_aqperso_cod=0) or aqelem_aqperso_cod=v_aqperso_cod)
                 and (v_param_ordre_min is null or aqelem_param_ordre>=v_param_ordre_min)

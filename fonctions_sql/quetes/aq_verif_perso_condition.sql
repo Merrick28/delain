@@ -119,7 +119,7 @@ begin
   elsif (v_carac_cod = 12) then                  -- (12, 'PV en % de Blessure', 'VARIABLE'),
     select into v_perso_carac round(((100*perso_pv::numeric)/perso_pv_max),2)::text from perso where perso_cod=v_perso_cod ;
 
-  elsif (v_carac_cod = 11) then                  -- (13, 'Temps au Tour (en minutes)', 'CARAC'),
+  elsif (v_carac_cod = 13) then                  -- (13, 'Temps au Tour (en minutes)', 'CARAC'),
     select into v_perso_carac perso_temps_tour::text from perso where perso_cod=v_perso_cod ;
 
   elsif (v_carac_cod = 14) then                   -- (14, 'Niveau', 'CARAC'),
