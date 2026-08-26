@@ -2,6 +2,17 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
+$droit_modif = 'dcompt_acces_log';
+define('APPEL', 1);
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur != 0)
+{
+    echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
+    die();
+}
+
+
 ?>
 
 <p><strong>Liste des comptes dont les personnages principaux sont proches du quatrième personnage.</strong>
