@@ -2,6 +2,17 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
+$droit_modif = 'dcompt_acces_log';
+define('APPEL', 1);
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur != 0)
+{
+    echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
+    die();
+}
+
+
 $compte = (isset($_GET['compte'])) ? $_GET['compte'] : 0;
 
 // Première partie de la page : liste des comptes incriminés
