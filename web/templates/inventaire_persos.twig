@@ -289,7 +289,7 @@
                  {% for p in PERSOS  %}
                      {% if p.perso_pnj == 2  %}
                          {%  set total4 = total4 + PERSO_MATOS[p.perso_cod][r].count  %}
-                         {%  set total4_poids = total4_poids + PERSO_DIVERS[p.perso_cod][r].poids  %}
+                         {%  set total4_poids = total4_poids + PERSO_MATOS[p.perso_cod][r].poids  %}
                      {% else %}
                          {%  set total = total + PERSO_MATOS[p.perso_cod][r].count  %}
                          {%  set total_poids = total_poids + PERSO_MATOS[p.perso_cod][r].poids  %}

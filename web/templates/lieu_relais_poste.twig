@@ -83,13 +83,13 @@
     {% endif %}
   </td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if not objet.est_date_livrable  %}<strong><font color="#8b0000>">{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if not objet.est_date_livrable  %}</strong><font color="#8b0000>">{% endif %}</td>
+  <td class="soustitre2">{% if not objet.est_date_livrable  %}<strong><font color="#8b0000">{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if not objet.est_date_livrable  %}</strong></font>{% endif %}</td>
   <td class="soustitre2">{{ objet.perso_nom_emet }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if not objet.est_lieu_livrable  %}<strong><font color="#8b0000>">{% endif %}{{ objet.zone_livraison }}{% if not objet.est_date_livrable  %}</strong><font color="#8b0000>">{% endif %}</td>
+  <td class="soustitre2">{% if not objet.est_lieu_livrable  %}<strong><font color="#8b0000">{% endif %}{{ objet.zone_livraison }}{% if not objet.est_lieu_livrable  %}</strong></font>{% endif %}</td>
 </tr>
 {% endfor %}
 <tr><td class="soustitre2" colspan="9">

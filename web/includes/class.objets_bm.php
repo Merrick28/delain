@@ -146,10 +146,10 @@ class objets_bm
     {
         if ($this->objbm_nom!="") return $this->objbm_nom ;
 
-        // Sinon le nom est celui du sorts rattaché
+        // Sinon le nom est celui du BM rattaché
         if (!$this->bonus_type->tbonus_cod)
         {
-            $this->bonus_type->charge($this->objsort_tbonus_cod);
+            $this->bonus_type->charge($this->bonus_type->tbonus_cod);
         }
 
         return $this->bonus_type->tonbus_libelle;

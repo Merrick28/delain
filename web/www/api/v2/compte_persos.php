@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         {
             $type = "familier";
         }
-        $return['persos'][$key]['type'] = $type;
-        $return['persos'][$key]['nom'] = $val->perso_nom;
+        $return['sittes'][$key]['type'] = $type;
+        $return['sittes'][$key]['nom'] = $val->perso_nom;
     }
 
     ob_end_clean();
