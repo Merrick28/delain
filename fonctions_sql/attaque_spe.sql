@@ -119,8 +119,8 @@ begin
 
   /********************************************************************************/
   -- Récupération des données de l’arme de l’attaquant
-  select into comp_attaque, nb_des_attaque, valeur_des_attaque, bonus_attaque, nom_arme, v_type_de_monstre
-    pcomp_modificateur, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_nom_generique, case when perso_nom ilike '%cthulhu%' then 1 else 0 end
+  select into comp_attaque, nb_des_attaque, valeur_des_attaque, bonus_attaque, nom_arme, v_type_de_monstre,v_type_arme
+    pcomp_modificateur, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_nom_generique, case when perso_nom ilike '%cthulhu%' then 1 else 0 end,type_arme(v_attaquant)
   from perso, perso_competences, perso_objets, objets, objet_generique, objets_caracs
   where perobj_perso_cod = v_attaquant
         and perobj_equipe = 'O'
@@ -203,12 +203,16 @@ begin
       /**************************************************/
       /* DEBUT : On cherche les comp à utiliser         */
       /**************************************************/
-      if v_type_arme = 0 then         -- on teste l’arme équipée, car pour cette attaque, il faut une arme équipée
-        code_retour := code_retour || 'Vous ne pouvez pas utiliser cette compétence sans arme<br>';
-        return code_retour;
-      else                                    -- arme équipée
-        nom_arme := 'avec ' || nom_arme;
-      end if;
+    /* marlyza - 2026-08-27 une arme était obligatoire pour le balayage, on autorise maintenant le balayage sans arme
+       si on ne veut pas que le balayage soit possible sans arme, il ne faut pas donner la compétence à un monstre qui n'a pas d'arme.
+    */
+--     if v_type_arme = 0 then         -- on teste l’arme équipée, car pour cette attaque, il faut une arme équipée
+--       code_retour := code_retour || 'Vous ne pouvez pas utiliser cette compétence sans arme<br>';
+--       return code_retour;
+--     else                                    -- arme équipée
+         nom_arme := 'avec ' || nom_arme;
+--     end if;
+
       /**************************************************/
       /* FIN   : On cherche les comp à utiliser         */
       /**************************************************/

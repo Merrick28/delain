@@ -248,10 +248,11 @@ declare
             if v_texte_evt != '' then
                 if strpos(v_texte_evt , '[cible]') != 0 then
                     perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'N', null);
+                else
+                    perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
                 end if;
-            else
-                perform insere_evenement(v_source, ligne.perso_cod, 54, v_texte_evt, 'O', 'O', null);
             end if;
+
         end if;
 
     end loop;
