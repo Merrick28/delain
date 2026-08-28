@@ -45,7 +45,7 @@ if ($erreur == 0)
     $req    = 'select mb.*, ps.perso_nom 
           from miniboss as mb, perso as ps 
           where mboss_perso_cod=perso_cod 
-            and mboss_lieu_cod=' . $tab_lieu['lieu_cod'];
+            and mboss_lieu_cod=' . $tab_lieu['lieu']->lieu_tlieu_cod;
     $stmt   = $pdo->query($req);
     $result = $stmt->fetch();
 
