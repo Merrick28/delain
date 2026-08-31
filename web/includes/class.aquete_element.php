@@ -682,14 +682,9 @@ class aquete_element
                 break;
 
             case 'compteur':
-                $aqperso = new aquete_perso();
-                if ($aqperso->charge($this->aqelem_aqperso_cod)) {
-                    $cptval = new compteur_valeur();
-                    if ($cptval->chargeBy_perso_compteur($aqperso->aqperso_perso_cod, $this->aqelem_misc_cod)) {
-                        $element_texte = "<strong><em>".$cptval->comptval_valeur."</em></strong>";
-                    }
-                }
-
+                $cpt = new compteur();
+                $cpt->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$cpt->compteur_libelle."</em></strong>";
                 break;
 
             case 'type_monstre_generique':
