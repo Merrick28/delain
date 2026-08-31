@@ -299,6 +299,33 @@ class aquete_element
     }
 
     /**
+     * recherche tous les éléments du modèle (hors éléments dédiés à un perso) d'une étape, tous paramètres confondus
+     * utile pour un affichage global des éléments rattachés à une étape (ex: écran de synthèse d'une quête)
+     * @global bdd_mysql $pdo
+     * @return bool|array => false pas trouvé
+     */
+    function getModeleBy_aqetape_cod($aqetape_cod)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select aqelem_cod from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null order by aqelem_param_id, aqelem_param_ordre, aqelem_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqetape_cod),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new aquete_element;
+            $temp->charge($result["aqelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /**
      * recherche les éléments d'un perso pour une étapes pour un id de paramètre
      * @global bdd_mysql $pdo
      * @return boolean => false pas trouvé
@@ -534,8 +561,8 @@ class aquete_element
                         order by aqelem_cod ";
                     $stmte = $pdo->prepare($req);
                     $stmte = $pdo->execute(array(
-                                        $element->aqelem_misc_cod,
-                                        $element->aqelem_param_num_1 ),$stmte);
+                        $element->aqelem_misc_cod,
+                        $element->aqelem_param_num_1 ),$stmte);
 
                 } else {
 
@@ -549,12 +576,12 @@ class aquete_element
                         order by aqelem_cod ";
                     $stmte = $pdo->prepare($req);
                     $stmte = $pdo->execute(array(
-                                        $element->aqelem_misc_cod,
-                                        $aqperso->aqperso_cod,
-                                        $element->aqelem_param_num_1,
-                                        $element->aqelem_misc_cod,
-                                        $aqperso->aqperso_cod,
-                                        $element->aqelem_param_num_1 ),$stmte);
+                        $element->aqelem_misc_cod,
+                        $aqperso->aqperso_cod,
+                        $element->aqelem_param_num_1,
+                        $element->aqelem_misc_cod,
+                        $aqperso->aqperso_cod,
+                        $element->aqelem_param_num_1 ),$stmte);
                 }
 
                 while($result = $stmte->fetch())
@@ -599,7 +626,7 @@ class aquete_element
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$lieu->lieu_nom."</em></strong>";
-            break;
+                break;
 
             case 'position':
 
@@ -621,7 +648,7 @@ class aquete_element
                     $lieu->charge($lpos->lpos_lieu_cod);
                     $element_texte = $lieu->lieu_nom." (".$element_texte.")";
                 }
-            break;
+                break;
 
             case 'lieu_type':
                 $tlieu = new lieu_type();
@@ -634,25 +661,25 @@ class aquete_element
                     $element_texte = "<strong><em>{$tlieu->tlieu_libelle}</em></strong> de l'étage <strong>{$result[0]["etage_numero"]}</strong> (<em>{$result[0]["etage_libelle"]}</em>)";
                 else
                     $element_texte = "<strong><em>{$tlieu->tlieu_libelle}</em></strong>  des étages <strong>{$result[0]["etage_numero"]}</strong> à <strong>{$result[1]["etage_numero"]}</strong> (<em>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</em>)";
-            break;
+                break;
 
             case 'objet_generique':
                 $objet_generique = new objet_generique();
                 $objet_generique->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$objet_generique->gobj_nom."</em></strong>";
-            break;
+                break;
 
             case 'bonus':
                 $bonus = new bonus_type();
                 $bonus->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$bonus->tonbus_libelle."</em></strong>";
-            break;
+                break;
 
             case 'race':
                 $race = new race();
                 $race->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$race->race_nom."</em></strong>";
-            break;
+                break;
 
             case 'compteur':
                 $aqperso = new aquete_perso();
@@ -663,30 +690,167 @@ class aquete_element
                     }
                 }
 
-            break;
+                break;
 
             case 'type_monstre_generique':
                 $type = new monstre_generique();
                 $type->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$type->gmon_nom."</em></strong>";
-            break;
+                break;
 
             case 'objet':
                 $objet = new objets();
                 $objet->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$objet->obj_nom."</em></strong>";
-            break;
+                break;
 
             case 'valeur':
                 $element_texte = "<strong><em>".$this->aqelem_param_num_1."</em></strong>";
-            break;
+                break;
 
             case 'texte':
                 $element_texte = "<strong><em>".$this->aqelem_param_txt_1."</em></strong>";
-            break;
+                break;
 
             case 'choix':
                 $element_texte =  "<br>&nbsp;&nbsp;&nbsp;Vous : <em>".$this->aqelem_param_txt_1 ."</em>";
+                break;
+
+            case 'type_objet':
+                $tobj = new type_objet();
+                $tobj->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$tobj->tobj_libelle."</em></strong>";
+                break;
+
+            case 'competence':
+                $comp = new competences();
+                $comp->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$comp->comp_libelle."</em></strong>";
+                break;
+
+            case 'monstre_generique':       // pour invocation (le type "type_monstre_generique" ci-dessus est le cas sans invocation)
+                $gmon = new monstre_generique();
+                $gmon->charge($this->aqelem_misc_cod);
+                $mode_invoc  = ($this->aqelem_param_num_1==1) ? "Perso" : "Monstre";
+                $tangibilite = ($this->aqelem_param_num_2==1) ? "Intangible" : "Tangible";
+                $type_invoc  = ($this->aqelem_param_num_3==1) ? "Type PNJ" : "Standard";
+                $element_texte = "<strong><em>".$gmon->gmon_nom."</em></strong> (invocation : $mode_invoc, $tangibilite, $type_invoc)";
+                break;
+
+            case 'echange':
+                $gobj_donne = new objet_generique();
+                $gobj_donne->charge($this->aqelem_misc_cod);
+                $gobj_recu = new objet_generique();
+                $gobj_recu->charge($this->aqelem_param_num_2);
+                $element_texte = $this->aqelem_param_txt_2." Bzf, ".$this->aqelem_param_txt_3." PX et "
+                    .$this->aqelem_param_num_1." x <strong><em>".$gobj_donne->gobj_nom."</em></strong>"
+                    ." contre ".$this->aqelem_param_txt_1." Bzf et "
+                    .$this->aqelem_param_num_3." x <strong><em>".$gobj_recu->gobj_nom."</em></strong>";
+                break;
+
+            case 'meca':       // pour les mécanismes d'étage (déclenchement)
+                $meca = new meca();
+                $meca->charge($this->aqelem_misc_cod);
+                $etage = new etage();
+                $etage->charge($meca->meca_pos_etage);
+                $declenchements = array(0=>"Active", -1=>"Désactive", 2=>"Inverse");
+                $lib_decl = isset($declenchements[1*$this->aqelem_param_num_1]) ? $declenchements[1*$this->aqelem_param_num_1] : $this->aqelem_param_num_1;
+                $element_texte = "<strong><em>".$etage->etage_libelle." / ".$meca->meca_nom."</em></strong> - Déclenchement : $lib_decl (".$this->aqelem_param_num_2."%)";
+                break;
+
+            case 'meca_etat':       // pour les mécanismes d'étage (forçage d'état)
+                $meca = new meca();
+                $meca->charge($this->aqelem_misc_cod);
+                $etage = new etage();
+                $etage->charge($meca->meca_pos_etage);
+                $etat = ($this->aqelem_param_num_1==-1) ? "Désactivé" : "Actif";
+                $element_texte = "<strong><em>".$etage->etage_libelle." / ".$meca->meca_nom."</em></strong> - Etat : $etat";
+                break;
+
+            case 'perso_condition':       // pour invocation
+                $req = "select aqtypecarac_nom from quetes.aquete_type_carac where aqtypecarac_cod = ?";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($this->aqelem_misc_cod), $stmt);
+                $carac = $stmt->fetch(PDO::FETCH_ASSOC);
+                $operateur = ($this->aqelem_param_num_1==1) ? "OU" : "ET";
+                $element_texte = "($operateur) <strong><em>".$carac['aqtypecarac_nom']."</em></strong> ".$this->aqelem_param_txt_1." ".$this->aqelem_param_txt_2;
+                if ($this->aqelem_param_txt_1 == 'entre')
+                    $element_texte .= " et ".$this->aqelem_param_txt_3;
+                break;
+
+            case 'perso_condition_liste':       // pour invocation, condition au sein d'un groupe
+                $req = "select aqtypecarac_nom from quetes.aquete_type_carac where aqtypecarac_cod = ?";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($this->aqelem_misc_cod), $stmt);
+                $carac = $stmt->fetch(PDO::FETCH_ASSOC);
+                $groupe = (1*$this->aqelem_param_num_2==1) ? "[Nouveau groupe] " : "";
+                $element_texte = $groupe."<strong><em>".$carac['aqtypecarac_nom']."</em></strong> ".$this->aqelem_param_txt_1." ".$this->aqelem_param_txt_2;
+                if ($this->aqelem_param_txt_1 == 'entre')
+                    $element_texte .= " et ".$this->aqelem_param_txt_3;
+                break;
+
+            case 'choix_etape':
+                $aquete_etape = new aquete_etape();
+                $aquete_etape->charge($this->aqelem_misc_cod);
+                $operateur = (1*$this->aqelem_param_num_2==1) ? "OU" : "ET";
+                $element_texte = "Mots-clés ($operateur) : <em>".$this->aqelem_param_txt_1."</em> &rarr; étape <strong><em>".$aquete_etape->aqetape_nom."</em></strong>";
+                break;
+
+            case 'delai':
+                $aquete_etape = new aquete_etape();
+                $aquete_etape->charge($this->aqelem_misc_cod);
+                $element_texte = "Délai : <strong><em>".$this->aqelem_param_num_1."</em></strong> jour(s) &rarr; étape <strong><em>".$aquete_etape->aqetape_nom."</em></strong>";
+                break;
+
+            case 'craft':
+                $element_texte = "Num#1: <strong>".$this->aqelem_param_num_1."</strong>"
+                    ." Num#2: <strong>".$this->aqelem_param_num_2."</strong>"
+                    ." Num#3: <strong>".$this->aqelem_param_num_3."</strong>"
+                    ." Int#1: <strong>".$this->aqelem_misc_cod."</strong>";
+                if ($this->aqelem_param_txt_1 != "") $element_texte .= " Txt#1: <em>".$this->aqelem_param_txt_1."</em>";
+                if ($this->aqelem_param_txt_2 != "") $element_texte .= " Txt#2: <em>".$this->aqelem_param_txt_2."</em>";
+                if ($this->aqelem_param_txt_3 != "") $element_texte .= " Txt#3: <em>".$this->aqelem_param_txt_3."</em>";
+                break;
+
+            case 'etape':
+                $aquete_etape = new aquete_etape();
+                $aquete_etape->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$aquete_etape->aqetape_nom."</em></strong>";
+                break;
+
+            case 'quete_etape':
+                $aquete_etape = new aquete_etape();
+                $aquete_etape->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$aquete_etape->aqetape_nom."</em></strong>";
+                break;
+
+            case 'quete':
+                $aquete = new aquete();
+                $aquete->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$aquete->aquete_nom_alias."</em></strong>";
+                break;
+
+            case 'element':       // référence à un élément d'une étape précédente
+                $aquete_etape = new aquete_etape();
+                $aquete_etape->charge($this->aqelem_misc_cod);
+                $element_texte = "Référence à l'élément #".$this->aqelem_param_num_1." de l'étape <strong><em>".$aquete_etape->aqetape_nom."</em></strong>";
+                break;
+
+            case 'selecteur':       // liste générique dont les valeurs sont définies dans le modèle de l'étape (aqetapmodel_parametres -> 'ext')
+                $element_texte = "<strong><em>".$this->aqelem_misc_cod."</em></strong>";       // valeur brute par défaut si non résolue
+                $aqetape = new aquete_etape();
+                if ($aqetape->charge($this->aqelem_aqetape_cod))
+                {
+                    $aqetapmodel = new aquete_etape_modele();
+                    if ($aqetapmodel->charge($aqetape->aqetape_aqetapmodel_cod))
+                    {
+                        $param_liste = $aqetapmodel->get_liste_parametres();
+                        if (isset($param_liste[$this->aqelem_param_id]['ext'][$this->aqelem_misc_cod]))
+                        {
+                            $element_texte = "<strong><em>".$param_liste[$this->aqelem_param_id]['ext'][$this->aqelem_misc_cod]."</em></strong>";
+                        }
+                    }
+                }
                 break;
         }
 
