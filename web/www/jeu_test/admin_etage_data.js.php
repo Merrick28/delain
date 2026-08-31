@@ -4,6 +4,10 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+
+define('APPEL', 1);
+include "blocks/_test_droit_modif_etage.php";
+
 include_once '../includes/images_delain.php';
 
 $num_etage = get_request_var('num_etage', '');

@@ -13,7 +13,7 @@ if ($action == 'ajout')
 }
 if ($action == 'suppr')
 {
-    $req  = " delete from formule_composant where frmco_frm_cod = pot and frmco_gobj_cod = :comp_pot";
+    $req  = " delete from formule_composant where frmco_frm_cod = :pot and frmco_gobj_cod = :comp_pot";
     $stmt = $pdo->prepare($req);
     $stmt = $pdo->execute(array(
                               ":pot"      => $pot,

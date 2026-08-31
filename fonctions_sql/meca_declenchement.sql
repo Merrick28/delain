@@ -65,6 +65,8 @@ declare
   v_nb_cible integer;
   v_type_cible character varying(1);
   v_arr_type_cible integer[];
+  v_meca_compteur_cod integer;      -- n° de compteur rattaché au mécanisme
+  v_nb_actif integer;               -- nombre de positions actives a assigner au compteur du mécanisme
 
 begin
 
@@ -80,8 +82,8 @@ begin
 
   -- -------------------------------------------------------------------------------------------------------------------
   -- rechercher la ou les cases consernées et voir leur état actuel!
-  select meca_pos_etage, meca_type, meca_pos_type_aff,  meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_si_active, meca_si_desactive
-      into v_meca_pos_etage, v_meca_type, v_meca_pos_type_aff,  v_meca_pos_decor, v_meca_pos_decor_dessus, v_meca_pos_passage_autorise, v_meca_pos_modif_pa_dep, v_meca_pos_ter_cod, v_meca_mur_type, v_meca_mur_tangible, v_meca_si_active, v_meca_si_desactive
+  select meca_pos_etage, meca_type, meca_pos_type_aff,  meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_si_active, meca_si_desactive, meca_compteur_cod
+  into v_meca_pos_etage, v_meca_type, v_meca_pos_type_aff,  v_meca_pos_decor, v_meca_pos_decor_dessus, v_meca_pos_passage_autorise, v_meca_pos_modif_pa_dep, v_meca_pos_ter_cod, v_meca_mur_type, v_meca_mur_tangible, v_meca_si_active, v_meca_si_desactive, v_meca_compteur_cod
       from meca where meca_cod=v_meca_cod ;
 
   -- calculer l'état actuel du mécnisme
@@ -440,6 +442,13 @@ begin
   else
       return -2;   -- mécanisme déjà dans l'état demandé (ou sens de déclenchement invalide)
   end if;
+
+  -- mise à jour du compteur éventuellement associé au mécanisme = nombre de cases actuellement activées (0 si totalement désactivé)
+  if v_meca_compteur_cod is not null then
+    select coalesce(sum(pmeca_actif),0) into v_nb_actif from meca_position where pmeca_meca_cod = v_meca_cod ;
+    perform f_compteur_modif(v_meca_compteur_cod, null::integer, v_nb_actif::text, 0) ;
+  end if;
+
 
   -- maj de l'automap si des murs ont été modifiés!
   if v_automap > 0 then

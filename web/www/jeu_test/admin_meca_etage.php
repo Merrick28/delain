@@ -66,20 +66,21 @@ if ($erreur == 0)
 
             $meca_nom = $_POST["nom"] == "" ? "Inconnu" : $_POST["nom"] ;
             $bindings = array(
-                ":meca_nom"                     => $meca_nom,
-                ":meca_type"                    => $_POST["meca_type"] == "" ? "G" : $_POST["meca_type"],
-                ":meca_pos_etage"               => $pos_etage,
-                ":meca_pos_type_aff"            => ($_POST["type_aff"] == "" || $_POST["type_aff"] == "-1") ? NULL : $_POST["type_aff"],
-                ":meca_pos_decor"               => (int)$_POST["pos_decor"] == 0 ? NULL : $_POST["pos_decor"],
-                ":meca_pos_decor_dessus"        => (int)$_POST["decor_dessus"] == 0 ? NULL : $_POST["decor_dessus"],
-                ":meca_pos_passage_autorise"    => $_POST["passage_autorise"] == "-1" ? NULL : ($_POST["passage_autorise"] == "0" ? 1 : 0),
-                ":meca_pos_modif_pa_dep"        => $_POST["modif_pa_dep"] == "" ? NULL : $_POST["modif_pa_dep"],
-                ":meca_pos_ter_cod"             => $_POST["pos_ter_cod"] == "-1" ? NULL : $_POST["pos_ter_cod"],
-                ":meca_mur_type"                => (int)$_POST["mur_type"] == 0 ? NULL : $_POST["mur_type"],
-                ":meca_mur_tangible"            => $_POST["mur_tangible"] == "-1" ? NULL : ($_POST["mur_tangible"] == "0" ? 'N': 'O'),
-                ":meca_mur_illusion"            => $_POST["mur_illusion"] == "-1" ? NULL: ($_POST["mur_illusion"] == "0" ? 'N': 'O'),
-                ":meca_si_active"               => json_encode($si_active),
-                ":meca_si_desactive"            => json_encode($si_desactive)
+                    ":meca_nom"                     => $meca_nom,
+                    ":meca_type"                    => $_POST["meca_type"] == "" ? "G" : $_POST["meca_type"],
+                    ":meca_pos_etage"               => $pos_etage,
+                    ":meca_pos_type_aff"            => ($_POST["type_aff"] == "" || $_POST["type_aff"] == "-1") ? NULL : $_POST["type_aff"],
+                    ":meca_pos_decor"               => (int)$_POST["pos_decor"] == 0 ? NULL : $_POST["pos_decor"],
+                    ":meca_pos_decor_dessus"        => (int)$_POST["decor_dessus"] == 0 ? NULL : $_POST["decor_dessus"],
+                    ":meca_pos_passage_autorise"    => $_POST["passage_autorise"] == "-1" ? NULL : ($_POST["passage_autorise"] == "0" ? 1 : 0),
+                    ":meca_pos_modif_pa_dep"        => $_POST["modif_pa_dep"] == "" ? NULL : $_POST["modif_pa_dep"],
+                    ":meca_pos_ter_cod"             => $_POST["pos_ter_cod"] == "-1" ? NULL : $_POST["pos_ter_cod"],
+                    ":meca_mur_type"                => (int)$_POST["mur_type"] == 0 ? NULL : $_POST["mur_type"],
+                    ":meca_mur_tangible"            => $_POST["mur_tangible"] == "-1" ? NULL : ($_POST["mur_tangible"] == "0" ? 'N': 'O'),
+                    ":meca_mur_illusion"            => $_POST["mur_illusion"] == "-1" ? NULL: ($_POST["mur_illusion"] == "0" ? 'N': 'O'),
+                    ":meca_si_active"               => json_encode($si_active),
+                    ":meca_si_desactive"            => json_encode($si_desactive),
+                    ":meca_compteur_cod"            => (int)$_POST["compteur_cod"] == 0 ? NULL : (int)$_POST["compteur_cod"]
             );
 
             if ($_POST['meca_cod']>0) {
@@ -93,7 +94,8 @@ if ($erreur == 0)
                                         meca_pos_decor=:meca_pos_decor, meca_pos_decor_dessus=:meca_pos_decor_dessus, meca_pos_passage_autorise=:meca_pos_passage_autorise, 
                                         meca_pos_modif_pa_dep=:meca_pos_modif_pa_dep, meca_pos_ter_cod=:meca_pos_ter_cod, meca_mur_type=:meca_mur_type, 
                                         meca_mur_tangible=:meca_mur_tangible,meca_mur_illusion=:meca_mur_illusion, 
-                                        meca_si_active=:meca_si_active, meca_si_desactive=:meca_si_desactive WHERE meca_cod=:meca_cod ";
+                                        meca_si_active=:meca_si_active, meca_si_desactive=:meca_si_desactive, 
+                                        meca_compteur_cod=:meca_compteur_cod WHERE meca_cod=:meca_cod ";
 
                 $bindings = array_merge($bindings, array( ":meca_cod" => $_POST['meca_cod']));
 
@@ -102,8 +104,8 @@ if ($erreur == 0)
 
             } else {
 
-                $req = "INSERT INTO meca (meca_nom, meca_type, meca_pos_etage, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_mur_illusion, meca_si_active, meca_si_desactive)
-                            VALUES (:meca_nom, :meca_type, :meca_pos_etage, :meca_pos_type_aff, :meca_pos_decor, :meca_pos_decor_dessus, :meca_pos_passage_autorise, :meca_pos_modif_pa_dep, :meca_pos_ter_cod, :meca_mur_type, :meca_mur_tangible,:meca_mur_illusion, :meca_si_active, :meca_si_desactive)";
+                $req = "INSERT INTO meca (meca_nom, meca_type, meca_pos_etage, meca_pos_type_aff, meca_pos_decor, meca_pos_decor_dessus, meca_pos_passage_autorise, meca_pos_modif_pa_dep, meca_pos_ter_cod, meca_mur_type, meca_mur_tangible, meca_mur_illusion, meca_si_active, meca_si_desactive, meca_compteur_cod)
+                            VALUES (:meca_nom, :meca_type, :meca_pos_etage, :meca_pos_type_aff, :meca_pos_decor, :meca_pos_decor_dessus, :meca_pos_passage_autorise, :meca_pos_modif_pa_dep, :meca_pos_ter_cod, :meca_mur_type, :meca_mur_tangible,:meca_mur_illusion, :meca_si_active, :meca_si_desactive, :meca_compteur_cod)";
 
                 $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) modifie des mécanismes d'étage : $pos_etage\n";
                 $message = "Creation du mécanisme: ". $meca_nom;
@@ -121,40 +123,40 @@ if ($erreur == 0)
 
         } else if ($_POST['methode']=="supprimer_meca") {
 
-                $req = "DELETE FROM meca where meca_cod=:meca_cod " ;
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+            $req = "DELETE FROM meca where meca_cod=:meca_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
 
-                $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) supprime mécanismes d'étage : $pos_etage\n";
-                $message = "Suppression du mécanisme: #". $_POST['meca_cod'];
+            $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) supprime mécanismes d'étage : $pos_etage\n";
+            $message = "Suppression du mécanisme: #". $_POST['meca_cod'];
 
-                writelog($log . $message, 'lieux_etages');
-                echo nl2br($message);
-                echo "<hr>";
+            writelog($log . $message, 'lieux_etages');
+            echo nl2br($message);
+            echo "<hr>";
         } else if ($_POST['methode']=="activer_meca") {
 
-                $req = "SELECT meca_declenchement(pmeca_meca_cod,1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+            $req = "SELECT meca_declenchement(pmeca_meca_cod,1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
 
-                $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) active mécanismes d'étage : $pos_etage\n";
-                $message = "Activation du mécanisme: #". $_POST['meca_cod'];
+            $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) active mécanismes d'étage : $pos_etage\n";
+            $message = "Activation du mécanisme: #". $_POST['meca_cod'];
 
-                writelog($log . $message, 'lieux_etages');
-                echo nl2br($message);
-                echo "<hr>";
+            writelog($log . $message, 'lieux_etages');
+            echo nl2br($message);
+            echo "<hr>";
         } else if ($_POST['methode']=="desactiver_meca") {
 
-                $req = "SELECT meca_declenchement(pmeca_meca_cod,-1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
+            $req = "SELECT meca_declenchement(pmeca_meca_cod,-1,pmeca_pos_cod,null) from meca_position where pmeca_meca_cod=:meca_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":meca_cod"  => $_POST['meca_cod'] ), $stmt);
 
-                $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) désactive mécanismes d'étage : $pos_etage\n";
-                $message = "Désactivation du mécanisme: #". $_POST['meca_cod'];
+            $log =date("d/m/y - H:i") . $perso->perso_nom . " (compte $compt_cod) désactive mécanismes d'étage : $pos_etage\n";
+            $message = "Désactivation du mécanisme: #". $_POST['meca_cod'];
 
-                writelog($log . $message, 'lieux_etages');
-                echo nl2br($message);
-                echo "<hr>";
+            writelog($log . $message, 'lieux_etages');
+            echo nl2br($message);
+            echo "<hr>";
         }
     }
 
@@ -294,6 +296,14 @@ if ($erreur == 0)
         }
         echo '</select> Modificateur de PA: <input name="modif_pa_dep" id="modif_pa_dep" value="'.$meca->meca_pos_modif_pa_dep.'" type="text" size="3"/> (<em style="font-size: 10px;">laisser vide pour garder le modificateur de base</em>)';
 
+        echo '<br><br>Compteur associé : 
+                    <input data-entry="val" name="compteur_cod" id="meca-compteur_cod" type="text" size="5" value="'.((int)$meca->meca_compteur_cod==0 ? '' : $meca->meca_compteur_cod).'" onChange="setNomByTableCod(\'meca-compteur_nom\', \'compteur\', $(\'#meca-compteur_cod\').val());">
+                    &nbsp;<em></em><span data-entry="text" id="meca-compteur_nom"></span>
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("meca-compteur","compteur","Rechercher un compteur");\'>
+                    (<em style="font-size: 10px;">laisser vide pour aucun compteur</em>)<br>';
+        if ((int)$meca->meca_compteur_cod > 0) {
+            echo '<script type="text/javascript">$(document).ready(function () { setNomByTableCod(\'meca-compteur_nom\', \'compteur\', '.(int)$meca->meca_compteur_cod.'); });</script>';
+        }
 
         $action_meca_active = json_decode($meca->meca_si_active);
         $action_meca_desactive = json_decode($meca->meca_si_desactive);
@@ -446,10 +456,10 @@ if ($erreur == 0)
                </script>
                <table>";
 
-        $req_meca  = "select * from meca left join terrain on ter_cod=meca_pos_ter_cod where meca_pos_etage = ? order by meca_nom, meca_cod";
+        $req_meca  = "select * from meca left join terrain on ter_cod=meca_pos_ter_cod left join compteur on compteur_cod=meca_compteur_cod where meca_pos_etage = ? order by meca_nom, meca_cod";
         $stmt = $pdo->prepare($req_meca);
         $stmt = $pdo->execute(array($pos_etage), $stmt);
-        echo "<tr><td></td><td width='200px;'><b>Nom</b></td><td><b>Type</b></td><td><b>Pattern</b></td><td><b>Passage</b></td><td><b>Mur Tangible</b></td><td><b>Mur Illusion</b></td><td><b>Terrain</b></td><td><b>Modif. PA</b></td><td><b>Si activation</b></td><td><b>Si désactivation</b></td><td><b>Etat actuel</b></td><td><b>Activation/Désactivation</b></td><td></td></tr>";
+        echo "<tr><td></td><td width='200px;'><b>Nom</b></td><td><b>Type</b></td><td><b>Pattern</b></td><td><b>Passage</b></td><td><b>Mur Tangible</b></td><td><b>Mur Illusion</b></td><td><b>Terrain</b></td><td><b>Modif. PA</b></td><td><b>Compteur</b></td><td><b>Si activation</b></td><td><b>Si désactivation</b></td><td><b>Etat actuel</b></td><td><b>Activation/Désactivation</b></td><td></td></tr>";
         while ($result = $stmt->fetch())
         {
             // calculer l'état du mecanisme
@@ -502,6 +512,7 @@ if ($erreur == 0)
                 <td>".($result['meca_mur_illusion']=="" ? "base" : ($result['meca_mur_illusion']=="O" ? "illusion": "infranchissable"))."</td>
                 <td>".($result['meca_pos_ter_cod']=="" ? "base" : ($result['meca_pos_ter_cod']=="0" ? "sans terrain": $result['ter_nom']))."</td>
                 <td>".($result['meca_pos_modif_pa_dep']=="" ? "base" : (int)$result['meca_pos_modif_pa_dep'] )."</td>
+                <td>".($result['meca_compteur_cod']=="" ? "-" : "#".$result['meca_compteur_cod']." ".$result['compteur_libelle'])."</td>
                 <td><span title=\"$span_si_activation\">".$nb_meca_si_activation." différé(s),".$nb_ea_si_activation." ea.</span></td>
                 <td><span title=\"$span_si_desactivation\">".$nb_meca_si_desactivation." différé(s),".$nb_ea_si_desactivation." ea.</span></td>
                 <td><b>".($result2["nb_count"]==0 ? "Inutilisé" : ($result2["nb_actif"]==0 ? "Désactivé" : "Activé".($result['meca_type']=="G" ? "" : " ".$result2["nb_actif"]."/".$result2["nb_count"])))."</b></td>
@@ -526,9 +537,9 @@ ob_end_clean();
 $template     = $twig->load('template_jeu.twig');
 $options_twig = array(
 
-    'PERSO'        => $perso,
-    'PHP_SELF'     => $_SERVER['PHP_SELF'],
-    'CONTENU_PAGE' => $contenu_page
+        'PERSO'        => $perso,
+        'PHP_SELF'     => $_SERVER['PHP_SELF'],
+        'CONTENU_PAGE' => $contenu_page
 
 );
 echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

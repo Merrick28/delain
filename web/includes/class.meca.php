@@ -25,6 +25,7 @@ class meca
     var $meca_mur_illusion = NULL;
     var $meca_si_active;
     var $meca_si_desactive;
+    var $meca_compteur_cod = NULL;
 
     function __construct()
     {
@@ -61,6 +62,7 @@ class meca
         $this->meca_mur_illusion = $result['meca_mur_illusion'];
         $this->meca_si_active = $result['meca_si_active'];
         $this->meca_si_desactive = $result['meca_si_desactive'];
+        $this->meca_compteur_cod = $result['meca_compteur_cod'];
         return true;
     }
 
@@ -88,7 +90,8 @@ class meca
             meca_mur_tangible,
             meca_mur_illusion,
             meca_si_active,
-            meca_si_desactive                        )
+            meca_si_desactive,
+            meca_compteur_cod                        )
                     values
                     (
                         :meca_nom,
@@ -104,7 +107,8 @@ class meca
                         :meca_mur_tangible,
                         :meca_mur_illusion,
                         :meca_si_active,
-                        :meca_si_desactive                        )
+                        :meca_si_desactive,
+                        :meca_compteur_cod                        )
     returning meca_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -122,6 +126,7 @@ class meca
                 ":meca_mur_illusion" => $this->meca_mur_illusion,
                 ":meca_si_active" => $this->meca_si_active,
                 ":meca_si_desactive" => $this->meca_si_desactive,
+                ":meca_compteur_cod" => $this->meca_compteur_cod,
             ),$stmt);
 
 
@@ -145,7 +150,8 @@ class meca
             meca_mur_tangible = :meca_mur_tangible,
             meca_mur_illusion = :meca_mur_illusion,
             meca_si_active = :meca_si_active,
-            meca_si_desactive = :meca_si_desactive                        where meca_cod = :meca_cod ";
+            meca_si_desactive = :meca_si_desactive,
+            meca_compteur_cod = :meca_compteur_cod                        where meca_cod = :meca_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":meca_cod" => $this->meca_cod,
@@ -163,6 +169,7 @@ class meca
                 ":meca_mur_illusion" => $this->meca_mur_illusion,
                 ":meca_si_active" => $this->meca_si_active,
                 ":meca_si_desactive" => $this->meca_si_desactive,
+                ":meca_compteur_cod" => $this->meca_compteur_cod,
             ),$stmt);
         }
     }

@@ -40,7 +40,7 @@ if ($erreur == 0)
 
                             $stmt2 = $pdo->execute(array(":cod" => $cod_enchantement), $stmt2);
                             echo "<td>";
-                            while ($result2 = $stmt->fetch())
+                            while ($result2 = $stmt2->fetch())
                             {
                                 echo $result2['gobj_nom'] . " \t" . $result2['oenc_nombre'] . "<br>";
                             }
@@ -146,50 +146,41 @@ if ($erreur == 0)
             break;
         case "ajout2":
             $fields = array(
-                'enc_degat',
-                'enc_armure',
-                'enc_portee',
-                'enc_chute',
-                'enc_usure',
-                'enc_regen',
-                'enc_vampirisme',
-                'enc_aura_feu',
-                'enc_critique',
-                'enc_seuil_force',
-                'enc_seuil_dex',
-                'enc_vue',
-                'enc_chance_drop',
-                'enc_poids',
-                'enc_cout_pa',
-                'enc_cout'
+                    'enc_degat',
+                    'enc_armure',
+                    'enc_portee',
+                    'enc_chute',
+                    'enc_usure',
+                    'enc_regen',
+                    'enc_vampirisme',
+                    'enc_aura_feu',
+                    'enc_critique',
+                    'enc_seuil_force',
+                    'enc_seuil_dex',
+                    'enc_vue',
+                    'enc_chance_drop',
+                    'enc_poids',
+                    'enc_cout_pa',
+                    'enc_cout'
             );
-            $req    = 'insert into enchantements
-				(enc_nom,enc_description';
-            foreach ($fields as $i => $value)
-                $req .= ',' . $fields[$i];
-            $req    .= ') values (e\'' . pg_escape_string($_POST['nom']) . '\',e\'' . pg_escape_string($_POST['description']) . '\'';
-            $fields = array(
-                'enc_degat',
-                'enc_armure',
-                'enc_portee',
-                'enc_chute',
-                'enc_vampirisme',
-                'enc_usure',
-                'enc_regen',
-                'enc_aura_feu',
-                'enc_critique',
-                'enc_seuil_force',
-                'enc_seuil_dex',
-                'enc_vue',
-                'enc_chance_drop',
-                'enc_poids',
-                'enc_cout_pa',
-                'enc_cout'
+
+            $columns = array('enc_nom', 'enc_description');
+            $placeholders = array(':enc_nom', ':enc_description');
+            $params = array(
+                    ':enc_nom'         => $_POST['nom'],
+                    ':enc_description' => $_POST['description'],
             );
-            foreach ($fields as $i => $value)
-                $req .= ',' . $_POST[$fields[$i]];
-            $req  .= ')';
-            $stmt = $pdo->query($req);
+
+            foreach ($fields as $field) {
+                $columns[] = $field;
+                $placeholders[] = ':' . $field;
+                $params[':' . $field] = $_POST[$field] ?? null;
+            }
+
+            $req = 'insert into enchantements (' . implode(',', $columns) . ') values (' . implode(',', $placeholders) . ')';
+
+            $stmt = $pdo->prepare($req);
+            $stmt->execute($params);
             echo "<p>L'enchantement a bien été inséré !<br>
 				pensez à inclure les objets nécessaires pour cet enchantement.<br>";
             break;
@@ -299,30 +290,40 @@ if ($erreur == 0)
             break;
         case "modif2":
             $fields = array(
-                'enc_degat',
-                'enc_armure',
-                'enc_portee',
-                'enc_chute',
-                'enc_vampirisme',
-                'enc_usure',
-                'enc_regen',
-                'enc_aura_feu',
-                'enc_critique',
-                'enc_seuil_force',
-                'enc_seuil_dex',
-                'enc_vue',
-                'enc_chance_drop',
-                'enc_poids',
-                'enc_cout_pa',
-                'enc_cout'
+                    'enc_degat',
+                    'enc_armure',
+                    'enc_portee',
+                    'enc_chute',
+                    'enc_vampirisme',
+                    'enc_usure',
+                    'enc_regen',
+                    'enc_aura_feu',
+                    'enc_critique',
+                    'enc_seuil_force',
+                    'enc_seuil_dex',
+                    'enc_vue',
+                    'enc_chance_drop',
+                    'enc_poids',
+                    'enc_cout_pa',
+                    'enc_cout'
             );
-            $req    = 'update enchantements
-					set enc_nom = e\'' . pg_escape_string($nom) . '\',enc_description = e\'' . pg_escape_string($description) . '\'';
-            foreach ($fields as $i => $value)
-                $req .= ',' . $fields[$i] . '=' . $_POST[$fields[$i]];
-            $req  .= ' where enc_cod = :enc';
+
+            $req = 'update enchantements set enc_nom = :nom, enc_description = :description';
+            $params = array(
+                    ':nom'         => $nom,
+                    ':description' => $description,
+                    ':enc'         => $enc,
+            );
+
+            foreach ($fields as $field) {
+                $req .= ', ' . $field . ' = :' . $field;
+                $params[':' . $field] = $_POST[$field] ?? null;
+            }
+
+            $req .= ' where enc_cod = :enc';
+
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
+            $stmt->execute($params);
             echo "<p>L'enchantement a bien été modifié !<br>
 				pensez à inclure les objets nécessaires pour cet enchantement.<br>";
             break;
@@ -422,19 +423,26 @@ if ($erreur == 0)
             break;
         case "compat2":
             $fields = array(
-                'tenc_arme_contact',
-                'tenc_arme_distance',
-                'tenc_casque',
-                'tenc_armure',
-                'tenc_artefact'
+                    'tenc_arme_contact',
+                    'tenc_arme_distance',
+                    'tenc_casque',
+                    'tenc_armure',
+                    'tenc_artefact'
             );
-            $req    = 'update enc_type_objet
-					set tenc_enc_cod = :enc ';
-            foreach ($fields as $i => $value)
-                $req .= ',' . $fields[$i] . '=' . $_POST[$fields[$i]];
-            $req  .= ' where tenc_enc_cod = :enc';
+
+            $req = 'update enc_type_objet set tenc_enc_cod = :enc';
+
+            $params = array(':enc' => $enc);
+
+            foreach ($fields as $field) {
+                $req .= ', ' . $field . ' = :' . $field;
+                $params[':' . $field] = $_POST[$field] ?? null;
+            }
+
+            $req .= ' where tenc_enc_cod = :enc';
+
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
+            $stmt->execute($params);
             echo "Les compatibilités sont bien réglées.";
             break;
     }
