@@ -112,10 +112,9 @@ begin
             tobjet := ligne.tobj_libelle ;
 
             -- on regarde le poids
-            if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3))	then
-                v_poids_max := v_poids_max * 3;
-                code_retour := code_retour || '<p>Vous ne pouvez ramasser un objet qui vous fait dépasser '||trim(to_char(v_poids_max,'99999999'))||' d’encombrement.</p>';
-                return code_retour;
+            if ((v_poids_actu + v_poids_objet) > (v_poids_max * 3)) then
+                code_retour := code_retour || '<p>L’objet « ' || nom_objet || ' » est trop lourd, vous ne pouvez pas le ramasser sans dépasser '||trim(to_char(v_poids_max * 3,'99999999'))||' d’encombrement.</p>';
+                continue;
             end if;
             v_poids_actu := v_poids_actu + v_poids_objet ; -- mise à jour du poids car on va ramasser cet objet
 
