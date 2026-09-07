@@ -30,6 +30,7 @@ foreach ($files as $filename) {
 //Contenu de la div de droite
 //
 $contenu_page = '';
+$section_courante = $_REQUEST['section'] ?? '';
 ob_start();
 ?>
     <link href="../css/multiple-select.min.css?v<?php echo $__VERSION; ?>" rel="stylesheet">
@@ -39,6 +40,14 @@ ob_start();
     <script language="javascript" src="../scripts/admin_effets_auto.js?v<?php echo $__VERSION; ?>"></script>
     <script language="javascript" src="../js/multiple-select.min.js?v<?php echo $__VERSION; ?>"></script>
     <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
+
+
+    <?php if ($section_courante != '') { ?>
+        window.onload = function() {
+            location.hash = "<?php echo $section_courante; ?>";
+        }
+    <?php } ?>
+
         function updatePv() {
             objet = document.getElementById("ChampPvCalcul");
             constit = parseInt(document.getElementById("constit").value);
@@ -746,6 +755,19 @@ if ($erreur == 0)
             {
                 ?>
                 <hr>
+
+                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:#f5f5f5; margin-bottom:15px;">
+                    <strong>Navigation :</strong>
+                    <a href="#section_sorts">Sorts</a> |
+                    <a href="#section_immunites">Immunités</a> |
+                    <a href="#section_competences">Compétences</a> |
+                    <a href="#section_competences_specifiques">Compétences spécifiques</a> |
+                    <a href="#section_effets_automatiques">Effets automatiques</a> |
+                    <a href="#section_objets">Objets</a> |
+                    <a href="#section_monture">Monture</a>
+                </div>
+                <hr>
+                <a id="section_sorts"></a>
                 SORTS
                 <TABLE width="80%" align="center">
                     <tr>
@@ -766,7 +788,8 @@ if ($erreur == 0)
                         <TR>
                             <TD><?php echo $sort_nom . $sort_nom_advance; ?></TD>
                             <TD>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_sorts" >
+                                    <input type="hidden" name="section" value="section_sorts">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="delete_mon_sort">
@@ -780,7 +803,8 @@ if ($erreur == 0)
                     <?php }
                     ?>
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_sorts">
+                            <input type="hidden" name="section" value="section_sorts">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_sort">
@@ -807,6 +831,7 @@ if ($erreur == 0)
                 </TABLE>
 
                 <hr>
+                <a id="section_immunites"></a>
                 IMMUNITÉS
                 <TABLE width="80%" align="center">
                     <tr>
@@ -831,7 +856,8 @@ if ($erreur == 0)
                         $immun_runes  = $result_m_sorts['immun_runes'];
                         ?>
                         <TR>
-                            <TD><form method="post">
+                            <TD><form method="post" action="admin_type_monstre_edit.php#section_immunites">
+                                    <input type="hidden" name="section" value="section_immunites">
                                     <input type="hidden" name="methode2" value="edit"/>
                                     <input type="hidden" name="sel_method" value="edit"/>
                                     <input type="hidden" name="methode" value="edit_mon_immunite"/>
@@ -843,7 +869,8 @@ if ($erreur == 0)
                             <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"></TD>
                             <TD> <input type="submit" value="Modifier"/></form></TD>
                             <TD>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_immunites">
+                                    <input type="hidden" name="section" value="section_immunites">
                                     <input type="hidden" name="methode2" value="edit"/>
                                     <input type="hidden" name="sel_method" value="edit"/>
                                     <input type="hidden" name="methode" value="delete_mon_immunite"/>
@@ -856,7 +883,8 @@ if ($erreur == 0)
                     <?php }
                     ?>
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_immunites">
+                            <input type="hidden" name="section" value="section_immunites">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_immunite">
@@ -917,6 +945,7 @@ if ($erreur == 0)
                 }
                 ?>
                 <hr>
+                <a id="section_competences"></a>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
                 <TABLE width="80%" align="center">
@@ -948,7 +977,8 @@ if ($erreur == 0)
                         <TR>
                             <TD width="40%"><?php echo $typc_libelle; ?> (<?php echo $liste_comp; ?>)</TD>
                             <TD>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                                    <input type="hidden" name="section" value="section_competences">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="mod_comp_mon">
@@ -961,7 +991,8 @@ if ($erreur == 0)
                                 </form>
                             </td>
                             <td>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                                    <input type="hidden" name="section" value="section_competences">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="supr_comp_mon">
@@ -975,7 +1006,8 @@ if ($erreur == 0)
                     <?php }
                     ?>
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                            <input type="hidden" name="section" value="section_competences">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_comp">
@@ -1014,6 +1046,7 @@ if ($erreur == 0)
                 </TABLE>
 
                 <hr>
+                <a id="section_competences_specifiques"></a>
                 COMPETENCES SPECIFIQUES
 
                 <TABLE width="80%" align="center">
@@ -1032,7 +1065,8 @@ if ($erreur == 0)
                         ?>
                         <TR>
                             <TD width="40%">
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
+                                    <input type="hidden" name="section" value="section_competences_specifiques">
                                     <?php echo $result_m_comps['comp_libelle']; ?> =>
                                     Pourcentage : <input type="text" size="3" name="gmoncomp_valeur" value="<?php echo $result_m_comps['gmoncomp_valeur'] ?>"> %
                                     Chance : <input type="text" size="3" name="gmoncomp_chance" value="<?php echo $result_m_comps['gmoncomp_chance'] ?>"> %
@@ -1045,7 +1079,8 @@ if ($erreur == 0)
                                 </form>
                             </TD>
                             <td>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
+                                    <input type="hidden" name="section" value="section_competences_specifiques">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="supr_comp_mon_spe">
@@ -1059,7 +1094,8 @@ if ($erreur == 0)
                     ?>
 
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
+                            <input type="hidden" name="section" value="section_competences_specifiques">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_comp_spe">
@@ -1085,7 +1121,9 @@ if ($erreur == 0)
                         </form>
                     </TR>
                 </TABLE>
-                <HR>EFFETS AUTOMATIQUES<br><br>
+                <HR>
+                <a id="section_effets_automatiques"></a>
+                EFFETS AUTOMATIQUES<br><br>
                 <?php // Liste des monstres
                 $req = 'select gmon_nom, gmon_cod from monstre_generique order by gmon_nom';
                 echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
@@ -1132,7 +1170,8 @@ if ($erreur == 0)
 
 
                 ?>
-                <form method="post" onsubmit="return EffetAuto.Soumission();">
+                <form method="post" action="admin_type_monstre_edit.php#section_effets_automatiques" onsubmit="return EffetAuto.Soumission();">
+                    <input type="hidden" name="section" value="section_effets_automatiques">
                     <input type="hidden" name="methode2" value="edit">
                     <input type="hidden" name="methode" value="add_mon_fonction">
                     <input type="hidden" name="sel_method" value="edit">
@@ -1160,6 +1199,7 @@ if ($erreur == 0)
                     </div>
                 </form>
                 <hr/>
+                <a id="section_objets"></a>
                 OBJETS
                 <TABLE width="80%" align="center">
                     <tr>
@@ -1183,7 +1223,8 @@ if ($erreur == 0)
                         <TR>
                             <TD><?php echo $gobj_nom; ?></TD>
                             <TD>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                                    <input type="hidden" name="section" value="section_objets">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="mod_drop_mon">
@@ -1201,7 +1242,8 @@ if ($erreur == 0)
                                                               href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $result_drops['ogmon_gobj_cod']; ?>"><?php echo $result_drops['gobj_chance_drop_monstre'] . '</a> %'; ?>
                             </td>
                             <td>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                                    <input type="hidden" name="section" value="section_objets">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="supr_drop_mon">
@@ -1215,7 +1257,8 @@ if ($erreur == 0)
                     <?php }
                     ?>
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                            <input type="hidden" name="section" value="section_objets">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_drop">
@@ -1245,6 +1288,7 @@ if ($erreur == 0)
                 </TABLE>
 
                 <hr>
+                <a id="section_monture"></a>
                 MONTURE
                 <TABLE width="80%" align="center">
                     <tr>
@@ -1274,7 +1318,8 @@ if ($erreur == 0)
 
                         ?>
                         <TR>
-                            <form method="post">
+                            <form method="post" action="admin_type_monstre_edit.php#section_terrains">
+                                <input type="hidden" name="section" value="section_terrains">
                                 <input type="hidden" name="methode2" value="edit">
                                 <input type="hidden" name="sel_method" value="edit">
                                 <input type="hidden" name="methode" value="mod_mon_terrain">
@@ -1330,7 +1375,8 @@ if ($erreur == 0)
                             </TD>
 
                             <TD>
-                                <form method="post">
+                                <form method="post" action="admin_type_monstre_edit.php#section_terrains">
+                                    <input type="hidden" name="section" value="section_terrains">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="delete_mon_terrain">
@@ -1345,7 +1391,8 @@ if ($erreur == 0)
                     }
                     ?>
                     <TR>
-                        <form method="post">
+                        <form method="post" action="admin_type_monstre_edit.php#section_terrains">
+                            <input type="hidden" name="section" value="section_terrains">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_terrain">
