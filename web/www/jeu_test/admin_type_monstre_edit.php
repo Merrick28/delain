@@ -755,8 +755,7 @@ if ($erreur == 0)
             {
                 ?>
                 <hr>
-
-                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:#f5f5f5; margin-bottom:15px;">
+                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:lightgray; margin-bottom:15px;">
                     <strong>Navigation :</strong>
                     <a href="#section_sorts">Sorts</a> |
                     <a href="#section_immunites">Immunités</a> |
@@ -766,6 +765,7 @@ if ($erreur == 0)
                     <a href="#section_objets">Objets</a> |
                     <a href="#section_monture">Monture</a>
                 </div>
+
                 <hr>
                 <a id="section_sorts"></a>
                 SORTS
@@ -882,6 +882,7 @@ if ($erreur == 0)
                         </TR>
                     <?php }
                     ?>
+                    <tr><td colspan="6"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_immunites">
                             <input type="hidden" name="section" value="section_immunites">
@@ -1005,6 +1006,7 @@ if ($erreur == 0)
                         </TR>
                     <?php }
                     ?>
+                    <tr><td colspan="3"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_competences">
                             <input type="hidden" name="section" value="section_competences">
@@ -1092,7 +1094,7 @@ if ($erreur == 0)
                         </TR>
                     <?php }
                     ?>
-
+                    <tr><td colspan="6"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
                             <input type="hidden" name="section" value="section_competences_specifiques">
@@ -1256,6 +1258,7 @@ if ($erreur == 0)
                         </TR>
                     <?php }
                     ?>
+                    <tr><td colspan="6"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_objets">
                             <input type="hidden" name="section" value="section_objets">
@@ -1318,8 +1321,8 @@ if ($erreur == 0)
 
                         ?>
                         <TR>
-                            <form method="post" action="admin_type_monstre_edit.php#section_terrains">
-                                <input type="hidden" name="section" value="section_terrains">
+                            <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                                <input type="hidden" name="section" value="section_monture">
                                 <input type="hidden" name="methode2" value="edit">
                                 <input type="hidden" name="sel_method" value="edit">
                                 <input type="hidden" name="methode" value="mod_mon_terrain">
@@ -1375,8 +1378,8 @@ if ($erreur == 0)
                             </TD>
 
                             <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_terrains">
-                                    <input type="hidden" name="section" value="section_terrains">
+                                <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                                    <input type="hidden" name="section" value="section_monture">
                                     <input type="hidden" name="methode2" value="edit">
                                     <input type="hidden" name="sel_method" value="edit">
                                     <input type="hidden" name="methode" value="delete_mon_terrain">
@@ -1390,9 +1393,10 @@ if ($erreur == 0)
                         <?php
                     }
                     ?>
+                    <tr><td colspan="6"><hr></td></tr>
                     <TR>
-                        <form method="post" action="admin_type_monstre_edit.php#section_terrains">
-                            <input type="hidden" name="section" value="section_terrains">
+                        <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                            <input type="hidden" name="section" value="section_monture">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_terrain">
