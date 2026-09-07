@@ -861,8 +861,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_immunite">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD>Ajouter une immunité à :<br/>
-                                <select name="sort_cod">
+                            <TD>Ajouter une/des immunité(s) à :<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="sort_cod[]" multiple size="8">
                                     <?php $req_m_sorts = "select sort_cod, sort_nom 
 						from sorts 
 						where not exists (
@@ -886,12 +887,12 @@ if ($erreur == 0)
                     </TR>
                 </TABLE>
 
-<?php
-    $arme_info = "(pas d'arme de base ou série d'arme)";
+                <?php
+                $arme_info = "(pas d'arme de base ou série d'arme)";
 
-    if (!empty($result['gmon_arme']) && $result['gmon_arme'] != 'null')
-    {
-        $req_arme = "
+                if (!empty($result['gmon_arme']) && $result['gmon_arme'] != 'null')
+                {
+                    $req_arme = "
                 SELECT gobj_nom,
                        gobj_comp_cod,
                        comp_libelle
@@ -900,21 +901,21 @@ if ($erreur == 0)
                     ON comp_cod = gobj_comp_cod
                 WHERE gobj_cod = " . (int)$result['gmon_arme'];
 
-        $stmt_arme = $pdo->query($req_arme);
-        if ($result_arme = $stmt_arme->fetch())
-        {
-            $nom_arme = $result_arme['gobj_nom'];
-            if (!empty($result_arme['comp_libelle']))
-            {
-                $arme_info = "(Arme = {$nom_arme} : {$result_arme['comp_libelle']})";
-            }
-            else
-            {
-                $arme_info = "(Arme = {$nom_arme} : Attaque aux poings)";
-            }
-        }
-    }
-?>
+                    $stmt_arme = $pdo->query($req_arme);
+                    if ($result_arme = $stmt_arme->fetch())
+                    {
+                        $nom_arme = $result_arme['gobj_nom'];
+                        if (!empty($result_arme['comp_libelle']))
+                        {
+                            $arme_info = "(Arme = {$nom_arme} : {$result_arme['comp_libelle']})";
+                        }
+                        else
+                        {
+                            $arme_info = "(Arme = {$nom_arme} : Attaque aux poings)";
+                        }
+                    }
+                }
+                ?>
                 <hr>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
@@ -1063,8 +1064,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_comp_spe">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD colspan="2">Ajouter la Competence:
-                                <select name="typc_cod">
+                            <TD colspan="2">Ajouter la/les Competence(s):<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="typc_cod[]" multiple size="8">
                                     <?php $req_m_comps =
                                             "select comp_cod,  comp_libelle from competences where comp_connu <> 'O'   "
                                             . "and not exists(select 1 from monstre_generique_comp where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod) order by comp_libelle";

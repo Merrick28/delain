@@ -65,16 +65,16 @@ switch ($methode)
         {
             $gmon_cod     = $result['cod'];
             $req_cre_gmon = "insert into monstre_generique (gmon_cod,gmon_nom"
-                            . ",gmon_for,gmon_dex,gmon_int,gmon_con"
-                            . ",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
-                            . ",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
-                            . ",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
-                            . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar, gmon_sex, gmon_type_ia, gmon_monture) values ($gmon_cod, e'$gmon_nom'"
-                            . ",$gmon_for,$gmon_dex,$gmon_int,$gmon_con"
-                            . ",$gmon_race_cod,$gmon_temps_tour,$gmon_des_regen,$gmon_valeur_regen,$gmon_vue"
-                            . ",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
-                            . ",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
-                            . ",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex, $gmon_ia, '$gmon_monture')";
+                . ",gmon_for,gmon_dex,gmon_int,gmon_con"
+                . ",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
+                . ",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
+                . ",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
+                . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar, gmon_sex, gmon_type_ia, gmon_monture) values ($gmon_cod, e'$gmon_nom'"
+                . ",$gmon_for,$gmon_dex,$gmon_int,$gmon_con"
+                . ",$gmon_race_cod,$gmon_temps_tour,$gmon_des_regen,$gmon_valeur_regen,$gmon_vue"
+                . ",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
+                . ",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
+                . ",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex, $gmon_ia, '$gmon_monture')";
             $pdo->query($req_cre_gmon);
         }
         writelog($log . "Nouveau type de monstre : $gmon_nom \n", 'monstre_edit');
@@ -84,42 +84,42 @@ switch ($methode)
     case "update_mon":
         if ($gmon_duree_vie == '') $gmon_duree_vie = 0;
         $fields = array("gmon_nom",
-                        "gmon_for",
-                        "gmon_dex",
-                        "gmon_int",
-                        "gmon_con",
-                        "gmon_race_cod",
-                        "gmon_temps_tour",
-                        "gmon_des_regen",
-                        "gmon_valeur_regen",
-                        "gmon_vue",
-                        "gmon_amelioration_vue",
-                        "gmon_amelioration_regen",
-                        "gmon_amelioration_degats",
-                        "gmon_amelioration_armure",
-                        "gmon_niveau",
-                        "gmon_nb_des_degats",
-                        "gmon_val_des_degats",
-                        "gmon_or",
-                        "gmon_arme",
-                        "gmon_armure",
-                        "gmon_soutien",
-                        "gmon_amel_deg_dist",
-                        "gmon_vampirisme",
-                        "gmon_taille",
-                        "gmon_serie_arme_cod",
-                        "gmon_serie_armure_cod",
-                        /*"gmon_pv",
-                        "gmon_pourcentage_aleatoire",*/
-                        "gmon_nb_receptacle",
-                        "gmon_type_ia",
-                        "gmon_description",
-                        "gmon_quete",
-                        "gmon_duree_vie",
-                        "gmon_avatar",
-                        "gmon_voie_magique",
-                        "gmon_sex",
-                        "gmon_monture");
+            "gmon_for",
+            "gmon_dex",
+            "gmon_int",
+            "gmon_con",
+            "gmon_race_cod",
+            "gmon_temps_tour",
+            "gmon_des_regen",
+            "gmon_valeur_regen",
+            "gmon_vue",
+            "gmon_amelioration_vue",
+            "gmon_amelioration_regen",
+            "gmon_amelioration_degats",
+            "gmon_amelioration_armure",
+            "gmon_niveau",
+            "gmon_nb_des_degats",
+            "gmon_val_des_degats",
+            "gmon_or",
+            "gmon_arme",
+            "gmon_armure",
+            "gmon_soutien",
+            "gmon_amel_deg_dist",
+            "gmon_vampirisme",
+            "gmon_taille",
+            "gmon_serie_arme_cod",
+            "gmon_serie_armure_cod",
+            /*"gmon_pv",
+            "gmon_pourcentage_aleatoire",*/
+            "gmon_nb_receptacle",
+            "gmon_type_ia",
+            "gmon_description",
+            "gmon_quete",
+            "gmon_duree_vie",
+            "gmon_avatar",
+            "gmon_voie_magique",
+            "gmon_sex",
+            "gmon_monture");
         // SELECT POUR LES VALEURS PRECEDENTES
         $req_sel_mon = "select gmon_cod";
         foreach ($fields as $i => $value)
@@ -134,7 +134,7 @@ switch ($methode)
         foreach ($fields as $i => $value)
         {
             if (isset($_POST[$fields[$i]]) and $result[$fields[$i]] != null and $_POST[$fields[$i]] !=
-                                                                                $result[$fields[$i]])
+                $result[$fields[$i]])
             {
                 $log =
                     $log . "Modification du champ " . $fields[$i] . " : " . $result[$fields[$i]] . " => " .
@@ -151,13 +151,13 @@ switch ($methode)
         if (!isset($_POST['gmon_pourcentage_aleatoire']) or $gmon_pourcentage_aleatoire == "")
             $gmon_pourcentage_aleatoire = "null";
         $req_cre_gmon = "update monstre_generique set gmon_nom = e'" . pg_escape_string($gmon_nom) . "'"
-                        . ",gmon_for = $gmon_for,gmon_dex = $gmon_dex,gmon_int = $gmon_int,gmon_con = $gmon_con"
-                        . ",gmon_race_cod = $gmon_race_cod,gmon_temps_tour = $gmon_temps_tour,gmon_des_regen = $gmon_des_regen,gmon_valeur_regen = $gmon_valeur_regen,gmon_vue = $gmon_vue"
-                        . ",gmon_amelioration_vue = $gmon_amelioration_vue,gmon_amelioration_regen = $gmon_amelioration_regen,gmon_amelioration_degats = $gmon_amelioration_degats,gmon_amelioration_armure = $gmon_amelioration_armure"
-                        . ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
-                        . ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
-                        . ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
-                        . "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) . "', gmon_voie_magique=$gmon_voie_magique, gmon_sex='" . pg_escape_string($gmon_sex) . "', gmon_monture='$gmon_monture' where gmon_cod = $gmon_cod";
+            . ",gmon_for = $gmon_for,gmon_dex = $gmon_dex,gmon_int = $gmon_int,gmon_con = $gmon_con"
+            . ",gmon_race_cod = $gmon_race_cod,gmon_temps_tour = $gmon_temps_tour,gmon_des_regen = $gmon_des_regen,gmon_valeur_regen = $gmon_valeur_regen,gmon_vue = $gmon_vue"
+            . ",gmon_amelioration_vue = $gmon_amelioration_vue,gmon_amelioration_regen = $gmon_amelioration_regen,gmon_amelioration_degats = $gmon_amelioration_degats,gmon_amelioration_armure = $gmon_amelioration_armure"
+            . ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
+            . ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
+            . ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
+            . "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) . "', gmon_voie_magique=$gmon_voie_magique, gmon_sex='" . pg_escape_string($gmon_sex) . "', gmon_monture='$gmon_monture' where gmon_cod = $gmon_cod";
         //echo $req_cre_gmon;
         $pdo->query($req_cre_gmon);
         echo "MAJ modèle<br>";
@@ -251,19 +251,31 @@ switch ($methode)
         break;
 
     case "add_mon_immunite":
-        $sort_cod    = $_REQUEST['sort_cod'];
-        $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
+        // sort_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute une immunité par sort sélectionné,
+        // toutes avec les mêmes paramètres (runes / valeur / résistance).
+        $sort_cod_list = $_REQUEST['sort_cod'];
+        if (!is_array($sort_cod_list))
+        {
+            $sort_cod_list = array($sort_cod_list);
+        }
+
         $immun_rune = (isset($_POST['immun_rune'])) ? 'O' : 'N';
         $immun_valeur = max(0, min(1, (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0));
         $immun_resistance = max(-1, min(1, (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0));
 
-        $req_upd_mon =
-            "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, $immun_resistance, '$immun_rune')";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d’une immunité";
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod    = (int)$sort_cod;
+            $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, $immun_resistance, '$immun_rune')";
+            $stmt        = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d’une ou plusieurs immunité(s)";
         break;
 
     case "add_mon_comp":
@@ -284,7 +296,7 @@ switch ($methode)
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();
         writelog($log . "Modification d’une compétence : $typc_cod - " . $result['typc_libelle'] . " Chances: " .
-                 $result['gtypc_valeur'] . " -> $valeur\n", 'monstre_edit');
+            $result['gtypc_valeur'] . " -> $valeur\n", 'monstre_edit');
 
         $req_upd_mon =
             "update gmon_type_comp set gtypc_valeur = $valeur where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
@@ -301,21 +313,35 @@ switch ($methode)
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();
         writelog($log . "Supression d’un type de compétences : $typc_cod - " . $result['typc_libelle'] .
-                 "\n", 'monstre_edit');
+            "\n", 'monstre_edit');
         echo "Suppression d’une competence";
         break;
 
     case "add_mon_comp_spe":
-        $req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'une competence : $typc_cod - " . $result['comp_libelle'], 'monstre_edit');
+        // typc_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute une compétence par
+        // sélection, toutes avec le même Pourcentage / Chance.
+        $typc_cod_list = $_REQUEST['typc_cod'];
+        if (!is_array($typc_cod_list))
+        {
+            $typc_cod_list = array($typc_cod_list);
+        }
 
-        $req_upd_mon =
-            "insert into monstre_generique_comp (gmoncomp_gmon_cod,gmoncomp_comp_cod,gmoncomp_valeur,gmoncomp_chance) values ($gmon_cod,$typc_cod,$valeur,$chance)";
-        //echo $req_upd_mon;
-        $stmt = $pdo->query($req_upd_mon);
-        echo "Ajout d’une compétence";
+        $valeur = max(0, min(100, (int)$_REQUEST['valeur']));
+        $chance = max(0, min(100, (int)$_REQUEST['chance']));
+
+        foreach ($typc_cod_list as $typc_cod)
+        {
+            $typc_cod    = (int)$typc_cod;
+            $req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'une competence : $typc_cod - " . $result['comp_libelle'], 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into monstre_generique_comp (gmoncomp_gmon_cod,gmoncomp_comp_cod,gmoncomp_valeur,gmoncomp_chance) values ($gmon_cod,$typc_cod,$valeur,$chance)";
+            $stmt = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d’une ou plusieurs compétence(s)";
         break;
 
     case "edit_comp_mon_spe":
@@ -367,7 +393,7 @@ switch ($methode)
         $result       = $stmt->fetch();
         $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false";
         writelog($log . "Modification d’un Drop : $gobj_cod - " . $result['gobj_nom'] . " Chances: " .
-                 $result['ogmon_chance'] . " -> $valeur Equiper: {$ogmon_equipe}\n", 'monstre_edit');
+            $result['ogmon_chance'] . " -> $valeur Equiper: {$ogmon_equipe}\n", 'monstre_edit');
 
         $req_upd_mon =
             "update objets_monstre_generique set ogmon_chance = $valeur, ogmon_equipe=$ogmon_equipe where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
