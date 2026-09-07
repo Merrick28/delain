@@ -42,11 +42,11 @@ ob_start();
     <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
 
 
-    <?php if ($section_courante != '') { ?>
+        <?php if ($section_courante != '') { ?>
         window.onload = function() {
             location.hash = "<?php echo $section_courante; ?>";
         }
-    <?php } ?>
+        <?php } ?>
 
         function updatePv() {
             objet = document.getElementById("ChampPvCalcul");
@@ -833,56 +833,84 @@ if ($erreur == 0)
                 <hr>
                 <a id="section_immunites"></a>
                 IMMUNITÉS
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th align="left">Sort</th>
-                        <th align="left">Y compris<br>lancers runiques</th>
-                        <th align="left">Valeur<br>(entre 0 et 1)</th>
-                        <th align="left"><span title="0 => test de resistance standard, -1 => toujours raté, 1 => toujours reussi, 0 à 1 => test de resitance, 0 à -1 => test de faiblesse">Resistance / Faiblesse<br>(entre -1 et 1, 0 pour ignorer)</span></th>
-                        <th  align="left">Modif.</th>
-                        <th  align="left">Supp.</th>
-                    </tr>
-                    <?php $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur, immun_resistance
-						from monstre_generique_immunite
-						inner join sorts on sort_cod = immun_sort_cod
-						where immun_gmon_cod  = $gmon_cod order by sort_nom";
+                <form method="post" action="admin_type_monstre_edit.php#section_immunites">
+                    <input type="hidden" name="section" value="section_immunites">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_immunites">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                    $stmt_m_sorts = $pdo->query($req_m_sorts);
-                    while ($result_m_sorts = $stmt_m_sorts->fetch())
-                    {
-                        $sort_nom     = $result_m_sorts['sort_nom'];
-                        $immun_valeur = $result_m_sorts['immun_valeur'];
-                        $immun_resistance = $result_m_sorts['immun_resistance'];
-                        $immun_runes  = $result_m_sorts['immun_runes'];
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Sort</th>
+                            <th align="left">Y compris<br>lancers runiques</th>
+                            <th align="left">Valeur<br>(entre 0 et 1)</th>
+                            <th align="left"><span title="0 => test de resistance standard, -1 => toujours raté, 1 => toujours reussi, 0 à 1 => test de resitance, 0 à -1 => test de faiblesse">Resistance / Faiblesse<br>(entre -1 et 1, 0 pour ignorer)</span></th>
+                            <th align="left">Supprimer</th>
+                        </tr>
+
+                        <?php
+                        $req_m_sorts = "select immun_sort_cod, sort_nom, immun_gmon_cod, immun_runes, immun_valeur, immun_resistance
+                                        from monstre_generique_immunite
+                                        inner join sorts on sort_cod = immun_sort_cod
+                                        where immun_gmon_cod = $gmon_cod
+                                        order by sort_nom";
+
+                        $stmt_m_sorts = $pdo->query($req_m_sorts);
+
+                        while ($result_m_sorts = $stmt_m_sorts->fetch())
+                        {
+                            $sort_cod         = (int)$result_m_sorts['immun_sort_cod'];
+                            $sort_nom         = $result_m_sorts['sort_nom'];
+                            $immun_valeur     = $result_m_sorts['immun_valeur'];
+                            $immun_resistance = $result_m_sorts['immun_resistance'];
+                            $immun_runes      = $result_m_sorts['immun_runes'];
+                            ?>
+                            <TR>
+                                <TD>
+                                    <?php echo $sort_nom; ?>
+                                    <input type="hidden" name="immun_sort_cod[]" value="<?php echo $sort_cod; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="immun_runes[<?php echo $sort_cod; ?>]"
+                                            value="O"
+                                            <?php echo ($immun_runes == 'O' ? "checked" : ""); ?>
+                                            type="checkbox">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="immun_valeur[<?php echo $sort_cod; ?>]"
+                                            value="<?php echo $immun_valeur; ?>"
+                                            type="text">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="immun_resistance[<?php echo $sort_cod; ?>]"
+                                            value="<?php echo $immun_resistance; ?>"
+                                            type="text">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="immun_delete[<?php echo $sort_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                            <?php
+                        }
                         ?>
-                        <TR>
-                            <TD><form method="post" action="admin_type_monstre_edit.php#section_immunites">
-                                    <input type="hidden" name="section" value="section_immunites">
-                                    <input type="hidden" name="methode2" value="edit"/>
-                                    <input type="hidden" name="sel_method" value="edit"/>
-                                    <input type="hidden" name="methode" value="edit_mon_immunite"/>
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
-                                    <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
-                                <?php echo $sort_nom; ?></TD>
-                            <TD><input name="immun_runes" <?php echo ($immun_runes == 'O' ? "checked" : ""); ?> type="checkbox"></TD>
-                            <TD><input name="immun_valeur" value="<?php echo $immun_valeur; ?>" type="text"></TD>
-                            <TD><input name="immun_resistance" value="<?php echo $immun_resistance; ?>" type="text"></TD>
-                            <TD> <input type="submit" value="Modifier"/></form></TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_immunites">
-                                    <input type="hidden" name="section" value="section_immunites">
-                                    <input type="hidden" name="methode2" value="edit"/>
-                                    <input type="hidden" name="sel_method" value="edit"/>
-                                    <input type="hidden" name="methode" value="delete_mon_immunite"/>
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
-                                    <input type="hidden" name="sort_cod" value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
-                                    <input type="submit" value="Supprimer"/>
-                                </form>
+
+                        <tr>
+                            <TD colspan="5" align="center">
+                                <input type="submit" value="Modifier les immunités">
                             </TD>
-                        </TR>
-                    <?php }
-                    ?>
-                    <tr><td colspan="6"><hr></td></tr>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
+                    <tr><td colspan="5"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_immunites">
                             <input type="hidden" name="section" value="section_immunites">
@@ -893,18 +921,24 @@ if ($erreur == 0)
                             <TD>Ajouter une/des immunité(s) à :<br/>
                                 <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
                                 <select name="sort_cod[]" multiple size="8">
-                                    <?php $req_m_sorts = "select sort_cod, sort_nom 
-						from sorts 
-						where not exists (
-							select 1 from monstre_generique_immunite
-							where immun_gmon_cod = $gmon_cod and immun_sort_cod = sort_cod)
-						order by sort_nom";
-                                    $stmt_m_sorts      = $pdo->query($req_m_sorts);
+                                    <?php
+                                    $req_m_sorts = "select sort_cod, sort_nom
+                                                    from sorts
+                                                    where not exists (
+                                                        select 1
+                                                        from monstre_generique_immunite
+                                                        where immun_gmon_cod = $gmon_cod
+                                                          and immun_sort_cod = sort_cod
+                                                    )
+                                                    order by sort_nom";
+                                    $stmt_m_sorts = $pdo->query($req_m_sorts);
+
                                     while ($result_m_sorts = $stmt_m_sorts->fetch())
                                     {
                                         ?>
                                         <option value="<?php echo $result_m_sorts['sort_cod'] ?>"><?php echo $result_m_sorts['sort_nom'] ?></option>
-                                    <?php }
+                                        <?php
+                                    }
                                     ?>
                                 </select>
                             </TD>

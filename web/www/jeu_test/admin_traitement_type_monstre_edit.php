@@ -307,33 +307,114 @@ switch ($methode)
         echo "Modification d'un terrain";
         break;
 
-    case "delete_mon_immunite":
-        $sort_cod    = $_REQUEST['sort_cod'];
-        $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Suppression d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
+    case "update_mon_immunites":
+        $sort_cod_list = isset($_POST['immun_sort_cod']) && is_array($_POST['immun_sort_cod'])
+            ? $_POST['immun_sort_cod']
+            : array();
 
-        $req_upd_mon =
-            "delete from monstre_generique_immunite where immun_gmon_cod  = $gmon_cod and immun_sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Suppression d’une immunité";
-        break;
+        $immun_valeur_list = isset($_POST['immun_valeur']) && is_array($_POST['immun_valeur'])
+            ? $_POST['immun_valeur']
+            : array();
 
-    case "edit_mon_immunite":
-        $sort_cod    = $_REQUEST['sort_cod'];
-        $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Edit d'une immunité : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
-        $immun_rune = (isset($_POST['immun_runes'])) ? 'O' : 'N';
-        $immun_valeur = max(0, min(1, (isset($_POST['immun_valeur'])) ? 1*(float)$_POST['immun_valeur'] : 0));
-        $immun_resistance = max(-1, min(1, (isset($_POST['immun_resistance'])) ? 1*(float)$_POST['immun_resistance'] : 0));
+        $immun_resistance_list = isset($_POST['immun_resistance']) && is_array($_POST['immun_resistance'])
+            ? $_POST['immun_resistance']
+            : array();
 
-        $req_upd_mon =
-            "update monstre_generique_immunite set immun_valeur={$immun_valeur}, immun_resistance={$immun_resistance}, immun_runes='{$immun_rune}' where immun_sort_cod={$sort_cod} and immun_gmon_cod={$gmon_cod}";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Modification d’une immunité";
+        $immun_runes_list = isset($_POST['immun_runes']) && is_array($_POST['immun_runes'])
+            ? $_POST['immun_runes']
+            : array();
+
+        $immun_delete_list = isset($_POST['immun_delete']) && is_array($_POST['immun_delete'])
+            ? $_POST['immun_delete']
+            : array();
+
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod = (int)$sort_cod;
+
+            if ($sort_cod <= 0)
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select sort_nom
+                            from sorts
+                            where sort_cod = $sort_cod";
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $sort_nom = $result['sort_nom'];
+
+            if (isset($immun_delete_list[$sort_cod]))
+            {
+                $req_upd_mon =
+                    "delete from monstre_generique_immunite
+                     where immun_gmon_cod = $gmon_cod
+                       and immun_sort_cod = $sort_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog(
+                    $log . "Suppression d'une immunité : $sort_cod - $sort_nom\n",
+                    'monstre_edit'
+                );
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $immun_rune = isset($immun_runes_list[$sort_cod]) ? 'O' : 'N';
+
+            $immun_valeur = max(
+                0,
+                min(
+                    1,
+                    isset($immun_valeur_list[$sort_cod])
+                        ? (float)$immun_valeur_list[$sort_cod]
+                        : 0
+                )
+            );
+
+            $immun_resistance = max(
+                -1,
+                min(
+                    1,
+                    isset($immun_resistance_list[$sort_cod])
+                        ? (float)$immun_resistance_list[$sort_cod]
+                        : 0
+                )
+            );
+
+            $req_upd_mon =
+                "update monstre_generique_immunite
+                 set immun_valeur = $immun_valeur,
+                     immun_resistance = $immun_resistance,
+                     immun_runes = '$immun_rune'
+                 where immun_sort_cod = $sort_cod
+                   and immun_gmon_cod = $gmon_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d'une immunité : $sort_cod - $sort_nom" .
+                " | Valeur: $immun_valeur" .
+                " | Resistance/Faiblesse: $immun_resistance" .
+                " | Runes: $immun_rune\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des immunités : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
     case "add_mon_immunite":
