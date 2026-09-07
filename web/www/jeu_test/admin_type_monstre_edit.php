@@ -1085,49 +1085,69 @@ if ($erreur == 0)
                 <a id="section_competences_specifiques"></a>
                 COMPETENCES SPECIFIQUES
 
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Competence</th>
-                        <th>Valeur</th>
-                    </tr>
+                <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
+                    <input type="hidden" name="section" value="section_competences_specifiques">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_comp_spe">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                    <?php $req_m_comps =
-                            "select comp_cod,  comp_libelle,gmoncomp_valeur,gmoncomp_chance from competences, monstre_generique_comp "
-                            . "where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod order by comp_libelle";
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Competence</th>
+                            <th align="left">Pourcentage</th>
+                            <th align="left">Chance</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
 
-                    $stmt_m_comps = $pdo->query($req_m_comps);
-                    while ($result_m_comps = $stmt_m_comps->fetch())
-                    {
+                        <?php $req_m_comps =
+                                "select comp_cod,  comp_libelle,gmoncomp_valeur,gmoncomp_chance from competences, monstre_generique_comp "
+                                . "where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod order by comp_libelle";
+
+                        $stmt_m_comps = $pdo->query($req_m_comps);
+                        while ($result_m_comps = $stmt_m_comps->fetch())
+                        {
+                            $typc_cod_row     = (int)$result_m_comps['comp_cod'];
+                            $comp_libelle     = $result_m_comps['comp_libelle'];
+                            $gmoncomp_valeur  = $result_m_comps['gmoncomp_valeur'];
+                            $gmoncomp_chance  = $result_m_comps['gmoncomp_chance'];
+                            ?>
+                            <TR>
+                                <TD>
+                                    <?php echo $comp_libelle; ?>
+                                    <input type="hidden" name="typc_cod[]" value="<?php echo $typc_cod_row; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="gmoncomp_valeur[<?php echo $typc_cod_row; ?>]"
+                                            value="<?php echo $gmoncomp_valeur; ?>"
+                                            type="text" size="3"> %
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="gmoncomp_chance[<?php echo $typc_cod_row; ?>]"
+                                            value="<?php echo $gmoncomp_chance; ?>"
+                                            type="text" size="3"> %
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="comp_spe_delete[<?php echo $typc_cod_row; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD width="40%">
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
-                                    <input type="hidden" name="section" value="section_competences_specifiques">
-                                    <?php echo $result_m_comps['comp_libelle']; ?> =>
-                                    Pourcentage : <input type="text" size="3" name="gmoncomp_valeur" value="<?php echo $result_m_comps['gmoncomp_valeur'] ?>"> %
-                                    Chance : <input type="text" size="3" name="gmoncomp_chance" value="<?php echo $result_m_comps['gmoncomp_chance'] ?>"> %
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="edit_comp_mon_spe">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod" value="<?php echo $result_m_comps['comp_cod']; ?>">
-                                    <input type="submit" value="Modifier">
-                                </form>
+
+                        <tr>
+                            <TD colspan="4" align="center">
+                                <input type="submit" value="Modifier les compétences spécifiques">
                             </TD>
-                            <td>
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
-                                    <input type="hidden" name="section" value="section_competences_specifiques">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="supr_comp_mon_spe">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod" value="<?php echo $result_m_comps['comp_cod']; ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
-                            </TD>
-                        </TR>
-                    <?php }
-                    ?>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
                     <tr><td colspan="6"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
@@ -1300,7 +1320,7 @@ if ($erreur == 0)
 
                         <tr>
                             <TD colspan="5" align="center">
-                                <input type="submit" value="Modifier">
+                                <input type="submit" value="Modifier les objets">
                             </TD>
                         </tr>
                     </TABLE>
