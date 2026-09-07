@@ -1237,61 +1237,76 @@ if ($erreur == 0)
                 <hr/>
                 <a id="section_objets"></a>
                 OBJETS
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Objet</th>
+                <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                    <input type="hidden" name="section" value="section_objets">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_drops">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                        <th>Chance de posséder (SUR 10.000 !!!)</th>
-                        <th style="text-align: center">Chance de drop <em style="font-size: 10px;">(si possédé)</em>
-                        </th>
-                    </tr>
-                    <?php $req_drops =
-                            "select gobj_nom,ogmon_gobj_cod,ogmon_equipe,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Objet</th>
+                            <th align="left">Chance de posséder (SUR 10.000 !!!)</th>
+                            <th align="left">Equiper</th>
+                            <th align="left" style="text-align: center">Chance de drop <em style="font-size: 10px;">(si possédé)</em>
+                            </th>
+                            <th align="left">Supprimer</th>
+                        </tr>
 
-                    $stmt_drops = $pdo->query($req_drops);
-                    //echo $req_drops;
-                    while ($result_drops = $stmt_drops->fetch())
-                    {
+                        <?php $req_drops =
+                                "select gobj_nom,ogmon_gobj_cod,ogmon_equipe,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
 
-                        $gobj_nom        = $result_drops['gobj_nom'];
-                        $drop_obj_chance = $result_drops['ogmon_chance'];
+                        $stmt_drops = $pdo->query($req_drops);
+                        //echo $req_drops;
+                        while ($result_drops = $stmt_drops->fetch())
+                        {
+                            $gobj_cod_row    = (int)$result_drops['ogmon_gobj_cod'];
+                            $gobj_nom        = $result_drops['gobj_nom'];
+                            $drop_obj_chance = $result_drops['ogmon_chance'];
+                            $ogmon_equipe    = $result_drops['ogmon_equipe'];
+                            ?>
+                            <TR>
+                                <TD>
+                                    <?php echo $gobj_nom; ?>
+                                    <input type="hidden" name="gobj_cod[]" value="<?php echo $gobj_cod_row; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="valeur[<?php echo $gobj_cod_row; ?>]"
+                                            value="<?php echo $drop_obj_chance; ?>"
+                                            type="text">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="ogmon_equipe[<?php echo $gobj_cod_row; ?>]"
+                                            value="O"
+                                            <?php echo ($ogmon_equipe == 't' ? "checked" : ""); ?>
+                                            type="checkbox">
+                                </TD>
+                                <td style="text-align: center">
+                                    <a target="_blank"
+                                       href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $gobj_cod_row; ?>"><?php echo $result_drops['gobj_chance_drop_monstre']; ?> %</a>
+                                </td>
+                                <TD>
+                                    <input
+                                            name="drop_delete[<?php echo $gobj_cod_row; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD><?php echo $gobj_nom; ?></TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_objets">
-                                    <input type="hidden" name="section" value="section_objets">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="mod_drop_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="gobj_cod"
-                                           value="<?php echo $result_drops['ogmon_gobj_cod']; ?>">
-                                    <INPUT type="text" name="valeur"
-                                           value="<?php echo $result_drops['ogmon_chance']; ?>">
-                                    &nbsp;Equiper:<input type="checkbox"
-                                                         name="ogmon_equipe" <?php echo $result_drops['ogmon_equipe'] == "t" ? "checked" : ""; ?>>
-                                    <input type="submit" value="Modifier">
-                                </form>
-                            </td>
-                            <td style="text-align: center"><a target="_blank"
-                                                              href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $result_drops['ogmon_gobj_cod']; ?>"><?php echo $result_drops['gobj_chance_drop_monstre'] . '</a> %'; ?>
-                            </td>
-                            <td>
-                                <form method="post" action="admin_type_monstre_edit.php#section_objets">
-                                    <input type="hidden" name="section" value="section_objets">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="supr_drop_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="gobj_cod"
-                                           value="<?php echo $result_drops['ogmon_gobj_cod']; ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
-                            </td>
-                        </TR>
-                    <?php }
-                    ?>
+
+                        <tr>
+                            <TD colspan="5" align="center">
+                                <input type="submit" value="Modifier">
+                            </TD>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
                     <tr><td colspan="6"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_objets">

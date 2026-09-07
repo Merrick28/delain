@@ -581,34 +581,91 @@ switch ($methode)
         echo "Ajout d’un ou plusieurs objets";
         break;
 
-    case "mod_drop_mon":
-        // MODIFIACTION DES CHANCES D'UN DROP
-        $req_upd_mon  =
-            "select gobj_nom,ogmon_chance from objets_monstre_generique,objet_generique where gobj_cod = $gobj_cod and ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
-        $stmt         = $pdo->query($req_upd_mon);
-        $result       = $stmt->fetch();
-        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false";
-        writelog($log . "Modification d’un Drop : $gobj_cod - " . $result['gobj_nom'] . " Chances: " .
-            $result['ogmon_chance'] . " -> $valeur Equiper: {$ogmon_equipe}\n", 'monstre_edit');
+    case "update_mon_drops":
+        // MODIFICATION / SUPPRESSION GROUPEE DES OBJETS (DROPS)
+        $gobj_cod_list = isset($_POST['gobj_cod']) && is_array($_POST['gobj_cod'])
+            ? $_POST['gobj_cod']
+            : array();
 
-        $req_upd_mon =
-            "update objets_monstre_generique set ogmon_chance = $valeur, ogmon_equipe=$ogmon_equipe where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Modification d’un drop";
-        break;
+        $valeur_list = isset($_POST['valeur']) && is_array($_POST['valeur'])
+            ? $_POST['valeur']
+            : array();
 
-    case "supr_drop_mon":
-        // SUPPRESSION D'UN DROP
-        $req_upd_mon =
-            "delete from objets_monstre_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
-        //echo $req_upd_mon;
-        $stmt = $pdo->query($req_upd_mon);
+        $ogmon_equipe_list = isset($_POST['ogmon_equipe']) && is_array($_POST['ogmon_equipe'])
+            ? $_POST['ogmon_equipe']
+            : array();
 
-        $req_upd_mon = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Suppression d’un Drop : $gobj_cod - " . $result['gobj_nom'] . "\n", 'monstre_edit');
-        echo "Suppression d’un drop";
+        $drop_delete_list = isset($_POST['drop_delete']) && is_array($_POST['drop_delete'])
+            ? $_POST['drop_delete']
+            : array();
+
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($gobj_cod_list as $gobj_cod)
+        {
+            $gobj_cod = (int)$gobj_cod;
+
+            if ($gobj_cod <= 0)
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select gobj_nom
+                            from objet_generique
+                            where gobj_cod = $gobj_cod";
+            $stmt   = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $gobj_nom = $result['gobj_nom'];
+
+            if (isset($drop_delete_list[$gobj_cod]))
+            {
+                $req_upd_mon =
+                    "delete from objets_monstre_generique
+                     where ogmon_gmon_cod = $gmon_cod
+                       and ogmon_gobj_cod = $gobj_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog(
+                    $log . "Suppression d’un Drop : $gobj_cod - $gobj_nom\n",
+                    'monstre_edit'
+                );
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $valeur = isset($valeur_list[$gobj_cod]) ? (int)$valeur_list[$gobj_cod] : 0;
+
+            $ogmon_equipe = isset($ogmon_equipe_list[$gobj_cod]) ? "true" : "false";
+
+            $req_upd_mon =
+                "update objets_monstre_generique
+                 set ogmon_chance = $valeur,
+                     ogmon_equipe = $ogmon_equipe
+                 where ogmon_gmon_cod = $gmon_cod
+                   and ogmon_gobj_cod = $gobj_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d’un Drop : $gobj_cod - $gobj_nom" .
+                " | Chance: $valeur" .
+                " | Equiper: {$ogmon_equipe}\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des objets : $nb_modifications modifié(s), $nb_suppressions supprimé(s)";
         break;
 
     case "add_mon_fonction":
