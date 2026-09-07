@@ -266,6 +266,47 @@ switch ($methode)
         echo "Ajout d’un ou plusieurs terrains";
         break;
 
+    case "mod_mon_terrain":
+        $ter_cod = (int)$_REQUEST['ter_cod'];
+
+        $req_upd_mon = "select ter_nom
+                    from terrain
+                    where ter_cod = $ter_cod";
+        $stmt = $pdo->query($req_upd_mon);
+        $result = $stmt->fetch();
+
+        writelog(
+            $log .
+            "Modification d'un terrain : $ter_cod - "
+            . $result['ter_nom']
+            . "\n",
+            'monstre_edit'
+        );
+
+        $tmon_accessible   = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
+        $tmon_chevauchable = (isset($_POST['tmon_chevauchable'])) ? 'O' : 'N';
+        $tmon_terrain_pa   = $_POST['tmon_terrain_pa'];
+        $tmon_event_chance = $_POST['tmon_event_chance'];
+        $tmon_event_pa     = $_POST['tmon_event_pa'];
+        $tmon_message      = str_replace("'", "''", $_POST['tmon_message']);
+
+        $req_upd_mon =
+            "update monstre_terrain
+         set
+            tmon_accessible   = '$tmon_accessible',
+            tmon_chevauchable = '$tmon_chevauchable',
+            tmon_terrain_pa   = '$tmon_terrain_pa',
+            tmon_event_chance = '$tmon_event_chance',
+            tmon_event_pa     = '$tmon_event_pa',
+            tmon_message      = '$tmon_message'
+         where tmon_gmon_cod = $gmon_cod
+           and tmon_ter_cod  = $ter_cod";
+
+        $pdo->query($req_upd_mon);
+
+        echo "Modification d'un terrain";
+        break;
+
     case "delete_mon_immunite":
         $sort_cod    = $_REQUEST['sort_cod'];
         $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
@@ -418,7 +459,6 @@ switch ($methode)
 
     case "add_mon_drop":
         // AJOUT D'UN DROP
-    case "add_mon_drop":
 
         $gobj_cod_list = $_REQUEST['gobj_cod'];
 

@@ -1274,13 +1274,61 @@ if ($erreur == 0)
 
                         ?>
                         <TR>
-                            <TD><?php echo $ter_nom ?></TD>
-                            <TD><?php echo $tmon_accessible ?></TD>
-                            <TD><?php echo $tmon_chevauchable ?></TD>
-                            <TD><?php echo $tmon_terrain_pa ?></TD>
-                            <TD><?php echo $tmon_event_chance ?></TD>
-                            <TD><?php echo $tmon_event_pa ?></TD>
-                            <TD><?php echo $tmon_message ?></TD>
+                            <form method="post">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="methode" value="mod_mon_terrain">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+                                <input type="hidden" name="ter_cod"
+                                       value="<?php echo $result_m_terrain['tmon_ter_cod'] ?>">
+
+                                <TD><?php echo $ter_nom ?></TD>
+
+                                <TD>
+                                    <input type="checkbox"
+                                           name="tmon_accessible"
+                                            <?php echo ($tmon_accessible == 'O') ? 'checked' : ''; ?>>
+                                </TD>
+
+                                <TD>
+                                    <input type="checkbox"
+                                           name="tmon_chevauchable"
+                                            <?php echo ($tmon_chevauchable == 'O') ? 'checked' : ''; ?>>
+                                </TD>
+
+                                <TD>
+                                    <input type="text"
+                                           size="6"
+                                           name="tmon_terrain_pa"
+                                           value="<?php echo $tmon_terrain_pa ?>">
+                                </TD>
+
+                                <TD>
+                                    <input type="text"
+                                           size="4"
+                                           name="tmon_event_chance"
+                                           value="<?php echo $tmon_event_chance ?>">
+                                </TD>
+
+                                <TD>
+                                    <input type="text"
+                                           size="6"
+                                           name="tmon_event_pa"
+                                           value="<?php echo $tmon_event_pa ?>">
+                                </TD>
+
+                                <TD>
+                                    <input type="text"
+                                           size="60"
+                                           name="tmon_message"
+                                           value="<?php echo htmlspecialchars($tmon_message); ?>">
+                                </TD>
+
+                                <TD>
+                                    <input type="submit" value="Modifier">
+                            </form>
+                            </TD>
+
                             <TD>
                                 <form method="post">
                                     <input type="hidden" name="methode2" value="edit">
