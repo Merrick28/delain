@@ -1220,8 +1220,10 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_drop">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD>Ajouter l’objet:
-                                <select name="gobj_cod">
+                            <TD>
+                                Ajouter le(s) objet(s) :<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="gobj_cod[]" multiple size="8">
                                     <?php $req_drops =
                                             "select gobj_nom,gobj_cod from objet_generique where not exists(select 1 from objets_monstre_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod) order by gobj_nom";
                                     $stmt_drops      = $pdo->query($req_drops);
@@ -1301,7 +1303,9 @@ if ($erreur == 0)
                             <input type="hidden" name="methode" value="add_mon_terrain">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                             <TD>
-                                <select name="ter_cod">
+                                Ajouter un/des terrain(s) :<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="ter_cod[]" multiple size="8">
                                     <?php
 
                                     $req_m_terrain= "select ter_cod, ter_nom 

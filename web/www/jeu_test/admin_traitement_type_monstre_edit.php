@@ -202,23 +202,68 @@ switch ($methode)
         break;
 
     case "add_mon_terrain":
-        $ter_cod    = $_REQUEST['ter_cod'];
-        $req_upd_mon = "select ter_nom from terrain where ter_cod = $ter_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
 
-        $tmon_accessible = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
+        $ter_cod_list = $_REQUEST['ter_cod'];
+
+        if (!is_array($ter_cod_list))
+        {
+            $ter_cod_list = array($ter_cod_list);
+        }
+
+        $tmon_accessible   = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
         $tmon_chevauchable = (isset($_POST['tmon_chevauchable'])) ? 'O' : 'N';
-        $tmon_terrain_pa = $_POST['tmon_terrain_pa'] ;
-        $tmon_event_chance = $_POST['tmon_event_chance'] ;
-        $tmon_event_pa = $_POST['tmon_event_pa'] ;
-        $tmon_message = str_replace("'", "''", $_POST['tmon_message'] );
+        $tmon_terrain_pa   = $_POST['tmon_terrain_pa'];
+        $tmon_event_chance = $_POST['tmon_event_chance'];
+        $tmon_event_pa     = $_POST['tmon_event_pa'];
+        $tmon_message      = str_replace("'", "''", $_POST['tmon_message']);
 
-        $req_upd_mon =
-            "insert into monstre_terrain (tmon_gmon_cod,tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message) values ($gmon_cod,$ter_cod, '$tmon_accessible', '$tmon_chevauchable', '$tmon_terrain_pa', '$tmon_event_chance', '$tmon_event_pa', '$tmon_message')";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d'un sort";
+        foreach ($ter_cod_list as $ter_cod)
+        {
+            $ter_cod = (int)$ter_cod;
+
+            $req_upd_mon = "select ter_nom
+                        from terrain
+                        where ter_cod = $ter_cod";
+
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            writelog(
+                $log .
+                "Ajout d'un terrain : $ter_cod - "
+                . $result['ter_nom']
+                . "\n",
+                'monstre_edit'
+            );
+
+            $req_upd_mon =
+                "insert into monstre_terrain
+            (
+                tmon_gmon_cod,
+                tmon_ter_cod,
+                tmon_accessible,
+                tmon_chevauchable,
+                tmon_terrain_pa,
+                tmon_event_chance,
+                tmon_event_pa,
+                tmon_message
+            )
+            values
+            (
+                $gmon_cod,
+                $ter_cod,
+                '$tmon_accessible',
+                '$tmon_chevauchable',
+                '$tmon_terrain_pa',
+                '$tmon_event_chance',
+                '$tmon_event_pa',
+                '$tmon_message'
+            )";
+
+            $pdo->query($req_upd_mon);
+        }
+
+        echo "Ajout d’un ou plusieurs terrains";
         break;
 
     case "delete_mon_immunite":
@@ -373,16 +418,46 @@ switch ($methode)
 
     case "add_mon_drop":
         // AJOUT D'UN DROP
-        $req_upd_mon  = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
-        $stmt         = $pdo->query($req_upd_mon);
-        $result       = $stmt->fetch();
-        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false";
-        writelog($log . "Ajout d’un Drop : $gobj_cod - " . $result['gobj_nom'] . " Chances: $valeur Equiper: {$ogmon_equipe}\n", 'monstre_edit');
+    case "add_mon_drop":
 
-        $req_upd_mon =
-            "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance,ogmon_equipe) values ($gmon_cod,$gobj_cod,$valeur, $ogmon_equipe)";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d’un drop";
+        $gobj_cod_list = $_REQUEST['gobj_cod'];
+
+        if (!is_array($gobj_cod_list))
+        {
+            $gobj_cod_list = array($gobj_cod_list);
+        }
+
+        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false";
+
+        foreach ($gobj_cod_list as $gobj_cod)
+        {
+            $gobj_cod = (int)$gobj_cod;
+
+            $req_upd_mon = "select gobj_nom
+                        from objet_generique
+                        where gobj_cod = $gobj_cod";
+
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            writelog(
+                $log .
+                "Ajout d’un Drop : $gobj_cod - "
+                . $result['gobj_nom']
+                . " Chances: $valeur Equiper: {$ogmon_equipe}\n",
+                'monstre_edit'
+            );
+
+            $req_upd_mon =
+                "insert into objets_monstre_generique
+            (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance,ogmon_equipe)
+            values
+            ($gmon_cod,$gobj_cod,$valeur,$ogmon_equipe)";
+
+            $pdo->query($req_upd_mon);
+        }
+
+        echo "Ajout d’un ou plusieurs objets";
         break;
 
     case "mod_drop_mon":
