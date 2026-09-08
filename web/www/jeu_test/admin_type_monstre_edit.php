@@ -366,6 +366,7 @@ if ($erreur == 0)
                     {
                         ?>
                         <input type="hidden" name="methode" value="create_mon">
+                        <input type="hidden" name="gmon_cod_source" value="<?php echo $gmon_cod ?>">
                     <?php }
                     ?>
                     <TABLE width="80%" align="center">
