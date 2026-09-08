@@ -188,19 +188,6 @@ switch ($methode)
         echo "Ajout d'un sort";
         break;
 
-    case "delete_mon_terrain":
-        $ter_cod    = $_REQUEST['ter_cod'];
-        $req_upd_mon = "select ter_nom from terrain where ter_cod = $ter_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Suppression d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
-
-        $req_upd_mon =
-            "delete from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = $ter_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Suppression d'un sort";
-        break;
-
     case "add_mon_terrain":
 
         $ter_cod_list = $_REQUEST['ter_cod'];
@@ -266,45 +253,114 @@ switch ($methode)
         echo "Ajout d’un ou plusieurs terrains";
         break;
 
-    case "mod_mon_terrain":
-        $ter_cod = (int)$_REQUEST['ter_cod'];
+    case "update_mon_terrains":
+        // MODIFICATION / SUPPRESSION GROUPEE DES MONTURES (TERRAINS)
+        $ter_cod_list = isset($_POST['tmon_ter_cod']) && is_array($_POST['tmon_ter_cod'])
+            ? $_POST['tmon_ter_cod']
+            : array();
 
-        $req_upd_mon = "select ter_nom
-                    from terrain
-                    where ter_cod = $ter_cod";
-        $stmt = $pdo->query($req_upd_mon);
-        $result = $stmt->fetch();
+        $tmon_accessible_list = isset($_POST['tmon_accessible']) && is_array($_POST['tmon_accessible'])
+            ? $_POST['tmon_accessible']
+            : array();
 
-        writelog(
-            $log .
-            "Modification d'un terrain : $ter_cod - "
-            . $result['ter_nom']
-            . "\n",
-            'monstre_edit'
-        );
+        $tmon_chevauchable_list = isset($_POST['tmon_chevauchable']) && is_array($_POST['tmon_chevauchable'])
+            ? $_POST['tmon_chevauchable']
+            : array();
 
-        $tmon_accessible   = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
-        $tmon_chevauchable = (isset($_POST['tmon_chevauchable'])) ? 'O' : 'N';
-        $tmon_terrain_pa   = $_POST['tmon_terrain_pa'];
-        $tmon_event_chance = $_POST['tmon_event_chance'];
-        $tmon_event_pa     = $_POST['tmon_event_pa'];
-        $tmon_message      = str_replace("'", "''", $_POST['tmon_message']);
+        $tmon_terrain_pa_list = isset($_POST['tmon_terrain_pa']) && is_array($_POST['tmon_terrain_pa'])
+            ? $_POST['tmon_terrain_pa']
+            : array();
 
-        $req_upd_mon =
-            "update monstre_terrain
-         set
-            tmon_accessible   = '$tmon_accessible',
-            tmon_chevauchable = '$tmon_chevauchable',
-            tmon_terrain_pa   = '$tmon_terrain_pa',
-            tmon_event_chance = '$tmon_event_chance',
-            tmon_event_pa     = '$tmon_event_pa',
-            tmon_message      = '$tmon_message'
-         where tmon_gmon_cod = $gmon_cod
-           and tmon_ter_cod  = $ter_cod";
+        $tmon_event_chance_list = isset($_POST['tmon_event_chance']) && is_array($_POST['tmon_event_chance'])
+            ? $_POST['tmon_event_chance']
+            : array();
 
-        $pdo->query($req_upd_mon);
+        $tmon_event_pa_list = isset($_POST['tmon_event_pa']) && is_array($_POST['tmon_event_pa'])
+            ? $_POST['tmon_event_pa']
+            : array();
 
-        echo "Modification d'un terrain";
+        $tmon_message_list = isset($_POST['tmon_message']) && is_array($_POST['tmon_message'])
+            ? $_POST['tmon_message']
+            : array();
+
+        $tmon_delete_list = isset($_POST['tmon_delete']) && is_array($_POST['tmon_delete'])
+            ? $_POST['tmon_delete']
+            : array();
+
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($ter_cod_list as $ter_cod)
+        {
+            $ter_cod = (int)$ter_cod;
+
+            $req_upd_mon = "select ter_nom
+                            from terrain
+                            where ter_cod = $ter_cod";
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $ter_nom = $result['ter_nom'];
+
+            if (isset($tmon_delete_list[$ter_cod]))
+            {
+                $req_upd_mon =
+                    "delete from monstre_terrain
+                     where tmon_gmon_cod = $gmon_cod
+                       and tmon_ter_cod = $ter_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog(
+                    $log . "Suppression d'un terrain : $ter_cod - $ter_nom\n",
+                    'monstre_edit'
+                );
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $tmon_accessible   = isset($tmon_accessible_list[$ter_cod]) ? 'O' : 'N';
+            $tmon_chevauchable = isset($tmon_chevauchable_list[$ter_cod]) ? 'O' : 'N';
+            $tmon_terrain_pa   = isset($tmon_terrain_pa_list[$ter_cod]) ? $tmon_terrain_pa_list[$ter_cod] : 0;
+            $tmon_event_chance = isset($tmon_event_chance_list[$ter_cod]) ? $tmon_event_chance_list[$ter_cod] : 0;
+            $tmon_event_pa     = isset($tmon_event_pa_list[$ter_cod]) ? $tmon_event_pa_list[$ter_cod] : 0;
+            $tmon_message      = isset($tmon_message_list[$ter_cod])
+                ? str_replace("'", "''", $tmon_message_list[$ter_cod])
+                : '';
+
+            $req_upd_mon =
+                "update monstre_terrain
+                 set tmon_accessible   = '$tmon_accessible',
+                     tmon_chevauchable = '$tmon_chevauchable',
+                     tmon_terrain_pa   = '$tmon_terrain_pa',
+                     tmon_event_chance = '$tmon_event_chance',
+                     tmon_event_pa     = '$tmon_event_pa',
+                     tmon_message      = '$tmon_message'
+                 where tmon_gmon_cod = $gmon_cod
+                   and tmon_ter_cod  = $ter_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d'un terrain : $ter_cod - $ter_nom" .
+                " | Accessible: $tmon_accessible" .
+                " | Chevauchable: $tmon_chevauchable" .
+                " | PA: $tmon_terrain_pa" .
+                " | Proba Evt: $tmon_event_chance" .
+                " | Evt PA: $tmon_event_pa\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des montures : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
     case "update_mon_immunites":
