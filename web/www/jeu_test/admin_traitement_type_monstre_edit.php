@@ -136,6 +136,27 @@ switch ($methode)
         echo "Nouveau modèle créé et dupliqué avec succès<br>";
         break;
 
+    case "delete_mon":
+        // Suppression des dépendances secondaires
+        $pdo->query("DELETE FROM sorts_monstre_generique WHERE sgmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_generique_immunite WHERE immun_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM gmon_type_comp WHERE gtypc_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_generique_comp WHERE gmoncomp_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM objets_monstre_generique WHERE ogmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_terrain WHERE tmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM fonction_specifique WHERE fonc_gmon_cod = $gmon_cod");
+
+        // Suppression du modèle de monstre
+        $req_del_gmon = "DELETE FROM monstre_generique WHERE gmon_cod = $gmon_cod";
+        $pdo->query($req_del_gmon);
+
+        writelog($log . "Suppression du modèle de monstre : $pmons_mod_nom (ID: $gmon_cod)\n", 'monstre_edit');
+        echo "Modèle de monstre supprimé avec succès.<br>";
+
+        // Réinitialisation de la méthode pour repasser sur l'écran d'accueil
+        $methode2 = 'debut';
+        break;
+
     case "update_mon":
         if ($gmon_duree_vie == '') $gmon_duree_vie = 0;
         $fields = array("gmon_nom",

@@ -85,6 +85,35 @@ ob_start();
             var file_image = $("#img-serveur-" + img).data("img-filename");
             $("#id-gmon_avatar").val(file_image);
         }
+
+        function confirmerSuppressionMonstre(gmonCod, gmonNom) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer définitivement le modèle de monstre \"" + gmonNom + "\" (ID: " + gmonCod + ") ?")) {
+                var form = document.createElement("form");
+                form.method = "POST";
+                form.action = "admin_type_monstre_edit.php";
+
+                var inputMethode = document.createElement("input");
+                inputMethode.type = "hidden";
+                inputMethode.name = "methode";
+                inputMethode.value = "delete_mon";
+                form.appendChild(inputMethode);
+
+                var inputMethode2 = document.createElement("input");
+                inputMethode2.type = "hidden";
+                inputMethode2.name = "methode2";
+                inputMethode2.value = "debut";
+                form.appendChild(inputMethode2);
+
+                var inputGmonCod = document.createElement("input");
+                inputGmonCod.type = "hidden";
+                inputGmonCod.name = "gmon_cod";
+                inputGmonCod.value = gmonCod;
+                form.appendChild(inputGmonCod);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
     </script>
 <?php
 $droit_modif = 'dcompt_modif_gmon';
@@ -165,6 +194,24 @@ if ($erreur == 0)
                         <form name="liste" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode2" value="liste_monstre">
                             <input type="submit" value="Voir les monstres existants">
+                        </form>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD>
+                        <form name="delete_form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" onsubmit="event.preventDefault(); confirmerSuppressionMonstre(this.gmon_cod.value, this.gmon_cod.options[this.gmon_cod.selectedIndex].text);">
+                            Supprimer un monstre générique :
+                            <select name="gmon_cod">
+                                <?php
+                                $stmt = $pdo->query($req_gmon);
+                                while ($result = $stmt->fetch())
+                                {
+                                    $gen_mon_cod = $result['gmon_cod'];
+                                    echo "<OPTION value=\"$gen_mon_cod\">" . $result['gmon_nom'] . "</OPTION>\n";
+                                }
+                                ?>
+                            </select>
+                            <input type="submit" value="Supprimer" style="color:red;">
                         </form>
                     </TD>
                 </TR>
