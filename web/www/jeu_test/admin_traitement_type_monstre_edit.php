@@ -502,15 +502,27 @@ switch ($methode)
         break;
 
     case "add_mon_comp":
-        $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'un type de competences : $typc_cod - " . $result['typc_libelle'] . " Valeur: $valeur\n", 'monstre_edit');
+        // typc_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute un type de
+        // compétence par sélection, tous avec la même valeur.
+        $typc_cod_list = $_REQUEST['typc_cod'];
+        if (!is_array($typc_cod_list))
+        {
+            $typc_cod_list = array($typc_cod_list);
+        }
 
-        $req_upd_mon =
-            "insert into gmon_type_comp (gtypc_gmon_cod,gtypc_typc_cod,gtypc_valeur) values ($gmon_cod,$typc_cod,$valeur)";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d'une competence";
+        foreach ($typc_cod_list as $typc_cod)
+        {
+            $typc_cod    = (int)$typc_cod;
+            $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'un type de competences : $typc_cod - " . $result['typc_libelle'] . " Valeur: $valeur\n", 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into gmon_type_comp (gtypc_gmon_cod,gtypc_typc_cod,gtypc_valeur) values ($gmon_cod,$typc_cod,$valeur)";
+            $stmt = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d’une ou plusieurs competence(s)";
         break;
 
     case "mod_comp_mon":

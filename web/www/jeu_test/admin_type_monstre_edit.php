@@ -1049,8 +1049,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_comp">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD colspan="3">Ajouter la Competence:
-                                <select name="typc_cod">
+                            <TD colspan="3">Ajouter la/les Competence(s):<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="typc_cod[]" multiple size="8">
                                     <?php $req_m_comps =
                                             "select typc_cod,typc_libelle from type_competences where not exists(select 1 from gmon_type_comp where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod) order by typc_libelle";
                                     $stmt_m_comps      = $pdo->query($req_m_comps);
