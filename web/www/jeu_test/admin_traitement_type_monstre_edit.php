@@ -1284,6 +1284,55 @@ switch ($methode)
 
         break;
 
+    case "replace_mon_effets":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from fonction_specifique where fonc_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode)
+                            select fonc_nom, $gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode
+                                from fonction_specifique
+                                where fonc_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des effets automatiques depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Effets automatiques remplacés";
+        break;
+
+    case "merge_mon_effets":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        // Pas d'anti-doublon ici : contrairement aux autres caractéristiques, un effet automatique
+        // n'a pas de clé naturelle unique (plusieurs effets peuvent partager le même fonc_nom).
+        // La fusion ajoute donc tous les effets du monstre source, tels quels.
+        $pdo->query("insert into fonction_specifique ( fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode )
+                            select fonc_nom, $gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode
+                                from fonction_specifique
+                                where fonc_gmon_cod = $gmon_source_cod ");
+
+        writelog($log . "Fusion des effets automatiques depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Effets automatiques fusionnés";
+
+        break;
+
     case "add_mon_fonction":
 
         // Sauvegarder les modifications des effets-auto => save_effet_auto($post, $fonc_gmon_cod, $fonc_perso_cod)

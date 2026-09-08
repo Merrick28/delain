@@ -1396,6 +1396,26 @@ if ($erreur == 0)
                                class='test'/>
                     </div>
                 </form>
+
+                <TABLE width="80%" align="center">
+                    <TR>
+                        <td colspan="5" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_effets_automatiques">
+                                <input type="hidden" name="section" value="section_effets_automatiques">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les effets automatiques depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="effet_gmon_source_cod" type="text" size="5" value="">
+                                <span id="effet_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("effet_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_effets"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_effets"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
+                </TABLE>
                 <!-- ======================================================= OBJETS ======================================================= -->
                 <hr/>
                 <a id="section_objets"></a>
