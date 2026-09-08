@@ -137,6 +137,16 @@ switch ($methode)
         break;
 
     case "delete_mon":
+        // Vérification de la présence de monstres en jeu basés sur ce modèle
+        $req_check = "SELECT COUNT(*) AS nb FROM perso WHERE perso_gmon_cod = " . (int)$gmon_cod;
+        $stmt_check = $pdo->query($req_check);
+        $res_check = $stmt_check->fetch();
+
+        if ($res_check && $res_check['nb'] > 0) {
+            echo "<strong>Impossible de supprimer ce modèle : " . $res_check['nb'] . " monstre(s) basé(s) dessus existent encore en jeu.</strong><br>";
+            break;
+        }
+
         // Suppression des dépendances secondaires
         $pdo->query("DELETE FROM sorts_monstre_generique WHERE sgmon_gmon_cod = $gmon_cod");
         $pdo->query("DELETE FROM monstre_generique_immunite WHERE immun_gmon_cod = $gmon_cod");
