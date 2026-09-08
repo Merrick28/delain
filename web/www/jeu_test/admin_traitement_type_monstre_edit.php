@@ -177,28 +177,79 @@ switch ($methode)
         break;
 
     case "add_mon_sort":
-        $sort_cod    = $_REQUEST['sort_cod'];
-        $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'un sort : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
-        $req_upd_mon =
-            "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d'un sort";
+        // sort_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute un sort par
+        // sélection.
+        $sort_cod_list = $_REQUEST['sort_cod'];
+        if (!is_array($sort_cod_list))
+        {
+            $sort_cod_list = array($sort_cod_list);
+        }
+
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod    = (int)$sort_cod;
+            $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'un sort : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
+            $stmt        = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d'un ou plusieurs sort(s)";
         break;
 
-    case "delete_mon_terrain":
-        $ter_cod    = $_REQUEST['ter_cod'];
-        $req_upd_mon = "select ter_nom from terrain where ter_cod = $ter_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Suppression d'un terrain : $ter_cod - " . $result['ter_nom'] . "\n", 'monstre_edit');
+    case "update_mon_sorts":
+        // Suppression multiple de sorts via cases à cocher (pas de valeur à modifier pour un sort,
+        // contrairement aux immunités : la seule action possible ici est la suppression).
+        $sort_cod_list = isset($_POST['sort_cod']) && is_array($_POST['sort_cod'])
+            ? $_POST['sort_cod']
+            : array();
 
-        $req_upd_mon =
-            "delete from monstre_terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = $ter_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Suppression d'un sort";
+        $sort_delete_list = isset($_POST['sort_delete']) && is_array($_POST['sort_delete'])
+            ? $_POST['sort_delete']
+            : array();
+
+        $nb_suppressions = 0;
+
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod = (int)$sort_cod;
+
+            if ($sort_cod <= 0 || !isset($sort_delete_list[$sort_cod]))
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select sort_nom
+                            from sorts
+                            where sort_cod = $sort_cod";
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $sort_nom = $result['sort_nom'];
+
+            $req_upd_mon =
+                "delete from sorts_monstre_generique
+                 where sgmon_gmon_cod = $gmon_cod
+                   and sgmon_sort_cod = $sort_cod";
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log . "Suppression d'un sort : $sort_cod - $sort_nom\n",
+                'monstre_edit'
+            );
+
+            $nb_suppressions++;
+        }
+
+        echo "Modification des sorts : $nb_suppressions supprimé(s)";
         break;
 
     case "add_mon_terrain":
@@ -266,45 +317,114 @@ switch ($methode)
         echo "Ajout d’un ou plusieurs terrains";
         break;
 
-    case "mod_mon_terrain":
-        $ter_cod = (int)$_REQUEST['ter_cod'];
+    case "update_mon_terrains":
+        // MODIFICATION / SUPPRESSION GROUPEE DES MONTURES (TERRAINS)
+        $ter_cod_list = isset($_POST['tmon_ter_cod']) && is_array($_POST['tmon_ter_cod'])
+            ? $_POST['tmon_ter_cod']
+            : array();
 
-        $req_upd_mon = "select ter_nom
-                    from terrain
-                    where ter_cod = $ter_cod";
-        $stmt = $pdo->query($req_upd_mon);
-        $result = $stmt->fetch();
+        $tmon_accessible_list = isset($_POST['tmon_accessible']) && is_array($_POST['tmon_accessible'])
+            ? $_POST['tmon_accessible']
+            : array();
 
-        writelog(
-            $log .
-            "Modification d'un terrain : $ter_cod - "
-            . $result['ter_nom']
-            . "\n",
-            'monstre_edit'
-        );
+        $tmon_chevauchable_list = isset($_POST['tmon_chevauchable']) && is_array($_POST['tmon_chevauchable'])
+            ? $_POST['tmon_chevauchable']
+            : array();
 
-        $tmon_accessible   = (isset($_POST['tmon_accessible'])) ? 'O' : 'N';
-        $tmon_chevauchable = (isset($_POST['tmon_chevauchable'])) ? 'O' : 'N';
-        $tmon_terrain_pa   = $_POST['tmon_terrain_pa'];
-        $tmon_event_chance = $_POST['tmon_event_chance'];
-        $tmon_event_pa     = $_POST['tmon_event_pa'];
-        $tmon_message      = str_replace("'", "''", $_POST['tmon_message']);
+        $tmon_terrain_pa_list = isset($_POST['tmon_terrain_pa']) && is_array($_POST['tmon_terrain_pa'])
+            ? $_POST['tmon_terrain_pa']
+            : array();
 
-        $req_upd_mon =
-            "update monstre_terrain
-         set
-            tmon_accessible   = '$tmon_accessible',
-            tmon_chevauchable = '$tmon_chevauchable',
-            tmon_terrain_pa   = '$tmon_terrain_pa',
-            tmon_event_chance = '$tmon_event_chance',
-            tmon_event_pa     = '$tmon_event_pa',
-            tmon_message      = '$tmon_message'
-         where tmon_gmon_cod = $gmon_cod
-           and tmon_ter_cod  = $ter_cod";
+        $tmon_event_chance_list = isset($_POST['tmon_event_chance']) && is_array($_POST['tmon_event_chance'])
+            ? $_POST['tmon_event_chance']
+            : array();
 
-        $pdo->query($req_upd_mon);
+        $tmon_event_pa_list = isset($_POST['tmon_event_pa']) && is_array($_POST['tmon_event_pa'])
+            ? $_POST['tmon_event_pa']
+            : array();
 
-        echo "Modification d'un terrain";
+        $tmon_message_list = isset($_POST['tmon_message']) && is_array($_POST['tmon_message'])
+            ? $_POST['tmon_message']
+            : array();
+
+        $tmon_delete_list = isset($_POST['tmon_delete']) && is_array($_POST['tmon_delete'])
+            ? $_POST['tmon_delete']
+            : array();
+
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($ter_cod_list as $ter_cod)
+        {
+            $ter_cod = (int)$ter_cod;
+
+            $req_upd_mon = "select ter_nom
+                            from terrain
+                            where ter_cod = $ter_cod";
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $ter_nom = $result['ter_nom'];
+
+            if (isset($tmon_delete_list[$ter_cod]))
+            {
+                $req_upd_mon =
+                    "delete from monstre_terrain
+                     where tmon_gmon_cod = $gmon_cod
+                       and tmon_ter_cod = $ter_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog(
+                    $log . "Suppression d'un terrain : $ter_cod - $ter_nom\n",
+                    'monstre_edit'
+                );
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $tmon_accessible   = isset($tmon_accessible_list[$ter_cod]) ? 'O' : 'N';
+            $tmon_chevauchable = isset($tmon_chevauchable_list[$ter_cod]) ? 'O' : 'N';
+            $tmon_terrain_pa   = isset($tmon_terrain_pa_list[$ter_cod]) ? $tmon_terrain_pa_list[$ter_cod] : 0;
+            $tmon_event_chance = isset($tmon_event_chance_list[$ter_cod]) ? $tmon_event_chance_list[$ter_cod] : 0;
+            $tmon_event_pa     = isset($tmon_event_pa_list[$ter_cod]) ? $tmon_event_pa_list[$ter_cod] : 0;
+            $tmon_message      = isset($tmon_message_list[$ter_cod])
+                ? str_replace("'", "''", $tmon_message_list[$ter_cod])
+                : '';
+
+            $req_upd_mon =
+                "update monstre_terrain
+                 set tmon_accessible   = '$tmon_accessible',
+                     tmon_chevauchable = '$tmon_chevauchable',
+                     tmon_terrain_pa   = '$tmon_terrain_pa',
+                     tmon_event_chance = '$tmon_event_chance',
+                     tmon_event_pa     = '$tmon_event_pa',
+                     tmon_message      = '$tmon_message'
+                 where tmon_gmon_cod = $gmon_cod
+                   and tmon_ter_cod  = $ter_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d'un terrain : $ter_cod - $ter_nom" .
+                " | Accessible: $tmon_accessible" .
+                " | Chevauchable: $tmon_chevauchable" .
+                " | PA: $tmon_terrain_pa" .
+                " | Proba Evt: $tmon_event_chance" .
+                " | Evt PA: $tmon_event_pa\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des montures : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
     case "update_mon_immunites":
@@ -446,42 +566,101 @@ switch ($methode)
         break;
 
     case "add_mon_comp":
-        $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'un type de competences : $typc_cod - " . $result['typc_libelle'] . " Valeur: $valeur\n", 'monstre_edit');
+        // typc_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute un type de
+        // compétence par sélection, tous avec la même valeur.
+        $typc_cod_list = $_REQUEST['typc_cod'];
+        if (!is_array($typc_cod_list))
+        {
+            $typc_cod_list = array($typc_cod_list);
+        }
 
-        $req_upd_mon =
-            "insert into gmon_type_comp (gtypc_gmon_cod,gtypc_typc_cod,gtypc_valeur) values ($gmon_cod,$typc_cod,$valeur)";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d'une competence";
+        foreach ($typc_cod_list as $typc_cod)
+        {
+            $typc_cod    = (int)$typc_cod;
+            $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'un type de competences : $typc_cod - " . $result['typc_libelle'] . " Valeur: $valeur\n", 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into gmon_type_comp (gtypc_gmon_cod,gtypc_typc_cod,gtypc_valeur) values ($gmon_cod,$typc_cod,$valeur)";
+            $stmt = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d’une ou plusieurs competence(s)";
         break;
 
-    case "mod_comp_mon":
-        $req_upd_mon =
-            "select typc_libelle,gtypc_valeur from gmon_type_comp,type_competences where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod and typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Modification d’une compétence : $typc_cod - " . $result['typc_libelle'] . " Chances: " .
-            $result['gtypc_valeur'] . " -> $valeur\n", 'monstre_edit');
+    case "update_mon_competences":
+        // MODIFICATION / SUPPRESSION GROUPEE DES COMPETENCES
+        $typc_cod_list = isset($_POST['typc_cod']) && is_array($_POST['typc_cod'])
+            ? $_POST['typc_cod']
+            : array();
 
-        $req_upd_mon =
-            "update gmon_type_comp set gtypc_valeur = $valeur where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Modification d’une compétence";
-        break;
+        $gtypc_valeur_list = isset($_POST['gtypc_valeur']) && is_array($_POST['gtypc_valeur'])
+            ? $_POST['gtypc_valeur']
+            : array();
 
-    case "supr_comp_mon":
-        $req_upd_mon = "delete from gmon_type_comp  where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
-        //echo $req_upd_mon;
-        $stmt = $pdo->query($req_upd_mon);
+        $comp_delete_list = isset($_POST['comp_delete']) && is_array($_POST['comp_delete'])
+            ? $_POST['comp_delete']
+            : array();
 
-        $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Supression d’un type de compétences : $typc_cod - " . $result['typc_libelle'] .
-            "\n", 'monstre_edit');
-        echo "Suppression d’une competence";
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($typc_cod_list as $typc_cod)
+        {
+            $typc_cod = (int)$typc_cod;
+
+            if ($typc_cod <= 0)
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
+            $stmt   = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $typc_libelle = $result['typc_libelle'];
+
+            if (isset($comp_delete_list[$typc_cod]))
+            {
+                $req_upd_mon =
+                    "delete from gmon_type_comp
+                     where gtypc_gmon_cod = $gmon_cod
+                       and gtypc_typc_cod = $typc_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog($log . "Supression d'un type de competences : $typc_cod - $typc_libelle\n", 'monstre_edit');
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $valeur = isset($gtypc_valeur_list[$typc_cod]) ? (int)$gtypc_valeur_list[$typc_cod] : 0;
+
+            $req_upd_mon =
+                "update gmon_type_comp
+                 set gtypc_valeur = $valeur
+                 where gtypc_gmon_cod = $gmon_cod
+                   and gtypc_typc_cod = $typc_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d'un type de competences : $typc_cod - $typc_libelle" .
+                " | Valeur: $valeur\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des compétences : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
     case "add_mon_comp_spe":

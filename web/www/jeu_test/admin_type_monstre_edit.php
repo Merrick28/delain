@@ -765,43 +765,59 @@ if ($erreur == 0)
                     <a href="#section_objets">Objets</a> |
                     <a href="#section_monture">Monture</a>
                 </div>
-
+                <!-- ======================================================= SORTS ======================================================= -->
                 <hr>
                 <a id="section_sorts"></a>
                 SORTS
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Sort</th>
-                        <th>--</th>
-                    </tr>
-                    <?php $req_m_sorts =
-                            "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod";
+                <form method="post" action="admin_type_monstre_edit.php#section_sorts">
+                    <input type="hidden" name="section" value="section_sorts">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_sorts">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                    $stmt_m_sorts = $pdo->query($req_m_sorts);
-                    while ($result_m_sorts = $stmt_m_sorts->fetch())
-                    {
-                        $sort_nom         = $result_m_sorts['sort_nom'];
-                        $sgmon_chance     = $result_m_sorts['sgmon_chance'];
-                        $sort_nom_advance =
-                                $result_m_sorts['sort_aggressif'] == 'O' ? ' <em>(agressif)</em>' : ($result_m_sorts['sort_soutien'] == 'O' ? ' <em>(soutien)</em>' : '');
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Sort</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
+                        <?php $req_m_sorts =
+                                "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod order by sort_nom";
+
+                        $stmt_m_sorts = $pdo->query($req_m_sorts);
+                        while ($result_m_sorts = $stmt_m_sorts->fetch())
+                        {
+                            $sort_cod         = (int)$result_m_sorts['sgmon_sort_cod'];
+                            $sort_nom         = $result_m_sorts['sort_nom'];
+                            $sgmon_chance     = $result_m_sorts['sgmon_chance'];
+                            $sort_nom_advance =
+                                    $result_m_sorts['sort_aggressif'] == 'O' ? ' <em>(agressif)</em>' : ($result_m_sorts['sort_soutien'] == 'O' ? ' <em>(soutien)</em>' : '');
+                            ?>
+                            <TR>
+                                <TD>
+                                    <?php echo $sort_nom . $sort_nom_advance; ?>
+                                    <input type="hidden" name="sort_cod[]" value="<?php echo $sort_cod; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="sort_delete[<?php echo $sort_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD><?php echo $sort_nom . $sort_nom_advance; ?></TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_sorts" >
-                                    <input type="hidden" name="section" value="section_sorts">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="delete_mon_sort">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="sort_cod"
-                                           value="<?php echo $result_m_sorts['sgmon_sort_cod'] ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
+
+                        <tr>
+                            <TD colspan="2" align="center">
+                                <input type="submit" value="Modifier les sorts">
                             </TD>
-                        </TR>
-                    <?php }
-                    ?>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
+                    <tr><td colspan="2"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_sorts">
                             <input type="hidden" name="section" value="section_sorts">
@@ -809,8 +825,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_sort">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD>Ajouter le sort:
-                                <select name="sort_cod">
+                            <TD>Ajouter le(s) sort(s):<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="sort_cod[]" multiple size="8">
                                     <?php $req_m_sorts = "select sort_cod,
                                                               CASE WHEN sort_aggressif='O' THEN  sort_nom || ' (agressif)'
                                                                    WHEN sort_soutien='O' THEN  sort_nom || ' (soutien)'
@@ -825,11 +842,11 @@ if ($erreur == 0)
                                     ?>
                                 </select>
                             </TD>
-                            <TD><input type="submit" value="Ajouter"></TD>
+                            <TD><input type="submit" value="Ajouter les sorts"></TD>
                         </form>
                     </TR>
                 </TABLE>
-
+                <!-- ======================================================= IMMUNITÉS ======================================================= -->
                 <hr>
                 <a id="section_immunites"></a>
                 IMMUNITÉS
@@ -945,7 +962,7 @@ if ($erreur == 0)
                             <TD><input type="checkbox" name="immun_rune" value="O"/></TD>
                             <TD><input type="text" value="" name="immun_valeur"/></TD>
                             <TD><input type="text" value="" name="immun_resistance"/></TD>
-                            <TD><input type="submit" value="Ajouter"/></TD>
+                            <TD><input type="submit" value="Ajouter les immunités"/></TD>
                         </form>
                     </TR>
                 </TABLE>
@@ -979,67 +996,75 @@ if ($erreur == 0)
                     }
                 }
                 ?>
+                <!-- ======================================================= COMPETENCES ======================================================= -->
                 <hr>
                 <a id="section_competences"></a>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Competence</th>
-                        <th>Valeur</th>
-                    </tr>
-                    <?php $req_m_comps =
-                            "select typc_libelle,gtypc_typc_cod,gtypc_valeur from  	gmon_type_comp,  	type_competences where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod";
+                <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                    <input type="hidden" name="section" value="section_competences">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_competences">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Competence</th>
+                            <th align="left">Valeur</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
+                        <?php $req_m_comps =
+                                "select typc_libelle,gtypc_typc_cod,gtypc_valeur from  	gmon_type_comp,  	type_competences where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod";
 
 
-                    $stmt_m_comps = $pdo->query($req_m_comps);
-                    while ($result_m_comps = $stmt_m_comps->fetch())
-                    {
-
-                        $typc_libelle = $result_m_comps['typc_libelle'];
-                        $gtypc_valeur = $result_m_comps['gtypc_valeur'];
-                        $gtypc_cod    = $result_m_comps['gtypc_typc_cod'];
-
-                        $req_detail_comp  =
-                                "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
-                        $stmt_detail_comp = $pdo->query($req_detail_comp);
-                        $liste_comp       = "";
-                        while ($result_detail_comp = $stmt_detail_comp->fetch())
+                        $stmt_m_comps = $pdo->query($req_m_comps);
+                        while ($result_m_comps = $stmt_m_comps->fetch())
                         {
-                            $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
-                        }
+
+                            $typc_libelle = $result_m_comps['typc_libelle'];
+                            $gtypc_valeur = $result_m_comps['gtypc_valeur'];
+                            $gtypc_cod    = $result_m_comps['gtypc_typc_cod'];
+
+                            $req_detail_comp  =
+                                    "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
+                            $stmt_detail_comp = $pdo->query($req_detail_comp);
+                            $liste_comp       = "";
+                            while ($result_detail_comp = $stmt_detail_comp->fetch())
+                            {
+                                $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
+                            }
+                            ?>
+                            <TR>
+                                <TD width="40%">
+                                    <?php echo $typc_libelle; ?> (<?php echo $liste_comp; ?>)
+                                    <input type="hidden" name="typc_cod[]" value="<?php echo $gtypc_cod; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="gtypc_valeur[<?php echo $gtypc_cod; ?>]"
+                                            value="<?php echo $gtypc_valeur; ?>"
+                                            type="text">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="comp_delete[<?php echo $gtypc_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD width="40%"><?php echo $typc_libelle; ?> (<?php echo $liste_comp; ?>)</TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
-                                    <input type="hidden" name="section" value="section_competences">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="mod_comp_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod"
-                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
-                                    <INPUT type="text" name="valeur"
-                                           value="<?php echo $result_m_comps['gtypc_valeur']; ?>">
-                                    <input type="submit" value="Modifier">
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
-                                    <input type="hidden" name="section" value="section_competences">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="supr_comp_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod"
-                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
+
+                        <tr>
+                            <TD colspan="3" align="center">
+                                <input type="submit" value="Modifier les compétences">
                             </TD>
-                        </TR>
-                    <?php }
-                    ?>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
                     <tr><td colspan="3"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_competences">
@@ -1048,8 +1073,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_comp">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD colspan="3">Ajouter la Competence:
-                                <select name="typc_cod">
+                            <TD colspan="3">Ajouter la/les Competence(s):<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="typc_cod[]" multiple size="8">
                                     <?php $req_m_comps =
                                             "select typc_cod,typc_libelle from type_competences where not exists(select 1 from gmon_type_comp where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod) order by typc_libelle";
                                     $stmt_m_comps      = $pdo->query($req_m_comps);
@@ -1076,11 +1102,11 @@ if ($erreur == 0)
                     </TR>
                     <TR>
                         <TD>Valeur: <input type="text" name="valeur" value="0"></TD>
-                        <TD><input type="submit" value="Ajouter"></TD>
+                        <TD><input type="submit" value="Ajouter les compétences"></TD>
                         </form>
                     </TR>
                 </TABLE>
-
+                <!-- ======================================================= COMPETENCES SPECIFIQUES ======================================================= -->
                 <hr>
                 <a id="section_competences_specifiques"></a>
                 COMPETENCES SPECIFIQUES
@@ -1173,10 +1199,11 @@ if ($erreur == 0)
                             </TD>
                             <TD>Pourcentage :<INPUT type="text" name="valeur" value="100"></TD>
                             <TD>Chance :<INPUT type="text" name="chance" value="100"></TD>
-                            <TD><input type="submit" value="Ajouter"></TD>
+                            <TD><input type="submit" value="Ajouter les compétences spécifiques"></TD>
                         </form>
                     </TR>
                 </TABLE>
+                <!-- ======================================================= EFFETS AUTOMATIQUES ======================================================= -->
                 <HR>
                 <a id="section_effets_automatiques"></a>
                 EFFETS AUTOMATIQUES<br><br>
@@ -1254,6 +1281,7 @@ if ($erreur == 0)
                                class='test'/>
                     </div>
                 </form>
+                <!-- ======================================================= OBJETS ======================================================= -->
                 <hr/>
                 <a id="section_objets"></a>
                 OBJETS
@@ -1358,111 +1386,116 @@ if ($erreur == 0)
                         </form>
                     </tr>
                 </TABLE>
-
+                <!-- ======================================================= MONTURE ======================================================= -->
                 <hr>
                 <a id="section_monture"></a>
                 MONTURE
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th align="left">Terrain</th>
-                        <th align="left">Accessible?</th>
-                        <th align="left">Chevauchable?</th>
-                        <th align="left">Gain/Perte de PA</th>
-                        <th align="left">Proba Evt (%)</th>
-                        <th align="left">Evt PA (dé rolliste)</th>
-                        <th align="left">Message si Evenement</th>
-                        <th>--</th>
-                    </tr>
-                    <?php $req_m_terrain =
-                            "select tmon_ter_cod,ter_nom,tmon_gmon_cod,tmon_accessible,tmon_chevauchable,tmon_terrain_pa,tmon_event_chance,tmon_event_pa,tmon_message from monstre_terrain,terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod";
+                <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                    <input type="hidden" name="section" value="section_monture">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_terrains">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                    $stmt_m_terrain = $pdo->query($req_m_terrain);
-                    while ($result_m_terrain = $stmt_m_terrain->fetch())
-                    {
-                        $ter_nom           = $result_m_terrain['ter_nom'];
-                        $sgmon_chance      = $result_m_terrain['sgmon_chance'];
-                        $tmon_accessible   = $result_m_terrain['tmon_accessible'];
-                        $tmon_chevauchable = $result_m_terrain['tmon_chevauchable'];
-                        $tmon_terrain_pa   = $result_m_terrain['tmon_terrain_pa'];
-                        $tmon_event_chance = $result_m_terrain['tmon_event_chance'];
-                        $tmon_event_pa     = $result_m_terrain['tmon_event_pa'];
-                        $tmon_message      = $result_m_terrain['tmon_message'];
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Terrain</th>
+                            <th align="left">Accessible?</th>
+                            <th align="left">Chevauchable?</th>
+                            <th align="left">Gain/Perte de PA</th>
+                            <th align="left">Proba Evt (%)</th>
+                            <th align="left">Evt PA (dé rolliste)</th>
+                            <th align="left">Message si Evenement</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
 
-                        ?>
-                        <TR>
-                            <form method="post" action="admin_type_monstre_edit.php#section_monture">
-                                <input type="hidden" name="section" value="section_monture">
-                                <input type="hidden" name="methode2" value="edit">
-                                <input type="hidden" name="sel_method" value="edit">
-                                <input type="hidden" name="methode" value="mod_mon_terrain">
-                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                <input type="hidden" name="ter_cod"
-                                       value="<?php echo $result_m_terrain['tmon_ter_cod'] ?>">
+                        <?php $req_m_terrain =
+                                "select tmon_ter_cod,ter_nom,tmon_gmon_cod,tmon_accessible,tmon_chevauchable,tmon_terrain_pa,tmon_event_chance,tmon_event_pa,tmon_message from monstre_terrain,terrain where tmon_gmon_cod  = $gmon_cod and tmon_ter_cod = ter_cod";
 
-                                <TD><?php echo $ter_nom ?></TD>
+                        $stmt_m_terrain = $pdo->query($req_m_terrain);
+                        while ($result_m_terrain = $stmt_m_terrain->fetch())
+                        {
+                            $ter_cod           = (int)$result_m_terrain['tmon_ter_cod'];
+                            $ter_nom           = $result_m_terrain['ter_nom'];
+                            $tmon_accessible   = $result_m_terrain['tmon_accessible'];
+                            $tmon_chevauchable = $result_m_terrain['tmon_chevauchable'];
+                            $tmon_terrain_pa   = $result_m_terrain['tmon_terrain_pa'];
+                            $tmon_event_chance = $result_m_terrain['tmon_event_chance'];
+                            $tmon_event_pa     = $result_m_terrain['tmon_event_pa'];
+                            $tmon_message      = $result_m_terrain['tmon_message'];
 
+                            ?>
+                            <TR>
                                 <TD>
-                                    <input type="checkbox"
-                                           name="tmon_accessible"
-                                            <?php echo ($tmon_accessible == 'O') ? 'checked' : ''; ?>>
+                                    <?php echo $ter_nom ?>
+                                    <input type="hidden" name="tmon_ter_cod[]" value="<?php echo $ter_cod; ?>">
                                 </TD>
 
                                 <TD>
-                                    <input type="checkbox"
-                                           name="tmon_chevauchable"
-                                            <?php echo ($tmon_chevauchable == 'O') ? 'checked' : ''; ?>>
+                                    <input
+                                            name="tmon_accessible[<?php echo $ter_cod; ?>]"
+                                            value="O"
+                                            <?php echo ($tmon_accessible == 'O' ? "checked" : ""); ?>
+                                            type="checkbox">
+                                </TD>
+
+                                <TD>
+                                    <input
+                                            name="tmon_chevauchable[<?php echo $ter_cod; ?>]"
+                                            value="O"
+                                            <?php echo ($tmon_chevauchable == 'O' ? "checked" : ""); ?>
+                                            type="checkbox">
                                 </TD>
 
                                 <TD>
                                     <input type="text"
                                            size="6"
-                                           name="tmon_terrain_pa"
+                                           name="tmon_terrain_pa[<?php echo $ter_cod; ?>]"
                                            value="<?php echo $tmon_terrain_pa ?>">
                                 </TD>
 
                                 <TD>
                                     <input type="text"
                                            size="4"
-                                           name="tmon_event_chance"
+                                           name="tmon_event_chance[<?php echo $ter_cod; ?>]"
                                            value="<?php echo $tmon_event_chance ?>">
                                 </TD>
 
                                 <TD>
                                     <input type="text"
                                            size="6"
-                                           name="tmon_event_pa"
+                                           name="tmon_event_pa[<?php echo $ter_cod; ?>]"
                                            value="<?php echo $tmon_event_pa ?>">
                                 </TD>
 
                                 <TD>
                                     <input type="text"
                                            size="60"
-                                           name="tmon_message"
+                                           name="tmon_message[<?php echo $ter_cod; ?>]"
                                            value="<?php echo htmlspecialchars($tmon_message); ?>">
                                 </TD>
 
                                 <TD>
-                                    <input type="submit" value="Modifier">
-                            </form>
-                            </TD>
+                                    <input
+                                            name="tmon_delete[<?php echo $ter_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                            <?php
+                        }
+                        ?>
 
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_monture">
-                                    <input type="hidden" name="section" value="section_monture">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="delete_mon_terrain">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="ter_cod"
-                                           value="<?php echo $result_m_terrain['tmon_ter_cod'] ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
+                        <tr>
+                            <TD colspan="8" align="center">
+                                <input type="submit" value="Modifier les terrains">
                             </TD>
-                        </TR>
-                        <?php
-                    }
-                    ?>
-                    <tr><td colspan="6"><hr></td></tr>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
+                    <tr><td colspan="8"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_monture">
                             <input type="hidden" name="section" value="section_monture">
@@ -1495,7 +1528,7 @@ if ($erreur == 0)
                             <TD><input type="text" size=4 name="tmon_event_chance" value="0"></TD>
                             <TD><input type="text" size=6 name="tmon_event_pa" value="0"></TD>
                             <TD><input type="text" size=60 name="tmon_message" value=""></TD>
-                            <TD><input type="submit" value="Ajouter"></TD>
+                            <TD><input type="submit" value="Ajouter les terrains"></TD>
                         </form>
                     </TR>
                 </TABLE>
@@ -1503,9 +1536,9 @@ if ($erreur == 0)
             <?php }
             } else
             {
-
                 // NOUVEAU MONSTRE GENERIQUE
                 ?>
+                <!-- ======================================================= NOUVEAU MONSTRE GENERIQUE ======================================================= -->
                 <form method="post" enctype="multipart/form-data">
                     <input type="hidden" name="methode2" value="edit">
                     <input type="hidden" name="methode" value="create_mon">
