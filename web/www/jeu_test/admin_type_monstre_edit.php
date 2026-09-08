@@ -41,7 +41,6 @@ ob_start();
     <script language="javascript" src="../js/multiple-select.min.js?v<?php echo $__VERSION; ?>"></script>
     <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
 
-
         <?php if ($section_courante != '') { ?>
         window.onload = function() {
             location.hash = "<?php echo $section_courante; ?>";
@@ -1012,6 +1011,23 @@ if ($erreur == 0)
                             <TD><input type="text" value="" name="immun_resistance"/></TD>
                             <TD><input type="submit" value="Ajouter les immunités"/></TD>
                         </form>
+                    </TR>
+                    <TR>
+                        <td colspan="5" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_immunites">
+                                <input type="hidden" name="section" value="section_immunites">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les immunités depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="immun_gmon_source_cod" type="text" size="5" value="">
+                                <span id="immun_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("immun_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_immunites"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_immunites"> Fusionner </button>
+                            </form>
+                        </td>
                     </TR>
                 </TABLE>
 

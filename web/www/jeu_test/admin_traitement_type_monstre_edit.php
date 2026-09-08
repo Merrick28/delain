@@ -651,6 +651,53 @@ switch ($methode)
         echo "Ajout d’une ou plusieurs immunité(s)";
         break;
 
+    case "replace_mon_immunites":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from monstre_generique_immunite  where immun_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance,immun_runes )
+                            select immun_sort_cod, $gmon_cod, immun_valeur, immun_resistance, immun_runes 
+                                from monstre_generique_immunite 
+                                where immun_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des immunités depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Immunités remplacées";
+        break;
+
+    case "merge_mon_immunites":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("insert into monstre_generique_immunite ( immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes )
+                            select src.immun_sort_cod, $gmon_cod, src.immun_valeur, src.immun_resistance, src.immun_runes
+                                from monstre_generique_immunite src
+                                where src.immun_gmon_cod = $gmon_source_cod
+                                     and not exists ( select 1 from monstre_generique_immunite dest where dest.immun_gmon_cod = $gmon_cod and dest.immun_sort_cod = src.immun_sort_cod) ");
+
+        writelog($log . "Fusion des immunités depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Immunités fusionnées";
+
+        break;
+
     case "add_mon_comp":
         // typc_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute un type de
         // compétence par sélection, tous avec la même valeur.
