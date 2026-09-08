@@ -1013,6 +1013,53 @@ switch ($methode)
         echo "Modification des compétences spécifiques : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
+    case "replace_mon_comp_spe":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from monstre_generique_comp where gmoncomp_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into monstre_generique_comp (gmoncomp_gmon_cod, gmoncomp_comp_cod, gmoncomp_valeur, gmoncomp_chance)
+                            select $gmon_cod, gmoncomp_comp_cod, gmoncomp_valeur, gmoncomp_chance
+                                from monstre_generique_comp
+                                where gmoncomp_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des compétences spécifiques depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Compétences spécifiques remplacées";
+        break;
+
+    case "merge_mon_comp_spe":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("insert into monstre_generique_comp ( gmoncomp_gmon_cod, gmoncomp_comp_cod, gmoncomp_valeur, gmoncomp_chance )
+                            select $gmon_cod, src.gmoncomp_comp_cod, src.gmoncomp_valeur, src.gmoncomp_chance
+                                from monstre_generique_comp src
+                                where src.gmoncomp_gmon_cod = $gmon_source_cod
+                                     and not exists ( select 1 from monstre_generique_comp dest where dest.gmoncomp_gmon_cod = $gmon_cod and dest.gmoncomp_comp_cod = src.gmoncomp_comp_cod) ");
+
+        writelog($log . "Fusion des compétences spécifiques depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Compétences spécifiques fusionnées";
+
+        break;
+
     case "add_mon_drop":
         // AJOUT D'UN DROP
 
