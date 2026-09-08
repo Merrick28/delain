@@ -34,6 +34,15 @@ $section_courante = $_REQUEST['section'] ?? '';
 ob_start();
 ?>
     <link href="../css/multiple-select.min.css?v<?php echo $__VERSION; ?>" rel="stylesheet">
+    <style>
+        /* Décale le point de défilement des ancres de section vers le haut,  pour compenser la hauteur du menu de navigation "sticky" et éviter qu'il ne recouvre le titre de la section visée. */
+        .section-anchor {
+            display: block;
+            position: relative;
+            top: -50px;
+            visibility: hidden;
+        }
+    </style>
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
     <script language="javascript" src="../scripts/validation.js?<?php echo $__VERSION; ?>"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
@@ -802,7 +811,7 @@ if ($erreur == 0)
             {
                 ?>
                 <hr>
-                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:lightgray; margin-bottom:15px;">
+                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:aquamarine; margin-bottom:15px;">
                     <strong>Navigation :</strong>
                     <a href="#section_sorts">Sorts</a> |
                     <a href="#section_immunites">Immunités</a> |
@@ -814,7 +823,7 @@ if ($erreur == 0)
                 </div>
                 <!-- ======================================================= SORTS ======================================================= -->
                 <hr>
-                <a id="section_sorts"></a>
+                <a id="section_sorts" class="section-anchor"></a>
                 SORTS
                 <form method="post" action="admin_type_monstre_edit.php#section_sorts">
                     <input type="hidden" name="section" value="section_sorts">
@@ -892,10 +901,27 @@ if ($erreur == 0)
                             <TD><input type="submit" value="Ajouter les sorts"></TD>
                         </form>
                     </TR>
+                    <TR>
+                        <td colspan="5" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_sorts">
+                                <input type="hidden" name="section" value="section_sorts">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les sorts depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="sort_gmon_source_cod" type="text" size="5" value="">
+                                <span id="sort_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("sort_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_sort"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_sort"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
                 <!-- ======================================================= IMMUNITÉS ======================================================= -->
                 <hr>
-                <a id="section_immunites"></a>
+                <a id="section_immunites" class="section-anchor"></a>
                 IMMUNITÉS
                 <form method="post" action="admin_type_monstre_edit.php#section_immunites">
                     <input type="hidden" name="section" value="section_immunites">
@@ -1062,7 +1088,7 @@ if ($erreur == 0)
                 ?>
                 <!-- ======================================================= COMPETENCES ======================================================= -->
                 <hr>
-                <a id="section_competences"></a>
+                <a id="section_competences" class="section-anchor"></a>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
                 <form method="post" action="admin_type_monstre_edit.php#section_competences">
@@ -1169,10 +1195,27 @@ if ($erreur == 0)
                         <TD><input type="submit" value="Ajouter les compétences"></TD>
                         </form>
                     </TR>
+                    <TR>
+                        <td colspan="3" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                                <input type="hidden" name="section" value="section_competences">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les compétences depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="comp_gmon_source_cod" type="text" size="5" value="">
+                                <span id="comp_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("comp_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_competences"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_competences"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
                 <!-- ======================================================= COMPETENCES SPECIFIQUES ======================================================= -->
                 <hr>
-                <a id="section_competences_specifiques"></a>
+                <a id="section_competences_specifiques" class="section-anchor"></a>
                 COMPETENCES SPECIFIQUES
 
                 <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
@@ -1266,10 +1309,27 @@ if ($erreur == 0)
                             <TD><input type="submit" value="Ajouter les compétences spécifiques"></TD>
                         </form>
                     </TR>
+                    <TR>
+                        <td colspan="6" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
+                                <input type="hidden" name="section" value="section_competences_specifiques">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les compétences spécifiques depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="comp_spe_gmon_source_cod" type="text" size="5" value="">
+                                <span id="comp_spe_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("comp_spe_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_comp_spe"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_comp_spe"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
                 <!-- ======================================================= EFFETS AUTOMATIQUES ======================================================= -->
                 <HR>
-                <a id="section_effets_automatiques"></a>
+                <a id="section_effets_automatiques" class="section-anchor"></a>
                 EFFETS AUTOMATIQUES<br><br>
                 <?php // Liste des monstres
                 $req = 'select gmon_nom, gmon_cod from monstre_generique order by gmon_nom';
@@ -1345,9 +1405,29 @@ if ($erreur == 0)
                                class='test'/>
                     </div>
                 </form>
+
+                <TABLE width="80%" align="center">
+                    <TR>
+                        <td colspan="5" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_effets_automatiques">
+                                <input type="hidden" name="section" value="section_effets_automatiques">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les effets automatiques depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="effet_gmon_source_cod" type="text" size="5" value="">
+                                <span id="effet_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("effet_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_effets"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_effets"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
+                </TABLE>
                 <!-- ======================================================= OBJETS ======================================================= -->
                 <hr/>
-                <a id="section_objets"></a>
+                <a id="section_objets" class="section-anchor"></a>
                 OBJETS
                 <form method="post" action="admin_type_monstre_edit.php#section_objets">
                     <input type="hidden" name="section" value="section_objets">
@@ -1449,10 +1529,27 @@ if ($erreur == 0)
                             <td colspan="2"></td>
                         </form>
                     </tr>
+                    <TR>
+                        <td colspan="6" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                                <input type="hidden" name="section" value="section_objets">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les objets depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="drop_gmon_source_cod" type="text" size="5" value="">
+                                <span id="drop_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("drop_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_drops"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_drops"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
                 <!-- ======================================================= MONTURE ======================================================= -->
                 <hr>
-                <a id="section_monture"></a>
+                <a id="section_monture" class="section-anchor"></a>
                 MONTURE
                 <form method="post" action="admin_type_monstre_edit.php#section_monture">
                     <input type="hidden" name="section" value="section_monture">
@@ -1594,6 +1691,23 @@ if ($erreur == 0)
                             <TD><input type="text" size=60 name="tmon_message" value=""></TD>
                             <TD><input type="submit" value="Ajouter les terrains"></TD>
                         </form>
+                    </TR>
+                    <TR>
+                        <td colspan="8" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                                <input type="hidden" name="section" value="section_monture">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les terrains depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="terrain_gmon_source_cod" type="text" size="5" value="">
+                                <span id="terrain_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("terrain_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_terrains"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_terrains"> Fusionner </button>
+                            </form>
+                        </td>
                     </TR>
                 </TABLE>
 
