@@ -34,6 +34,15 @@ $section_courante = $_REQUEST['section'] ?? '';
 ob_start();
 ?>
     <link href="../css/multiple-select.min.css?v<?php echo $__VERSION; ?>" rel="stylesheet">
+    <style>
+        /* Décale le point de défilement des ancres de section vers le haut,  pour compenser la hauteur du menu de navigation "sticky" et éviter qu'il ne recouvre le titre de la section visée. */
+        .section-anchor {
+            display: block;
+            position: relative;
+            top: -50px;
+            visibility: hidden;
+        }
+    </style>
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
     <script language="javascript" src="../scripts/validation.js?<?php echo $__VERSION; ?>"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
@@ -814,7 +823,7 @@ if ($erreur == 0)
                 </div>
                 <!-- ======================================================= SORTS ======================================================= -->
                 <hr>
-                <a id="section_sorts"></a>
+                <a id="section_sorts" class="section-anchor"></a>
                 SORTS
                 <form method="post" action="admin_type_monstre_edit.php#section_sorts">
                     <input type="hidden" name="section" value="section_sorts">
@@ -912,7 +921,7 @@ if ($erreur == 0)
                 </TABLE>
                 <!-- ======================================================= IMMUNITÉS ======================================================= -->
                 <hr>
-                <a id="section_immunites"></a>
+                <a id="section_immunites" class="section-anchor"></a>
                 IMMUNITÉS
                 <form method="post" action="admin_type_monstre_edit.php#section_immunites">
                     <input type="hidden" name="section" value="section_immunites">
@@ -1079,7 +1088,7 @@ if ($erreur == 0)
                 ?>
                 <!-- ======================================================= COMPETENCES ======================================================= -->
                 <hr>
-                <a id="section_competences"></a>
+                <a id="section_competences" class="section-anchor"></a>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
                 <form method="post" action="admin_type_monstre_edit.php#section_competences">
@@ -1206,7 +1215,7 @@ if ($erreur == 0)
                 </TABLE>
                 <!-- ======================================================= COMPETENCES SPECIFIQUES ======================================================= -->
                 <hr>
-                <a id="section_competences_specifiques"></a>
+                <a id="section_competences_specifiques" class="section-anchor"></a>
                 COMPETENCES SPECIFIQUES
 
                 <form method="post" action="admin_type_monstre_edit.php#section_competences_specifiques">
@@ -1320,7 +1329,7 @@ if ($erreur == 0)
                 </TABLE>
                 <!-- ======================================================= EFFETS AUTOMATIQUES ======================================================= -->
                 <HR>
-                <a id="section_effets_automatiques"></a>
+                <a id="section_effets_automatiques" class="section-anchor"></a>
                 EFFETS AUTOMATIQUES<br><br>
                 <?php // Liste des monstres
                 $req = 'select gmon_nom, gmon_cod from monstre_generique order by gmon_nom';
@@ -1418,7 +1427,7 @@ if ($erreur == 0)
                 </TABLE>
                 <!-- ======================================================= OBJETS ======================================================= -->
                 <hr/>
-                <a id="section_objets"></a>
+                <a id="section_objets" class="section-anchor"></a>
                 OBJETS
                 <form method="post" action="admin_type_monstre_edit.php#section_objets">
                     <input type="hidden" name="section" value="section_objets">
@@ -1540,7 +1549,7 @@ if ($erreur == 0)
                 </TABLE>
                 <!-- ======================================================= MONTURE ======================================================= -->
                 <hr>
-                <a id="section_monture"></a>
+                <a id="section_monture" class="section-anchor"></a>
                 MONTURE
                 <form method="post" action="admin_type_monstre_edit.php#section_monture">
                     <input type="hidden" name="section" value="section_monture">
