@@ -1001,63 +1001,70 @@ if ($erreur == 0)
                 <a id="section_competences"></a>
                 COMPETENCES  <?php echo "<em style='color:#800000;'><strong>" . $arme_info . "</strong></em>"; ?>
 
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Competence</th>
-                        <th>Valeur</th>
-                    </tr>
-                    <?php $req_m_comps =
-                            "select typc_libelle,gtypc_typc_cod,gtypc_valeur from  	gmon_type_comp,  	type_competences where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod";
+                <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                    <input type="hidden" name="section" value="section_competences">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_competences">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Competence</th>
+                            <th align="left">Valeur</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
+                        <?php $req_m_comps =
+                                "select typc_libelle,gtypc_typc_cod,gtypc_valeur from  	gmon_type_comp,  	type_competences where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod";
 
 
-                    $stmt_m_comps = $pdo->query($req_m_comps);
-                    while ($result_m_comps = $stmt_m_comps->fetch())
-                    {
-
-                        $typc_libelle = $result_m_comps['typc_libelle'];
-                        $gtypc_valeur = $result_m_comps['gtypc_valeur'];
-                        $gtypc_cod    = $result_m_comps['gtypc_typc_cod'];
-
-                        $req_detail_comp  =
-                                "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
-                        $stmt_detail_comp = $pdo->query($req_detail_comp);
-                        $liste_comp       = "";
-                        while ($result_detail_comp = $stmt_detail_comp->fetch())
+                        $stmt_m_comps = $pdo->query($req_m_comps);
+                        while ($result_m_comps = $stmt_m_comps->fetch())
                         {
-                            $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
-                        }
+
+                            $typc_libelle = $result_m_comps['typc_libelle'];
+                            $gtypc_valeur = $result_m_comps['gtypc_valeur'];
+                            $gtypc_cod    = $result_m_comps['gtypc_typc_cod'];
+
+                            $req_detail_comp  =
+                                    "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
+                            $stmt_detail_comp = $pdo->query($req_detail_comp);
+                            $liste_comp       = "";
+                            while ($result_detail_comp = $stmt_detail_comp->fetch())
+                            {
+                                $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
+                            }
+                            ?>
+                            <TR>
+                                <TD width="40%">
+                                    <?php echo $typc_libelle; ?> (<?php echo $liste_comp; ?>)
+                                    <input type="hidden" name="typc_cod[]" value="<?php echo $gtypc_cod; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="gtypc_valeur[<?php echo $gtypc_cod; ?>]"
+                                            value="<?php echo $gtypc_valeur; ?>"
+                                            type="text">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="comp_delete[<?php echo $gtypc_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD width="40%"><?php echo $typc_libelle; ?> (<?php echo $liste_comp; ?>)</TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
-                                    <input type="hidden" name="section" value="section_competences">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="mod_comp_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod"
-                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
-                                    <INPUT type="text" name="valeur"
-                                           value="<?php echo $result_m_comps['gtypc_valeur']; ?>">
-                                    <input type="submit" value="Modifier">
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" action="admin_type_monstre_edit.php#section_competences">
-                                    <input type="hidden" name="section" value="section_competences">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="supr_comp_mon">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="typc_cod"
-                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
+
+                        <tr>
+                            <TD colspan="3" align="center">
+                                <input type="submit" value="Modifier les compétences">
                             </TD>
-                        </TR>
-                    <?php }
-                    ?>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
                     <tr><td colspan="3"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_competences">

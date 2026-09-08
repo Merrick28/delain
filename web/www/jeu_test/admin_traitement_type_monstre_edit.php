@@ -589,31 +589,78 @@ switch ($methode)
         echo "Ajout d’une ou plusieurs competence(s)";
         break;
 
-    case "mod_comp_mon":
-        $req_upd_mon =
-            "select typc_libelle,gtypc_valeur from gmon_type_comp,type_competences where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod and typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Modification d’une compétence : $typc_cod - " . $result['typc_libelle'] . " Chances: " .
-            $result['gtypc_valeur'] . " -> $valeur\n", 'monstre_edit');
+    case "update_mon_competences":
+        // MODIFICATION / SUPPRESSION GROUPEE DES COMPETENCES
+        $typc_cod_list = isset($_POST['typc_cod']) && is_array($_POST['typc_cod'])
+            ? $_POST['typc_cod']
+            : array();
 
-        $req_upd_mon =
-            "update gmon_type_comp set gtypc_valeur = $valeur where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Modification d’une compétence";
-        break;
+        $gtypc_valeur_list = isset($_POST['gtypc_valeur']) && is_array($_POST['gtypc_valeur'])
+            ? $_POST['gtypc_valeur']
+            : array();
 
-    case "supr_comp_mon":
-        $req_upd_mon = "delete from gmon_type_comp  where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
-        //echo $req_upd_mon;
-        $stmt = $pdo->query($req_upd_mon);
+        $comp_delete_list = isset($_POST['comp_delete']) && is_array($_POST['comp_delete'])
+            ? $_POST['comp_delete']
+            : array();
 
-        $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Supression d’un type de compétences : $typc_cod - " . $result['typc_libelle'] .
-            "\n", 'monstre_edit');
-        echo "Suppression d’une competence";
+        $nb_modifications = 0;
+        $nb_suppressions  = 0;
+
+        foreach ($typc_cod_list as $typc_cod)
+        {
+            $typc_cod = (int)$typc_cod;
+
+            if ($typc_cod <= 0)
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
+            $stmt   = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $typc_libelle = $result['typc_libelle'];
+
+            if (isset($comp_delete_list[$typc_cod]))
+            {
+                $req_upd_mon =
+                    "delete from gmon_type_comp
+                     where gtypc_gmon_cod = $gmon_cod
+                       and gtypc_typc_cod = $typc_cod";
+                $pdo->query($req_upd_mon);
+
+                writelog($log . "Supression d'un type de competences : $typc_cod - $typc_libelle\n", 'monstre_edit');
+
+                $nb_suppressions++;
+                continue;
+            }
+
+            $valeur = isset($gtypc_valeur_list[$typc_cod]) ? (int)$gtypc_valeur_list[$typc_cod] : 0;
+
+            $req_upd_mon =
+                "update gmon_type_comp
+                 set gtypc_valeur = $valeur
+                 where gtypc_gmon_cod = $gmon_cod
+                   and gtypc_typc_cod = $typc_cod";
+
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log .
+                "Modification d'un type de competences : $typc_cod - $typc_libelle" .
+                " | Valeur: $valeur\n",
+                'monstre_edit'
+            );
+
+            $nb_modifications++;
+        }
+
+        echo "Modification des compétences : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
     case "add_mon_comp_spe":
