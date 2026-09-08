@@ -1500,6 +1500,23 @@ if ($erreur == 0)
                             <td colspan="2"></td>
                         </form>
                     </tr>
+                    <TR>
+                        <td colspan="6" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_objets">
+                                <input type="hidden" name="section" value="section_objets">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les objets depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="drop_gmon_source_cod" type="text" size="5" value="">
+                                <span id="drop_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("drop_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_drops"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_drops"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
                 <!-- ======================================================= MONTURE ======================================================= -->
                 <hr>
