@@ -76,9 +76,95 @@ switch ($methode)
                 . ",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
                 . ",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex, $gmon_ia, '$gmon_monture')";
             $pdo->query($req_cre_gmon);
+
+            // --- DUPLICATION DES PROPRIETES DEPUIS LE MONSTRE MODELE ---
+            $gmon_cod_source = isset($_POST['gmon_cod_source']) ? (int)$_POST['gmon_cod_source'] : 0;
+            if ($gmon_cod_source > 0) {
+                // 1. DUPLICATION DES SORTS
+                $req_copy_sorts = "INSERT INTO sorts_monstre_generique (sgmon_gmon_cod, sgmon_sort_cod, sgmon_chance)
+                                   SELECT $gmon_cod, sgmon_sort_cod, sgmon_chance
+                                   FROM sorts_monstre_generique
+                                   WHERE sgmon_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_sorts);
+
+                // 2. DUPLICATION DES IMMUNITES
+                $req_copy_immun = "INSERT INTO monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_resistance, immun_runes)
+                                   SELECT immun_sort_cod, $gmon_cod, immun_valeur, immun_resistance, immun_runes
+                                   FROM monstre_generique_immunite
+                                   WHERE immun_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_immun);
+
+                // 3. DUPLICATION DES COMPETENCES DE BASE
+                $req_copy_comp = "INSERT INTO gmon_type_comp (gtypc_gmon_cod, gtypc_typc_cod, gtypc_valeur)
+                                  SELECT $gmon_cod, gtypc_typc_cod, gtypc_valeur
+                                  FROM gmon_type_comp
+                                  WHERE gtypc_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_comp);
+
+                // 4. DUPLICATION DES COMPETENCES SPECIFIQUES
+                $req_copy_comp_spe = "INSERT INTO monstre_generique_comp (gmoncomp_gmon_cod, gmoncomp_comp_cod, gmoncomp_valeur, gmoncomp_chance)
+                                      SELECT $gmon_cod, gmoncomp_comp_cod, gmoncomp_valeur, gmoncomp_chance
+                                      FROM monstre_generique_comp
+                                      WHERE gmoncomp_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_comp_spe);
+
+                // 5. DUPLICATION DES EFFETS AUTOMATIQUES
+                $req_copy_effets = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode)
+                                    SELECT fonc_nom, $gmon_cod, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite, fonc_mode
+                                    FROM fonction_specifique
+                                    WHERE fonc_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_effets);
+
+                // 6. DUPLICATION DES OBJETS / DROPS
+                $req_copy_drops = "INSERT INTO objets_monstre_generique (ogmon_gmon_cod, ogmon_gobj_cod, ogmon_chance, ogmon_equipe)
+                                   SELECT $gmon_cod, ogmon_gobj_cod, ogmon_chance, ogmon_equipe
+                                   FROM objets_monstre_generique
+                                   WHERE ogmon_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_drops);
+
+                // 7. DUPLICATION DES TERRAINS ET MONTURE
+                $req_copy_terrains = "INSERT INTO monstre_terrain (tmon_gmon_cod, tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message)
+                                      SELECT $gmon_cod, tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message
+                                      FROM monstre_terrain
+                                      WHERE tmon_gmon_cod = $gmon_cod_source";
+                $pdo->query($req_copy_terrains);
+
+            }
+
         }
         writelog($log . "Nouveau type de monstre : $gmon_nom \n", 'monstre_edit');
-        echo "Nouveau modèle<br>";
+        echo "Nouveau modèle créé et dupliqué avec succès<br>";
+        break;
+
+    case "delete_mon":
+        // Vérification de la présence de monstres en jeu basés sur ce modèle
+        $req_check = "SELECT COUNT(*) AS nb FROM perso WHERE perso_gmon_cod = " . (int)$gmon_cod;
+        $stmt_check = $pdo->query($req_check);
+        $res_check = $stmt_check->fetch();
+
+        if ($res_check && $res_check['nb'] > 0) {
+            echo "<strong>Impossible de supprimer ce modèle : " . $res_check['nb'] . " monstre(s) basé(s) dessus existent encore en jeu.</strong><br>";
+            break;
+        }
+
+        // Suppression des dépendances secondaires
+        $pdo->query("DELETE FROM sorts_monstre_generique WHERE sgmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_generique_immunite WHERE immun_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM gmon_type_comp WHERE gtypc_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_generique_comp WHERE gmoncomp_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM objets_monstre_generique WHERE ogmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM monstre_terrain WHERE tmon_gmon_cod = $gmon_cod");
+        $pdo->query("DELETE FROM fonction_specifique WHERE fonc_gmon_cod = $gmon_cod");
+
+        // Suppression du modèle de monstre
+        $req_del_gmon = "DELETE FROM monstre_generique WHERE gmon_cod = $gmon_cod";
+        $pdo->query($req_del_gmon);
+
+        writelog($log . "Suppression du modèle de monstre : $pmons_mod_nom (ID: $gmon_cod)\n", 'monstre_edit');
+        echo "Modèle de monstre supprimé avec succès.<br>";
+
+        // Réinitialisation de la méthode pour repasser sur l'écran d'accueil
+        $methode2 = 'debut';
         break;
 
     case "update_mon":
