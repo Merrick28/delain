@@ -1663,6 +1663,23 @@ if ($erreur == 0)
                             <TD><input type="submit" value="Ajouter les terrains"></TD>
                         </form>
                     </TR>
+                    <TR>
+                        <td colspan="8" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_monture">
+                                <input type="hidden" name="section" value="section_monture">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les terrains depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="terrain_gmon_source_cod" type="text" size="5" value="">
+                                <span id="terrain_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("terrain_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_terrains"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_terrains"> Fusionner </button>
+                            </form>
+                        </td>
+                    </TR>
                 </TABLE>
 
             <?php }

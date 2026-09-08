@@ -562,6 +562,53 @@ switch ($methode)
         echo "Modification des montures : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
         break;
 
+    case "replace_mon_terrains":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from monstre_terrain where tmon_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into monstre_terrain (tmon_gmon_cod, tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message)
+                            select $gmon_cod, tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message
+                                from monstre_terrain
+                                where tmon_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des terrains depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Terrains remplacés";
+        break;
+
+    case "merge_mon_terrains":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("insert into monstre_terrain (tmon_gmon_cod, tmon_ter_cod, tmon_accessible, tmon_chevauchable, tmon_terrain_pa, tmon_event_chance, tmon_event_pa, tmon_message)
+                            select $gmon_cod, src.tmon_ter_cod, src.tmon_accessible, src.tmon_chevauchable, src.tmon_terrain_pa, src.tmon_event_chance, src.tmon_event_pa, src.tmon_message
+                                from monstre_terrain src
+                                where src.tmon_gmon_cod = $gmon_source_cod
+                                     and not exists ( select 1 from monstre_terrain dest where dest.tmon_gmon_cod = $gmon_cod and dest.tmon_ter_cod = src.tmon_ter_cod) ");
+
+        writelog($log . "Fusion des terrains depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Terrains fusionnés";
+
+        break;
+
     case "update_mon_immunites":
         $sort_cod_list = isset($_POST['immun_sort_cod']) && is_array($_POST['immun_sort_cod'])
             ? $_POST['immun_sort_cod']
