@@ -338,6 +338,55 @@ switch ($methode)
         echo "Modification des sorts : $nb_suppressions supprimé(s)";
         break;
 
+
+    case "replace_mon_sort":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from sorts_monstre_generique  where sgmon_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into sorts_monstre_generique (sgmon_sort_cod, sgmon_gmon_cod)
+                            select sgmon_sort_cod, $gmon_cod
+                                from sorts_monstre_generique
+                                where sgmon_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des Sorts depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Sorts remplacés";
+        break;
+
+    case "merge_mon_sort":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("insert into sorts_monstre_generique ( sgmon_sort_cod, sgmon_gmon_cod )
+                            select src.sgmon_sort_cod, $gmon_cod
+                                from sorts_monstre_generique src
+                                where src.sgmon_gmon_cod = $gmon_source_cod
+                                     and not exists ( select 1 from sorts_monstre_generique dest where dest.sgmon_gmon_cod = $gmon_cod and dest.sgmon_sort_cod = src.sgmon_sort_cod) ");
+
+        writelog($log . "Fusion des Sorts depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Sorts fusionnés";
+
+        break;
+
+
     case "add_mon_terrain":
 
         $ter_cod_list = $_REQUEST['ter_cod'];
@@ -794,6 +843,53 @@ switch ($methode)
         }
 
         echo "Modification des compétences : $nb_modifications modifiée(s), $nb_suppressions supprimée(s)";
+        break;
+
+    case "replace_mon_competences":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("delete from gmon_type_comp where gtypc_gmon_cod = $gmon_cod ");
+        $pdo->query("insert into gmon_type_comp (gtypc_gmon_cod, gtypc_typc_cod, gtypc_valeur)
+                            select $gmon_cod, gtypc_typc_cod, gtypc_valeur
+                                from gmon_type_comp
+                                where gtypc_gmon_cod = $gmon_source_cod ");
+
+        writelog( $log . "Remplacement des compétences depuis le monstre $gmon_source_cod\n", 'monstre_edit');
+        echo "Compétences remplacées";
+        break;
+
+    case "merge_mon_competences":
+
+        $gmon_source_cod = (int)$_POST['gmon_source_cod'];
+        if ($gmon_source_cod <= 0) {
+            echo "Aucun monstre source sélectionné";
+            break;
+        }
+
+        if ($gmon_source_cod == $gmon_cod) {
+            echo "Impossible de copier sur lui-même";
+            break;
+        }
+
+        $pdo->query("insert into gmon_type_comp ( gtypc_gmon_cod, gtypc_typc_cod, gtypc_valeur )
+                            select $gmon_cod, src.gtypc_typc_cod, src.gtypc_valeur
+                                from gmon_type_comp src
+                                where src.gtypc_gmon_cod = $gmon_source_cod
+                                     and not exists ( select 1 from gmon_type_comp dest where dest.gtypc_gmon_cod = $gmon_cod and dest.gtypc_typc_cod = src.gtypc_typc_cod) ");
+
+        writelog($log . "Fusion des compétences depuis le monstre $gmon_source_cod\n",'monstre_edit');
+        echo "Compétences fusionnées";
+
         break;
 
     case "add_mon_comp_spe":

@@ -802,7 +802,7 @@ if ($erreur == 0)
             {
                 ?>
                 <hr>
-                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:lightgray; margin-bottom:15px;">
+                <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:aquamarine; margin-bottom:15px;">
                     <strong>Navigation :</strong>
                     <a href="#section_sorts">Sorts</a> |
                     <a href="#section_immunites">Immunités</a> |
@@ -891,6 +891,23 @@ if ($erreur == 0)
                             </TD>
                             <TD><input type="submit" value="Ajouter les sorts"></TD>
                         </form>
+                    </TR>
+                    <TR>
+                        <td colspan="5" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_sorts">
+                                <input type="hidden" name="section" value="section_sorts">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les sorts depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="sort_gmon_source_cod" type="text" size="5" value="">
+                                <span id="sort_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("sort_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_sort"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_sort"> Fusionner </button>
+                            </form>
+                        </td>
                     </TR>
                 </TABLE>
                 <!-- ======================================================= IMMUNITÉS ======================================================= -->
@@ -1168,6 +1185,23 @@ if ($erreur == 0)
                         <TD>Valeur: <input type="text" name="valeur" value="0"></TD>
                         <TD><input type="submit" value="Ajouter les compétences"></TD>
                         </form>
+                    </TR>
+                    <TR>
+                        <td colspan="3" align="left">
+                            <form method="post" action="admin_type_monstre_edit.php#section_competences">
+                                <input type="hidden" name="section" value="section_competences">
+                                <input type="hidden" name="methode2" value="edit">
+                                <input type="hidden" name="sel_method" value="edit">
+                                <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
+
+                                <strong>Importer les compétences depuis un autre monstre générique :</strong>
+                                <input name="gmon_source_cod"  id="comp_gmon_source_cod" type="text" size="5" value="">
+                                <span id="comp_gmon_source_nom"></span>
+                                <input type="button" class="test" value="Rechercher" onClick='getTableCod("comp_gmon_source","monstre_generique","Rechercher un monstre générique");'>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="replace_mon_competences"> Remplacer </button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" name="methode" value="merge_mon_competences"> Fusionner </button>
+                            </form>
+                        </td>
                     </TR>
                 </TABLE>
                 <!-- ======================================================= COMPETENCES SPECIFIQUES ======================================================= -->
