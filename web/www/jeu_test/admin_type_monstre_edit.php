@@ -769,39 +769,55 @@ if ($erreur == 0)
                 <hr>
                 <a id="section_sorts"></a>
                 SORTS
-                <TABLE width="80%" align="center">
-                    <tr>
-                        <th>Sort</th>
-                        <th>--</th>
-                    </tr>
-                    <?php $req_m_sorts =
-                            "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod";
+                <form method="post" action="admin_type_monstre_edit.php#section_sorts">
+                    <input type="hidden" name="section" value="section_sorts">
+                    <input type="hidden" name="methode2" value="edit">
+                    <input type="hidden" name="sel_method" value="edit">
+                    <input type="hidden" name="methode" value="update_mon_sorts">
+                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
 
-                    $stmt_m_sorts = $pdo->query($req_m_sorts);
-                    while ($result_m_sorts = $stmt_m_sorts->fetch())
-                    {
-                        $sort_nom         = $result_m_sorts['sort_nom'];
-                        $sgmon_chance     = $result_m_sorts['sgmon_chance'];
-                        $sort_nom_advance =
-                                $result_m_sorts['sort_aggressif'] == 'O' ? ' <em>(agressif)</em>' : ($result_m_sorts['sort_soutien'] == 'O' ? ' <em>(soutien)</em>' : '');
+                    <TABLE width="80%" align="center">
+                        <tr>
+                            <th align="left">Sort</th>
+                            <th align="left">Supprimer</th>
+                        </tr>
+                        <?php $req_m_sorts =
+                                "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod order by sort_nom";
+
+                        $stmt_m_sorts = $pdo->query($req_m_sorts);
+                        while ($result_m_sorts = $stmt_m_sorts->fetch())
+                        {
+                            $sort_cod         = (int)$result_m_sorts['sgmon_sort_cod'];
+                            $sort_nom         = $result_m_sorts['sort_nom'];
+                            $sgmon_chance     = $result_m_sorts['sgmon_chance'];
+                            $sort_nom_advance =
+                                    $result_m_sorts['sort_aggressif'] == 'O' ? ' <em>(agressif)</em>' : ($result_m_sorts['sort_soutien'] == 'O' ? ' <em>(soutien)</em>' : '');
+                            ?>
+                            <TR>
+                                <TD>
+                                    <?php echo $sort_nom . $sort_nom_advance; ?>
+                                    <input type="hidden" name="sort_cod[]" value="<?php echo $sort_cod; ?>">
+                                </TD>
+                                <TD>
+                                    <input
+                                            name="sort_delete[<?php echo $sort_cod; ?>]"
+                                            value="O"
+                                            type="checkbox">
+                                </TD>
+                            </TR>
+                        <?php }
                         ?>
-                        <TR>
-                            <TD><?php echo $sort_nom . $sort_nom_advance; ?></TD>
-                            <TD>
-                                <form method="post" action="admin_type_monstre_edit.php#section_sorts" >
-                                    <input type="hidden" name="section" value="section_sorts">
-                                    <input type="hidden" name="methode2" value="edit">
-                                    <input type="hidden" name="sel_method" value="edit">
-                                    <input type="hidden" name="methode" value="delete_mon_sort">
-                                    <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                                    <input type="hidden" name="sort_cod"
-                                           value="<?php echo $result_m_sorts['sgmon_sort_cod'] ?>">
-                                    <input type="submit" value="Supprimer">
-                                </form>
+
+                        <tr>
+                            <TD colspan="2" align="center">
+                                <input type="submit" value="Modifier les sorts">
                             </TD>
-                        </TR>
-                    <?php }
-                    ?>
+                        </tr>
+                    </TABLE>
+                </form>
+
+                <TABLE width="80%" align="center">
+                    <tr><td colspan="2"><hr></td></tr>
                     <TR>
                         <form method="post" action="admin_type_monstre_edit.php#section_sorts">
                             <input type="hidden" name="section" value="section_sorts">
@@ -809,8 +825,9 @@ if ($erreur == 0)
                             <input type="hidden" name="sel_method" value="edit">
                             <input type="hidden" name="methode" value="add_mon_sort">
                             <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
-                            <TD>Ajouter le sort:
-                                <select name="sort_cod">
+                            <TD>Ajouter le(s) sort(s):<br/>
+                                <small>(Ctrl/Cmd+clic pour sélection multiple)</small><br/>
+                                <select name="sort_cod[]" multiple size="8">
                                     <?php $req_m_sorts = "select sort_cod,
                                                               CASE WHEN sort_aggressif='O' THEN  sort_nom || ' (agressif)'
                                                                    WHEN sort_soutien='O' THEN  sort_nom || ' (soutien)'
@@ -825,7 +842,7 @@ if ($erreur == 0)
                                     ?>
                                 </select>
                             </TD>
-                            <TD><input type="submit" value="Ajouter"></TD>
+                            <TD><input type="submit" value="Ajouter les sorts"></TD>
                         </form>
                     </TR>
                 </TABLE>

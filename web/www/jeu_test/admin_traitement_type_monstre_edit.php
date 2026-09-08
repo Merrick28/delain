@@ -177,15 +177,79 @@ switch ($methode)
         break;
 
     case "add_mon_sort":
-        $sort_cod    = $_REQUEST['sort_cod'];
-        $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
-        $stmt        = $pdo->query($req_upd_mon);
-        $result      = $stmt->fetch();
-        writelog($log . "Ajout d'un sort : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
-        $req_upd_mon =
-            "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
-        $stmt        = $pdo->query($req_upd_mon);
-        echo "Ajout d'un sort";
+        // sort_cod arrive maintenant sous forme de tableau (select multiple) : on ajoute un sort par
+        // sélection.
+        $sort_cod_list = $_REQUEST['sort_cod'];
+        if (!is_array($sort_cod_list))
+        {
+            $sort_cod_list = array($sort_cod_list);
+        }
+
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod    = (int)$sort_cod;
+            $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
+            $stmt        = $pdo->query($req_upd_mon);
+            $result      = $stmt->fetch();
+            writelog($log . "Ajout d'un sort : $sort_cod - " . $result['sort_nom'] . "\n", 'monstre_edit');
+
+            $req_upd_mon =
+                "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
+            $stmt        = $pdo->query($req_upd_mon);
+        }
+        echo "Ajout d'un ou plusieurs sort(s)";
+        break;
+
+    case "update_mon_sorts":
+        // Suppression multiple de sorts via cases à cocher (pas de valeur à modifier pour un sort,
+        // contrairement aux immunités : la seule action possible ici est la suppression).
+        $sort_cod_list = isset($_POST['sort_cod']) && is_array($_POST['sort_cod'])
+            ? $_POST['sort_cod']
+            : array();
+
+        $sort_delete_list = isset($_POST['sort_delete']) && is_array($_POST['sort_delete'])
+            ? $_POST['sort_delete']
+            : array();
+
+        $nb_suppressions = 0;
+
+        foreach ($sort_cod_list as $sort_cod)
+        {
+            $sort_cod = (int)$sort_cod;
+
+            if ($sort_cod <= 0 || !isset($sort_delete_list[$sort_cod]))
+            {
+                continue;
+            }
+
+            $req_upd_mon = "select sort_nom
+                            from sorts
+                            where sort_cod = $sort_cod";
+            $stmt = $pdo->query($req_upd_mon);
+            $result = $stmt->fetch();
+
+            if (!$result)
+            {
+                continue;
+            }
+
+            $sort_nom = $result['sort_nom'];
+
+            $req_upd_mon =
+                "delete from sorts_monstre_generique
+                 where sgmon_gmon_cod = $gmon_cod
+                   and sgmon_sort_cod = $sort_cod";
+            $pdo->query($req_upd_mon);
+
+            writelog(
+                $log . "Suppression d'un sort : $sort_cod - $sort_nom\n",
+                'monstre_edit'
+            );
+
+            $nb_suppressions++;
+        }
+
+        echo "Modification des sorts : $nb_suppressions supprimé(s)";
         break;
 
     case "add_mon_terrain":
