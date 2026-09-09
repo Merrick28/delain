@@ -408,8 +408,10 @@ if ($erreur == 0)
 
                 ?>
                 <br>
-                <form name="modif_monstre" method="post" enctype="multipart/form-data">
+                <a id="section_carac_base" class="section-anchor"></a>
+                <form name="modif_monstre" method="post" enctype="multipart/form-data" action="admin_type_monstre_edit.php#section_carac_base">
 
+                    <input type="hidden" name="section" value="section_carac_base">
                     <?php if ($sel_method == "edit")
                     {
                         ?>
@@ -813,6 +815,7 @@ if ($erreur == 0)
                 <hr>
                 <div style="text-align:left; position:sticky; top:0; z-index:100; padding:10px; background:aquamarine; margin-bottom:15px;">
                     <strong><a href="javascript:void(0);" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="color:inherit; text-decoration:underline;"><?php echo htmlspecialchars($gmon_nom); ?> (N°<?php echo $gmon_cod; ?>)</a> :</strong>
+                    <a href="#section_carac_base">Caractéristiques de base</a> |
                     <a href="#section_sorts">Sorts</a> |
                     <a href="#section_immunites">Immunités</a> |
                     <a href="#section_competences">Compétences</a> |
