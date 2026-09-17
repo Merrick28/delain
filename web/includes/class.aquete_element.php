@@ -771,6 +771,8 @@ class aquete_element
                 $element_texte = "($operateur) <strong><em>".$carac['aqtypecarac_nom']."</em></strong> ".$this->aqelem_param_txt_1." ".$this->aqelem_param_txt_2;
                 if ($this->aqelem_param_txt_1 == 'entre')
                     $element_texte .= " et ".$this->aqelem_param_txt_3;
+                if ($this->aqelem_param_num_3 != 0)
+                    $element_texte .= " (idx:".$this->aqelem_param_num_3.")";
                 break;
 
             case 'perso_condition_liste':       // pour invocation, condition au sein d'un groupe

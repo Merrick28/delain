@@ -30,7 +30,7 @@ if ($erreur == 0)
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    if(isset($_POST['methode']) && ($pos_etage>1) && isset($_POST['methode']))
+    if(isset($_POST['methode']) && (abs($pos_etage)>1) && isset($_POST['methode']))
     {
         if ($_POST['methode']=="editer_meca" ) {
 
