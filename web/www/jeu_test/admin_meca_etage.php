@@ -30,7 +30,12 @@ if ($erreur == 0)
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    if(isset($_POST['methode']) && (abs($pos_etage)>1) && isset($_POST['methode']))
+    $req = "SELECT etage_cod from etage where etage_numero=:etage_numero " ;
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array(":etage_numero"  => $pos_etage ), $stmt);
+    $etage_cod = $stmt->fetchColumn();
+
+    if(isset($_POST['methode']) && ($etage_cod>=1) && isset($_POST['methode']))
     {
         if ($_POST['methode']=="editer_meca" ) {
 
@@ -68,7 +73,7 @@ if ($erreur == 0)
             $bindings = array(
                     ":meca_nom"                     => $meca_nom,
                     ":meca_type"                    => $_POST["meca_type"] == "" ? "G" : $_POST["meca_type"],
-                    ":meca_pos_etage"               => $pos_etage,
+                    ":meca_pos_etage"               => $etage_cod,
                     ":meca_pos_type_aff"            => ($_POST["type_aff"] == "" || $_POST["type_aff"] == "-1") ? NULL : $_POST["type_aff"],
                     ":meca_pos_decor"               => (int)$_POST["pos_decor"] == 0 ? NULL : $_POST["pos_decor"],
                     ":meca_pos_decor_dessus"        => (int)$_POST["decor_dessus"] == 0 ? NULL : $_POST["decor_dessus"],
