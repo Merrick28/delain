@@ -15,8 +15,11 @@ define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 //echo "<pre>"; print_r($_REQUEST); die();
-if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = 1*$_REQUEST["admin_etage"] ; else $pos_etage = 1*$_REQUEST['pos_etage'] ;
-
+if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) {
+    $pos_etage = 1*$_REQUEST["admin_etage"] ;
+} else {
+    $pos_etage = 1*$_REQUEST['pos_etage'] ;
+}
 
 if ($erreur == 0)
 {
@@ -30,13 +33,10 @@ if ($erreur == 0)
 
     //-- traitement des actions=======================================================================================
     //print_r($_REQUEST);
-    $req = "SELECT etage_cod from etage where etage_numero=:etage_numero " ;
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array(":etage_numero"  => $pos_etage ), $stmt);
-    $etage_cod = $stmt->fetchColumn();
 
-    if(isset($_POST['methode']) && ($etage_cod>=1) && isset($_POST['methode']))
+    if(isset($_POST['methode'])  && isset($_POST['methode']))
     {
+
         if ($_POST['methode']=="editer_meca" ) {
 
             // mise en forme de la saisie json
@@ -73,7 +73,7 @@ if ($erreur == 0)
             $bindings = array(
                     ":meca_nom"                     => $meca_nom,
                     ":meca_type"                    => $_POST["meca_type"] == "" ? "G" : $_POST["meca_type"],
-                    ":meca_pos_etage"               => $etage_cod,
+                    ":meca_pos_etage"               => $pos_etage,
                     ":meca_pos_type_aff"            => ($_POST["type_aff"] == "" || $_POST["type_aff"] == "-1") ? NULL : $_POST["type_aff"],
                     ":meca_pos_decor"               => (int)$_POST["pos_decor"] == 0 ? NULL : $_POST["pos_decor"],
                     ":meca_pos_decor_dessus"        => (int)$_POST["decor_dessus"] == 0 ? NULL : $_POST["decor_dessus"],
