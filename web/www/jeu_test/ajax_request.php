@@ -591,14 +591,14 @@ switch($_REQUEST["request"])
             if (1*$params["etage_cod"]>0) $filter .= "and meca_pos_etage = ".(1*$params["etage_cod"]);
 
             // requete de comptage
-            $req = "select count(*) from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ? {$filter}";
+            $req = "select count(*) from meca join etage on etage_numero= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ? {$filter}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select meca_cod cod, (etage_libelle || ' / ' || meca_nom) nom from meca join etage on etage_cod= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ?  {$filter} ORDER BY (etage_libelle || ' / ' || meca_nom)  LIMIT {$limit}";
+            $req = "select meca_cod cod, (etage_libelle || ' / ' || meca_nom) nom from meca join etage on etage_numero= meca_pos_etage where (etage_libelle || ' / ' || meca_nom) ilike ?  {$filter} ORDER BY (etage_libelle || ' / ' || meca_nom)  LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
