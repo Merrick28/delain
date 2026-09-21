@@ -3862,6 +3862,13 @@ class aquete_action
         $portail_dest = $result["portail_dest"];
         $portail_delai = date("Y-m-d H:i:s", strtotime (date("Y-m-d H:i:s")." +{$p4->aqelem_param_num_1} hours") );
 
+        // Verification si un portail ou un autre lieu existe déjà sur la position de départ et d'arrivée
+        $req = "select count(*) as nb from lieu_position where lpos_pos_cod in (?,?)";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($portail_pos, $portail_dest), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        if ($result["nb"] > 0) return false; // Il y a déjà des lieux sur la position de départ ou d'arrivée, on ne peut pas créer le portail
+
         // Création du Portail au départ
         $req = "insert into lieu (lieu_tlieu_cod,lieu_nom,lieu_description,lieu_refuge,lieu_url,lieu_dest,lieu_port_dfin)
                 values(10,'Passage magique','Un passage crée par la magie...<br><br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<img src=\"../avatars/passage_entree.gif\"><br>','N','passage.php',?,?)
