@@ -182,7 +182,7 @@ begin
     code_retour := code_retour || '<b> Nombre de cibles maximum = ' || nb_cibles::text || '</b><br>';
 
     /*Sélection des n cibles en fonction de la contrainte*/
-    -- Marlyza - 2026-08-27 - on ne peut pas balayer les cibles qui sont dans un refuge
+    -- Marlyza - 2026-10-02 - on ne peut pas balayer les cibles qui sont dans un refuge
     for ligne in
     select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_dex, perso_con, perso_type_perso, lancer_des(1, 1000) as num
         from perso
