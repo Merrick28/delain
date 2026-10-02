@@ -182,17 +182,21 @@ begin
     code_retour := code_retour || '<b> Nombre de cibles maximum = ' || nb_cibles::text || '</b><br>';
 
     /*Sélection des n cibles en fonction de la contrainte*/
+    -- Marlyza - 2026-08-27 - on ne peut pas balayer les cibles qui sont dans un refuge
     for ligne in
     select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_dex, perso_con, perso_type_perso, lancer_des(1, 1000) as num
-    from perso, perso_position, positions
-    where perso_actif = 'O'
-          and perso_tangible = 'O'
-          and ppos_perso_cod = perso_cod
-          and ppos_pos_cod = pos_cod
-          and pos_cod = pos_attaquant
-          and perso_cod != v_attaquant
-          and perso_type_perso != 2
-    order by num limit nb_cibles
+        from perso
+        inner join perso_position on ppos_perso_cod = perso_cod
+        inner join positions on pos_cod = ppos_pos_cod
+        left outer join lieu_position on lpos_pos_cod = pos_cod
+        left outer join lieu on lieu_cod = lpos_lieu_cod
+        where perso_actif = 'O'
+              and perso_tangible = 'O'
+              and pos_cod = pos_attaquant
+              and perso_cod != v_attaquant
+              and perso_type_perso != 2
+              and coalesce(lieu_refuge, 'N') = 'N'
+        order by num limit nb_cibles
     loop
       /*On fait une boucle pour intervenir sur chaque cible*/
       /*Dans cette boucle, on lance les toucher, les dégâts ........ donc changement dans l’orga*/
