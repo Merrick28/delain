@@ -199,7 +199,7 @@
                     {% else %}
                         {% if pa_dep==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% elseif pa_dep<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
-                        {% elseif pa_dep>12 %}<img src="{{ G_IMAGES }}skullred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
+                        {% elseif pa_dep>12 %}<img src="{{ G_IMAGES }}skullred.png" title="Déplacement"  alt="Dep">: <strong>12</strong>
                         {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement"  alt="Dep">: <strong>{{ pa_dep }}</strong>
                         {% endif %}
                     {% endif %}
@@ -298,11 +298,11 @@
             {% if not PERSO.is_fam %}
                 {% if (not PERSO.is_locked) and (DROIT.controle != 'O') %}
                     <img src="{{ G_IMAGES }}deplacement.gif" alt="">
-                    <a href="/jeu_test/deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                    <a href="/jeu_test/deplacement.php">Déplacement ({{ PERSO.get_pa_dep > 12 ? 12 : PERSO.get_pa_dep }} PA)</a><br/>
                 {% endif %}
                 {% if (PERSO.is_locked) and (DROIT.controle != 'O') %}
                     <img src="{{ G_IMAGES }}fuite.gif" alt="">
-                    <a href="/jeu_test/deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                    <a href="/jeu_test/deplacement.php">Fuite ({{ PERSO.get_pa_dep > 12 ? 12 : PERSO.get_pa_dep }} PA)</a><br/>
                 {% endif %}
 
             {% endif %}
