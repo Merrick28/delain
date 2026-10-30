@@ -79,8 +79,13 @@ if (count($ips) != 0)
                 // si c'est à deux c'est qu'il a cliqué mais pas voté pour delain
                 if ($etatVote != 1)
                 {
+                    // Marlyza - 2026-10-30  :
+                    // Jeux-Alternatif ne calcule plus correctement les IP, et compte mauvais même de vote valide. On va tout compter comme "valide" pour ne pas pénaliser les joueurs
+                    // On va compter sur la bonne volonté des joueurs pour voter réellement pour Delain
+                    // $reqUpdate =
+                    //  "UPDATE public.compte_vote_ip SET  compte_vote_verifier= true,compte_vote_pour_delain = false WHERE compte_vote_compte_cod = :compte and compte_vote_ip_compte=:ip";
                     $reqUpdate =
-                        "UPDATE public.compte_vote_ip SET  compte_vote_verifier= true,compte_vote_pour_delain = false WHERE compte_vote_compte_cod = :compte and compte_vote_ip_compte=:ip";
+                        "UPDATE public.compte_vote_ip SET  compte_vote_verifier= true,compte_vote_pour_delain = true WHERE compte_vote_compte_cod = :compte and compte_vote_ip_compte=:ip";
                     $stmt      = $pdo->prepare($reqUpdate);
                     $stmt      = $pdo->execute(array(":compte" => $compteVoteCod,
                                                      ":ip"     => $IP), $stmt);
