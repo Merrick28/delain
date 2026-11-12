@@ -970,7 +970,7 @@ class aquete_action
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1))return $p3->aqelem_misc_cod  ;   // Problème lecture passage à l'etape suivante
 
         // nombre de meca dans le bon état attendu.
-        $nb_attendu = $p2->aqelem_misc_cod ? $p2->aqelem_misc_cod : count($p1) ;
+        $nb_attendu = $p2->aqelem_param_num_1 ? $p2->aqelem_param_num_1 : count($p1) ;
 
         //passage en revue des mots attendus (dans l'ordre)
         $nb_meca_ok = 0 ;
