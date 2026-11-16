@@ -8,7 +8,7 @@ include_once '../includes/tools.php';
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
-
+$erreur = 0 ;
 $contenu_page = '';
 
 define('APPEL', 1);

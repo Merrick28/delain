@@ -33,7 +33,7 @@ $req_comp = "select comp_libelle,
 			when comp_cod in (63, 66, 75) then $pa_f_1            -- Compétences niveau 1
 			when comp_cod in (64, 67, 76) then $pa_f_2            -- Compétences niveau 2
 			when comp_cod in (65, 68, 72, 73, 74, 77) then $pa_n  -- Compétences niveau 3 + Bout portant
-			when comp_cod in (89, 94) then 6                      -- Balayage + Garde-manger
+			when comp_cod in (89, 94 ,105) then 6                 -- Balayage + Garde-manger + Frappe tellurique
 			when comp_cod in (95, 96) then 4                      -- Attaque d’hydre + Jeu de troll
 		end as cout_pa,
 		case comp_cod
@@ -56,12 +56,13 @@ $req_comp = "select comp_libelle,
 			when 94 then 17
 			when 95 then 18
 			when 96 then 19
+			when 105 then 21
 		end as type_attaque,
 		case when comp_cod in (25, 61, 62) then 0 else 1 end as distance_ok
 	from competences
 	inner join perso_competences on pcomp_pcomp_cod = comp_cod
 	where pcomp_perso_cod = :perso
-		and comp_cod in (25, 61, 62, 63, 64, 65, 66, 67, 68, 72, 73, 74, 75, 76, 77, 89, 94, 95, 96)
+		and comp_cod in (25, 61, 62, 63, 64, 65, 66, 67, 68, 72, 73, 74, 75, 76, 77, 89, 94, 95, 96, 105)
 	order by comp_cod";
 
 $stmt = $pdo->prepare($req_comp);
