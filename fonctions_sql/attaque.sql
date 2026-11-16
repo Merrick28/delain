@@ -30,7 +30,8 @@ AS $_$/*****************************************************************/
 /*      17 = garde manger                                        */
 /*      18 = Hydre à neuf têtes                                  */
 /*      19 = Jeu de Trolls                                       */
-/*      20 = charge divine       			         */
+/*      20 = charge divine       			                     */
+/*      21 = Frappe Tellurique                                   */
 /* Le code sortie est une chaine html utilisable directement     */
 /*****************************************************************/
 /* Créé le 01/04/2003                                            */
@@ -216,7 +217,7 @@ begin
   -- Rajout Blade temporaire pour attaques spéciales
   -------------------------------------
 
-  if v_type_attaque in (16, 17, 18, 19) then
+  if v_type_attaque in (16, 17, 18, 19, 21) then
     code_retour := attaque_spe(v_attaquant, v_cible, v_type_attaque);
     return code_retour;
   end if;

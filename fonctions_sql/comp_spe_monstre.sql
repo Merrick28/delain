@@ -31,10 +31,15 @@ AS $_$/*****************************************************************/
 /*      17 = garde manger                                        */
 /*      18 = Hydre à neuf têtes                                  */
 /*      19 = Jeu de Trolls                                       */
+/*      20 = charge divine  (compétence non créé)                */
+/*      21 = Frappe Tellurique                                   */
 /* Le code sortie est une chaine html utilisable directement     */
 /*****************************************************************/
 /* Créé le 17/07/2006                                            */
 /* Liste des modifications :                                     */
+/* Marlyza 16/11/2016 :                                          */
+/*  - ajout de la compétence Frappe Tellurique (#105)            */
+/* Remarque que charge divine n'a pas de compétence rattachée    */
 /*****************************************************************/
 
 declare
@@ -62,7 +67,7 @@ begin
   select into num_comp_spe,chance,nombre_util gmoncomp_comp_cod,gmoncomp_chance,comp_nb_util_tour from monstre_generique_comp,perso,competences
   where perso_gmon_cod = gmoncomp_gmon_cod
         and perso_cod = v_attaquant
-        and gmoncomp_comp_cod in (25,61,62,63,64,65,66,67,68,72,73,74,75,76,77,89,94,95,96)
+        and gmoncomp_comp_cod in (25,61,62,63,64,65,66,67,68,72,73,74,75,76,77,89,94,95,96,105)
         and gmoncomp_comp_cod = comp_cod
   order by random()
   limit 1;
@@ -104,12 +109,14 @@ begin
     v_type_attaque := 18;
   elsif num_comp_spe = 96 then
     v_type_attaque := 19;
+  elsif num_comp_spe = 105 then
+    v_type_attaque := 21;
   end if;
   des := lancer_des(1,100);
   select into v_pa perso_pa
   from perso
   where perso_cod = v_attaquant;
-  if v_type_attaque in (16,17,18,19) then
+  if v_type_attaque in (16,17,18,19,21) then
     if des <= chance and v_pa >= 6 then
       compt_loop := 0;
       while (compt_loop < nombre_util) loop

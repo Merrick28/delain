@@ -15,6 +15,8 @@ $BODY$/*****************************************************************/
 /*      17 = garde manger                                        */
 /*      18 = Hydre à neuf têtes                                  */
 /*      19 = Jeu de Trolls                                       */
+/*      20 = charge divine                                       */
+/*      21 = Frappe Tellurique                                   */
 /*Toutes les autres attaques sont gérées dans la fonction normale*/
 /* Le code sortie est une chaine html utilisable directement     */
 /*****************************************************************/
@@ -96,7 +98,13 @@ declare
   compt integer;                 --fourre tout
   num_comp_spe integer;          --code de la compétence pour vérifier que l'attaquant la possède
   v_type_de_monstre integer ;    -- pour la compétence multi-tête, les cthulhu ont des tentacules
-
+-- variable pour frappe tellurique
+  v_degats_base   numeric;      -- degat de base
+  v_mult          numeric;      -- multiplicateur lié à la distance
+  v_taille        integer;      -- taille de la cible
+  v_esquive       integer;      -- jet d'esquive de la cible
+  des_esquive     integer;      -- lancer de des pour l'esquive
+  v_esquive_ok    boolean;      -- résultat du jet d'esquive
 begin
   code_retour := '';
 
@@ -111,6 +119,8 @@ begin
     num_comp_spe := 95;			---code de l'Hydre à neuf têtes
   elsif v_type_attaque = 19 then
     num_comp_spe := 96;			---code du Jeu de Trolls
+  elsif v_type_attaque = 21 then
+    num_comp_spe := 105;		---code de la Frappe Tellurique
   else
     code_retour := '<p>Erreur ! Cette compétence est inconnue des attaques speciales!';
     return code_retour;
@@ -172,8 +182,134 @@ begin
   /*          On en déduit, soit attaque individuelle, soit multiple              */
   /********************************************************************************/
 
+  -- =============================================================================
+  -- Attaque Frappe Tellurique
+  -- =============================================================================
+  -- Frappe tellurique (type 21)
+  if v_type_attaque = 21 then
+    /* Dégâts de base : 3 fois la force de l’attaquant (l’arme n’est pas utilisée) */
+    v_degats_base := 3 * v_attaquant_for;
+    code_retour := code_retour || 'Vous frappez violemment le sol, et la terre tremble autour de vous !<br>';
+
+    --------------------------------------------------------------------------------
+    -- 1° étape : un seul jet pour la compétence
+    --------------------------------------------------------------------------------
+    des := lancer_des(1, 100);
+
+    /* DEBUT : échec critique, personne n’est touché */
+    if des > 96 then
+        code_retour := code_retour || 'C’est un échec automatique, le sol ne réagit pas !<br><br>';
+        px_gagne := 0;
+        texte_evt := '[attaquant] a lamentablement raté sa frappe tellurique';
+        perform insere_evenement(v_attaquant, v_attaquant, 117, texte_evt, 'O', null);
+        /* FIN   : échec critique */
+
+    else
+      --------------------------------------------------------------------------------
+      -- 2° étape : toutes les cibles dans un rayon de 3 cases autour de l’attaquant
+      -- (refuges épargnés, murs sans effet)
+      --------------------------------------------------------------------------------
+      for ligne in
+        select perso_cod, perso_nom, perso_pv, perso_type_perso, perso_dex, perso_taille, perso_race_cod, distance(pos_attaquant, pos_cod) as dist
+        from perso
+        inner join perso_position on ppos_perso_cod = perso_cod
+        inner join positions on pos_cod = ppos_pos_cod
+        where perso_actif = 'O'
+        and perso_tangible = 'O'
+        and perso_cod != v_attaquant
+        and pos_etage = e_attaquant
+        and pos_x between (x_attaquant - 3) and (x_attaquant + 3)
+        and pos_y between (y_attaquant - 3) and (y_attaquant + 3)
+        and not exists (select 1 from lieu_position  inner join lieu on lieu_cod = lpos_lieu_cod  where lpos_pos_cod = pos_cod and lieu_refuge = 'O')
+      loop
+
+        /* Multiplicateur lié à la distance : 0 case = 100 %, 1 = 75 %, 2 = 50 %, 3 = 25 % */
+        v_mult := greatest(0, 4 - ligne.dist) / 4.0;
+        continue when v_mult = 0;
+
+        /* Jet d’esquive : dépend de la dextérité et de la taille de la cible */
+        v_taille := case when ligne.perso_race_cod = 3 then 2 else coalesce(ligne.perso_taille, 3) end;
+        v_esquive := least(75, round((ligne.perso_dex * ligne.perso_dex / 30.0) * greatest(0.25, 1 + (3 - v_taille) * 0.25)));
+        des_esquive := lancer_des(1, 100);
+        v_esquive_ok := (des_esquive <= v_esquive);
+
+        code_retour := code_retour || 'Vous avez touché ';
+        if ligne.perso_type_perso = 1 then
+          code_retour := code_retour || 'l’aventurier ';
+        elsif ligne.perso_type_perso = 2 then
+          code_retour := code_retour || 'le monstre ';
+        else
+          code_retour := code_retour || 'le familier ';
+        end if;
+        code_retour := code_retour || '<b>' || ligne.perso_nom || '</b> (à ' || ligne.dist::text || ' case(s)).<br>';
+
+        /* Dégâts : (base - reduction d'armure) x distance, 0 si esquive */
+        armure_cible := f_armure_perso_physique(ligne.perso_cod);
+        -- reduction des dégats par l'armure et decote par la distance
+        degats_portes := floor( (v_degats_base - armure_cible) * v_mult);
+
+        if v_esquive_ok then
+          code_retour := code_retour || 'Il parvient à esquiver le choc.<br>';
+        else
+          code_retour := code_retour || 'Il ne peut pas esquiver le choc.<br>';
+        end if;
+
+        if degats_portes <= 0 or degats_portes is null then
+          degats_portes := 0;
+        end if;
+        if not v_esquive_ok then
+            code_retour := code_retour || 'Vous portez une attaque de <b>' || trim(to_char(degats_portes, '99999999')) || '</b>.<br>';
+        end if;
+
+        -- Code d’analyse
+        code_retour := code_retour || 'Distance : ' || ligne.dist::text || ' (x' || to_char(v_mult, 'FM0.00') || '), '
+                           || 'esquive : ' || v_esquive::text || ' % (jet : ' || des_esquive::text || '), '
+                           || 'armure cible : ' || coalesce(armure_cible, 0)::text || '<br>';
+        -- Texte d'event
+        if v_esquive_ok then
+          texte_evt := '[cible] a esquivé la frappe tellurique de [attaquant].';
+          nouveau_pv_cible := ligne.perso_pv;
+        else
+          texte_evt := 'La frappe tellurique de [attaquant] a infligé ' || trim(to_char(degats_portes, '99999999')) || ' points de dégâts à [cible].';
+          nouveau_pv_cible := ligne.perso_pv - degats_portes;
+        end if;
+
+        -- action "degat subit ou esquivé" pour calcul des PX
+        insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee) values (1, v_attaquant, ligne.perso_cod, degats_portes);
+
+        /* DEBUT : cible morte */
+        if nouveau_pv_cible <= 0 then
+          code_retour := code_retour || 'Vous avez <b>tué</b> votre adversaire.<br><br>';
+          texte_evt := texte_evt || ' [cible] a succombé à cette frappe.';
+          perform insere_evenement(v_attaquant, ligne.perso_cod, 117, texte_evt, 'O', null);
+          texte_mort := tue_perso_final(v_attaquant, ligne.perso_cod);
+          texte_mort_px := split_part(texte_mort, ';', 2);
+          if (select perso_use_repart_auto from perso where perso_cod = v_attaquant) != 0 then
+            if trim(texte_mort_px) is not null then
+              code_retour := code_retour || texte_mort_px;
+            end if;
+          end if;  /* FIN   : cible morte */
+
+        /* DEBUT : cible survivante (pas de sonnage, donc pas de décalage de DLT) */
+        else
+          perform insere_evenement(v_attaquant, ligne.perso_cod, 117, texte_evt, 'O', null);
+
+          -- appliquer les dégats sur les PV de la cible si elle n'a pas esquivée
+          if not v_esquive_ok then
+            insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee) values (4, ligne.perso_cod, v_attaquant, degats_portes);
+            update perso set perso_pv = nouveau_pv_cible where perso_cod = ligne.perso_cod;
+          end if;
+
+          code_retour := code_retour || 'Votre adversaire a survécu. Il est maintenant <b>' || etat_perso(ligne.perso_cod) || '</b>.<br><br>';
+        end if;
+        /* FIN   : cible survivante */
+
+      end loop; -- fin de la boucle sur les cibles
+    end if;    -- fin jet de compétence qui passe
+  -- FIN - Frappe tellurique --
+
   -- Attaque par balayage --
-  if v_type_attaque = 16 then
+  elsif v_type_attaque = 16 then
     --------------------------------------------------------------------------------
     --1° étape : On redétermine les cibles, car attaque multiple
     --------------------------------------------------------------------------------
