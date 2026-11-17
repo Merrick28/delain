@@ -187,8 +187,8 @@ begin
   -- =============================================================================
   -- Frappe tellurique (type 21)
   if v_type_attaque = 21 then
-    /* Dégâts de base : 3 fois la force de l’attaquant (l’arme n’est pas utilisée) */
-    v_degats_base := 3 * v_attaquant_for;
+    /* Dégâts de base : 2 fois la force de l’attaquant (l’arme n’est pas utilisée) */
+    v_degats_base := 2 * v_attaquant_for;
     code_retour := code_retour || 'Vous frappez violemment le sol, et la terre tremble autour de vous !<br>';
 
     --------------------------------------------------------------------------------
