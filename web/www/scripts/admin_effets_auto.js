@@ -1680,6 +1680,9 @@ EffetAuto.ChampQA = function (parametre, numero, valeur) {
     var nomQACod = "obj_fonc_" + parametre.nom + numero.toString()+"_qa_cod";
     var nomSens = "obj_fonc_" + parametre.nom + numero.toString()+"_sens";
     var nomTaux = "obj_fonc_" + parametre.nom + numero.toString()+"_taux";
+    var nomQAPerso = "obj_fonc_" + parametre.nom + numero.toString()+"_qa_perso";
+    var checkboxQAPerso = "obj_check_" + parametre.nom + numero.toString()+"_qa_perso";
+
     var label = "div_" + parametre.nom + numero.toString();
 
     var html = '<label><strong>' + parametre.label + '</strong>&nbsp;:</label><table>' ;
@@ -1689,20 +1692,27 @@ EffetAuto.ChampQA = function (parametre, numero, valeur) {
         html +=  '<tr  id="row-'+numero+'-'+i+'-"><td>';
         html += '<input type="hidden" name="' + base + '[]">';
 
+        var row='-row-'+numero+'-'+i+'-';
+        var rowQAPersoNom = nomQAPerso+row;
+        var rowQAPersoCheck = checkboxQAPerso+row;
+
         html += '<select style="max-width: 80px;" name="' + nomSens + '[]">';
         var selectionne = ((valeur.length && valeur[i].sens == "0") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="0">Activer</option>';
         var selectionne = ((valeur.length && valeur[i].sens == "-1") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="-1">Désactiver</option>';
         var selectionne = ((valeur.length && valeur[i].sens == "2") ? 'selected="selected"' : '' ); html += '<option ' + selectionne + ' value="2">Inverser</option>';
         html += '</select>' ;
 
-        html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%<br>';
+        html += '&nbsp;<strong>Chance:</strong>&nbsp;<input name="'+nomTaux+'[]" type="text" size="3" value="'+( valeur.length>0 ? valeur[i].taux : "")+'">%';
+
+        html += '<input data-entry="N" id="'+rowQAPersoNom+'"  name="'+nomQAPerso+'[]" type="hidden" value="'+( valeur.length>0 ? valeur[i].qa_perso : "N")+'">';
+        html += '&nbsp;<span title="Si coché: au lieu d’activer/désactiver la QA, le porteur d’EA sera ajouté/retiré du paramètre « perso » déclencheur de QA"><strong>QA Perso:</strong>&nbsp<input data-entry="unckecked" onchange="EffetAuto.CheckBoxChange(\''+rowQAPersoCheck+'\', \''+rowQAPersoNom+'\');" id="'+rowQAPersoCheck+'" name="'+checkboxQAPerso+'[]" type="checkbox" '+( valeur.length>0 ? (valeur[i].qa_perso =='O' ? ' checked' : '') : '')+'></span><br>';
 
         html += '<strong>QA:</strong>&nbsp;<span title="Quête-auto ou Interaction.">';
         html += '<input data-entry="val" id="row-'+numero+'-'+i+'-qa_cod" name="'+nomQACod+'[]" type="text" size="4" value="'+( valeur.length>0 ? valeur[i].qa_cod : "")+'">';
         html += '</span>&nbsp';
         html += '<span data-entry="text" id="row-'+numero+'-'+i+'-qa_nom"></span>&nbsp';
-        html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-qa\',\'quete\',\'Rechercher une quête\',[\'\',\'\',\'\']);">';
 
+        html += '<input type="button" class="test" value="rechercher" onclick="getTableCod(\'row-'+numero+'-'+i+'-qa\',\'quete\',\'Rechercher une quête\',[\'\',\'\',\'\']);">';
         html +=  '</td><td><input type="button" class="test" value="Supprimer" onclick="EffetAuto.delItem($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
 
         html += '</tr>';
