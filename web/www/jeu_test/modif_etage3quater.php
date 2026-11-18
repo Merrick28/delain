@@ -563,9 +563,11 @@ if ($erreur == 0)
                     $fonc_trigger_param->fonc_trig_pos_etage = $etage_cod ;
 
                     // reaffecter les positions de déclenchement
-                    $pos_cods = explode(",", $fonc_trigger_param->fonc_trig_pos_cods);
-                    array_walk($pos_cods, function(&$value, &$key){return $value = 1*$value ;} );
-                    $pos_cods_list = implode(",", array_filter($pos_cods, function ($val) { return ( $val == 0 ? false : true ); } ));
+                    //$pos_cods = explode(",", $fonc_trigger_param->fonc_trig_pos_cods);
+                    //array_walk($pos_cods, function(&$value, &$key){return $value = 1*$value ;} );
+                    //$pos_cods_list = implode(",", array_filter($pos_cods, function ($val) { return ( $val == 0 ? false : true ); } ));
+                    $pos_cods      = array_map('intval', explode(",", (string)($fonc_trigger_param->fonc_trig_pos_cods ?? '')));
+                    $pos_cods_list = implode(",", array_filter($pos_cods));   // array_filter sans callback retire les 0
 
                     if ($pos_cods_list != "")
                     {
@@ -589,14 +591,14 @@ if ($erreur == 0)
                         foreach ($fonc_trigger_param->fonc_trig_meca as $row => $ea_meca)
                         {
                             $fonc_trigger_param->fonc_trig_meca[$row]->meca_cod = $meca_map[$ea_meca->meca_cod] ;
-                            if (1*$ea_meca->pos_cod > 0)
+                            if ((int)$ea_meca->pos_cod > 0)
                             {
                                 // trouver la même position sur le nouvel étage
                                 $req   = "SELECT p2.pos_cod pos_cod from positions p1
                                       join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
                                       WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
                                 $stmt3 = $pdo->prepare($req);
-                                $stmt3 = $pdo->execute(array(":pos_cod" => 1*$ea_meca->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
+                                $stmt3 = $pdo->execute(array(":pos_cod" => (int)$ea_meca->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
                                 if ($result3 = $stmt3->fetch())
                                 {
                                     $fonc_trigger_param->fonc_trig_meca[$row]->pos_cod = $result3["pos_cod"] ;
@@ -612,14 +614,14 @@ if ($erreur == 0)
                         if (gettype($fonc_trigger_param->fonc_trig_pos_cod)=="string") $fonc_trigger_param->fonc_trig_pos_cod = json_decode($fonc_trigger_param->fonc_trig_pos_cod);
                         foreach ($fonc_trigger_param->fonc_trig_pos_cod as $row => $ea_teleport)
                         {
-                            if (1*$ea_teleport->pos_cod > 0)
+                            if ((int)$ea_teleport->pos_cod > 0)
                             {
                                 // trouver la même position sur le nouvel étage
                                 $req   = "SELECT p2.pos_cod pos_cod from positions p1
                                       join positions p2 on p2.pos_x=p1.pos_x and p2.pos_y=p1.pos_y and p2.pos_etage=:pos_etage
                                       WHERE p1.pos_cod=:pos_cod and p1.pos_etage = :ref_pos_etage; ";
                                 $stmt3 = $pdo->prepare($req);
-                                $stmt3 = $pdo->execute(array(":pos_cod" => 1*$ea_teleport->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
+                                $stmt3 = $pdo->execute(array(":pos_cod" => (int)$ea_teleport->pos_cod, ":pos_etage" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt3);
                                 if ($result3 = $stmt3->fetch())
                                 {
                                     $fonc_trigger_param->fonc_trig_pos_cod[$row]->pos_cod = $result3["pos_cod"] ;
