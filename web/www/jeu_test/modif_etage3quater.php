@@ -236,8 +236,7 @@ if ($erreur == 0)
 
             // On commence par supprimer les murs !
             echo "Suppression des murs de l'étage...<br>";
-            $req  =
-                "DELETE FROM murs where mur_pos_cod in (select pos_cod from positions where pos_etage = :pos_etage) ; ";
+            $req  = "DELETE FROM murs where mur_pos_cod in (select pos_cod from positions where pos_etage = :pos_etage) ; ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
 
