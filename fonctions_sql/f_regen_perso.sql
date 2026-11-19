@@ -22,6 +22,7 @@ declare
 	v_personnage alias for $1;
   v_regen integer;
   v_perso_pv_max integer;
+  v_perso_type_perso integer;
   v_perso_des_regen integer;
   v_niveau_vampire integer;
 
@@ -31,8 +32,8 @@ begin
   -- le BM ORG, bloque la Régéen
   IF valeur_bonus(v_personnage, '0RG') = 0 THEN
 
-      select into v_perso_pv_max, v_niveau_vampire, v_perso_des_regen
-        perso_pv_max, perso_niveau_vampire, perso_des_regen
+      select into v_perso_pv_max, v_niveau_vampire, v_perso_des_regen, v_perso_type_perso
+        perso_pv_max, perso_niveau_vampire, perso_des_regen, perso_type_perso
       from perso
       where perso_cod = v_personnage;
 
@@ -45,7 +46,13 @@ begin
       -- bonus sur les PV (sauf vampire)
       if v_niveau_vampire = 0 then
         -- v_regen := v_regen + LEAST(25, FLOOR(v_perso_des_regen * v_perso_pv_max / 100));
-        v_regen := v_regen + greatest(0, v_perso_des_regen-1) + FLOOR(v_perso_des_regen * v_perso_pv_max / 100);
+        v_regen := v_regen + greatest(0, v_perso_des_regen-1) ;
+        IF v_perso_type_perso <> 2 THEN
+            v_regen := v_regen + FLOOR(v_perso_des_regen * v_perso_pv_max / 100);
+        else
+            v_regen := v_regen + LEAST(25, FLOOR(v_perso_des_regen * v_perso_pv_max / 100));
+        END IF;
+
       end if;
 
       --
