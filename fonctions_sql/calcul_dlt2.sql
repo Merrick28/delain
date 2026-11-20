@@ -36,7 +36,7 @@ AS $_$/*****************************************************************/
 /*                 désormais (cumul possible)                    */
 /*****************************************************************/
 declare
-  dlt_actuelle perso.perso_dlt%type;
+  dlt_actuelle timestamp;
   temps_tour integer;
   nouvelle_dlt timestamp;
   personnage alias for $1;
@@ -55,10 +55,10 @@ declare
   ajout_temps interval;
   ajout_temps_poids interval;
   format_num varchar;
-  pv_actuel perso.perso_pv%type;
-  pv_max perso.perso_pv_max%type;
-  des_regen perso.perso_des_regen%type;
-  valeur_regen perso.perso_valeur_regen%type;
+  pv_actuel integer;
+  pv_max integer;
+  des_regen integer;
+  valeur_regen integer;
   total_regen integer;
   regeneration integer;
   temps_blessures integer;
@@ -357,9 +357,11 @@ begin
       if bonus_regen > 0 then
         /*
          Marlyza 2026-08-18 - On ne limite plus le bonus de regen à 25 (certain on augmenté leur REG ignorant cette limitation)
-        if bonus_regen > 25 then
+         mais on garde la limite pour les monstres.
+         */
+        if (bonus_regen > 25) and (v_type_perso = 2) then
           bonus_regen := 25;
-        end if; */
+        end if;
         total_regen := total_regen + bonus_regen;
       end if;
 
