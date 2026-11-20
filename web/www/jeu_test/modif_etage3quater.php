@@ -223,6 +223,12 @@ if ($erreur == 0)
                 $stmt2 = $pdo->execute(array(":lieu_cod" => $result["lieu_cod"]), $stmt2);
             }
 
+            // avant de supprimer les positions/murs on desactive tous les mécanismes actifs de l'étage (sinon ça plante)
+            echo "Désactivation des mécanismes...<br>";
+            $req = "SELECT meca_declenchement(pmeca_meca_cod,-1,pmeca_pos_cod,null) from meca_position where pmeca_pos_etage = :pos_etage  " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":pos_etage"  => $etage->etage_numero ), $stmt);
+
             echo "Suppression de l'automap...<br>";
             $req  = "drop table perso_vue_pos_" . $etage->etage_cod . ";";
             $stmt = $pdo->prepare($req);
@@ -230,8 +236,7 @@ if ($erreur == 0)
 
             // On commence par supprimer les murs !
             echo "Suppression des murs de l'étage...<br>";
-            $req  =
-                "DELETE FROM murs where mur_pos_cod in (select pos_cod from positions where pos_etage = :pos_etage) ; ";
+            $req  = "DELETE FROM murs where mur_pos_cod in (select pos_cod from positions where pos_etage = :pos_etage) ; ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
 
