@@ -118,7 +118,7 @@ class perso_titre
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "select ptitre_cod  from perso_titre where ptitre_perso_cod = :perso";
+        $req    = "select ptitre_cod  from perso_titre where ptitre_perso_cod = :perso  order by ptitre_date";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
         while ($result = $stmt->fetch()) {
