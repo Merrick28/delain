@@ -1081,7 +1081,7 @@ EffetAuto.ChampChoixTypeATT = function (parametre, numero, valeur) {
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Attaque à distance et Corps à Corps</option>';
-	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Attaque au Corps à Corps</option></label>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Attaque au Corps à Corps</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Attaque à distance</option></select></label>';
 	return html;
 }
@@ -1205,7 +1205,7 @@ EffetAuto.ChampChoixSensDeplacementInit = function (conteneur) {
 EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet1="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" data-groupe-objet1="' + ((valeur == 5 || valeur == 6) ? '1' : '0')+ '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet1="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" data-groupe-objet2="' + ((valeur == 5 || valeur == 6) ? '1' : '0')+ '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option>';
@@ -2031,14 +2031,14 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		var pf = '</span></p>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divdh") {
         var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
-        var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px"><span title="' + parametre.description + '">';
         var pf = '</span>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfh") {
         var pd = '&nbsp;</div></div><span title="' + parametre.description + '">';
         var pf = '</span></p>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfdh") {
         var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
-        var pd = '&nbsp;</div><div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pd = '&nbsp;</div><div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px"><span title="' + parametre.description + '">';
         var pf = '</span>';
 	} else {
 		var pd = '<p style="padding: 1px; margin: 1px;" title="' + parametre.description + '">';
@@ -2433,9 +2433,6 @@ EffetAuto.NouvelEffetAuto = function (container) {
 	// récupérer le premier élément de la liste des triggers par défaut (sur nouvel EA)
 	EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
 	EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
-
-    EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
-    EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
 
     if (!container && EffetAuto.EditionEAPosition) {
         EffetAuto.InitFiltreEA();
