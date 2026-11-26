@@ -3,6 +3,18 @@
 //=======================================================================================
 //=======================================================================================
 // Fonctions utilitaires
+//
+// Version corrigée des fonctions d'édition des effets-auto (EA) :
+//  - affichage : toutes les valeurs passées au JS sont encodées avec json_encode
+//    (plus de rupture de script sur retour à la ligne, \, ", </script>, etc.)
+//  - get_ea_trigger_param : plus de collision entre numéros d'EA (1 / 11 / 21...),
+//    et json_encode sécurisé
+//  - update_ea / insert_ea : plus d'index non définis (effet « Message » sans force,
+//    durée, effet...), plus de warning PHP injecté dans la page
+//
+// Nécessite PHP >= 7.2 (JSON_INVALID_UTF8_SUBSTITUTE, opérateur ??)
+//=======================================================================================
+//=======================================================================================
 
 //=======================================================================================
 // == Fonction create_selectbox créer une boite de sélection à partir d'un tableau
@@ -115,42 +127,160 @@ function bm_progressivite($fonc_effet, $fonc_force)
 }
 
 //=======================================================================================
+// Helpers JSON
+//=======================================================================================
+
+/**
+ * @param mixed $v
+ * @return string
+ * @throws Exception
+ * json_encode pour le STOCKAGE en base (même format qu'avant : unicode échappé en \uXXXX).
+ * Les octets UTF-8 invalides sont remplacés (U+FFFD) au lieu de faire échouer l'encodage,
+ * car un json_encode qui renvoie false vide silencieusement fonc_trigger_param en base.
+ */
+function ea_json_encode($v)
+{
+    $json = json_encode($v, JSON_INVALID_UTF8_SUBSTITUTE);
+    if ($json === false) {
+        throw new Exception('EA : json_encode a échoué (' . json_last_error_msg() . ')');
+    }
+    return $json;
+}
+
+/**
+ * @param mixed $v
+ * @return string
+ * json_encode pour l'INJECTION dans un bloc <script> : <, >, &, ' et " sont écrits en \uXXXX,
+ * ce qui neutralise </script>, <!-- et toute sortie de chaîne.
+ */
+function ea_js_json($v)
+{
+    $json = json_encode(
+        $v,
+        JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+    );
+    return ($json === false) ? '""' : $json;
+}
+
+/**
+ * @param mixed $v
+ * @return string
+ * Chaîne JS littérale (guillemets inclus) à partir d'une valeur quelconque.
+ */
+function ea_js_str($v)
+{
+    return ea_js_json((string)$v);
+}
+
+/**
+ * @param string|null $raw contenu brut de fonc_trigger_param
+ * @return string
+ * Objet JS littéral à partir de fonc_trigger_param.
+ * On décode puis on ré-encode : les champs à lignes multiples, stockés sous forme de chaîne
+ * contenant du JSON (double encodage de get_ea_trigger_param), restent des chaînes,
+ * ce que le JS attend (JSON.parse sur les chaînes).
+ */
+function ea_js_obj($raw)
+{
+    $raw = ($raw === null) ? '' : trim((string)$raw);
+    $d = json_decode($raw === '' ? '{}' : $raw, true);
+    if (!is_array($d)) {
+        error_log("EA : fonc_trigger_param invalide : " . substr($raw, 0, 200));
+        $d = [];
+    }
+    return $d ? ea_js_json($d) : '{}'; // {} et non [] quand c'est vide
+}
+
+//=======================================================================================
 // Fonction retourne les paramètres specifiques pour les EA
 //=======================================================================================
+/**
+ * @param array $post
+ * @param int|string $numero numéro de l'EA dans le formulaire
+ * @return array
+ * Les champs sont nommés [checkbox_]fonc_trig_<nom><numero>.
+ * Le numéro est découpé par expression régulière : l'ancien test « finit par le numéro »
+ * confondait l'EA n° 1 avec les EA n° 11, 21... (et 2 avec 12, 22...).
+ */
 function get_ea_trigger_param($post, $numero)
 {
     $fonc_trigger_param = array();
-    foreach ($post as $key => $val) {
-        if ((substr($key, 0, 10) == "fonc_trig_") && (substr($key, -strlen("{$numero}")) == $numero) && !isset($_POST['checkbox_' . $key])) {
-            if (is_array($val)) {
-                // regarder s'il y a des objets à imbriquer (nom = obj_[fonc_trig_nom+n°]_XXXXX
-                $base = substr($key, 0, -strlen("{$numero}"));
+    $numero = (string)$numero;
 
-                foreach ($_POST as $k => $v) {
-                    if (substr($k, 0, strlen("obj_{$key}_")) == "obj_{$key}_") {
-                        $name = substr($k, strlen("obj_{$base}_") + strlen("{$numero}"));
-                        foreach ($v as $kk => $vv) {
-                            if (!is_array($val[$kk])) $val[$kk] = [];
-                            $val[$kk][$name] = $vv;
-                        }
+    foreach ($post as $key => $val) {
+        if (!preg_match('/^(checkbox_)?(fonc_trig_[a-zA-Z_]+)(\d+)$/', (string)$key, $m) || $m[3] !== $numero) {
+            continue;
+        }
+        $nom = $m[2]; // nom du paramètre, sans le numéro
+
+        if ($m[1] !== '') {
+            // Case à cocher : le champ caché checkbox_xxx est toujours posté,
+            // la case xxx n'est postée que si elle est cochée.
+            $fonc_trigger_param[$nom] = isset($_POST[$nom . $numero]) ? 'O' : 'N';
+        } elseif (isset($_POST['checkbox_' . $key])) {
+            // visible case à cocher : sa valeur est gérée par le champ caché ci-dessus
+            continue;
+        } elseif (is_array($val)) {
+            // Lignes multiples : on y fusionne les champs obj_<clé>_<nom>[]
+            $prefixe = "obj_{$key}_";
+            foreach ($_POST as $k => $v) {
+                if (strpos((string)$k, $prefixe) === 0 && is_array($v)) {
+                    $name = substr($k, strlen($prefixe));
+                    foreach ($v as $kk => $vv) {
+                        if (!isset($val[$kk]) || !is_array($val[$kk])) $val[$kk] = [];
+                        $val[$kk][$name] = $vv;
                     }
                 }
-                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = json_encode($val);
-            } else {
-                $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))] = $val;
             }
-        } else if ((substr($key, 0, 19) == "checkbox_fonc_trig_") && (substr($key, -strlen("{$numero}")) == $numero)) {
-            if (isset($_POST[substr($key, 9)]))
-                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'O';
-            else
-                $fonc_trigger_param[substr($key, 9, -strlen("{$numero}"))] = 'N';
+            // Ce 1er encodage est volontaire : la valeur est stockée sous forme de chaîne JSON
+            $fonc_trigger_param[$nom] = ea_json_encode($val);
+        } else {
+            $fonc_trigger_param[$nom] = $val;
         }
     }
 
-    //echo "<pre>"; print_r(array("post"=>$post, "numero"=>$numero, "fonc_trigger_param"=>$fonc_trigger_param)); echo "</pre>";
     return $fonc_trigger_param;
 }
 
+
+/**
+ * @param array $r une ligne de fonction_specifique
+ * @param bool $validite
+ * @param bool $heritage
+ * @param bool $implantation
+ * @return string
+ * Génère UN appel JS EffetAuto.EcritEffetAutoExistant(...) avec toutes les valeurs correctement encodées.
+ */
+function ea_js_appel($r, $validite, $heritage, $implantation = false)
+{
+    $effet     = $r['fonc_effet'];
+    $cumulatif = $r['fonc_cumulatif'];
+
+    // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
+    if ($cumulatif == 'O') $cumulatif = bm_progressivite($effet, $r['fonc_force']);
+
+    $args = [
+        ea_js_str($r['fonc_type']),
+        ea_js_str($r['fonc_nom']),
+        (int)$r['fonc_cod'],
+        ea_js_str($r['fonc_force']),
+        ea_js_str($r['fonc_duree']),
+        ea_js_str($r['fonc_message']),      // plus de remplacement " -> ` : le message est restitué tel quel
+        ea_js_str($effet),
+        ea_js_str($cumulatif),
+        ea_js_str($r['fonc_proba']),
+        ea_js_str($r['fonc_type_cible']),
+        ea_js_str($r['fonc_portee']),
+        ea_js_str($r['fonc_nombre_cible']),
+        ea_js_obj($r['fonc_trigger_param']),
+        ea_js_str($validite ? ($r['validite'] ?? '0') : '0'),
+        $heritage ? 'true' : 'false',
+    ];
+    if ($implantation) $args[] = 'true';
+
+    return 'EffetAuto.EcritEffetAutoExistant(' . implode(', ', $args) . ");\n";
+}
 
 /**
  * @param $req
@@ -169,37 +299,8 @@ function getJS_ea_existant($req, $validite=false, $heritage=false)
     $stmt = $pdo->query($req);
     while ($result = $stmt->fetch())
     {
-        $fonc_id                = $result['fonc_cod'];
-        $fonc_type              = $result['fonc_type'];
-        $fonc_nom               = $result['fonc_nom'];
-        $fonc_effet             = $result['fonc_effet'];
-        $fonc_cumulatif         = $result['fonc_cumulatif'];
-        $fonc_force             = $result['fonc_force'];
-        $fonc_duree             = $result['fonc_duree'];
-        $fonc_type_cible        = $result['fonc_type_cible'];
-        $fonc_nombre_cible      = $result['fonc_nombre_cible'];
-        $fonc_portee            = $result['fonc_portee'];
-        $fonc_proba             = $result['fonc_proba'];
-        $fonc_message           = $result['fonc_message'];
-        $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
-        if ($validite) {
-            $fonc_validite      = $result['validite'];
-        } else         {
-            $fonc_validite      ="0";
-        }
-        if ($heritage) {
-            $fonc_heritage      = "true";
-        } else         {
-            $fonc_heritage      = "false";
-        }
-
-        // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
-        if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
-
-        $fonc_message = str_replace('"', '`', $fonc_message);
-        $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage);
-                  ";
-        if ( $fonc_nom=="ea_implantation_ea" ) $implantation[] = $fonc_effet ;
+        $output .= ea_js_appel($result, $validite, $heritage);
+        if ( $result['fonc_nom']=="ea_implantation_ea" ) $implantation[] = $result['fonc_effet'] ;
     }
 
     // Ajouter les EA implantées
@@ -212,42 +313,13 @@ function getJS_ea_existant($req, $validite=false, $heritage=false)
 
             if ($result = $stmt->fetch())
             {
-                $fonc_id                = $result['fonc_cod'];
-                $fonc_type              = $result['fonc_type'];
-                $fonc_nom               = $result['fonc_nom'];
-                $fonc_effet             = $result['fonc_effet'];
-                $fonc_cumulatif         = $result['fonc_cumulatif'];
-                $fonc_force             = $result['fonc_force'];
-                $fonc_duree             = $result['fonc_duree'];
-                $fonc_type_cible        = $result['fonc_type_cible'];
-                $fonc_nombre_cible      = $result['fonc_nombre_cible'];
-                $fonc_portee            = $result['fonc_portee'];
-                $fonc_proba             = $result['fonc_proba'];
-                $fonc_message           = $result['fonc_message'];
-                $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
-                if ($validite) {
-                    $fonc_validite      = $result['validite'];
-                } else         {
-                    $fonc_validite      ="0";
-                }
-                if ($heritage) {
-                    $fonc_heritage      = "true";
-                } else         {
-                    $fonc_heritage      = "false";
-                }
-
-                // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
-                if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
-
-                $output.= "EffetAuto.EcritEffetAutoExistant(\"$fonc_type\", \"$fonc_nom\", $fonc_id, \"$fonc_force\", \"$fonc_duree\", \"$fonc_message\", \"$fonc_effet\", \"$fonc_cumulatif\", \"$fonc_proba\", \"$fonc_type_cible\", \"$fonc_portee\", \"$fonc_nombre_cible\", $fonc_trigger_param, \"$fonc_validite\", $fonc_heritage, true);
-                  ";
-                if ( $fonc_nom=="ea_implantation_ea" ) $implantation2[] = $fonc_effet ;
-            };
+                $output .= ea_js_appel($result, $validite, $heritage, true);
+                if ( $result['fonc_nom']=="ea_implantation_ea" ) $implantation2[] = $result['fonc_effet'] ;
+            }
         }
 
         $implantation = $implantation2 ;
     }
-
 
     return $output ;
 }
@@ -330,11 +402,12 @@ function update_ea($post, $numero, $fonc_cod)
     $message = "";
 
     //require "blocks/_block_admin_traitement_type_monstre_edit.php";
-    $fonc_effet  = $post['fonc_effet' . $numero];
-    $fonc_unite_valid  = $post['fonc_validite_unite' . $numero];
-    $fonc_validite     = $fonc_unite_valid * $post['fonc_validite' . $numero];
+    // Certains effets (ex. « Message ») n'ont pas tous les champs : on lit avec ?? null
+    $fonc_effet        = $post['fonc_effet' . $numero] ?? null;
+    $fonc_unite_valid  = (int)($post['fonc_validite_unite' . $numero] ?? 1);
+    $fonc_validite     = $fonc_unite_valid * (int)($post['fonc_validite' . $numero] ?? 0);
     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
-    if (!empty($post['fonc_cumulatif' . $numero]) && ($post['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
+    if (!empty($post['fonc_cumulatif' . $numero]) && ($post['fonc_cumulatif' . $numero] == "on") && $fonc_effet !== null) $fonc_effet .= "+";
     $fonc_trigger_param = get_ea_trigger_param($post, $numero);
 
     $req       = "UPDATE fonction_specifique
@@ -354,14 +427,14 @@ function update_ea($post, $numero, $fonc_cod)
     $stmt      = $pdo->execute(array(
         ":fonc_cod"              => $fonc_cod,
         ":fonc_effet"            => $fonc_effet,
-        ":fonc_force"            => $post['fonc_force' . $numero],
-        ":fonc_duree"            => $post['fonc_duree' . $numero],
-        ":fonc_type_cible"       => $post['fonc_cible' . $numero],
-        ":fonc_nombre_cible"     => $post['fonc_nombre' . $numero],
-        ":fonc_portee"           => $post['fonc_portee' . $numero],
-        ":fonc_proba"            => $post['fonc_proba' . $numero],
-        ":fonc_message"          => $post['fonc_message' . $numero],
-        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
+        ":fonc_force"            => $post['fonc_force' . $numero] ?? null,
+        ":fonc_duree"            => $post['fonc_duree' . $numero] ?? null,
+        ":fonc_type_cible"       => $post['fonc_cible' . $numero] ?? null,
+        ":fonc_nombre_cible"     => $post['fonc_nombre' . $numero] ?? null,
+        ":fonc_portee"           => $post['fonc_portee' . $numero] ?? null,
+        ":fonc_proba"            => $post['fonc_proba' . $numero] ?? null,
+        ":fonc_message"          => $post['fonc_message' . $numero] ?? null,
+        ":fonc_trigger_param"    => ea_json_encode($fonc_trigger_param)
     ), $stmt);
     $result    = $stmt->fetch();
     $fonc_nom  = $result['fonc_nom'];
@@ -429,11 +502,12 @@ function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod, $fonc_mode =
 
     $fonc_type = $post['declenchement_' . $numero];
     $fonc_nom = $post['fonction_type_' . $numero];
-    $fonc_effet = $post['fonc_effet' . $numero];
-    if (!empty($post['fonc_cumulatif' . $numero]) && ($post['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
+    // Certains effets (ex. « Message ») n'ont pas tous les champs : on lit avec ?? null
+    $fonc_effet = $post['fonc_effet' . $numero] ?? null;
+    if (!empty($post['fonc_cumulatif' . $numero]) && ($post['fonc_cumulatif' . $numero] == "on") && $fonc_effet !== null) $fonc_effet .= "+";
 
-    $fonc_unite_valid = 1 * $post['fonc_validite_unite' . $numero];
-    $fonc_validite = $fonc_unite_valid * $post['fonc_validite' . $numero];
+    $fonc_unite_valid = (int)($post['fonc_validite_unite' . $numero] ?? 1);
+    $fonc_validite = $fonc_unite_valid * (int)($post['fonc_validite' . $numero] ?? 0);
     $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
     $fonc_trigger_param = get_ea_trigger_param($post, $numero);
 
@@ -447,14 +521,14 @@ function insert_ea($post, $numero, $fonc_gmon_cod, $fonc_perso_cod, $fonc_mode =
         ":fonc_perso_cod" => $fonc_perso_cod,
         ":fonc_type" => $fonc_type,
         ":fonc_effet" => $fonc_effet,
-        ":fonc_force" => $post['fonc_force' . $numero],
-        ":fonc_duree" => $post['fonc_duree' . $numero],
-        ":fonc_type_cible" => $post['fonc_cible' . $numero],
-        ":fonc_nombre_cible" => $post['fonc_nombre' . $numero],
-        ":fonc_portee" => $post['fonc_portee' . $numero],
-        ":fonc_proba" => $post['fonc_proba' . $numero],
-        ":fonc_message" => $post['fonc_message' . $numero],
-        ":fonc_trigger_param" => json_encode($fonc_trigger_param),
+        ":fonc_force" => $post['fonc_force' . $numero] ?? null,
+        ":fonc_duree" => $post['fonc_duree' . $numero] ?? null,
+        ":fonc_type_cible" => $post['fonc_cible' . $numero] ?? null,
+        ":fonc_nombre_cible" => $post['fonc_nombre' . $numero] ?? null,
+        ":fonc_portee" => $post['fonc_portee' . $numero] ?? null,
+        ":fonc_proba" => $post['fonc_proba' . $numero] ?? null,
+        ":fonc_message" => $post['fonc_message' . $numero] ?? null,
+        ":fonc_trigger_param" => ea_json_encode($fonc_trigger_param),
         ":fonc_mode" => $fonc_mode
     ), $stmt);
     $result    = $stmt->fetch();

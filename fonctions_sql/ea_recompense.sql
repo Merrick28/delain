@@ -17,6 +17,15 @@ AS $_$/**************************************************/
 /*   $6 = Probabilité de declenchement            */
 /*   $7 = Message d’événement associé             */
 /*   $8 = autres paramètres au format json        */
+/*                                                */
+/* Paramètres json relatifs aux objets:           */
+/*   fonc_trig_nb_objet_min = nombre mini d’objets*/
+/*        par cible (rôliste, 0 si vide)          */
+/*   fonc_trig_nb_objet_max = nombre maxi d’objets*/
+/*        par cible (rôliste, 0 ou vide = un tirage*/
+/*        sur chaque objet de la liste)           */
+/*   fonc_trig_objet = liste [{gobj_cod, taux}]   */
+/*        taux = % de réussite propre à l’objet   */
 /**************************************************/
 declare
     -- Parameters
@@ -57,6 +66,27 @@ declare
     v_gain_titre text;            -- gain de titre
     v_gain_titre_tueur text;      -- gain de titre pour le tueur
     v_partage_px integer ;        -- flag de partage de px
+
+    -- Distribution d’objets
+    v_objets_json json;           -- liste des objets et de leur taux de réussite
+    ligne_obj record;             -- Une ligne de la liste d’objets
+    v_liste_gobj integer[];       -- gobj_cod des objets valides de la liste
+    v_liste_taux numeric[];       -- taux (en %) de chaque objet valide (même indice que v_liste_gobj)
+    v_nb_liste integer;           -- nombre d’objets valides dans la liste
+    v_nb_min integer;             -- nombre mini d’objets pour la cible
+    v_nb_max integer;             -- nombre maxi d’objets pour la cible
+    v_tmp integer;                -- variable temporaire (inversion min/max)
+    v_ordre integer[];            -- indices de la liste dans un ordre aléatoire
+    v_pris integer[];             -- indices des objets retenus pour la cible
+    v_idx integer;                -- indice dans la liste d’objets
+    v_total numeric;              -- somme des taux des objets restants
+    v_tirage numeric;             -- tirage pondéré
+    v_cumul numeric;              -- cumul des taux lors du tirage pondéré
+    v_trouve boolean;             -- un objet a été trouvé lors du tirage pondéré
+    v_gobj_cod integer;           -- objet générique donné
+    v_obj_cod integer;            -- obj_cod de l’objet créé (-1 en cas d’erreur)
+    v_obj_nom text;               -- nom de l’objet donné
+    v_obj_poids numeric;          -- poids de l’objet générique donné
 
     -- Output and data holders
     code_retour text;
@@ -121,8 +151,26 @@ declare
         v_compagnon:=v_equipage ;
     end if;
 
+    -- Liste des objets à distribuer: on ne garde que les objets génériques qui existent (une seule fois chacun dans la liste)
+    v_objets_json := COALESCE(NULLIF((v_params->>'fonc_trig_objet')::text, ''), '[]')::json ;
+    v_liste_gobj := '{}'::integer[];
+    v_liste_taux := '{}'::numeric[];
+    for ligne_obj in (select f_to_numeric(value->>'gobj_cod')::integer as gobj_cod,
+                                 GREATEST(COALESCE(f_to_numeric(value->>'taux'), 0), 0) as taux
+                          from json_array_elements(v_objets_json))
+        loop
+            if ligne_obj.gobj_cod > 0
+               and not (ligne_obj.gobj_cod = ANY (v_liste_gobj))
+               and exists (select 1 from objet_generique where gobj_cod = ligne_obj.gobj_cod) then
+                    v_liste_gobj := v_liste_gobj || ligne_obj.gobj_cod;
+                    v_liste_taux := v_liste_taux || ligne_obj.taux;
+            end if;
+        end loop;
+    v_nb_liste := cardinality(v_liste_gobj);
+
+
     -- Et finalement on parcourt les cibles.
-    for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod
+    for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_enc_max
     from perso
       inner join perso_position on ppos_perso_cod = perso_cod
       inner join positions on pos_cod = ppos_pos_cod
@@ -212,7 +260,7 @@ declare
         -- si pas de restriction de ciblage ou si le perso fait partie du partage de px
         if (v_mod_ciblage = 0) or (v_partage_px > 0) then
 
-            code_retour := code_retour || '<br />'|| ligne.perso_nom || ' est récompensé de la mort de «' || v_source_nom || '».' ;
+            code_retour := code_retour || '<br />'|| ligne.perso_nom || ' est récompensé.' ;
 
            if v_gain_po > 0 then    -- distribution des po
                 update perso set perso_po = perso_po + v_gain_po where perso_cod = ligne.perso_cod;
@@ -243,6 +291,96 @@ declare
                     end if;
                 end if;
             end if;
+
+
+            -- distribution des objets (chaque objet de la liste est donné au plus une fois par cible)
+            if v_nb_liste > 0 then
+
+                -- nombres mini / maxi d’objets: dés rôlistes recalculés pour chaque cible
+                v_nb_min := CASE WHEN COALESCE((v_params->>'fonc_trig_nb_objet_min')::text, '')='' THEN 0 ELSE f_lit_des_roliste((v_params->>'fonc_trig_nb_objet_min')::text) END ;
+                v_nb_max := CASE WHEN COALESCE((v_params->>'fonc_trig_nb_objet_max')::text, '')='' THEN 0 ELSE f_lit_des_roliste((v_params->>'fonc_trig_nb_objet_max')::text) END ;
+                v_nb_min := GREATEST(COALESCE(v_nb_min, 0), 0);
+                v_nb_max := GREATEST(COALESCE(v_nb_max, 0), 0);
+                if v_nb_max = 0 then
+                    v_nb_max := v_nb_liste ;    -- pas de maximum: un tirage sur chaque objet possible
+                end if;
+                if v_nb_min > v_nb_max then     -- min > max: on inverse les deux
+                    v_tmp := v_nb_min ;
+                    v_nb_min := v_nb_max ;
+                    v_nb_max := v_tmp ;
+                end if;
+                v_nb_min := LEAST(v_nb_min, v_nb_liste);    -- on ne peut pas donner plus d’objets qu’il n’y en a dans la liste
+                v_nb_max := LEAST(v_nb_max, v_nb_liste);
+
+                -- Etape 1: on passe les objets un par un, dans un ordre aléatoire, chacun avec son propre % de réussite,
+                -- jusqu’à atteindre le nombre maximum
+                v_pris := '{}'::integer[];
+                v_ordre := (select array_agg(g order by random()) from generate_series(1, v_nb_liste) as g);
+                foreach v_idx in array v_ordre
+                loop
+                    exit when cardinality(v_pris) >= v_nb_max;
+                    if random() * 100 < v_liste_taux[v_idx] then
+                        v_pris := v_pris || v_idx;
+                    end if;
+                end loop;
+
+                -- Etape 2: si le minimum n’est pas atteint, on complète par des tirages forcés pondérés par les taux,
+                -- parmi les objets pas encore retenus (jamais deux fois le même objet)
+                while cardinality(v_pris) < v_nb_min
+                loop
+                    v_total := 0;
+                    for v_idx in 1..v_nb_liste
+                    loop
+                        if not (v_idx = ANY (v_pris)) then
+                            v_total := v_total + v_liste_taux[v_idx];
+                        end if;
+                    end loop;
+                    exit when v_total <= 0;     -- plus aucun objet avec un taux > 0: on ne donne rien de plus
+
+                    v_tirage := random() * v_total;
+                    v_cumul := 0;
+                    v_trouve := false;
+                    for v_idx in 1..v_nb_liste
+                    loop
+                        if not (v_idx = ANY (v_pris)) then
+                            v_cumul := v_cumul + v_liste_taux[v_idx];
+                            if v_tirage < v_cumul then
+                                v_pris := v_pris || v_idx;
+                                v_trouve := true;
+                                exit;
+                            end if;
+                        end if;
+                    end loop;
+                    exit when not v_trouve;     -- sécurité
+                end loop;
+
+                -- Etape 3: on donne les objets retenus (inventaire, ou aux pieds si le perso est trop chargé)
+                if cardinality(v_pris) > 0 then
+                    foreach v_idx in array v_pris
+                    loop
+                        v_gobj_cod := v_liste_gobj[v_idx];
+                        if v_gobj_cod > 0 then
+                            select gobj_nom, gobj_poids into v_obj_nom, v_obj_poids from objet_generique where gobj_cod = v_gobj_cod;
+                            v_obj_nom := COALESCE(v_obj_nom, 'un objet');
+                            v_obj_poids := GREATEST(COALESCE(v_obj_poids, 0), 0);   -- ne pas mettre de poids négatif (cas des sacs)
+
+                            if get_poids(ligne.perso_cod)+v_obj_poids > 3 * COALESCE(ligne.perso_enc_max, 0) then
+                                -- trop chargé: l’objet est déposé aux pieds du perso
+                                v_obj_cod := cree_objet_pos(v_gobj_cod, ligne.pos_cod);
+                                if v_obj_cod >0 then
+                                    perform insere_evenement(v_source, ligne.perso_cod, 3, '[cible] n’a pas réussi à ramasser ' || v_obj_nom || ' car il est trop chargé.', 'O', 'N', v_obj_cod);
+                                end if;
+                            else
+                                v_obj_cod := cree_objet_perso(v_gobj_cod, ligne.perso_cod);
+                                if v_obj_cod >0 then
+                                    perform insere_evenement(v_source, ligne.perso_cod, 3, '[cible] a ramassé ' || v_obj_nom || '.', 'O', 'N', v_obj_cod);
+                                end if;
+                            end if;
+                        end if;
+                    end loop;
+                end if;
+            end if; -- fin distribution d’objets
+
 
             -- On rajoute la ligne d’événements
             if v_texte_evt != '' then

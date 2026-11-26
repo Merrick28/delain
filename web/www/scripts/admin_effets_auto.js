@@ -564,7 +564,7 @@ EffetAuto.Types = [
 			{ nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
 			{ nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible sur la case ciblée' }
-		],
+        ],
 	},
 	{	nom: 'ea_drop_objet',
 		debut: true,
@@ -594,8 +594,8 @@ EffetAuto.Types = [
 		attaque: false,
 		modifiable: true,
 		bm_compteur: false,
-		ea_etage: false,
-		affichage: 'Récompense (PX, PO et Titre)',
+		ea_etage: true,
+		affichage: 'Récompense (PX, PO, Titre et Objets)',
 		description: 'Récompense le tueur ou les participants d’un kill en PX, PO et/ou Titre.',
 		parametres: [
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
@@ -604,14 +604,17 @@ EffetAuto.Types = [
             { nom: 'trig_min_portee', type: 'entier', label: 'Mini', paragraphe:'div' ,description: 'La portée minimum de l’effet, si défini la cible devra être au de-là de cette distance.', validation: Validation.Types.EntierOuVide },
             { nom: 'trig_vue', type: 'checkbox', label: 'Limiter à la vue', paragraphe:'divf', description: 'Si coché, le ciblage/portée sera pas limité par la vue du porteur de l’EA.' },
             { nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles recompensé, valeur fixe ou de la forme 1d6+2. (mettre -1 pour illimité)', validation: Validation.Types.Roliste },
-            { nom: 'trig_ciblage', type: 'mod-ciblage', label: 'Modification du  ciblage', description: 'Indique comment le ciblage est modifié avec les participants à la mort du monstre (est considéré comme participant un perso ayant gagné des px à la mort du monstre).' },
+            { nom: 'trig_ciblage', type: 'mod-ciblage', label: 'Modification du  ciblage', description: 'Lors d’un declenchement sur evenement « Meurt » uniquement: cela indique comment le ciblage est modifié avec les participants à la mort du monstre (est considéré comme participant un perso ayant gagné des px à la mort du monstre).' },
             { nom: 'trig_gain_po', type: 'texte', longueur: 10, paragraphe:'divd', label: 'Gain de PO', description: 'Ce sont les PO qui seront donnés: valeur fixe ou de la forme 1d2+1', validation: Validation.Types.Roliste },
             { nom: 'trig_gain_px', type: 'texte', longueur: 10, paragraphe:'divf', label: 'Gain de PX', description: 'Ce sont les Px qui seront donnés:: valeur fixe ou de la forme 1d2+1 (limité à 200px par perso)', validation: Validation.Types.Roliste },
-            { nom: 'trig_titre', type: 'texte', longueur: 40, label: 'Titre', description: 'Le titre devant être attribué. [monstre] sera remplacé par le nom du monstre qui a été tué.' },
-            { nom: 'trig_titre_tueur', type: 'texte', longueur: 40, label: 'Titre tueur', description: 'Le titre devant être attribué au tueur. [monstre] sera remplacé par le nom du monstre qui a été tué. Si vide, le tueur aura le même titre que les autres participants.' },
-            { nom: 'proba', type: 'numerique', paragraphe:'divd', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
+            { nom: 'trig_titre', type: 'texte', longueur: 40, label: 'Titre', description: 'Le titre devant être attribué. Lors d’un declenchement sur evenement « Meurt » uniquement, [monstre] sera remplacé par le nom du monstre qui a été tué..' },
+            { nom: 'trig_titre_tueur', type: 'texte', longueur: 40, label: 'Titre tueur', description: 'Lors d’un declenchement sur evenement « Meurt » uniquement: Le titre devant être attribué au tueur. [monstre] sera remplacé par le nom du monstre qui a été tué. Si vide, le tueur aura le même titre que les autres participants.' },
+            { nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 100, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
             { nom: 'trig_proba_chain', type: 'proba', label: 'Chainage', paragraphe:'divf' ,description: 'Chainage des EA'},
 			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l’EA, [cible] est la cible de l’EA.' },
+            { nom: 'trig_nb_objet_min',type: 'texte', longueur: 5, paragraphe:'divd', label: 'Nombre d’objet MIN par cible', description: 'Le nombre minimum d’objets donnés à chaque cible (0 si vide). Valeur fixe ou de la forme 1d6+2. Si le minimum n’est pas atteint, il est complété par des tirages pondérés par les taux.', validation: Validation.Types.Roliste },
+            { nom: 'trig_nb_objet_max',type: 'texte', longueur: 5, paragraphe:'divf', label: 'MAX', description: 'Le nombre maximum d’objets donnés à chaque cible. Valeur fixe ou de la forme 1d6+2. Si 0 ou vide, chaque objet de la liste est tiré une fois. Si min > max, les deux valeurs sont inversées.', validation: Validation.Types.Roliste },
+            { nom: 'trig_objet', type: 'drop', label: 'Liste d’objet', description: 'Liste d’objets avec le pourcentage de réussite de chacun (de 0 à 100, indépendant des autres). Un objet n’est donné qu’une fois par cible, dans son inventaire ou à ses pieds s’il est trop chargé.' }
 		],
 	},
 	{	nom: 'ea_invocation',
@@ -980,6 +983,15 @@ EffetAuto.getDonnees = function (nom) {
 	return false;
 }
 
+EffetAuto.Esc = function (s) {
+    return String(s === null || s === undefined ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+};
+
 EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = "";
@@ -991,11 +1003,12 @@ EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + EffetAuto.Esc(valeur) + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	return html;
 }
+
 
 EffetAuto.ChampTexteArea = function (parametre, numero, valeur) {
 	if (!valeur)
@@ -1008,7 +1021,7 @@ EffetAuto.ChampTexteArea = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<textarea type="text"' + onChange + onKeyUp + '" cols="60" rows="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>'+ valeur +'</textarea>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<textarea type="text"' + onChange + onKeyUp + ' cols="60" rows="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>'+ EffetAuto.Esc(valeur) +'</textarea>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	return html;
@@ -1081,7 +1094,7 @@ EffetAuto.ChampChoixTypeATT = function (parametre, numero, valeur) {
 		valeur = 0;
 	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Attaque à distance et Corps à Corps</option>';
-	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Attaque au Corps à Corps</option></label>';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Attaque au Corps à Corps</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Attaque à distance</option></select></label>';
 	return html;
 }
@@ -1139,7 +1152,7 @@ EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
 	var nom = "fonc_" + parametre.nom + numero.toString();
 	var etage = "fonc_trig_pos_etage" + numero.toString();
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + valeur + '" size=50 name="' + nom + '" id="' + nom + '"/>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + EffetAuto.Esc(valeur) + '" size=50 name="' + nom + '" id="' + nom + '"/>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	html += '<input type="hidden" name="' + etage + '" id="' + etage + '" value="'+ EffetAuto.EditionEA.etage_cod +'">';
@@ -1205,7 +1218,7 @@ EffetAuto.ChampChoixSensDeplacementInit = function (conteneur) {
 EffetAuto.ChampChoixSensDeplacement = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet1="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" data-groupe-objet1="' + ((valeur == 5 || valeur == 6) ? '1' : '0')+ '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
+    var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select class="select-sens-deplacement" data-numero="'+numero+'" name="fonc_' + parametre.nom + numero.toString() + '" data-groupe-objet1="' + ((valeur == 3 || valeur == 4) ? '1' : '0') + '" data-groupe-objet2="' + ((valeur == 5 || valeur == 6) ? '1' : '0')+ '" onchange="EffetAuto.ChampChoixSensDeplacementChange(this, '+numero+')">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>Arrive sur la case</option>';
 	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Quitte la case</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Arrive ou Quitte la case</option>';
@@ -2031,14 +2044,14 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		var pf = '</span></p>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divdh") {
         var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
-        var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pd = '<div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px"><span title="' + parametre.description + '">';
         var pf = '</span>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfh") {
         var pd = '&nbsp;</div></div><span title="' + parametre.description + '">';
         var pf = '</span></p>';
 	} else 	if (parametre.paragraphe && parametre.paragraphe=="divfdh") {
         var numhide = "block_trigger_"  + numero.toString() + '_' + (parametre.block ?? '1');
-        var pd = '&nbsp;</div><div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px><span title="' + parametre.description + '">';
+        var pd = '&nbsp;</div><div id="'+ numhide +'" style=";display:none"><p style="padding: 1px; margin: 1px"><span title="' + parametre.description + '">';
         var pf = '</span>';
 	} else {
 		var pd = '<p style="padding: 1px; margin: 1px;" title="' + parametre.description + '">';
@@ -2066,6 +2079,8 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'lecture':
 			if (typeof parametre.valeur !== "undefined")
 				valeur = parametre.valeur;
+            else
+                valeur = EffetAuto.Esc(valeur);     // valeur venant de la base
 			html = pd + EffetAuto.ChampLecture(parametre, numero, valeur) + pf;
 			break;
 		case 'ea':
@@ -2433,9 +2448,6 @@ EffetAuto.NouvelEffetAuto = function (container) {
 	// récupérer le premier élément de la liste des triggers par défaut (sur nouvel EA)
 	EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
 	EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
-
-    EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
-    EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
 
     if (!container && EffetAuto.EditionEAPosition) {
         EffetAuto.InitFiltreEA();

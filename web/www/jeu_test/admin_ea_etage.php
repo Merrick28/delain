@@ -10,12 +10,13 @@ include('variables_menu.php');
 
 
 $contenu_page = '';
+$erreur = 0;
 
 define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 //echo "<pre>"; print_r($_REQUEST); die();
-if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = 1*$_REQUEST["admin_etage"] ; else $pos_etage = 1*$_REQUEST['pos_etage'] ;
+if (!isset($_REQUEST["pos_etage"]) && isset($_REQUEST["admin_etage"]) && $_REQUEST["admin_etage"]!=0) $pos_etage = (int)$_REQUEST["admin_etage"] ; else $pos_etage = (int)$_REQUEST['pos_etage'] ;
 
 
 if ($erreur == 0)
@@ -35,9 +36,9 @@ if ($erreur == 0)
         {
             if (substr($k, 0, 18)=="fonc_trig_pos_cods")
             {
-                $pos_cods = explode(",", $v);
-                array_walk($pos_cods, function(&$value, &$key){return $value = " ".trim($value) ;} );
-                $_POST[$k] = implode(",", array_filter($pos_cods, function ($val) { return ( $val == " " ? false : true ); } )).",";
+                $pos_cods = array_map(function ($value) { return " " . trim($value); }, explode(",", $v));
+                $pos_cods = array_filter($pos_cods, function ($val) { return $val !== " "; });
+                $_POST[$k] = implode(",", $pos_cods) . ",";
             }
         }
         //echo "<pre>"; print_r($_REQUEST); die();
