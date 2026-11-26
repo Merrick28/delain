@@ -980,6 +980,15 @@ EffetAuto.getDonnees = function (nom) {
 	return false;
 }
 
+EffetAuto.Esc = function (s) {
+    return String(s === null || s === undefined ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+};
+
 EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = "";
@@ -991,11 +1000,12 @@ EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + EffetAuto.Esc(valeur) + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	return html;
 }
+
 
 EffetAuto.ChampTexteArea = function (parametre, numero, valeur) {
 	if (!valeur)
@@ -1008,7 +1018,7 @@ EffetAuto.ChampTexteArea = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<textarea type="text"' + onChange + onKeyUp + '" cols="60" rows="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>'+ valeur +'</textarea>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<textarea type="text"' + onChange + onKeyUp + ' cols="60" rows="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/>'+ EffetAuto.Esc(valeur) +'</textarea>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	return html;
@@ -1139,7 +1149,7 @@ EffetAuto.ChampChoixNomEtage = function (parametre, numero, valeur) {
 	var nom = "fonc_" + parametre.nom + numero.toString();
 	var etage = "fonc_trig_pos_etage" + numero.toString();
 
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + valeur + '" size=50 name="' + nom + '" id="' + nom + '"/>';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text" value="' + EffetAuto.Esc(valeur) + '" size=50 name="' + nom + '" id="' + nom + '"/>';
 	if (parametre.commentaires) html += parametre.commentaires;
 	html += '</label>';
 	html += '<input type="hidden" name="' + etage + '" id="' + etage + '" value="'+ EffetAuto.EditionEA.etage_cod +'">';
@@ -2066,6 +2076,8 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'lecture':
 			if (typeof parametre.valeur !== "undefined")
 				valeur = parametre.valeur;
+            else
+                valeur = EffetAuto.Esc(valeur);     // valeur venant de la base
 			html = pd + EffetAuto.ChampLecture(parametre, numero, valeur) + pf;
 			break;
 		case 'ea':
