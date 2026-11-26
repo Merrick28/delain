@@ -119,13 +119,13 @@ begin
   INSERT INTO messages (msg_date2, msg_date, msg_titre, msg_corps, msg_init ) VALUES (now(), now(), v_msg_titre, v_texte_msg, v_msg_expediteur ) RETURNING msg_cod into v_msg_cod;
 
   -- Et finalement on parcourt les cibles.
-  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv, pos_etage, COALESCE(c.pcompt_compt_cod, 0) as compt_cod
+  for ligne in (select perso_cod , perso_type_perso , perso_race_cod, perso_nom, perso_niveau, perso_int, perso_con, pos_cod, perso_pv, pos_etage, COALESCE(pcompt_compt_cod, 0) as compt_cod
                 from perso
                   inner join perso_position on ppos_perso_cod = perso_cod
                   inner join positions on pos_cod = ppos_pos_cod
                   left outer join lieu_position on lpos_pos_cod = pos_cod
                   left outer join lieu on lieu_cod = lpos_lieu_cod
-                  left outer join perso_compte c on c.pcompt_perso_cod = perso_cod
+                  left outer join perso_compte on pcompt_perso_cod = perso_cod
                 where perso_actif = 'O'
                       and perso_tangible = 'O'
                       -- À portée
